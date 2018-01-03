@@ -1,0 +1,5 @@
+project.ext {
+    minSdkVersion = 21
+    compileSdkVersion = 26
+    targetSdkVersion = 26
+}
