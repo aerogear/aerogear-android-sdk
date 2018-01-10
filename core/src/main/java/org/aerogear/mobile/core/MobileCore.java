@@ -2,7 +2,6 @@ package org.aerogear.mobile.core;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.JsonReader;
 import android.util.Log;
 
 import org.aerogear.mobile.core.configuration.MobileCoreJsonParser;
@@ -18,7 +17,8 @@ import java.util.Map;
 /**
  * MobileCore is the entry point into AeroGear mobile services that are managed by the mobile-core
  * ¿feature( TODO: Get correct noun )? in OpenShift.
- * <p>
+ *
+ *
  * Usage.java
  * ```
  * MobileCore core = new MobileCore.Builder(context, R.raw.mobile_core).build();
