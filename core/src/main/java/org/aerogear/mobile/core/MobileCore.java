@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * MobileCore is the entry point into AeroGear mobile services that are managed by the mobile-core
  * ¿feature( TODO: Get correct noun )? in OpenShift.
- * <p>
+ *
  * Usage.java
  * ```
  * MobileCore core = new MobileCore.Builder(context, R.raw.mobile_core).build();
@@ -31,7 +31,6 @@ public final class MobileCore implements ServiceModule {
 
     private final Context context;
     private final String mobileServiceFileName;
-
     private Map<String, ServiceConfiguration> configurationMap;
 
     private MobileCore(@NonNull Context context, String mobileServiceFileName) {
@@ -83,7 +82,6 @@ public final class MobileCore implements ServiceModule {
             this.context = context;
         }
 
-
         /**
          * The filename of the mobile service configuration file in the assets directory.
          *
@@ -125,6 +123,7 @@ public final class MobileCore implements ServiceModule {
             if (!built) {
                 built = true;
                 MobileCore core = new MobileCore(context, mobileServiceFileName);
+
                 core.bootstrap();
                 return core;
             } else {
