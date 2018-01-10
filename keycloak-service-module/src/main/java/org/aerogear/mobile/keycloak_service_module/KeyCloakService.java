@@ -34,7 +34,7 @@ public class KeyCloakService implements ServiceModule {
               JsonReader reader = new JsonReader(new InputStreamReader(keycloakConfigStream, "UTF-8") ) ) {
             config = KeyCloakConfig.parse(reader);
         } catch (IOException e) {
-            MobileCore.defaultLog().error(e.getMessage(), e);
+            //MobileCore.defaultLog().error(e.getMessage(), e);
         }
     }
 
