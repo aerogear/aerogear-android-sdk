@@ -2,6 +2,7 @@ package org.aerogear.mobile.core;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.JsonReader;
 import android.util.Log;
 
 import org.aerogear.mobile.core.configuration.MobileCoreJsonParser;
@@ -18,7 +19,6 @@ import java.util.Map;
  * MobileCore is the entry point into AeroGear mobile services that are managed by the mobile-core
  * ¿feature( TODO: Get correct noun )? in OpenShift.
  *
- *
  * Usage.java
  * ```
  * MobileCore core = new MobileCore.Builder(context, R.raw.mobile_core).build();
@@ -31,7 +31,6 @@ public final class MobileCore implements ServiceModule {
 
     private final Context context;
     private final String mobileServiceFileName;
-
     private Map<String, ServiceConfiguration> configurationMap;
 
     private MobileCore(@NonNull Context context, String mobileServiceFileName) {
@@ -55,7 +54,6 @@ public final class MobileCore implements ServiceModule {
             defaultLog().error(e.getMessage(), e);
             throw new BootstrapException(String.format("%s could not be loaded", mobileServiceFileName), e);
         }
-
 
         //startup known modules
     }
