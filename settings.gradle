@@ -1,1 +1,1 @@
-include ':core', ':keycloak-service-module'
+include ':core', ':keycloak-service-module', ':auth'
