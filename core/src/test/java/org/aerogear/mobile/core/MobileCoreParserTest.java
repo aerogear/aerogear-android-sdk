@@ -6,6 +6,7 @@ import android.support.test.filters.SmallTest;
 import junit.framework.Assert;
 
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;

@@ -55,6 +55,7 @@ public final class MobileCore implements ServiceModule {
             throw new BootstrapException(String.format("%s could not be loaded", mobileServiceFileName), e);
         }
 
+
         //startup known modules
     }
 
@@ -80,7 +81,6 @@ public final class MobileCore implements ServiceModule {
         public Builder(@NonNull Context context) {
             this.context = context;
         }
-
 
         /**
          * The filename of the mobile service configuration file in the assets directory.
@@ -123,6 +123,7 @@ public final class MobileCore implements ServiceModule {
             if (!built) {
                 built = true;
                 MobileCore core = new MobileCore(context, mobileServiceFileName);
+
                 core.bootstrap();
                 return core;
             } else {

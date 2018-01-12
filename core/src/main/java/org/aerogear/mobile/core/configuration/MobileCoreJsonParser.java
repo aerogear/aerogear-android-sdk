@@ -75,6 +75,7 @@ public class MobileCoreJsonParser {
 
     private void addHeaders(ServiceConfiguration serviceConfig, JSONObject headers) throws JSONException {
         JSONArray headerNames = headers.names();
+
         if (headerNames == null) {
             return;
         }

@@ -1,47 +1,46 @@
-[
-  {
-    "config":{
-      "headers":{
-
+{
+  "services": [
+    {
+      "config": {
+        "headers": {},
+        "uri": "https://fh-sync-server-myproject.192.168.37.1.nip.io"
       },
-      "uri":"https://fh-sync-server-test.192.168.37.1.nip.io"
+      "name": "fh-sync-server"
     },
-    "name":"fh-sync-server"
-  },
-  {
-    "config":{
-      "auth-server-url":"http://keycloak-test.192.168.37.1.nip.io/auth",
-      "clientId":"rAuQspBBnDjEMWTDPcre",
-      "headers":{
-
+    {
+      "config": {
+        "auth-server-url": "http://keycloak-myproject.192.168.37.1.nip.io/auth",
+        "clientId": "OeFYkwEuUKXvDsSudfXc",
+        "headers": {},
+        "realm": "myproject",
+        "resource": "OeFYkwEuUKXvDsSudfXc",
+        "ssl-required": "external",
+        "url": "http://keycloak-myproject.192.168.37.1.nip.io/auth"
       },
-      "realm":"test",
-      "resource":"rAuQspBBnDjEMWTDPcre",
-      "ssl-required":"external",
-      "url":"http://keycloak-test.192.168.37.1.nip.io/auth"
+      "name": "keycloak"
     },
-    "name":"keycloak"
-  },
-  {
-    "config":{
-      "headers":{
-
+    {
+      "config": {
+        "headers": {},
+        "name": "prometheus",
+        "type": "prometheus",
+        "uri": "https://prometheus-myproject.192.168.37.1.nip.io"
       },
-      "name":"mobile-stats-server",
-      "type":"mobile-stats-server",
-      "uri":"https://mobile-stats-server-test.192.168.37.1.nip.io"
+      "name": "prometheus"
     },
-    "name":"mobile-stats-server"
-  },
-  {
-    "config":{
-      "headers":{
-
+    {
+      "config": {
+        "headers": {},
+        "mysql_db": "unifiedpush",
+        "mysql_password": "unifiedpush",
+        "mysql_username": "unifiedpush",
+        "name": "unified-push-server",
+        "push_kc_realm": "aerogear",
+        "type": "unified-push-server",
+        "uri": "http://ups-myproject.192.168.37.1.nip.io"
       },
-      "name":"prometheus",
-      "type":"prometheus",
-      "uri":"https://prometheus-test.192.168.37.1.nip.io"
-    },
-    "name":"prometheus"
-  }
-]
+      "name": "unified-push-server"
+    }
+  ],
+  "namespace": "myproject"
+}
