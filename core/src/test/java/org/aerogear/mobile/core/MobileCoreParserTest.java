@@ -27,6 +27,7 @@ public class MobileCoreParserTest {
         Assert.assertNotNull(core.getConfig("prometheus"));
         ServiceConfiguration config = core.getConfig("keycloak");
         org.junit.Assert.assertEquals("http://keycloak-myproject.192.168.37.1.nip.io/auth", config.getProperty("auth-server-url"));
+
         Assert.assertNull(core.getConfig("null"));
     }
 
@@ -57,3 +58,4 @@ public class MobileCoreParserTest {
     }
 
 }
+
