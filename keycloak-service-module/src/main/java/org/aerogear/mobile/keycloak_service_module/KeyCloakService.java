@@ -7,6 +7,7 @@ import android.util.JsonReader;
 
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.ServiceModule;
+import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,34 +18,37 @@ public class KeyCloakService implements ServiceModule {
 
     private final Context appContext;
     private KeyCloakConfig config;
+    private String serverUrl;
+    private String clientId;
+    private String audience;
+    private String grantType;
+    private String subjectTokenType;
+    private String requestedTokenType;
+    private String realm;
+    private MobileCore core;
 
     public KeyCloakService(@NonNull Context appContext) {
         this.appContext = appContext.getApplicationContext();
     }
 
-
     /**
-     * Loads keycloak.json from R.raw.keycloak
+     * Exchanges the google id token and configures the KeyCloakService to serve requests
      *
-     * @param resId
-     * @throws RuntimeException if a IOException is thrown during bootstrap.
+     * @param token a Google ID token
      */
-    private void bootstrap(int resId) {
-        try ( InputStream keycloakConfigStream = appContext.getResources().openRawResource(resId);
-              JsonReader reader = new JsonReader(new InputStreamReader(keycloakConfigStream, "UTF-8") ) ) {
-            config = KeyCloakConfig.parse(reader);
-        } catch (IOException e) {
-            //MobileCore.defaultLog().error(e.getMessage(), e);
-        }
+    public void login(String token) {
+
     }
 
-
     @Override
-    public void bootstrap(Object... args) {
-        if (args.length == 1 && args[0] instanceof Integer) {
-            bootstrap((int)args[0]);
-        } else {
-            throw new IllegalArgumentException("KeyCloakService.bootstrap requires exactly one argument of type int.");
-        }
+    public void bootstrap(MobileCore core, ServiceConfiguration config, Object... args) {
+        this.serverUrl = config.getProperty("auth-server-url");
+        this.clientId = config.getProperty("client_id");
+        this.audience = config.getProperty("audience");
+        this.grantType = config.getProperty("grant_type");
+        this.subjectTokenType = config.getProperty("subject_token_type");
+        this.requestedTokenType = config.getProperty("requested_token_type");
+        this.realm = config.getProperty("realm");
+        this.core = core;
     }
 }

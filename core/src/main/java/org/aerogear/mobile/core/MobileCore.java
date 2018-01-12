@@ -26,7 +26,7 @@ import java.util.Map;
  * core.feature(MyRestService.class).upload(myData);// Would upload myData and be secured by KeyCloak
  * ```
  */
-public final class MobileCore implements ServiceModule {
+public final class MobileCore {
 
 
     private final Context context;
@@ -44,9 +44,7 @@ public final class MobileCore implements ServiceModule {
         };
     }
 
-    @Override
     public void bootstrap(Object... args) {
-
 
         try (InputStream configStream = context.getAssets().open(this.mobileServiceFileName);) {
             this.configurationMap = MobileCoreJsonParser.parse(configStream);
