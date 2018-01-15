@@ -7,6 +7,7 @@ import android.util.JsonReader;
 
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.ServiceModule;
+import org.aerogear.mobile.core.ServiceModuleRegistry;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 
 import java.io.IOException;

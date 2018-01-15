@@ -7,4 +7,8 @@ class BootstrapException extends RuntimeException {
     public BootstrapException(String message, Throwable rootException) {
         super(message, rootException);
     }
+
+    public BootstrapException(String message) {
+        super(message);
+    }
 }

@@ -3,15 +3,13 @@ package org.aerogear.mobile.core;
 import android.app.Application;
 import android.support.test.filters.SmallTest;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
-import org.robolectric.annotation.Config;
 
 import java.io.IOException;
 
@@ -26,9 +24,9 @@ public class MobileCoreParserTest {
         MobileCore core = builder.build();
         Assert.assertNotNull(core.getConfig("prometheus"));
         ServiceConfiguration config = core.getConfig("keycloak");
-        org.junit.Assert.assertEquals("http://keycloak-myproject.192.168.37.1.nip.io/auth", config.getProperty("auth-server-url"));
+        Assert.assertEquals("http://keycloak-myproject.192.168.37.1.nip.io/auth", config.getProperty("auth-server-url"));
+        Assert.assertEquals("null", core.getConfig("null").getName());
 
-        Assert.assertNull(core.getConfig("null"));
     }
 
     @Test
@@ -39,8 +37,8 @@ public class MobileCoreParserTest {
         MobileCore core = builder.build();
         Assert.assertNotNull(core.getConfig("prometheus"));
         ServiceConfiguration config = core.getConfig("keycloak");
-        org.junit.Assert.assertEquals("http://keycloak-myproject.192.168.37.1.nip.io/auth", config.getProperty("auth-server-url"));
-        Assert.assertNull(core.getConfig("null"));
+        Assert.assertEquals("http://keycloak-myproject.192.168.37.1.nip.io/auth", config.getProperty("auth-server-url"));
+        Assert.assertEquals("null", core.getConfig("null").getName());
     }
 
     @Test(expected = BootstrapException.class)
