@@ -30,11 +30,13 @@ public final class MobileCore implements ServiceModule {
 
 
     private final Context context;
+    private final String mobileServiceFileName;
 
     private Map<String, ServiceConfiguration> configurationMap;
 
-    private MobileCore(@NonNull Context conext) {
-        this.context = conext.getApplicationContext();
+    private MobileCore(@NonNull Context context, String mobileServiceFileName) {
+        this.context = context.getApplicationContext();
+        this.mobileServiceFileName = mobileServiceFileName;
     }
 
     public Logger defaultLog() {
@@ -47,11 +49,11 @@ public final class MobileCore implements ServiceModule {
     public void bootstrap(Object... args) {
 
 
-        try (InputStream configStream = context.getAssets().open("mobile-core.json");) {
+        try (InputStream configStream = context.getAssets().open(this.mobileServiceFileName);) {
             this.configurationMap = MobileCoreJsonParser.parse(configStream);
         } catch (JSONException | IOException e) {
             defaultLog().error(e.getMessage(), e);
-            throw new BootstrapException("mobile-core.json could not be loaded", e);
+            throw new BootstrapException(String.format("%s could not be loaded", mobileServiceFileName), e);
         }
 
 
@@ -75,11 +77,42 @@ public final class MobileCore implements ServiceModule {
 
         private final Context context;
         private boolean built = false;
+        private String mobileServiceFileName = "mobile-services.json";
 
         public Builder(@NonNull Context context) {
             this.context = context;
         }
 
+
+        /**
+         * The filename of the mobile service configuration file in the assets directory.
+         *
+         * defaults to mobile-services.json
+         *
+         * @return the current value, never null.
+         */
+        @NonNull
+        public String getMobileServiceFileName() {
+            return mobileServiceFileName;
+        }
+
+        /**
+         * The filename of the mobile service configuration file in the assets directory.
+         *
+         * defaults to mobile-services.json
+         *
+         * @param mobileServiceFileName a new filename.  May not be null.
+         * @return the current value, never null.
+         */
+        public Builder setMobileServiceFileName(@NonNull String mobileServiceFileName) {
+
+            if (mobileServiceFileName == null) {
+                throw new IllegalArgumentException("mobileServiceFileName may not be null");
+            }
+
+            this.mobileServiceFileName = mobileServiceFileName;
+            return this;
+        }
 
         /**
          * Builds a mobile core instance.  Please note that once this is built the Builder may not
@@ -91,7 +124,7 @@ public final class MobileCore implements ServiceModule {
         public MobileCore build() {
             if (!built) {
                 built = true;
-                MobileCore core = new MobileCore(context);
+                MobileCore core = new MobileCore(context, mobileServiceFileName);
                 core.bootstrap();
                 return core;
             } else {
