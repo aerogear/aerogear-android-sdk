@@ -6,10 +6,13 @@ import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 
 public class HttpServiceModule implements ServiceModule {
 
-
-
     @Override
     public void bootstrap(MobileCore core, ServiceConfiguration configuration, Object... args) {
 
     }
+
+    public String get(String url) {
+        return null;
+    }
+
 }
