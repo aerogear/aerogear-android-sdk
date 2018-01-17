@@ -12,6 +12,7 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.AbstractSequentialList;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -121,8 +122,18 @@ public final class MobileCore {
         return config;
     }
 
+    @NonNull
     public ServiceModule getService(String simpleService) {
         return services.get(simpleService);
+    }
+
+    /**
+     * Returns the names of all configured services
+     * @return a list of service names.
+     */
+    @NonNull
+    public List<String> getServiceNames() {
+        return new ArrayList<>(services.keySet());
     }
 
     /**
@@ -197,8 +208,9 @@ public final class MobileCore {
             }
         }
 
-        public void setRegistryService(ServiceModuleRegistry registryService) {
+        public Builder setRegistryService(ServiceModuleRegistry registryService) {
             this.registryService = registryService;
+            return this;
         }
 
         public ServiceModuleRegistry getRegistryService() {
