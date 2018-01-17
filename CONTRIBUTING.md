@@ -18,32 +18,27 @@ You can reach us at [#aerogear](ircs://chat.freenode.net:6697/aerogear) on [Free
 [aerogear-dev list](http://lists.jboss.org/pipermail/aerogear-dev/)
 -- both are actively monitored.
 
-## Android SDK Overview and Architecture
+# Developing the Android SDK
 
-This section describes the structure of this repository.
+## Prerequisites
 
-### Core SDK
+Ensure you have the following installed in your machine:
 
-Present in the [`core/`](core/) folder, the Core Android SDK provides the basic mechanisms for interacting with services, such as interfaces for network requests, depending on other services, managing configuration and secrets, error handling, etc.
+- [Java Development Kit](https://docs.oracle.com/javase/8/docs/technotes/guides/install/install_overview.html)
+- [Android Studio and Android SDK](https://developer.android.com/studio/index.html)
+- [Git SCM](http://git-scm.com/)
 
-#### Service Registry
+## Cloning the repository
 
-The Core of the SDK also provides a global [`ServiceModuleRegistry`](core/src/main/java/org/aerogear/mobile/core/ServiceModuleRegistry.java) that contains references to the available service modules, their configuration values and implementations.
+```bash
+git clone https://github.com/aerogear/aerogear-android-sdk.git
+cd aerogear-android-sdk/
+```
 
-It is through this registry that services can access other service modules that they depend upon.
+## Installing dependencies and building the SDK
 
-### Service Modules
+```bash
+./gradlew build
+```
 
-Service Modules provide the necessary implementation for consuming a particular service, it must implement the [`org.aerogear.mobile.core.ServiceModule`](core/src/main/java/org/aerogear/mobile/core/ServiceModule.java) interface in order to supply a `bootstrap` function that is invoked by the Core in order to inject dependencies and configuration.
-
-The bootstrapping action also allows the service module to use the aforementioned facilites from Core.
-
-## Creating a new Service Module project in this repository
-
-In order to create a new Service Module in this repository, create a start a new folder in its root with the `/*-module` suffix, with a `build.gradle` and `gradle.properties` file describing it.
-
-Following that, add the new module to the root [`settings.gradle`](settings.gradle).
-
-See the [`keycloak-service-module`](./keycloak-service-module/build.gradle) for examples.
-
-Service modules should preferably utilize dependencies defined in the `aerogear-android-sdk-bom`, see [Using the Android SDK BOM in your own projects](docs/using_the_android_sdk_bom.md) for details.
+See the [Gradle Documentation](https://docs.gradle.org/current/userguide/pt02.html) for more information on Gradle and the Gradle Wrapper
