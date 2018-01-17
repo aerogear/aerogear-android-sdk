@@ -22,7 +22,7 @@ import java.util.TreeSet;
 
 /**
  * MobileCore is the entry point into AeroGear mobile services that are managed by the mobile-core
- * ¿feature( TODO: Get correct noun )? in OpenShift.
+ * feature( TODO: Get correct noun )? in OpenShift.
  *
  * Usage.java
  * ```
