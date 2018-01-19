@@ -33,6 +33,7 @@ dependencies {
     implementation 'net.openid:appauth:0.7.0'
     testImplementation 'org.mockito:mockito-core:2.10.0'
     testImplementation 'junit:junit:4.12'
+    compile 'org.bitbucket.b_c:jose4j:0.6.3'
 }
 
 sourceCompatibility = "1.7"
