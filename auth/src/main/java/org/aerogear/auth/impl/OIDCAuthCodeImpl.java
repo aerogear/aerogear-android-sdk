@@ -2,7 +2,6 @@ package org.aerogear.auth.impl;
 
 import org.aerogear.auth.AuthServiceConfig;
 import org.aerogear.auth.credentials.ICredential;
-import org.aerogear.auth.credentials.OIDCCredentials;
 
 import java.security.Principal;
 
