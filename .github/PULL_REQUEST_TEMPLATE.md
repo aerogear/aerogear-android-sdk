@@ -2,7 +2,7 @@
 
 <!-- The reason underlying the contents of the PR, can be a link to the originating JIRA -->
 
-JIRA: [https://issues.jboss.org/browse/AGDROID-{}]
+JIRA: https://issues.jboss.org/browse/AGDROID-{}
 
 ## Description
 
@@ -10,8 +10,8 @@ JIRA: [https://issues.jboss.org/browse/AGDROID-{}]
 
 ## Progress
 
-- [ ] Done Task
-- [x] Todo Task
+- [x] Done Task
+- [ ] Todo Task
 
 ## Additional Notes
 
