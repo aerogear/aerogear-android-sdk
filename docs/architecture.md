@@ -20,4 +20,4 @@ The bootstrapping action also allows the service module to use the aforementione
 
 ### Creating a new Service Module
 
-See [Creating a new Service Module project in this repository](./creating_service_module.md)
+See [Creating a new Service Module in this repository](./creating_service_module.md)
