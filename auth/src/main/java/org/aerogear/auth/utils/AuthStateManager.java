@@ -10,7 +10,7 @@ import org.json.JSONException;
  */
 public class AuthStateManager {
 
-    private static final String STORE_NAME = "AuthState";
+    private static final String STORE_NAME = "org.aerogear.android.auth.AuthState";
     private static final String KEY_STATE = "state";
 
     private SharedPreferences mPrefs;
