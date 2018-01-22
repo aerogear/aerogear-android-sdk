@@ -39,7 +39,7 @@ public class AuthStateManager {
      * Saves a token
      * @param authState token to be saved
      */
-    public void write(final OIDCCredentials authState) {
+    public synchronized void write(final OIDCCredentials authState) {
         if (authState == null) {
             clear();
         } else {
@@ -52,7 +52,7 @@ public class AuthStateManager {
     /**
      * Deletes a token
      */
-    public void clear() {
+    public synchronized void clear() {
         if (!prefs.edit().remove(KEY_STATE).commit()) {
             throw new IllegalStateException("Failed to clear state from shared preferences");
         }
