@@ -100,12 +100,12 @@ public class OIDCCredentials implements ICredential {
             //  Validate the JWT and process it to the Claims
             JwtClaims jwtClaims = jwtConsumer.processToClaims(jwtToken);
             verified = true;
-            System.out.println("JWT validation succeeded! " + jwtClaims);
+            System.out.println("JWT Verified Successfully.");
         }
         catch (InvalidJwtException e)
         {
             // InvalidJwtException will be thrown, if the JWT failed processing or validation in anyway.
-            System.out.println("Invalid JWT! " + e);
+            System.out.println("JWT Validation Failed. " + e.getLocalizedMessage());
 
         }
         return verified;
