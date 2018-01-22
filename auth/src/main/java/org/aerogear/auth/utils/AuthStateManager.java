@@ -13,10 +13,10 @@ public class AuthStateManager {
     private static final String STORE_NAME = "org.aerogear.android.auth.AuthState";
     private static final String KEY_STATE = "state";
 
-    private SharedPreferences mPrefs;
+    private final SharedPreferences prefs;
 
-    public AuthStateManager(Context context) {
-        this.mPrefs = context.getSharedPreferences(STORE_NAME, Context.MODE_PRIVATE);
+    public AuthStateManager(final Context context) {
+        this.prefs = context.getSharedPreferences(STORE_NAME, Context.MODE_PRIVATE);
     }
 
     /**
@@ -24,7 +24,7 @@ public class AuthStateManager {
      * @return OIDCCredentials
      */
     public OIDCCredentials read() {
-        String currentState = mPrefs.getString(KEY_STATE, null);
+        String currentState = prefs.getString(KEY_STATE, null);
         if (currentState == null) {
             return new OIDCCredentials();
         }
@@ -39,11 +39,11 @@ public class AuthStateManager {
      * Saves a token
      * @param authState token to be saved
      */
-    public void write(OIDCCredentials authState) {
+    public void write(final OIDCCredentials authState) {
         if (authState == null) {
             clear();
         } else {
-            if(!mPrefs.edit().putString(KEY_STATE, authState.serialise()).commit()) {
+            if(!prefs.edit().putString(KEY_STATE, authState.serialise()).commit()) {
                 throw new IllegalStateException("Failed to update state from shared preferences");
             }
         }
@@ -53,7 +53,7 @@ public class AuthStateManager {
      * Deletes a token
      */
     public void clear() {
-        if (!mPrefs.edit().remove(KEY_STATE).commit()) {
+        if (!prefs.edit().remove(KEY_STATE).commit()) {
             throw new IllegalStateException("Failed to clear state from shared preferences");
         }
     }

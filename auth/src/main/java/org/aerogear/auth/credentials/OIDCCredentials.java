@@ -10,7 +10,7 @@ import org.json.JSONException;
  */
 public class OIDCCredentials implements ICredential {
 
-    private AuthState authState;
+    private final AuthState authState;
 
     public OIDCCredentials() {
         this.authState = new AuthState();
