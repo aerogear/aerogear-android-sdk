@@ -137,6 +137,14 @@ public class UserPrincipalImpl extends AbstractPrincipal {
         return username;
     }
 
+    /**
+     * Check whether the user is authorized and not expired.
+     * @return <code>true</code> if user is authorized and token is not expired.
+     */
+    @Override
+    public boolean checkValidAuth() {
+        return getCredentials().isAuthorized() && !getCredentials().getNeedsTokenRefresh();
+    }
 
     @Override
     public Collection<IRole> getRoles() {
