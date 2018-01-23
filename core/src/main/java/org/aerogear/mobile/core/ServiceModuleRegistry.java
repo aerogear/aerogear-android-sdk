@@ -15,6 +15,7 @@ import java.util.Set;
  * their types as well as the dependencies each module expects.
  */
 public final class ServiceModuleRegistry {
+    private static ServiceModuleRegistry sInstance;
     private final Map<String, Class<? extends ServiceModule>> serviceTypeMap = new HashMap<>();
     private final Map<String, List<String>> dependencyMap = new HashMap<>();
 
@@ -53,5 +54,12 @@ public final class ServiceModuleRegistry {
 
     public Class<? extends ServiceModule> getServiceClass(String serviceType) {
         return serviceTypeMap.get(serviceType);
+    }
+
+    public synchronized static ServiceModuleRegistry getInstance() {
+        if (sInstance == null) {
+            sInstance = new ServiceModuleRegistry();
+        }
+        return sInstance;
     }
 }
