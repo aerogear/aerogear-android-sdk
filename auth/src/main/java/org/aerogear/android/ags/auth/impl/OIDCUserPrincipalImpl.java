@@ -1,8 +1,9 @@
 package org.aerogear.android.ags.auth.impl;
 
-import org.aerogear.android.ags.auth.AbstractAuthenticator;
-import org.aerogear.android.ags.auth.IRole;
-import org.aerogear.android.ags.auth.credentials.OIDCCredentials;
+import org.aerogear.auth.AbstractAuthenticator;
+import org.aerogear.auth.IRole;
+import org.aerogear.auth.RoleKey;
+import org.aerogear.auth.credentials.OIDCCredentials;
 
 import java.util.Map;
 
@@ -20,7 +21,7 @@ public class OIDCUserPrincipalImpl extends UserPrincipalImpl {
     protected OIDCUserPrincipalImpl(final String username,
                              final OIDCCredentials credentials,
                              final String email,
-                             final Map<String, IRole> roles,
+                             final Map<RoleKey, IRole> roles,
                              final AbstractAuthenticator authenticator) {
         super(username, credentials, email, roles, authenticator);
     }

@@ -11,11 +11,19 @@ import java.util.Collection;
 public interface IUserPrincipal extends Principal {
 
     /**
-     * Checks if the user has the specified role.
+     * Checks if the user has the specified Client role.
+     * @param role role to be checked
+     * @param clientId clientID related to role
+     * @return true or false
+     */
+    boolean hasClientRole(String role, String clientId);
+
+    /**
+     * Checks if the user has the specified Realm role.
      * @param role role to be checked
      * @return true or false
      */
-    boolean hasRole(IRole role);
+    boolean hasRealmRole(String role);
 
     /**
      * Returns the username

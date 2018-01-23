@@ -34,8 +34,7 @@ public class GuestAuthenticatorImpl extends AbstractAuthenticator {
         this.guestUser = guestUser;
         if (roles == null) {
             this.roles = new IRole[0];
-        }
-        else {
+        } else {
             this.roles = Arrays.copyOf(roles, roles.length);
         }
     }
