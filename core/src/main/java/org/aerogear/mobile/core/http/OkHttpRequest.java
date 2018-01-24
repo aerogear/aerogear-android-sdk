@@ -66,7 +66,7 @@ public class OkHttpRequest implements HttpRequest {
 
     private void addHeaders(Request.Builder requestBuilder) {
         for (Map.Entry<String, String> header : headers.entrySet()) {
-            requestBuilder.addHeader(header.getKey(), header.getValue());
+            requestBuilder.header(header.getKey(), header.getValue());
         }
     }
 
