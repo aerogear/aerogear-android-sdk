@@ -1,50 +1,98 @@
 package org.aerogear.mobile.keycloak_service_module;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.util.JsonReader;
 
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.ServiceModule;
+import org.aerogear.mobile.core.ServiceModuleRegistry;
+import org.aerogear.mobile.core.configuration.ServiceConfiguration;
+import org.aerogear.mobile.core.http.HttpRequest;
+import org.aerogear.mobile.core.http.HttpResponse;
+import org.aerogear.mobile.core.http.HttpServiceModule;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+
+import okhttp3.FormBody;
+import okio.Buffer;
+import okio.BufferedSink;
 
 
 public class KeyCloakService implements ServiceModule {
 
-    private final Context appContext;
     private KeyCloakConfig config;
+    private String serverUrl;
+    private String clientId;
+    private String audience;
+    private String grantType;
+    private String subjectTokenType;
+    private String requestedTokenType;
+    private String realm;
+    private MobileCore core;
+    private String resource;
+    private HttpServiceModule httpModule;
+    private String accessToken;
 
-    public KeyCloakService(@NonNull Context appContext) {
-        this.appContext = appContext.getApplicationContext();
+
+    public KeyCloakService() {
+    }
+
+
+
+    @Override
+    public void bootstrap(MobileCore core, ServiceConfiguration config, Object... args) {
+        this.serverUrl = config.getProperty("auth-server-url");
+        this.clientId = config.getProperty("clientId");
+        this.audience = config.getProperty("audience");
+        this.grantType = config.getProperty("grant_type");
+        this.subjectTokenType = config.getProperty("subject_token_type");
+        this.requestedTokenType = config.getProperty("requested_token_type");
+        this.resource = config.getProperty("resource");
+        this.realm = config.getProperty("realm");
+        this.core = core;
+        this.httpModule = (HttpServiceModule) core.getService("http");
     }
 
 
     /**
-     * Loads keycloak.json from R.raw.keycloak
+     * Exchanges the google id token and configures the KeyCloakService to serve requests
      *
-     * @param resId
-     * @throws RuntimeException if a IOException is thrown during bootstrap.
+     * @param googleIdToken a Google ID token
      */
-    private void bootstrap(int resId) {
-        try ( InputStream keycloakConfigStream = appContext.getResources().openRawResource(resId);
-              JsonReader reader = new JsonReader(new InputStreamReader(keycloakConfigStream, "UTF-8") ) ) {
-            config = KeyCloakConfig.parse(reader);
+    public HttpResponse exchangeToken(String googleIdToken) {
+        HttpRequest request = httpModule.newRequest();
+        request.addHeader(HttpRequest.CONTENT_TYPE_HEADER, "application/x-www-form-urlencoded");
+
+        FormBody requestBody = new FormBody.Builder()
+            .add("client_id", clientId)
+            .add("audience", clientId)
+            .add("grant_type", "urn:ietf:params:oauth:grant-type:token-exchange")
+            .add("subject_token", googleIdToken)
+            .add("subject_token_type", "urn:ietf:params:oauth:token-type:jwt")
+            .add("requested_token_type", "urn:ietf:params:oauth:token-type:refresh_token")
+            .build();
+
+        BufferedSink sink = new Buffer();
+        try {
+            requestBody.writeTo(sink);
         } catch (IOException e) {
-            //MobileCore.defaultLog().error(e.getMessage(), e);
+            throw new RuntimeException(e);
+        }
+        request.post(serverUrl + "/realms/" + realm + "/protocol/openid-connect/token", sink.buffer().readByteArray());
+
+        return request.execute();
+
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+
+    }
+
+    public void addBearerToken(HttpRequest request) {
+        if (accessToken != null) {
+            request.addHeader("Authorization", "Bearer " + accessToken);
         }
     }
 
-
-    @Override
-    public void bootstrap(Object... args) {
-        if (args.length == 1 && args[0] instanceof Integer) {
-            bootstrap((int)args[0]);
-        } else {
-            throw new IllegalArgumentException("KeyCloakService.bootstrap requires exactly one argument of type int.");
-        }
-    }
 }

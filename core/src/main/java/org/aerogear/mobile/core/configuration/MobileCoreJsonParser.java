@@ -92,7 +92,7 @@ public class MobileCoreJsonParser {
      *                   should be managed by the calling core.  The parser will not close the resource
      *                   when it is finished.
      *
-     * @return A map of Servicconfigs mapped by their name.
+     * @return A map of ServiceConfigs mapped by their name.
      * @throws IOException   if reading the stream fails
      * @throws JSONException if the json document is malformed
      */
