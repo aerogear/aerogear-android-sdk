@@ -35,6 +35,4 @@ public interface IUserPrincipal extends Principal {
      * @return the credentials that authenticate this users
      */
     ICredential getCredentials();
-
-    boolean checkValidAuth();
 }

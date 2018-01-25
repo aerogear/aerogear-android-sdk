@@ -44,14 +44,14 @@ public class OIDCCredentials implements ICredential {
      * Check whether new access token is needed.
      * @return <code>true</code> if access token is needed
      */
-    public boolean getNeedsTokenRefresh() {
+    public boolean getNeedsRenewal() {
         return authState.getNeedsTokenRefresh();
     }
 
     /**
      * Force request of new access token.
      */
-    public void setNeedsTokenRefresh() {
+    public void setNeedsRenewal() {
         authState.setNeedsTokenRefresh(true);
     }
 
@@ -72,11 +72,19 @@ public class OIDCCredentials implements ICredential {
     }
 
     /**
-     * Refresh the token
+     * Check whether the user is authorized and not expired.
+     * @return <code>true</code> if user is authorized and token is not expired.
+     */
+    public boolean checkValidAuth() {
+        return isAuthorized() && getNeedsRenewal();
+    }
+
+    /**
+     * Renew the token
      * @return
      * @throws AuthenticationException
      */
-    public boolean refresh() throws AuthenticationException {
+    public boolean renew() throws AuthenticationException {
         throw new IllegalStateException("Not yet implemented");
     }
 }
