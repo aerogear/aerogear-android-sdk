@@ -28,6 +28,7 @@ public class OkHttpServiceModule implements HttpServiceModule {
 
     /**
      * This constructer uses a specific client for manual configurations and testing.
+     * @param client a default OkHttpClient instance to use.
      */
     public OkHttpServiceModule(OkHttpClient client) {
         this.client = client;

@@ -5,7 +5,6 @@ import android.app.Application;
 import android.support.test.filters.SmallTest;
 
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,7 +32,7 @@ public class ServiceRegistryTest {
         registry.registerServiceModule("simpleService", StubServiceModule.class);
 
         MobileCore.Builder builder = new MobileCore.Builder(application);
-        builder.setRegistryService(registry);
+        builder.setServiceRegistry(registry);
         MobileCore core = builder.build();
         assertNotNull(core.getService("simpleService"));
 
@@ -45,7 +44,7 @@ public class ServiceRegistryTest {
         registry.registerServiceModule("crashService", StubServiceModule.class, "crashService");
 
         MobileCore.Builder builder = new MobileCore.Builder(application);
-        builder.setRegistryService(registry);
+        builder.setServiceRegistry(registry);
         try {
             MobileCore core = builder.build();
 
@@ -64,7 +63,7 @@ public class ServiceRegistryTest {
         registry.registerServiceModule("service2", StubServiceModule2.class, "service1");
 
         MobileCore.Builder builder = new MobileCore.Builder(application);
-        builder.setRegistryService(registry);
+        builder.setServiceRegistry(registry);
 
         MobileCore core = builder.build();
         assertNotNull(core.getService("service1"));
@@ -80,7 +79,7 @@ public class ServiceRegistryTest {
         registry.registerServiceModule("prometheus", StubServiceModule2.class);
 
         MobileCore.Builder builder = new MobileCore.Builder(application);
-        builder.setRegistryService(registry);
+        builder.setServiceRegistry(registry);
 
         MobileCore core = builder.build();
         assertNotNull(core.getService("prometheus"));

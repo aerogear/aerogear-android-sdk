@@ -6,21 +6,18 @@ import android.util.Log;
 
 import org.aerogear.mobile.core.configuration.MobileCoreJsonParser;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
-import org.aerogear.mobile.core.http.HttpServiceModule;
 import org.aerogear.mobile.core.http.OkHttpServiceModule;
 import org.aerogear.mobile.core.logging.Logger;
 import org.json.JSONException;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.AbstractSequentialList;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * MobileCore is the entry point into AeroGear mobile services that are managed by the mobile-core
@@ -96,7 +93,7 @@ public final class MobileCore {
      * @return a sorted list of services.
      * @throws BootstrapException if circular or undefined dependencies are detected.
      */
-    private List sortServicesIntoBootstrapOrder(List<String> declaredServices) {
+    private List<String> sortServicesIntoBootstrapOrder(List<String> declaredServices) {
         List<String> workingDeclaredServicesList = new ArrayList<>(declaredServices);
         List<String> sortedServices = new ArrayList<>(declaredServices.size());
 
@@ -181,7 +178,7 @@ public final class MobileCore {
         private final Context context;
         private boolean built = false;
         private String mobileServiceFileName = "mobile-services.json";
-        private ServiceModuleRegistry registryService;
+        private ServiceModuleRegistry serviceRegistry;
 
         public Builder(@NonNull Context context) {
             this.context = context;
@@ -228,12 +225,12 @@ public final class MobileCore {
             if (!built) {
                 built = true;
 
-                if (registryService == null) {
-                    registryService = ServiceModuleRegistry.getInstance();
+                if (serviceRegistry == null) {
+                    serviceRegistry = ServiceModuleRegistry.getInstance();
                 }
-                MobileCore core = new MobileCore(context, mobileServiceFileName, registryService);
+                MobileCore core = new MobileCore(context, mobileServiceFileName, serviceRegistry);
 
-                registryService.registerServiceModule("http", OkHttpServiceModule.class);
+                serviceRegistry.registerServiceModule("http", OkHttpServiceModule.class);
 
                 core.bootstrap();
                 return core;
@@ -242,13 +239,13 @@ public final class MobileCore {
             }
         }
 
-        public Builder setRegistryService(ServiceModuleRegistry registryService) {
-            this.registryService = registryService;
+        public Builder setServiceRegistry(ServiceModuleRegistry registryService) {
+            this.serviceRegistry = registryService;
             return this;
         }
 
-        public ServiceModuleRegistry getRegistryService() {
-            return registryService;
+        public ServiceModuleRegistry getServiceRegistry() {
+            return serviceRegistry;
         }
     }
 
