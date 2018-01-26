@@ -4,16 +4,18 @@ package org.aerogear.mobile.core;
 import android.app.Application;
 import android.support.test.filters.SmallTest;
 
-import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
+import static org.aerogear.mobile.core.Util.getDefaultRegistry;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import org.aerogear.mobile.core.Util.StubServiceModule;
+import org.aerogear.mobile.core.Util.StubServiceModule2;
 
 @RunWith(RobolectricTestRunner.class)
 @SmallTest
@@ -29,20 +31,20 @@ public class ServiceRegistryTest {
 
     @Test()
     public void testSimpleServiceInit() {
-        ServiceModuleRegistry registry = new ServiceModuleRegistry();
-        registry.registerServiceModule("simpleService", StubServiceModule.class);
+        ServiceModuleRegistry registry = getDefaultRegistry();
+        registry.registerServiceModule("keycloak", StubServiceModule.class);
 
         MobileCore.Builder builder = new MobileCore.Builder(application);
         builder.setServiceRegistry(registry);
         MobileCore core = builder.build();
-        assertNotNull(core.getService("simpleService"));
+        assertNotNull(core.getService("keycloak"));
 
     }
 
     @Test(expected = BootstrapException.class)
     public void testCircularDependenciesAreCaughtAndExceptionIsThrown() {
-        ServiceModuleRegistry registry = new ServiceModuleRegistry();
-        registry.registerServiceModule("crashService", StubServiceModule.class, "crashService");
+        ServiceModuleRegistry registry = getDefaultRegistry();
+        registry.registerServiceModule("prometheus", StubServiceModule.class, "crashService");
 
         MobileCore.Builder builder = new MobileCore.Builder(application);
         builder.setServiceRegistry(registry);
@@ -50,7 +52,7 @@ public class ServiceRegistryTest {
             MobileCore core = builder.build();
 
         } catch (BootstrapException ex) {
-            assertEquals("Unresolvable service detected crashService", ex.getMessage());
+            assertEquals("Unresolvable service detected prometheus", ex.getMessage());
             throw ex;
         }
 
@@ -59,23 +61,23 @@ public class ServiceRegistryTest {
 
     @Test
     public void testDependenciesAreResolvedInOrder() {
-        ServiceModuleRegistry registry = new ServiceModuleRegistry();
-        registry.registerServiceModule("service1", StubServiceModule.class);
-        registry.registerServiceModule("service2", StubServiceModule2.class, "service1");
+        ServiceModuleRegistry registry = getDefaultRegistry();
+        registry.registerServiceModule("prometheus", StubServiceModule.class);
+        registry.registerServiceModule("keycloak", StubServiceModule2.class, "prometheus");
 
         MobileCore.Builder builder = new MobileCore.Builder(application);
         builder.setServiceRegistry(registry);
 
         MobileCore core = builder.build();
-        assertNotNull(core.getService("service1"));
-        assertNotNull(core.getService("service2"));
-        assertNotNull(((StubServiceModule2)core.getService("service2")).service1);
+        assertNotNull(core.getService("prometheus"));
+        assertNotNull(core.getService("keycloak"));
+        assertNotNull(((StubServiceModule2)core.getService("keycloak")).service1);
 
     }
 
     @Test
     public void testConfigurationIsPassedFromParsedFile() {
-        ServiceModuleRegistry registry = new ServiceModuleRegistry();
+        ServiceModuleRegistry registry = getDefaultRegistry();
         registry.registerServiceModule("prometheus", StubServiceModule2.class);
 
         MobileCore.Builder builder = new MobileCore.Builder(application);
@@ -88,8 +90,8 @@ public class ServiceRegistryTest {
     }
 
     @Test
-    public void testFetchServiceInsatnce() {
-        ServiceModuleRegistry registry = new ServiceModuleRegistry();
+    public void testFetchServiceInstance() {
+        ServiceModuleRegistry registry = getDefaultRegistry();
         StubServiceModule2 promethusTestInstance = new StubServiceModule2();
         registry.registerServiceModule("prometheus", promethusTestInstance);
 
@@ -103,8 +105,8 @@ public class ServiceRegistryTest {
     }
 
     @Test
-    public void testServiceInsatnceIsPreferredOverClass() {
-        ServiceModuleRegistry registry = new ServiceModuleRegistry();
+    public void testServiceInstanceIsPreferredOverClass() {
+        ServiceModuleRegistry registry = getDefaultRegistry();
         StubServiceModule2 promethusTestInstance = new StubServiceModule2();
         registry.registerServiceModule("prometheus", StubServiceModule.class);
         registry.registerServiceModule("prometheus", promethusTestInstance);
@@ -118,25 +120,6 @@ public class ServiceRegistryTest {
 
     }
 
-    public  static class StubServiceModule implements ServiceModule {
-        public  StubServiceModule() {}
-        @Override
-        public void bootstrap(MobileCore core, ServiceConfiguration configuration) {
 
-        }
-    }
-
-    public  static class StubServiceModule2 implements ServiceModule {
-        public StubServiceModule service1;
-        public ServiceConfiguration config;
-
-        public  StubServiceModule2() {}
-        @Override
-        public void bootstrap(MobileCore core, ServiceConfiguration configuration) {
-
-            service1 = (StubServiceModule) core.getService("service1");
-            config = configuration;
-        }
-    }
 
 }
