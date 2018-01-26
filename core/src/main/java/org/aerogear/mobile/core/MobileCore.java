@@ -6,6 +6,7 @@ import android.util.Log;
 
 import org.aerogear.mobile.core.configuration.MobileCoreJsonParser;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
+import org.aerogear.mobile.core.http.HttpServiceModule;
 import org.aerogear.mobile.core.http.OkHttpServiceModule;
 import org.aerogear.mobile.core.logging.Logger;
 import org.json.JSONException;
@@ -22,7 +23,7 @@ import java.util.Set;
 /**
  * MobileCore is the entry point into AeroGear mobile services that are managed by the mobile-core
  * feature( TODO: Get correct noun )? in OpenShift.
- *
+ * <p>
  * Usage.java
  * ```
  * MobileCore core = new MobileCore.Builder(context, R.raw.mobile_core).build();
@@ -62,16 +63,20 @@ public final class MobileCore {
             List<String> declaredServices = new ArrayList<>();
 
             this.configurationMap = MobileCoreJsonParser.parse(configStream);
+            addCoreServices();
 
-            declaredServices.addAll(serviceRegistry.services().keySet());
+            declaredServices.addAll(configurationMap.keySet());
 
             declaredServices = sortServicesIntoBootstrapOrder(declaredServices);
 
-            for (String serviceName :declaredServices) {
+            for (String serviceName : declaredServices) {
                 ServiceModule serviceInstance = serviceRegistry.getServiceModule(serviceName);
 
                 if (serviceInstance == null) {
                     Class<? extends ServiceModule> serviceClass = serviceRegistry.getServiceClass(serviceName);
+                    if (serviceClass == null) {
+                        throw new BootstrapException(String.format("Service with name %s does not have a type in the ServiceRegistry.", serviceName));
+                    }
                     serviceInstance = serviceClass.newInstance();
                 }
 
@@ -91,7 +96,15 @@ public final class MobileCore {
     }
 
     /**
-     *
+     * There are some services that are "core" and usually won't appear in mobile-services.json
+     */
+    private void addCoreServices() {
+        if (this.configurationMap.get("http") == null) {
+            this.configurationMap.put("http", new ServiceConfiguration());
+        }
+    }
+
+    /**
      * This method sorts a list of servers into the order they will need to be initialized in.
      *
      * @param declaredServices a list of services to be sorted into the order they will be
@@ -113,8 +126,9 @@ public final class MobileCore {
     /**
      * Removes a service from the list that can be instanciated or has all of its dependencies in
      * sortedServices.
-     * @param workingList a mutable list to find the first element in that can be resolved given
-     *                    the values in sortedServices
+     *
+     * @param workingList    a mutable list to find the first element in that can be resolved given
+     *                       the values in sortedServices
      * @param sortedServices services which have had their dependencies check and are in initialization
      *                       order
      * @return the next service name
@@ -164,6 +178,7 @@ public final class MobileCore {
 
     /**
      * Returns the names of all configured services
+     *
      * @return a list of service names.
      */
     @NonNull
@@ -193,7 +208,7 @@ public final class MobileCore {
 
         /**
          * The filename of the mobile service configuration file in the assets directory.
-         *
+         * <p>
          * defaults to mobile-services.json
          *
          * @return the current value, never null.
@@ -205,7 +220,7 @@ public final class MobileCore {
 
         /**
          * The filename of the mobile service configuration file in the assets directory.
-         *
+         * <p>
          * defaults to mobile-services.json
          *
          * @param mobileServiceFileName a new filename.  May not be null.
