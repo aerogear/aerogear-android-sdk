@@ -27,11 +27,11 @@ public final class ServiceModuleRegistry {
      *
      * @param type the type of module to use
      * @param moduleClass the class that implements a service module type
-     * @param dependsOn the other serviceTypes this Service Depends on.
+     * @param dependencies the other serviceTypes this Service Depends on.
      */
-    public void registerServiceModule(String type, Class<? extends ServiceModule> moduleClass, String... dependsOn) {
+    public void registerServiceModule(String type, Class<? extends ServiceModule> moduleClass, String... dependencies) {
         serviceTypeMap.put(type, moduleClass);
-        for (String dependency : dependsOn) {
+        for (String dependency : dependencies) {
             if (dependencyMap.get(type) == null) {
                 dependencyMap.put(type, new ArrayList<>());
             }
@@ -39,8 +39,8 @@ public final class ServiceModuleRegistry {
         }
     }
 
-    public Set<? extends Map.Entry<String, Class<? extends ServiceModule>>> services() {
-        return serviceTypeMap.entrySet();
+    public Map<String, Class<? extends ServiceModule>> services() {
+        return Collections.unmodifiableMap(serviceTypeMap);
     }
 
     public List<String> getDependenciesFor(String serviceName) {

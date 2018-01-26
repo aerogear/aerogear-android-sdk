@@ -41,10 +41,10 @@ public final class MobileCore {
     private Map<String, ServiceConfiguration> configurationMap;
     private Map<String, ServiceModule> services = new HashMap<>();
 
-    private MobileCore(@NonNull Context context, @NonNull String mobileServiceFileName, @NonNull ServiceModuleRegistry registryService) {
+    private MobileCore(@NonNull Context context, @NonNull String mobileServiceFileName, @NonNull ServiceModuleRegistry serviceRegistry) {
         this.context = context.getApplicationContext();
         this.mobileServiceFileName = mobileServiceFileName;
-        this.serviceRegistry = registryService;
+        this.serviceRegistry = serviceRegistry;
     }
 
     public Logger defaultLog() {
@@ -53,58 +53,87 @@ public final class MobileCore {
         };
     }
 
-    public void bootstrap(Object... args) {
+    public void bootstrap() {
 
         try (InputStream configStream = context.getAssets().open(this.mobileServiceFileName);) {
 
-        Set<String> servicesInitted = new HashSet<>();
-        Set<String> servicesPending = new HashSet<>();
+            //Services which have been started
+            Set<String> servicesBootstrapped = new HashSet<>();
+            //Services named in the configuration file
+            List<String> declaredServices = new ArrayList<>();
 
             this.configurationMap = MobileCoreJsonParser.parse(configStream);
-            for (Map.Entry<String, Class<? extends ServiceModule>> serviceModuleEntry : serviceRegistry.services()) {
-                String serviceName = serviceModuleEntry.getKey();
-                servicesPending.add(serviceName);
-            }
+            declaredServices.addAll(serviceRegistry.services().keySet());
 
-            boolean unresolvableServiceDetected = false;//This is a bad name/initialization.  The
-                                                        // goal is to reset this at the beginning of
-                                                        //each iteration of the loop and clear it
-                                                        //when we instanciate a service.  If we have
-                                                        //a loop where we can't start a service
-                                                        //throw an exception.
-            while (!servicesPending.isEmpty()) {
-                unresolvableServiceDetected = true;
-                String serviceUnderInstanciation = "";
-                for (String serviceName : servicesPending) {
-                    List<String> dependencies = serviceRegistry.getDependenciesFor(serviceName);
-                    serviceUnderInstanciation = serviceName;
-                    if (dependencies.isEmpty() || servicesInitted.containsAll(dependencies)) {
-                        unresolvableServiceDetected = false;
-                        Class<? extends ServiceModule> serviceClass = serviceRegistry.getServiceClass(serviceName);
-                        ServiceModule serviceInstance = serviceClass.newInstance();
-                        serviceInstance.bootstrap(this, getConfig(serviceName));
-                        this.services.put(serviceName, serviceInstance);
-                        servicesInitted.add(serviceName);
-                        break;
-                    }
-                }
-                if (!unresolvableServiceDetected) {
-                    servicesPending.remove(serviceUnderInstanciation);
-                } else {
-                    throw new BootstrapException(String.format("Unresolvable service detected %s", serviceUnderInstanciation));
-                }
+            declaredServices = sortServicesIntoBootstrapOrder(declaredServices);
+
+            for (String serviceName :declaredServices) {
+
+                Class<? extends ServiceModule> serviceClass = serviceRegistry.getServiceClass(serviceName);
+                ServiceModule serviceInstance = serviceClass.newInstance();
+                serviceInstance.bootstrap(this, getConfig(serviceName));
+                this.services.put(serviceName, serviceInstance);
+                servicesBootstrapped.add(serviceName);
+
             }
 
         } catch (JSONException | IOException e) {
-            defaultLog().error(e.getMessage(), e);
             throw new BootstrapException(String.format("%s could not be loaded", mobileServiceFileName), e);
         } catch (IllegalAccessException | InstantiationException e) {
-            e.printStackTrace();
             throw new BootstrapException("Modules could not be started up", e);
         }
 
+    }
 
-        //startup known modules
+    /**
+     *
+     * This method sorts a list of servers into the order they will need to be initialized in.
+     *
+     * @param declaredServices a list of services to be sorted into the order they will be
+     *                         initialized in.
+     * @return a sorted list of services.
+     * @throws BootstrapException if circular or undefined dependencies are detected.
+     */
+    private List sortServicesIntoBootstrapOrder(List<String> declaredServices) {
+        List<String> workingDeclaredServicesList = new ArrayList<>(declaredServices);
+        List<String> sortedServices = new ArrayList<>(declaredServices.size());
+
+        while (!workingDeclaredServicesList.isEmpty()) {
+            sortedServices.add(popNextService(workingDeclaredServicesList, sortedServices));
+        }
+
+        return sortedServices;
+    }
+
+    /**
+     * Removes a service from the list that can be instanciated or has all of its dependencies in
+     * sortedServices.
+     * @param workingList a mutable list to find the first element in that can be resolved given
+     *                    the values in sortedServices
+     * @param sortedServices services which have had their dependencies check and are in initialization
+     *                       order
+     * @return the next service name
+     * @throws BootstrapException if circular or undefined dependencies are detected.
+     */
+    private String popNextService(List<String> workingList, List<String> sortedServices) {
+        boolean unresolvableServiceDetected = true;
+        String serviceUnderInstanciation = "";
+
+        for (String serviceName : workingList) {
+            List<String> dependencies = serviceRegistry.getDependenciesFor(serviceName);
+            serviceUnderInstanciation = serviceName;
+            if (dependencies.isEmpty() || sortedServices.containsAll(dependencies)) {
+                unresolvableServiceDetected = false;
+                break;
+            }
+        }
+        if (!unresolvableServiceDetected) {
+            workingList.remove(serviceUnderInstanciation);
+        } else {
+            throw new BootstrapException(String.format("Unresolvable service detected %s", serviceUnderInstanciation));
+        }
+
+        return serviceUnderInstanciation;
     }
 
     /**
