@@ -37,7 +37,30 @@ public class OIDCCredentials implements ICredential {
      * @return <code>true</code> if expired.
      */
     public boolean isExpired() {
-        throw new IllegalStateException("Not yet implemented");
+        return authState.hasClientSecretExpired();
+    }
+
+    /**
+     * Check whether new access token is needed.
+     * @return <code>true</code> if access token is needed
+     */
+    public boolean getNeedsRenewal() {
+        return authState.getNeedsTokenRefresh();
+    }
+
+    /**
+     * Force request of new access token.
+     */
+    public void setNeedsRenewal() {
+        authState.setNeedsTokenRefresh(true);
+    }
+
+    /**
+     * Check if the user is authenticated/authorized.
+     * @return <code>true</code> if the user is authenticated/authorized.
+     */
+    public boolean isAuthorized() {
+        return authState.isAuthorized();
     }
 
     /**
@@ -46,6 +69,14 @@ public class OIDCCredentials implements ICredential {
      */
     public String serialise() {
         return this.authState.jsonSerializeString();
+    }
+
+    /**
+     * Check whether the user is authorized and not expired.
+     * @return <code>true</code> if user is authorized and token is not expired.
+     */
+    public boolean checkValidAuth() {
+        return isAuthorized() && getNeedsRenewal();
     }
 
     /**
