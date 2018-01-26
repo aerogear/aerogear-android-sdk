@@ -44,7 +44,7 @@ public class UserPrincipalImpl extends AbstractPrincipal {
      * @param roles roles assigned to the user
      * @param authenticator the authenticator that authenticated this user
      */
-    private UserPrincipalImpl(final String username,
+    protected UserPrincipalImpl(final String username,
                               final ICredential credentials,
                               final String email,
                               final Map<String, IRole> roles,
@@ -60,13 +60,13 @@ public class UserPrincipalImpl extends AbstractPrincipal {
      * Builds and return a UserPrincipalImpl object
      */
     static class Builder {
-        private String username;
-        private String email;
-        private Map<String, IRole> roles = new HashMap<>();
-        private AbstractAuthenticator authenticator;
+        protected String username;
+        protected String email;
+        protected Map<String, IRole> roles = new HashMap<>();
+        protected AbstractAuthenticator authenticator;
         protected ICredential credentials;
 
-        private Builder() {
+        protected Builder() {
         }
 
         Builder withUsername(final String username) {
