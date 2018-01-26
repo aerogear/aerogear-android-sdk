@@ -13,6 +13,7 @@ import org.robolectric.RuntimeEnvironment;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricTestRunner.class)
 @SmallTest
@@ -72,7 +73,6 @@ public class ServiceRegistryTest {
 
     }
 
-
     @Test
     public void testConfigurationIsPassedFromParsedFile() {
         ServiceModuleRegistry registry = new ServiceModuleRegistry();
@@ -87,10 +87,41 @@ public class ServiceRegistryTest {
 
     }
 
+    @Test
+    public void testFetchServiceInsatnce() {
+        ServiceModuleRegistry registry = new ServiceModuleRegistry();
+        StubServiceModule2 promethusTestInstance = new StubServiceModule2();
+        registry.registerServiceModule("prometheus", promethusTestInstance);
+
+        MobileCore.Builder builder = new MobileCore.Builder(application);
+        builder.setServiceRegistry(registry);
+
+        MobileCore core = builder.build();
+        assertTrue(promethusTestInstance == core.getService("prometheus"));//Test it is the same instance
+        assertEquals("https://prometheus-myproject.192.168.37.1.nip.io", ((StubServiceModule2)core.getService("prometheus")).config.getUri());
+
+    }
+
+    @Test
+    public void testServiceInsatnceIsPreferredOverClass() {
+        ServiceModuleRegistry registry = new ServiceModuleRegistry();
+        StubServiceModule2 promethusTestInstance = new StubServiceModule2();
+        registry.registerServiceModule("prometheus", StubServiceModule.class);
+        registry.registerServiceModule("prometheus", promethusTestInstance);
+
+        MobileCore.Builder builder = new MobileCore.Builder(application);
+        builder.setServiceRegistry(registry);
+
+        MobileCore core = builder.build();
+        assertTrue( core.getService("prometheus") instanceof StubServiceModule2);//Test it is the same instance
+
+
+    }
+
     public  static class StubServiceModule implements ServiceModule {
         public  StubServiceModule() {}
         @Override
-        public void bootstrap(MobileCore core, ServiceConfiguration configuration, Object... args) {
+        public void bootstrap(MobileCore core, ServiceConfiguration configuration) {
 
         }
     }
@@ -101,7 +132,7 @@ public class ServiceRegistryTest {
 
         public  StubServiceModule2() {}
         @Override
-        public void bootstrap(MobileCore core, ServiceConfiguration configuration, Object... args) {
+        public void bootstrap(MobileCore core, ServiceConfiguration configuration) {
 
             service1 = (StubServiceModule) core.getService("service1");
             config = configuration;

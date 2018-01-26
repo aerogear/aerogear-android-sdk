@@ -62,15 +62,21 @@ public final class MobileCore {
             List<String> declaredServices = new ArrayList<>();
 
             this.configurationMap = MobileCoreJsonParser.parse(configStream);
+
             declaredServices.addAll(serviceRegistry.services().keySet());
 
             declaredServices = sortServicesIntoBootstrapOrder(declaredServices);
 
             for (String serviceName :declaredServices) {
+                ServiceModule serviceInstance = serviceRegistry.getServiceModule(serviceName);
 
-                Class<? extends ServiceModule> serviceClass = serviceRegistry.getServiceClass(serviceName);
-                ServiceModule serviceInstance = serviceClass.newInstance();
+                if (serviceInstance == null) {
+                    Class<? extends ServiceModule> serviceClass = serviceRegistry.getServiceClass(serviceName);
+                    serviceInstance = serviceClass.newInstance();
+                }
+
                 serviceInstance.bootstrap(this, getConfig(serviceName));
+
                 this.services.put(serviceName, serviceInstance);
                 servicesBootstrapped.add(serviceName);
 
@@ -137,6 +143,7 @@ public final class MobileCore {
 
     /**
      * Returns the parsed configuration object of the named configuration, or an empty ServiceConfiguration
+     *
      * @param configurationName the name of the configuration to lookup
      * @return the parsed configuration object of the named configuration, or an empty ServiceConfiguration
      */
@@ -151,8 +158,8 @@ public final class MobileCore {
     }
 
     @NonNull
-    public ServiceModule getService(String simpleService) {
-        return services.get(simpleService);
+    public ServiceModule getService(String serviceName) {
+        return services.get(serviceName);
     }
 
     /**

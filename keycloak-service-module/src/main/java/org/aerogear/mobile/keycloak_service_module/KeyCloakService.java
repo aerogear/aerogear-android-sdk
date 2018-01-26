@@ -39,7 +39,7 @@ public class KeyCloakService implements ServiceModule {
 
 
     @Override
-    public void bootstrap(MobileCore core, ServiceConfiguration config, Object... args) {
+    public void bootstrap(MobileCore core, ServiceConfiguration config) {
         this.serverUrl = config.getProperty("auth-server-url");
         this.clientId = config.getProperty("clientId");
         this.audience = config.getProperty("audience");

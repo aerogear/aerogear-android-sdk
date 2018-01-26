@@ -3,12 +3,10 @@ package org.aerogear.mobile.core;
 import android.support.annotation.VisibleForTesting;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Registry of service modules.  It is responsible for maintaining a mapping of service modules to
@@ -18,15 +16,16 @@ public final class ServiceModuleRegistry {
     private static ServiceModuleRegistry sInstance;
     private final Map<String, Class<? extends ServiceModule>> serviceTypeMap = new HashMap<>();
     private final Map<String, List<String>> dependencyMap = new HashMap<>();
+    private final Map<String, ServiceModule> serviceModuleMap = new HashMap<>();
 
 
     @VisibleForTesting()
     public ServiceModuleRegistry() {}
 
     /**
-     * Register the looking for a service module to a class.
+     * Register a class which is to be instanciated to act as a local API for remote services of a given type.
      *
-     * @param type the type of module to use
+     * @param type the type of module to use as defined by the "type" parameter in mobile-services.json
      * @param moduleClass the class that implements a service module type
      * @param dependencies the other serviceTypes this Service Depends on.
      */
@@ -37,6 +36,23 @@ public final class ServiceModuleRegistry {
                 dependencyMap.put(type, new ArrayList<>());
             }
             dependencyMap.get(type).add(dependency);
+        }
+    }
+
+    /**
+     * Register an instance of a ServiceModule to be registered as a local API for specifically named service.
+     *
+     * @param name the name of module to use as defined by the "name" parameter in mobile-services.json
+     * @param moduleInstance the instance of the service module
+     * @param dependencies the other serviceTypes this Service Depends on.
+     */
+    public void registerServiceModule(String name, ServiceModule moduleInstance, String... dependencies) {
+        serviceModuleMap.put(name, moduleInstance);
+        for (String dependency : dependencies) {
+            if (dependencyMap.get(name) == null) {
+                dependencyMap.put(name, new ArrayList<>());
+            }
+            dependencyMap.get(name).add(dependency);
         }
     }
 
@@ -61,5 +77,9 @@ public final class ServiceModuleRegistry {
             sInstance = new ServiceModuleRegistry();
         }
         return sInstance;
+    }
+
+    public ServiceModule getServiceModule(String serviceName) {
+        return serviceModuleMap.get(serviceName);
     }
 }
