@@ -23,15 +23,15 @@ public final class AppExecutors {
         }
     };
 
-    private AppExecutors() {
+    public AppExecutors() {
     }
 
 
-    public static Executor mainThread() {
+    public Executor mainThread() {
         return mainThreadExecutor;
     }
 
-    public static Executor networkThread() {
+    public Executor networkThread() {
         return networkExecutor;
     }
 

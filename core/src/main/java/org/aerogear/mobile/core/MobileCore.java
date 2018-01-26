@@ -6,6 +6,8 @@ import android.util.Log;
 
 import org.aerogear.mobile.core.configuration.MobileCoreJsonParser;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
+import org.aerogear.mobile.core.http.HttpServiceModule;
+import org.aerogear.mobile.core.http.OkHttpServiceModule;
 import org.aerogear.mobile.core.logging.Logger;
 import org.json.JSONException;
 
@@ -227,9 +229,12 @@ public final class MobileCore {
                 built = true;
 
                 if (registryService == null) {
-                    registryService = new ServiceModuleRegistry();//TODO: Make this getInstance or something
+                    registryService = ServiceModuleRegistry.getInstance();
                 }
                 MobileCore core = new MobileCore(context, mobileServiceFileName, registryService);
+
+                registryService.registerServiceModule("http", OkHttpServiceModule.class);
+
                 core.bootstrap();
                 return core;
             } else {
