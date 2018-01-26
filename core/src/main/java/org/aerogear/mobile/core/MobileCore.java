@@ -2,7 +2,6 @@ package org.aerogear.mobile.core;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.JsonReader;
 import android.util.Log;
 
 import org.aerogear.mobile.core.configuration.MobileCoreJsonParser;
@@ -12,13 +11,19 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.util.AbstractSequentialList;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * MobileCore is the entry point into AeroGear mobile services that are managed by the mobile-core
- * ¿feature( TODO: Get correct noun )? in OpenShift.
- * <p>
+ * feature( TODO: Get correct noun )? in OpenShift.
+ *
  * Usage.java
  * ```
  * MobileCore core = new MobileCore.Builder(context, R.raw.mobile_core).build();
@@ -26,17 +31,20 @@ import java.util.Map;
  * core.feature(MyRestService.class).upload(myData);// Would upload myData and be secured by KeyCloak
  * ```
  */
-public final class MobileCore implements ServiceModule {
+public final class MobileCore {
 
 
     private final Context context;
     private final String mobileServiceFileName;
+    private final ServiceModuleRegistry serviceRegistry;
 
     private Map<String, ServiceConfiguration> configurationMap;
+    private Map<String, ServiceModule> services = new HashMap<>();
 
-    private MobileCore(@NonNull Context context, String mobileServiceFileName) {
+    private MobileCore(@NonNull Context context, @NonNull String mobileServiceFileName, @NonNull ServiceModuleRegistry serviceRegistry) {
         this.context = context.getApplicationContext();
         this.mobileServiceFileName = mobileServiceFileName;
+        this.serviceRegistry = serviceRegistry;
     }
 
     public Logger defaultLog() {
@@ -45,23 +53,116 @@ public final class MobileCore implements ServiceModule {
         };
     }
 
-    @Override
-    public void bootstrap(Object... args) {
-
+    public void bootstrap() {
 
         try (InputStream configStream = context.getAssets().open(this.mobileServiceFileName);) {
+
+            //Services which have been started
+            Set<String> servicesBootstrapped = new HashSet<>();
+            //Services named in the configuration file
+            List<String> declaredServices = new ArrayList<>();
+
             this.configurationMap = MobileCoreJsonParser.parse(configStream);
+            declaredServices.addAll(serviceRegistry.services().keySet());
+
+            declaredServices = sortServicesIntoBootstrapOrder(declaredServices);
+
+            for (String serviceName :declaredServices) {
+
+                Class<? extends ServiceModule> serviceClass = serviceRegistry.getServiceClass(serviceName);
+                ServiceModule serviceInstance = serviceClass.newInstance();
+                serviceInstance.bootstrap(this, getConfig(serviceName));
+                this.services.put(serviceName, serviceInstance);
+                servicesBootstrapped.add(serviceName);
+
+            }
+
         } catch (JSONException | IOException e) {
-            defaultLog().error(e.getMessage(), e);
             throw new BootstrapException(String.format("%s could not be loaded", mobileServiceFileName), e);
+        } catch (IllegalAccessException | InstantiationException e) {
+            throw new BootstrapException("Modules could not be started up", e);
         }
 
-
-        //startup known modules
     }
 
+    /**
+     *
+     * This method sorts a list of servers into the order they will need to be initialized in.
+     *
+     * @param declaredServices a list of services to be sorted into the order they will be
+     *                         initialized in.
+     * @return a sorted list of services.
+     * @throws BootstrapException if circular or undefined dependencies are detected.
+     */
+    private List sortServicesIntoBootstrapOrder(List<String> declaredServices) {
+        List<String> workingDeclaredServicesList = new ArrayList<>(declaredServices);
+        List<String> sortedServices = new ArrayList<>(declaredServices.size());
+
+        while (!workingDeclaredServicesList.isEmpty()) {
+            sortedServices.add(popNextService(workingDeclaredServicesList, sortedServices));
+        }
+
+        return sortedServices;
+    }
+
+    /**
+     * Removes a service from the list that can be instanciated or has all of its dependencies in
+     * sortedServices.
+     * @param workingList a mutable list to find the first element in that can be resolved given
+     *                    the values in sortedServices
+     * @param sortedServices services which have had their dependencies check and are in initialization
+     *                       order
+     * @return the next service name
+     * @throws BootstrapException if circular or undefined dependencies are detected.
+     */
+    private String popNextService(List<String> workingList, List<String> sortedServices) {
+        boolean unresolvableServiceDetected = true;
+        String serviceUnderInstanciation = "";
+
+        for (String serviceName : workingList) {
+            List<String> dependencies = serviceRegistry.getDependenciesFor(serviceName);
+            serviceUnderInstanciation = serviceName;
+            if (dependencies.isEmpty() || sortedServices.containsAll(dependencies)) {
+                unresolvableServiceDetected = false;
+                break;
+            }
+        }
+        if (!unresolvableServiceDetected) {
+            workingList.remove(serviceUnderInstanciation);
+        } else {
+            throw new BootstrapException(String.format("Unresolvable service detected %s", serviceUnderInstanciation));
+        }
+
+        return serviceUnderInstanciation;
+    }
+
+    /**
+     * Returns the parsed configuration object of the named configuration, or an empty ServiceConfiguration
+     * @param configurationName the name of the configuration to lookup
+     * @return the parsed configuration object of the named configuration, or an empty ServiceConfiguration
+     */
     public ServiceConfiguration getConfig(String configurationName) {
-        return configurationMap.get(configurationName);
+        ServiceConfiguration config = configurationMap.get(configurationName);
+        if (config == null) {
+            config = new ServiceConfiguration();
+            config.setName(configurationName);
+            configurationMap.put(configurationName, config);
+        }
+        return config;
+    }
+
+    @NonNull
+    public ServiceModule getService(String simpleService) {
+        return services.get(simpleService);
+    }
+
+    /**
+     * Returns the names of all configured services
+     * @return a list of service names.
+     */
+    @NonNull
+    public List<String> getServiceNames() {
+        return new ArrayList<>(services.keySet());
     }
 
     /**
@@ -78,11 +179,11 @@ public final class MobileCore implements ServiceModule {
         private final Context context;
         private boolean built = false;
         private String mobileServiceFileName = "mobile-services.json";
+        private ServiceModuleRegistry registryService;
 
         public Builder(@NonNull Context context) {
             this.context = context;
         }
-
 
         /**
          * The filename of the mobile service configuration file in the assets directory.
@@ -124,12 +225,25 @@ public final class MobileCore implements ServiceModule {
         public MobileCore build() {
             if (!built) {
                 built = true;
-                MobileCore core = new MobileCore(context, mobileServiceFileName);
+
+                if (registryService == null) {
+                    registryService = new ServiceModuleRegistry();//TODO: Make this getInstance or something
+                }
+                MobileCore core = new MobileCore(context, mobileServiceFileName, registryService);
                 core.bootstrap();
                 return core;
             } else {
                 throw new IllegalStateException("MobileCore has already been built");
             }
+        }
+
+        public Builder setRegistryService(ServiceModuleRegistry registryService) {
+            this.registryService = registryService;
+            return this;
+        }
+
+        public ServiceModuleRegistry getRegistryService() {
+            return registryService;
         }
     }
 

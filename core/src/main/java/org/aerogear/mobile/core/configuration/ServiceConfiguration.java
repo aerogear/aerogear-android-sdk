@@ -58,4 +58,5 @@ public class ServiceConfiguration {
     public Map<String, String> getHeaders() {
         return Collections.unmodifiableMap(headers);
     }
+
 }
