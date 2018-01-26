@@ -18,9 +18,13 @@ public class OkHttpServiceModule implements HttpServiceModule {
     private HttpServiceConfiguration httpServiceConfiguration;
 
     /**
-     * This is the default no argument constructor for all ServiceModules
+     * This is the default no argument constructor for all ServiceModules.
      */
-    public OkHttpServiceModule() {}
+    public OkHttpServiceModule() {
+        this.httpServiceConfiguration = new HttpServiceConfiguration();
+        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
+        this.client = clientBuilder.build();
+    }
 
     /**
      * This constructer uses a specific client for manual configurations and testing.

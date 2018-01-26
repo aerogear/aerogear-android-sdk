@@ -16,6 +16,10 @@ public class HttpServiceConfiguration extends ServiceConfiguration {
         this.configuration = configuration;
     }
 
+    public HttpServiceConfiguration() {
+        this.configuration = new ServiceConfiguration();
+    }
+
     @Override
     public void setName(String name) {
         configuration.setName(name);

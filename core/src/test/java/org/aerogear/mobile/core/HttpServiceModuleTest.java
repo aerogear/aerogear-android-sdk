@@ -35,6 +35,7 @@ public class HttpServiceModuleTest {
                         "     \"title\": \"Test Title\"\n" +
                         " }    \n" +
                         "}",response.stringBody());
+
             }
         });
         response.waitForCompletionAndClose();
