@@ -33,12 +33,18 @@ android {
     }
 
 
+
     testOptions {
         unitTests {
             includeAndroidResources = true
         }
     }
 }
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs = ["-Xlint:unchecked"]
+}
+
 
 dependencies {
     implementation 'com.android.support:appcompat-v7:27.0.2'

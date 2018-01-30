@@ -1,0 +1,12 @@
+{
+  "services": [
+    {
+      "config": {
+        "headers": {},
+        "uri": "https://fh-sync-server-myproject.192.168.37.1.nip.io"
+      },
+      "name": "fh-sync-server"
+    }
+  ],
+  "namespace": "myproject"
+}

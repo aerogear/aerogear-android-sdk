@@ -28,13 +28,14 @@ public class OkHttpServiceModule implements HttpServiceModule {
 
     /**
      * This constructer uses a specific client for manual configurations and testing.
+     * @param client a default OkHttpClient instance to use.
      */
     public OkHttpServiceModule(OkHttpClient client) {
         this.client = client;
     }
 
     @Override
-    public void bootstrap(MobileCore core, ServiceConfiguration configuration, Object... args) {
+    public void bootstrap(MobileCore core, ServiceConfiguration configuration) {
         this.httpServiceConfiguration = new HttpServiceConfiguration(configuration);
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
 

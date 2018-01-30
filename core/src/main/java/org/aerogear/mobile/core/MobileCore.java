@@ -13,19 +13,17 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.AbstractSequentialList;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * MobileCore is the entry point into AeroGear mobile services that are managed by the mobile-core
  * feature( TODO: Get correct noun )? in OpenShift.
- *
+ * <p>
  * Usage.java
  * ```
  * MobileCore core = new MobileCore.Builder(context, R.raw.mobile_core).build();
@@ -65,15 +63,25 @@ public final class MobileCore {
             List<String> declaredServices = new ArrayList<>();
 
             this.configurationMap = MobileCoreJsonParser.parse(configStream);
-            declaredServices.addAll(serviceRegistry.services().keySet());
+            addCoreServices();
+
+            declaredServices.addAll(configurationMap.keySet());
 
             declaredServices = sortServicesIntoBootstrapOrder(declaredServices);
 
-            for (String serviceName :declaredServices) {
+            for (String serviceName : declaredServices) {
+                ServiceModule serviceInstance = serviceRegistry.getServiceModule(serviceName);
 
-                Class<? extends ServiceModule> serviceClass = serviceRegistry.getServiceClass(serviceName);
-                ServiceModule serviceInstance = serviceClass.newInstance();
+                if (serviceInstance == null) {
+                    Class<? extends ServiceModule> serviceClass = serviceRegistry.getServiceClass(serviceName);
+                    if (serviceClass == null) {
+                        throw new BootstrapException(String.format("Service with name %s does not have a type in the ServiceRegistry.", serviceName));
+                    }
+                    serviceInstance = serviceClass.newInstance();
+                }
+
                 serviceInstance.bootstrap(this, getConfig(serviceName));
+
                 this.services.put(serviceName, serviceInstance);
                 servicesBootstrapped.add(serviceName);
 
@@ -88,7 +96,15 @@ public final class MobileCore {
     }
 
     /**
-     *
+     * There are some services that are "core" and usually won't appear in mobile-services.json
+     */
+    private void addCoreServices() {
+        if (this.configurationMap.get("http") == null) {
+            this.configurationMap.put("http", new ServiceConfiguration());
+        }
+    }
+
+    /**
      * This method sorts a list of servers into the order they will need to be initialized in.
      *
      * @param declaredServices a list of services to be sorted into the order they will be
@@ -96,7 +112,7 @@ public final class MobileCore {
      * @return a sorted list of services.
      * @throws BootstrapException if circular or undefined dependencies are detected.
      */
-    private List sortServicesIntoBootstrapOrder(List<String> declaredServices) {
+    private List<String> sortServicesIntoBootstrapOrder(List<String> declaredServices) {
         List<String> workingDeclaredServicesList = new ArrayList<>(declaredServices);
         List<String> sortedServices = new ArrayList<>(declaredServices.size());
 
@@ -110,8 +126,9 @@ public final class MobileCore {
     /**
      * Removes a service from the list that can be instanciated or has all of its dependencies in
      * sortedServices.
-     * @param workingList a mutable list to find the first element in that can be resolved given
-     *                    the values in sortedServices
+     *
+     * @param workingList    a mutable list to find the first element in that can be resolved given
+     *                       the values in sortedServices
      * @param sortedServices services which have had their dependencies check and are in initialization
      *                       order
      * @return the next service name
@@ -140,6 +157,7 @@ public final class MobileCore {
 
     /**
      * Returns the parsed configuration object of the named configuration, or an empty ServiceConfiguration
+     *
      * @param configurationName the name of the configuration to lookup
      * @return the parsed configuration object of the named configuration, or an empty ServiceConfiguration
      */
@@ -154,12 +172,13 @@ public final class MobileCore {
     }
 
     @NonNull
-    public ServiceModule getService(String simpleService) {
-        return services.get(simpleService);
+    public ServiceModule getService(String serviceName) {
+        return services.get(serviceName);
     }
 
     /**
      * Returns the names of all configured services
+     *
      * @return a list of service names.
      */
     @NonNull
@@ -181,7 +200,7 @@ public final class MobileCore {
         private final Context context;
         private boolean built = false;
         private String mobileServiceFileName = "mobile-services.json";
-        private ServiceModuleRegistry registryService;
+        private ServiceModuleRegistry serviceRegistry;
 
         public Builder(@NonNull Context context) {
             this.context = context;
@@ -189,7 +208,7 @@ public final class MobileCore {
 
         /**
          * The filename of the mobile service configuration file in the assets directory.
-         *
+         * <p>
          * defaults to mobile-services.json
          *
          * @return the current value, never null.
@@ -201,7 +220,7 @@ public final class MobileCore {
 
         /**
          * The filename of the mobile service configuration file in the assets directory.
-         *
+         * <p>
          * defaults to mobile-services.json
          *
          * @param mobileServiceFileName a new filename.  May not be null.
@@ -228,12 +247,12 @@ public final class MobileCore {
             if (!built) {
                 built = true;
 
-                if (registryService == null) {
-                    registryService = ServiceModuleRegistry.getInstance();
+                if (serviceRegistry == null) {
+                    serviceRegistry = ServiceModuleRegistry.getInstance();
                 }
-                MobileCore core = new MobileCore(context, mobileServiceFileName, registryService);
+                MobileCore core = new MobileCore(context, mobileServiceFileName, serviceRegistry);
 
-                registryService.registerServiceModule("http", OkHttpServiceModule.class);
+                serviceRegistry.registerServiceModule("http", OkHttpServiceModule.class);
 
                 core.bootstrap();
                 return core;
@@ -242,13 +261,13 @@ public final class MobileCore {
             }
         }
 
-        public Builder setRegistryService(ServiceModuleRegistry registryService) {
-            this.registryService = registryService;
+        public Builder setServiceRegistry(ServiceModuleRegistry registryService) {
+            this.serviceRegistry = registryService;
             return this;
         }
 
-        public ServiceModuleRegistry getRegistryService() {
-            return registryService;
+        public ServiceModuleRegistry getServiceRegistry() {
+            return serviceRegistry;
         }
     }
 

@@ -38,9 +38,8 @@ public class KeyCloakService implements ServiceModule {
     }
 
 
-
     @Override
-    public void bootstrap(MobileCore core, ServiceConfiguration config, Object... args) {
+    public void bootstrap(MobileCore core, ServiceConfiguration config) {
         this.serverUrl = config.getProperty("auth-server-url");
         this.clientId = config.getProperty("clientId");
         this.audience = config.getProperty("audience");
@@ -58,6 +57,7 @@ public class KeyCloakService implements ServiceModule {
      * Exchanges the google id token and configures the KeyCloakService to serve requests
      *
      * @param googleIdToken a Google ID token
+     * @return a {@link HttpResponse}
      */
     public HttpResponse exchangeToken(String googleIdToken) {
         HttpRequest request = httpModule.newRequest();
