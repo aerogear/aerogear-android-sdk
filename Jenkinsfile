@@ -13,9 +13,13 @@ podTemplate(
     stage("Checkout") {
       checkout scm
     }
-    
+
+    stage ("Lint") {
+      sh "./gradlew lint"
+    }
+
     stage ("Build") {
-      sh " ./gradlew testDebug"
+      sh "./gradlew testDebug"
     }
   }
 }
