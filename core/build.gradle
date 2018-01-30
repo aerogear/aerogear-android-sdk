@@ -1,9 +1,9 @@
-apply plugin: 'com.android.library'
+apply plugin: "com.android.library"
 
 android {
     compileSdkVersion project.ext.targetSdkVersion
 
-   defaultConfig {
+    defaultConfig {
         minSdkVersion project.ext.minSdkVersion
         targetSdkVersion project.ext.targetSdkVersion
 
@@ -13,17 +13,10 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
-    sourceSets {
-        test {
-            assets.srcDirs = ["src/test/assets"]
-        }
-    }
-
-
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
 
@@ -32,6 +25,11 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    sourceSets {
+        test {
+            assets.srcDirs = ["src/test/assets"]
+        }
+    }
 
 
     testOptions {
@@ -47,14 +45,15 @@ tasks.withType(JavaCompile) {
 
 
 dependencies {
-    implementation 'com.android.support:appcompat-v7:27.0.2'
-    implementation 'com.squareup.okhttp3:okhttp:3.9.1'
-    testImplementation 'junit:junit:4.12'
-    testImplementation "org.robolectric:robolectric:3.6.1"
+    implementation "com.android.support:appcompat-v7"
+    implementation "com.squareup.okhttp3:okhttp"
 
-    testImplementation 'com.android.support.test:runner:1.0.1'
-    testImplementation 'com.android.support.test:rules:1.0.1'
-    testImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    testImplementation "junit:junit"
+    testImplementation "com.android.support.test:runner"
+    testImplementation "com.android.support.test:rules"
+    testImplementation "com.android.support.test.espresso:espresso-core"
+    testImplementation "org.robolectric:robolectric"
 }
-apply from: '../gradle-mvn-push.gradle'
+
+apply from: "../gradle-mvn-push.gradle"
 
