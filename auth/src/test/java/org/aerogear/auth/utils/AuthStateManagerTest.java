@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import org.aerogear.auth.credentials.OIDCCredentials;
+import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -46,7 +47,7 @@ public class AuthStateManagerTest {
     }
 
     @Test
-    public void testWrite_Null() {
+    public void testWrite_Null() throws JSONException {
         when(mockSharedPreferencesEditor.remove(anyString())).thenReturn(mockSharedPreferencesEditor);
         when(mockSharedPreferencesEditor.commit()).thenReturn(true);
 
@@ -57,8 +58,8 @@ public class AuthStateManagerTest {
     }
 
     @Test
-    public void testWrite_ProvideState() {
-        when(mockOIDCCredentials.serialise()).thenReturn("TEST");
+    public void testWrite_ProvideState() throws JSONException {
+        when(mockOIDCCredentials.serialize()).thenReturn("TEST");
         when(mockSharedPreferencesEditor.putString(anyString(), anyString())).thenReturn(mockSharedPreferencesEditor);
         when(mockSharedPreferencesEditor.commit()).thenReturn(true);
 

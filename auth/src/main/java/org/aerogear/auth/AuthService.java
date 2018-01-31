@@ -3,6 +3,9 @@ package org.aerogear.auth;
 import org.aerogear.auth.credentials.ICredential;
 import org.aerogear.auth.impl.OIDCAuthCodeImpl;
 import org.aerogear.auth.impl.OIDCTokenAuthenticatorImpl;
+import org.aerogear.mobile.core.MobileCore;
+import org.aerogear.mobile.core.ServiceModule;
+import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 
 import java.security.Principal;
 import java.util.concurrent.Future;
@@ -10,7 +13,7 @@ import java.util.concurrent.Future;
 /**
  * Entry point for authenticating users.
  */
-public class AuthService {
+public class AuthService implements ServiceModule {
 
     /**
      * Authentication service singleton.
@@ -21,14 +24,15 @@ public class AuthService {
 
     /**
      * Instantiates a new AuthService object
-     * @param config Authentication Service configuration
      */
-    private AuthService(final AuthServiceConfig config) {
+    public AuthService() {}
+
+    public void bootstrap(MobileCore core, ServiceConfiguration serviceConfig) {
         this.authenticatorChain = AuthenticationChain
-                .newChain()
-                .with(new OIDCTokenAuthenticatorImpl(config))
-                .with(new OIDCAuthCodeImpl(config))
-                .build();
+            .newChain()
+            .with(new OIDCTokenAuthenticatorImpl(serviceConfig))
+            .with(new OIDCAuthCodeImpl(serviceConfig))
+            .build();
     }
 
     private void configureDefaultAuthenticationChain(final AuthenticationChain authenticationChain) {
@@ -75,7 +79,7 @@ public class AuthService {
     public static synchronized AuthService getInstance() {
         if (INSTANCE == null) {
             // FIXME: load the configurations from core and pass it here
-            INSTANCE = new AuthService(null);
+            INSTANCE = new AuthService();
         }
 
         return INSTANCE;

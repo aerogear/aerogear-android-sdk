@@ -4,6 +4,7 @@ import net.openid.appauth.AuthState;
 
 import org.aerogear.auth.AuthenticationException;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Credentials for OIDC based authentication
@@ -11,13 +12,16 @@ import org.json.JSONException;
 public class OIDCCredentials implements ICredential {
 
     private final AuthState authState;
+    private final IIntegrityCheckParameters integrityCheckParameters;
+
+    public OIDCCredentials(final String serialisedCredential, final IIntegrityCheckParameters integrityCheckParameters) throws JSONException {
+        this.authState = AuthState.jsonDeserialize(serialisedCredential);
+        this.integrityCheckParameters = integrityCheckParameters;
+    }
 
     public OIDCCredentials() {
         this.authState = new AuthState();
-    }
-
-    public OIDCCredentials(final String serialisedCredential) throws JSONException {
-        this.authState = AuthState.jsonDeserialize(serialisedCredential);
+        this.integrityCheckParameters = new IntegrityCheckParameters(null, null);
     }
 
     public String getAccessToken() {
@@ -31,6 +35,8 @@ public class OIDCCredentials implements ICredential {
     public String getRefreshToken() {
         return authState.getRefreshToken();
     }
+
+    public IIntegrityCheckParameters getIntegrityCheckParameters() { return this.integrityCheckParameters; }
 
     /**
      * Returns whether this token is expired or not.
@@ -67,8 +73,19 @@ public class OIDCCredentials implements ICredential {
      * Returns stringified JSON for the OIDCCredential.
      * @return Stringified JSON OIDCCredential
      */
-    public String serialise() {
-        return this.authState.jsonSerializeString();
+    public String serialize() throws JSONException {
+        return new JSONObject()
+            .put("authState", this.authState.jsonSerializeString())
+            .put("integrityCheck", this.integrityCheckParameters.serialize())
+            .toString();
+    }
+
+    public static OIDCCredentials deserialize(String serializedCredential) throws JSONException {
+        JSONObject jsonCredential = new JSONObject(serializedCredential);
+        String serializedAuthState = jsonCredential.getString("authState");
+        String serializedIntegrityChecks = jsonCredential.getString("integrityCheck");
+        IntegrityCheckParameters icParams = IntegrityCheckParameters.deserialize(serializedIntegrityChecks);
+        return new OIDCCredentials(serializedAuthState, icParams);
     }
 
     /**

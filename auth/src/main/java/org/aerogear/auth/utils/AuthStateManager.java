@@ -29,7 +29,7 @@ public class AuthStateManager {
             return new OIDCCredentials();
         }
         try {
-            return new OIDCCredentials(currentState);
+            return OIDCCredentials.deserialize(currentState);
         } catch (JSONException ex) {
             return new OIDCCredentials();
         }
@@ -39,11 +39,11 @@ public class AuthStateManager {
      * Saves a token
      * @param authState token to be saved
      */
-    public synchronized void write(final OIDCCredentials authState) {
+    public synchronized void write(final OIDCCredentials authState) throws JSONException {
         if (authState == null) {
             clear();
         } else {
-            if(!prefs.edit().putString(KEY_STATE, authState.serialise()).commit()) {
+            if(!prefs.edit().putString(KEY_STATE, authState.serialize()).commit()) {
                 throw new IllegalStateException("Failed to update state from shared preferences");
             }
         }

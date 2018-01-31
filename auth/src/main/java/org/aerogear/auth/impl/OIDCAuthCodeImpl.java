@@ -1,7 +1,7 @@
 package org.aerogear.auth.impl;
 
-import org.aerogear.auth.AuthServiceConfig;
 import org.aerogear.auth.credentials.ICredential;
+import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 
 import java.security.Principal;
 
@@ -10,8 +10,8 @@ import java.security.Principal;
  */
 public class OIDCAuthCodeImpl extends OIDCTokenAuthenticatorImpl {
 
-    public OIDCAuthCodeImpl(final AuthServiceConfig config) {
-        super(config);
+    public OIDCAuthCodeImpl(final ServiceConfiguration serviceConfig) {
+        super(serviceConfig);
     }
 
     /**

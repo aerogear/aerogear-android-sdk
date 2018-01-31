@@ -1,6 +1,7 @@
 package org.aerogear.auth;
 
 import org.aerogear.auth.credentials.ICredential;
+import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 
 import java.security.Principal;
 
@@ -12,10 +13,11 @@ public class AbstractAuthenticator {
     /**
      * Authentication service configuration.
      */
-    private final AuthServiceConfig config;
+    private final ServiceConfiguration serviceConfig;
 
-    public AbstractAuthenticator(final AuthServiceConfig config) {
-        this.config = config;
+
+    public AbstractAuthenticator(ServiceConfiguration serviceConfig) {
+        this.serviceConfig = serviceConfig;
     }
 
     /**
@@ -40,7 +42,5 @@ public class AbstractAuthenticator {
      * Returns the authentication service configuration
      * @return the authentication service configuration
      */
-    protected AuthServiceConfig getConfig() {
-        return config;
-    }
+    public ServiceConfiguration getServiceConfig() { return this.serviceConfig; }
 }

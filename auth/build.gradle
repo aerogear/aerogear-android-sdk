@@ -26,12 +26,19 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
     implementation project(path: ':core')
     implementation 'net.openid:appauth'
 
-    testImplementation "junit:junit"
+    testImplementation 'junit:junit'
     testImplementation 'org.mockito:mockito-core'
+    testImplementation 'org.robolectric:robolectric'
 }
