@@ -1,6 +1,5 @@
 package org.aerogear.auth;
 import java.util.Objects;
-import org.aerogear.auth.impl.UserPrincipalImpl;
 
 /**
  * Stores a user's keycloak roles information
@@ -24,10 +23,17 @@ public class RoleKey {
         this.clientID = clientID;
     }
 
+    /**
+     * Creates a new RoleKey object
+     *
+     * @param roleName
+     * @param roleType
+     * @param clientId
+     */
     public RoleKey(final String roleName, final String clientId, final RoleType roleType){
         this.roleName = roleName;
-        this.clientID = clientId;
         this.roleType = roleType;
+        this.clientID = clientId;
     }
 
     /**
@@ -48,6 +54,11 @@ public class RoleKey {
         }
     }
 
+    /**
+     * Generates hashcode value from the RoleKey rolename {@link #roleName} and roleType {@link #roleType}
+     *
+     * @return hashcode value
+     */
     @Override
     public int hashCode(){
         return Objects.hash(roleName, roleType);
