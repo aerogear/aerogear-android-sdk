@@ -1,10 +1,10 @@
 package org.aerogear.auth.credentials;
 
+import android.util.Log;
+
 import net.openid.appauth.AuthState;
 
 import org.aerogear.auth.AuthenticationException;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.jose4j.jwa.AlgorithmConstraints;
 import org.jose4j.jws.AlgorithmIdentifiers;
 import org.jose4j.jwt.JwtClaims;
@@ -13,6 +13,8 @@ import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.keys.RsaKeyUtil;
 import org.jose4j.lang.JoseException;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
@@ -21,6 +23,8 @@ import java.security.spec.InvalidKeySpecException;
  * Credentials for OIDC based authentication
  */
 public class OIDCCredentials implements ICredential {
+
+    private static final String TAG = "OIDCCredentials";
 
     private final AuthState authState;
     private final IIntegrityCheckParameters integrityCheckParameters;
@@ -55,9 +59,9 @@ public class OIDCCredentials implements ICredential {
      * @return <code>true</code> if the token integrity is good.
      */
     public boolean verifyToken(final String jwtToken) {
-        String issuer = integrityCheckParameters.getIssuer();
-        String audience = integrityCheckParameters.getAudience();
-        String publicKey = integrityCheckParameters.getPublicKey();
+        final String issuer = integrityCheckParameters.getIssuer();
+        final String audience = integrityCheckParameters.getAudience();
+        final String publicKey = integrityCheckParameters.getPublicKey();
         return verifyToken(jwtToken, publicKey, issuer, audience);
     }
 
@@ -73,17 +77,20 @@ public class OIDCCredentials implements ICredential {
         // add the Begin/End tags to the public key generated from Keycloak
         String beginPublicKey = "-----BEGIN PUBLIC KEY-----";
         String endPublicKey = "-----END PUBLIC KEY-----";
-        String constructedPublicKey = beginPublicKey + publicKey + endPublicKey;
+        final String constructedPublicKey = beginPublicKey + publicKey + endPublicKey;
 
         // Convert the public key from a string to a Java security key
-        RsaKeyUtil utils = new RsaKeyUtil();
-        PublicKey jwtPublicKey = null;
+        final RsaKeyUtil utils = new RsaKeyUtil();
+        final PublicKey jwtPublicKey;
         try {
             jwtPublicKey = utils.fromPemEncoded(constructedPublicKey);
         } catch (JoseException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage(), e);
+            throw new RuntimeException(e);
         } catch (InvalidKeySpecException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage(), e);
+            // If the public key is invalid then we cannot determine the tokens integrity.
+            return false;
         }
 
 
@@ -105,7 +112,7 @@ public class OIDCCredentials implements ICredential {
             JwtClaims jwtClaims = jwtConsumer.processToClaims(jwtToken);
             return true;
         } catch (InvalidJwtException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Invalid JWT provided", e);
             return false;
         }
     }
@@ -145,21 +152,29 @@ public class OIDCCredentials implements ICredential {
      * Returns stringified JSON for the OIDCCredential.
      * @return Stringified JSON OIDCCredential
      */
-    public String serialize() throws JSONException {
-        JSONObject jsonCredential = new JSONObject()
-            .put("authState", this.authState.jsonSerializeString());
-        if (this.integrityCheckParameters != null) {
-            jsonCredential.put("integrityCheck", this.integrityCheckParameters.serialize());
+    public String serialize() {
+        try {
+            final JSONObject jsonCredential = new JSONObject()
+                .put("authState", this.authState.jsonSerializeString());
+            if (this.integrityCheckParameters != null) {
+                jsonCredential.put("integrityCheck", this.integrityCheckParameters.serialize());
+            }
+            return jsonCredential.toString();
+        } catch(JSONException e) {
+            throw new RuntimeException(e);
         }
-        return jsonCredential.toString();
     }
 
-    public static OIDCCredentials deserialize(final String serializedCredential) throws JSONException {
-        JSONObject jsonCredential = new JSONObject(serializedCredential);
-        String serializedAuthState = jsonCredential.getString("authState");
-        String serializedIntegrityChecks = jsonCredential.getString("integrityCheck");
-        IntegrityCheckParameters icParams = IntegrityCheckParameters.deserialize(serializedIntegrityChecks);
-        return new OIDCCredentials(serializedAuthState, icParams);
+    public static OIDCCredentials deserialize(final String serializedCredential) {
+        try {
+            final JSONObject jsonCredential = new JSONObject(serializedCredential);
+            final String serializedAuthState = jsonCredential.getString("authState");
+            final String serializedIntegrityChecks = jsonCredential.getString("integrityCheck");
+            final IntegrityCheckParameters icParams = IntegrityCheckParameters.deserialize(serializedIntegrityChecks);
+            return new OIDCCredentials(serializedAuthState, icParams);
+        } catch(JSONException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

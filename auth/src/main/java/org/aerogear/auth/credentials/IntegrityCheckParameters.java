@@ -17,14 +17,26 @@ public class IntegrityCheckParameters implements IIntegrityCheckParameters {
 
     public IntegrityCheckParameters() {}
 
+    /**
+     * Get the audience parameter.
+     * @return audience parameter.
+     */
     public String getIssuer() {
         return this.issuer;
     }
 
+    /**
+     * Get the issuer parameter.
+     * @return issuer parameter.
+     */
     public String getAudience() {
         return this.audience;
     }
 
+    /**
+     * Get the PEM encoded public key (RSA).
+     * @return public key parameter.
+     */
     public String getPublicKey() { return this.publicKey; }
 
     public String serialize() throws JSONException {
@@ -35,14 +47,22 @@ public class IntegrityCheckParameters implements IIntegrityCheckParameters {
             .toString();
     }
 
+    /**
+     * Return json representation of the parameters
+     * @return json string representation of parameters
+     */
     public static IntegrityCheckParameters deserialize(final String serializedParams) throws JSONException {
-        JSONObject jsonParams = new JSONObject(serializedParams);
-        String audience = jsonParams.getString("audience");
-        String issuer = jsonParams.getString("issuer");
-        String publicKey = jsonParams.getString("publicKey");
+        final JSONObject jsonParams = new JSONObject(serializedParams);
+        final String audience = jsonParams.getString("audience");
+        final String issuer = jsonParams.getString("issuer");
+        final String publicKey = jsonParams.getString("publicKey");
         return new IntegrityCheckParameters(audience, issuer, publicKey);
     }
 
+    /**
+     * Check whether the integrity check parameters are valid.
+     * @return <code>true</code> if the parameters are valid.
+     */
     public boolean isValid() {
         return issuer != null && audience != null && publicKey != null;
     }

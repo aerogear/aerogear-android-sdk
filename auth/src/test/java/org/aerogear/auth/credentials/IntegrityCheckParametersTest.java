@@ -1,4 +1,4 @@
-package org.java.aerogear.auth.credentials;
+package org.aerogear.auth.credentials;
 
 import org.aerogear.auth.credentials.IntegrityCheckParameters;
 import org.json.JSONException;

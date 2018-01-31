@@ -2,8 +2,8 @@ package org.aerogear.auth.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+
 import org.aerogear.auth.credentials.OIDCCredentials;
-import org.json.JSONException;
 
 /**
  * Saves, retrieves and delete a token.
@@ -23,23 +23,19 @@ public class AuthStateManager {
      * Reads credentials from storage.
      * @return OIDCCredentials
      */
-    public OIDCCredentials read() {
-        String currentState = prefs.getString(KEY_STATE, null);
+    public OIDCCredentials load() {
+        final String currentState = prefs.getString(KEY_STATE, null);
         if (currentState == null) {
             return new OIDCCredentials();
         }
-        try {
-            return OIDCCredentials.deserialize(currentState);
-        } catch (JSONException ex) {
-            return new OIDCCredentials();
-        }
+        return OIDCCredentials.deserialize(currentState);
     }
 
     /**
      * Saves a token
      * @param authState token to be saved
      */
-    public synchronized void write(final OIDCCredentials authState) throws JSONException {
+    public synchronized void save(final OIDCCredentials authState) {
         if (authState == null) {
             clear();
         } else {
