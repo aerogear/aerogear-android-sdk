@@ -7,11 +7,15 @@ public class IntegrityCheckParameters implements IIntegrityCheckParameters {
 
     private String issuer;
     private String audience;
+    private String publicKey;
 
-    public IntegrityCheckParameters(String audience, String issuer) {
+    public IntegrityCheckParameters(String audience, String issuer, String publicKey) {
         this.issuer = issuer;
         this.audience = audience;
+        this.publicKey = publicKey;
     }
+
+    public IntegrityCheckParameters() {}
 
     public String getIssuer() {
         return this.issuer;
@@ -21,10 +25,13 @@ public class IntegrityCheckParameters implements IIntegrityCheckParameters {
         return this.audience;
     }
 
+    public String getPublicKey() { return this.publicKey; }
+
     public String serialize() throws JSONException {
         return new JSONObject()
             .put("audience", this.audience)
             .put("issuer", this.issuer)
+            .put("publicKey", this.publicKey)
             .toString();
     }
 
@@ -32,10 +39,11 @@ public class IntegrityCheckParameters implements IIntegrityCheckParameters {
         JSONObject jsonParams = new JSONObject(serializedParams);
         String audience = jsonParams.getString("audience");
         String issuer = jsonParams.getString("issuer");
-        return new IntegrityCheckParameters(audience, issuer);
+        String publicKey = jsonParams.getString("publicKey");
+        return new IntegrityCheckParameters(audience, issuer, publicKey);
     }
 
     public boolean isValid() {
-        return issuer != null && audience != null;
+        return issuer != null && audience != null && publicKey != null;
     }
 }

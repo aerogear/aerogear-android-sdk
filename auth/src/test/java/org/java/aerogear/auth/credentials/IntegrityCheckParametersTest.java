@@ -15,16 +15,17 @@ import static org.junit.Assert.assertTrue;
 @RunWith(RobolectricTestRunner.class)
 public class IntegrityCheckParametersTest {
 
+    private static final String INTEGRITY_CHECK_KEY = "testKey";
     private static final String INTEGRITY_CHECK_ISSUER = "testIssuer";
     private static final String INTEGRITY_CHECK_AUDIENCE = "testAudience";
 
     private String testSerializedParams = "{\"audience\":\"" + INTEGRITY_CHECK_AUDIENCE +
-        "\",\"issuer\":\"" + INTEGRITY_CHECK_ISSUER + "\"}";
+        "\",\"issuer\":\"" + INTEGRITY_CHECK_ISSUER + "\",\"publicKey\":\"" + INTEGRITY_CHECK_KEY + "\"}";
     private IntegrityCheckParameters testParams;
 
     @Before
     public void setup() {
-        this.testParams = new IntegrityCheckParameters(INTEGRITY_CHECK_AUDIENCE, INTEGRITY_CHECK_ISSUER);
+        this.testParams = new IntegrityCheckParameters(INTEGRITY_CHECK_AUDIENCE, INTEGRITY_CHECK_ISSUER, INTEGRITY_CHECK_KEY);
     }
 
     @Test
@@ -42,13 +43,13 @@ public class IntegrityCheckParametersTest {
 
     @Test
     public void testIsValidSuccess() {
-        IntegrityCheckParameters checkParams = new IntegrityCheckParameters(INTEGRITY_CHECK_AUDIENCE, INTEGRITY_CHECK_ISSUER);
+        IntegrityCheckParameters checkParams = new IntegrityCheckParameters(INTEGRITY_CHECK_AUDIENCE, INTEGRITY_CHECK_ISSUER, INTEGRITY_CHECK_KEY);
         assertTrue(checkParams.isValid());
     }
 
     @Test
     public void testIsValidFailure() {
-        IntegrityCheckParameters checkParams = new IntegrityCheckParameters(null, null);
+        IntegrityCheckParameters checkParams = new IntegrityCheckParameters();
         assertFalse(checkParams.isValid());
     }
 }

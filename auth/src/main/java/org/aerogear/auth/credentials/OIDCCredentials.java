@@ -32,7 +32,7 @@ public class OIDCCredentials implements ICredential {
 
     public OIDCCredentials() {
         this.authState = new AuthState();
-        this.integrityCheckParameters = new IntegrityCheckParameters(null, null);
+        this.integrityCheckParameters = new IntegrityCheckParameters();
     }
 
     public String getAccessToken() {
@@ -50,19 +50,26 @@ public class OIDCCredentials implements ICredential {
     public IIntegrityCheckParameters getIntegrityCheckParameters() { return this.integrityCheckParameters; }
 
     /**
+     * Verify the authenticity of a JWT token against integrity parameters (provided config).
+     * @param jwtToken The JWT token to verify.
+     * @return <code>true</code> if the token integrity is good.
+     */
+    public boolean verifyToken(String jwtToken) {
+        String issuer = integrityCheckParameters.getIssuer();
+        String audience = integrityCheckParameters.getAudience();
+        String publicKey = integrityCheckParameters.getPublicKey();
+        return verifyToken(jwtToken, publicKey, issuer, audience);
+    }
+
+    /**
      * A function to verify the authenticity of a JWT token against a public key, expected issuer and audience.
      * @param jwtToken - The JWT Token to Verify.
      * @param publicKey - The Public Key from Keycloak, without the Begin/End tags.
      * @param issuer - The expected Issuer of the JWT
      * @param audience - The expected Audience of the JWT
-     * @return boolean - true if the token integrity is good
+     * @return <code>true</code> if the token integrity is good.
      */
     public boolean verifyToken(String jwtToken, String publicKey, String issuer, String audience) {
-
-        // TODO Get the Public Key from the Mobile Core Config
-        // TODO Get the Audience from the Mobile Core Config
-        // TODO Construct the Issuer using properties in the Mobile Core Config
-
         boolean verified = false;
 
         // add the Begin/End tags to the public key generated from Keycloak

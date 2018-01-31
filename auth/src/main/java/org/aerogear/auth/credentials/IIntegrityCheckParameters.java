@@ -12,9 +12,15 @@ public interface IIntegrityCheckParameters {
 
     /**
      * Get the issuer parameter.
-     * @return issuer parameter
+     * @return issuer parameter.
      */
     String getIssuer();
+
+    /**
+     * Get the public key parameter.
+     * @return public key parameter.
+     */
+    String getPublicKey();
 
     /**
      * Check whether the integrity check parameters are valid.
