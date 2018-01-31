@@ -40,4 +40,5 @@ dependencies {
     testImplementation 'junit:junit'
     testImplementation 'org.mockito:mockito-core'
     testImplementation 'org.robolectric:robolectric'
+    testImplementation 'org.apache.directory.studio:org.apache.commons.io'
 }
