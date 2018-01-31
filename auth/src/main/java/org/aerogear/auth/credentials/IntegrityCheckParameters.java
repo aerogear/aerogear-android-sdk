@@ -9,7 +9,7 @@ public class IntegrityCheckParameters implements IIntegrityCheckParameters {
     private String audience;
     private String publicKey;
 
-    public IntegrityCheckParameters(String audience, String issuer, String publicKey) {
+    public IntegrityCheckParameters(final String audience, final String issuer, final String publicKey) {
         this.issuer = issuer;
         this.audience = audience;
         this.publicKey = publicKey;
@@ -35,7 +35,7 @@ public class IntegrityCheckParameters implements IIntegrityCheckParameters {
             .toString();
     }
 
-    public static IntegrityCheckParameters deserialize(String serializedParams) throws JSONException {
+    public static IntegrityCheckParameters deserialize(final String serializedParams) throws JSONException {
         JSONObject jsonParams = new JSONObject(serializedParams);
         String audience = jsonParams.getString("audience");
         String issuer = jsonParams.getString("issuer");

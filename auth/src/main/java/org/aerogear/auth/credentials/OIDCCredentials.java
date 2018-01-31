@@ -54,7 +54,7 @@ public class OIDCCredentials implements ICredential {
      * @param jwtToken The JWT token to verify.
      * @return <code>true</code> if the token integrity is good.
      */
-    public boolean verifyToken(String jwtToken) {
+    public boolean verifyToken(final String jwtToken) {
         String issuer = integrityCheckParameters.getIssuer();
         String audience = integrityCheckParameters.getAudience();
         String publicKey = integrityCheckParameters.getPublicKey();
@@ -69,9 +69,7 @@ public class OIDCCredentials implements ICredential {
      * @param audience - The expected Audience of the JWT
      * @return <code>true</code> if the token integrity is good.
      */
-    public boolean verifyToken(String jwtToken, String publicKey, String issuer, String audience) {
-        boolean verified = false;
-
+    public boolean verifyToken(final String jwtToken, final String publicKey, final String issuer, final String audience) {
         // add the Begin/End tags to the public key generated from Keycloak
         String beginPublicKey = "-----BEGIN PUBLIC KEY-----";
         String endPublicKey = "-----END PUBLIC KEY-----";
@@ -102,20 +100,14 @@ public class OIDCCredentials implements ICredential {
                                 AlgorithmIdentifiers.RSA_USING_SHA256))
                 .build(); // create the JwtConsumer instance
 
-        try
-        {
+        try {
             //  Validate the JWT and process it to the Claims
             JwtClaims jwtClaims = jwtConsumer.processToClaims(jwtToken);
-            verified = true;
-            System.out.println("JWT Verified Successfully.");
+            return true;
+        } catch (InvalidJwtException e) {
+            e.printStackTrace();
+            return false;
         }
-        catch (InvalidJwtException e)
-        {
-            // InvalidJwtException will be thrown, if the JWT failed processing or validation in anyway.
-            System.out.println("JWT Validation Failed. " + e.getLocalizedMessage());
-
-        }
-        return verified;
     }
 
     /**
@@ -154,13 +146,15 @@ public class OIDCCredentials implements ICredential {
      * @return Stringified JSON OIDCCredential
      */
     public String serialize() throws JSONException {
-        return new JSONObject()
-            .put("authState", this.authState.jsonSerializeString())
-            .put("integrityCheck", this.integrityCheckParameters.serialize())
-            .toString();
+        JSONObject jsonCredential = new JSONObject()
+            .put("authState", this.authState.jsonSerializeString());
+        if (this.integrityCheckParameters != null) {
+            jsonCredential.put("integrityCheck", this.integrityCheckParameters.serialize());
+        }
+        return jsonCredential.toString();
     }
 
-    public static OIDCCredentials deserialize(String serializedCredential) throws JSONException {
+    public static OIDCCredentials deserialize(final String serializedCredential) throws JSONException {
         JSONObject jsonCredential = new JSONObject(serializedCredential);
         String serializedAuthState = jsonCredential.getString("authState");
         String serializedIntegrityChecks = jsonCredential.getString("integrityCheck");

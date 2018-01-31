@@ -27,7 +27,7 @@ public class AuthService implements ServiceModule {
      */
     public AuthService() {}
 
-    public void bootstrap(MobileCore core, ServiceConfiguration serviceConfig) {
+    public void bootstrap(final MobileCore core, final ServiceConfiguration serviceConfig) {
         this.authenticatorChain = AuthenticationChain
             .newChain()
             .with(new OIDCTokenAuthenticatorImpl(serviceConfig))
