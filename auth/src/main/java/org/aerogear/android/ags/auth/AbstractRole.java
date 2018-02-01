@@ -22,4 +22,8 @@ abstract class AbstractRole implements IRole {
     public String getRoleName() {
         return this.roleName;
     }
+
+    public String getClientID() {
+        return null;
+    }
 }

@@ -18,14 +18,4 @@ public final class RealmRole extends AbstractRole {
     public RoleType getRoleType() {
         return RoleType.REALM;
     }
-
-    /**
-     * Get's the client id for the realm role
-     *
-     * @return null (realms don't have client ids)
-     */
-    @Override
-    public String getClientID() {
-        return null;
-    }
 }

@@ -7,9 +7,9 @@ import java.util.Objects;
 
 public class RoleKey {
 
-    private String roleName;
-    private RoleType roleType;
-    private String clientID;
+    private final String roleName;
+    private final RoleType roleType;
+    private final String clientID;
 
     /**
      * Creates a new RoleKey object

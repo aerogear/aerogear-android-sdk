@@ -2,6 +2,7 @@ package org.aerogear.android.ags.auth.impl;
 
 import org.aerogear.auth.AbstractAuthenticator;
 import org.aerogear.auth.AbstractPrincipal;
+import org.aerogear.auth.ClientRole;
 import org.aerogear.auth.IRole;
 import org.aerogear.auth.RoleKey;
 import org.aerogear.auth.RoleType;
@@ -88,7 +89,7 @@ public class UserPrincipalImpl extends AbstractPrincipal {
         }
 
         Builder withRole(final IRole role) {
-            RoleKey roleKey = role.getRoleType().equals(RoleType.CLIENT) ? new RoleKey(role, role.getClientID()) : new RoleKey(role, null);
+            RoleKey roleKey = role.getRoleType().equals(RoleType.CLIENT) ? new RoleKey(role, ((ClientRole) role).getClientID()) : new RoleKey(role, null);
             this.roles.put(roleKey, role);
             return this;
         }
