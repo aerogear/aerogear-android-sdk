@@ -1,11 +1,7 @@
 package org.aerogear.mobile.keycloak_service_module;
 
-import android.content.Context;
-import android.support.annotation.NonNull;
-
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.ServiceModule;
-import org.aerogear.mobile.core.ServiceModuleRegistry;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpResponse;
@@ -17,7 +13,6 @@ import okhttp3.FormBody;
 import okio.Buffer;
 import okio.BufferedSink;
 
-
 public class KeyCloakService implements ServiceModule {
 
     private KeyCloakConfig config;
@@ -28,30 +23,22 @@ public class KeyCloakService implements ServiceModule {
     private String subjectTokenType;
     private String requestedTokenType;
     private String realm;
-    private MobileCore core;
     private String resource;
     private HttpServiceModule httpModule;
     private String accessToken;
 
-
-    public KeyCloakService() {
+    private KeyCloakService(KeyCloakServiceConfiguration keyCloakServiceConfiguration) {
     }
 
-
-    @Override
-    public void bootstrap(MobileCore core, ServiceConfiguration config) {
-        this.serverUrl = config.getProperty("auth-server-url");
-        this.clientId = config.getProperty("clientId");
-        this.audience = config.getProperty("audience");
-        this.grantType = config.getProperty("grant_type");
-        this.subjectTokenType = config.getProperty("subject_token_type");
-        this.requestedTokenType = config.getProperty("requested_token_type");
-        this.resource = config.getProperty("resource");
-        this.realm = config.getProperty("realm");
-        this.core = core;
-        this.httpModule = (HttpServiceModule) core.getService("http");
+    public static KeyCloakService create() {
+        ServiceConfiguration config = MobileCore.getServiceConfiguration("keycloak");
+        KeyCloakServiceConfiguration keyCloakServiceConfiguration = new KeyCloakServiceConfiguration(config);
+        return new KeyCloakService(keyCloakServiceConfiguration);
     }
 
+    public static KeyCloakService create(KeyCloakServiceConfiguration keyCloakServiceConfiguration) {
+        return new KeyCloakService(keyCloakServiceConfiguration);
+    }
 
     /**
      * Exchanges the google id token and configures the KeyCloakService to serve requests
@@ -93,6 +80,36 @@ public class KeyCloakService implements ServiceModule {
         if (accessToken != null) {
             request.addHeader("Authorization", "Bearer " + accessToken);
         }
+    }
+
+    public static final class KeyCloakServiceConfiguration {
+
+        private String serverUrl;
+        private String clientId;
+        private String audience;
+        private String grantType;
+        private String subjectTokenType;
+        private String requestedTokenType;
+        private String resource;
+        private String realm;
+        private String core;
+        private HttpServiceModule httpModule;
+
+        public KeyCloakServiceConfiguration() {
+        }
+
+        public KeyCloakServiceConfiguration(ServiceConfiguration serviceConfiguration) {
+            this.serverUrl = serviceConfiguration.getProperty("auth-server-url");
+            this.clientId = serviceConfiguration.getProperty("clientId");
+            this.audience = serviceConfiguration.getProperty("audience");
+            this.grantType = serviceConfiguration.getProperty("grant_type");
+            this.subjectTokenType = serviceConfiguration.getProperty("subject_token_type");
+            this.requestedTokenType = serviceConfiguration.getProperty("requested_token_type");
+            this.resource = serviceConfiguration.getProperty("resource");
+            this.realm = serviceConfiguration.getProperty("realm");
+            this.httpModule = MobileCore.getHttpLayer();
+        }
+
     }
 
 }

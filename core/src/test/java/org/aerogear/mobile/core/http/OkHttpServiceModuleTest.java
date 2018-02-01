@@ -1,4 +1,4 @@
-package org.aerogear.mobile.core;
+package org.aerogear.mobile.core.http;
 
 import android.support.test.filters.SmallTest;
 
@@ -15,31 +15,26 @@ import static org.junit.Assert.assertNotNull;
 
 @RunWith(RobolectricTestRunner.class)
 @SmallTest
-public class HttpServiceModuleTest {
+public class OkHttpServiceModuleTest {
 
     @Test
     public void testGet() {
         HttpServiceModule module = new OkHttpServiceModule();
+
         HttpRequest request = module.newRequest();
         request.get("http://www.mocky.io/v2/5a5f74172e00006e260a8476");
+
         HttpResponse response = request.execute();
 
         assertNotNull(response);
 
+        response.onComplete(() -> assertEquals("{\n" +
+            " \"story\": {\n" +
+            "     \"title\": \"Test Title\"\n" +
+            " }    \n" +
+            "}", response.stringBody()));
 
-        response.onComplete(new Runnable() {
-            @Override
-            public void run() {
-                assertEquals("{\n" +
-                        " \"story\": {\n" +
-                        "     \"title\": \"Test Title\"\n" +
-                        " }    \n" +
-                        "}",response.stringBody());
-
-            }
-        });
         response.waitForCompletionAndClose();
-
     }
 
 }

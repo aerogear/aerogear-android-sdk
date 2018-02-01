@@ -2,273 +2,147 @@ package org.aerogear.mobile.core;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
+import android.support.annotation.VisibleForTesting;
 
 import org.aerogear.mobile.core.configuration.MobileCoreJsonParser;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
+import org.aerogear.mobile.core.exception.BootstrapException;
+import org.aerogear.mobile.core.exception.NotInitializedException;
 import org.aerogear.mobile.core.http.HttpServiceModule;
 import org.aerogear.mobile.core.http.OkHttpServiceModule;
-import org.aerogear.mobile.core.logging.Logger;
 import org.json.JSONException;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
- * MobileCore is the entry point into AeroGear mobile services that are managed by the mobile-core
- * feature( TODO: Get correct noun )? in OpenShift.
- * <p>
- * Usage.java
- * ```
- * MobileCore core = new MobileCore.Builder(context, R.raw.mobile_core).build();
- * core.feature(Keycloak.class).login();// would begin a OAuth flow.
- * core.feature(MyRestService.class).upload(myData);// Would upload myData and be secured by KeyCloak
- * ```
+ * MobileCore is the entry point into AeroGear mobile services
  */
 public final class MobileCore {
 
+    private static MobileCore instance;
 
-    private final Context context;
-    private final String mobileServiceFileName;
-    private final ServiceModuleRegistry serviceRegistry;
-
-    private Map<String, ServiceConfiguration> configurationMap;
-    private Map<String, ServiceModule> services = new HashMap<>();
-
-    private MobileCore(@NonNull Context context, @NonNull String mobileServiceFileName, @NonNull ServiceModuleRegistry serviceRegistry) {
-        this.context = context.getApplicationContext();
-        this.mobileServiceFileName = mobileServiceFileName;
-        this.serviceRegistry = serviceRegistry;
-    }
-
-    public Logger defaultLog() {
-        return (String message, Exception e) -> {
-            Log.e("MOBILE_CORE", message, e);
-        };
-    }
-
-    public void bootstrap() {
-
-        try (InputStream configStream = context.getAssets().open(this.mobileServiceFileName);) {
-
-            //Services which have been started
-            Set<String> servicesBootstrapped = new HashSet<>();
-            //Services named in the configuration file
-            List<String> declaredServices = new ArrayList<>();
-
-            this.configurationMap = MobileCoreJsonParser.parse(configStream);
-            addCoreServices();
-
-            declaredServices.addAll(configurationMap.keySet());
-
-            declaredServices = sortServicesIntoBootstrapOrder(declaredServices);
-
-            for (String serviceName : declaredServices) {
-                ServiceModule serviceInstance = serviceRegistry.getServiceModule(serviceName);
-
-                if (serviceInstance == null) {
-                    Class<? extends ServiceModule> serviceClass = serviceRegistry.getServiceClass(serviceName);
-                    if (serviceClass == null) {
-                        throw new BootstrapException(String.format("Service with name %s does not have a type in the ServiceRegistry.", serviceName));
-                    }
-                    serviceInstance = serviceClass.newInstance();
-                }
-
-                serviceInstance.bootstrap(this, getConfig(serviceName));
-
-                this.services.put(serviceName, serviceInstance);
-                servicesBootstrapped.add(serviceName);
-
-            }
-
-        } catch (JSONException | IOException e) {
-            throw new BootstrapException(String.format("%s could not be loaded", mobileServiceFileName), e);
-        } catch (IllegalAccessException | InstantiationException e) {
-            throw new BootstrapException("Modules could not be started up", e);
-        }
-
-    }
+    private final String configFileName;
+    private final HttpServiceModule httpLayer;
+    private final Map<String, ServiceConfiguration> servicesConfig;
 
     /**
-     * There are some services that are "core" and usually won't appear in mobile-services.json
-     */
-    private void addCoreServices() {
-        if (this.configurationMap.get("http") == null) {
-            ServiceConfiguration config = ServiceConfiguration.newConfiguration().setName("http").build();
-            this.configurationMap.put("http", config);
-        }
-    }
-
-    /**
-     * This method sorts a list of servers into the order they will need to be initialized in.
+     * Initialize the AeroGear system
      *
-     * @param declaredServices a list of services to be sorted into the order they will be
-     *                         initialized in.
-     * @return a sorted list of services.
-     * @throws BootstrapException if circular or undefined dependencies are detected.
+     * @param context Application context
      */
-    private List<String> sortServicesIntoBootstrapOrder(List<String> declaredServices) {
-        List<String> workingDeclaredServicesList = new ArrayList<>(declaredServices);
-        List<String> sortedServices = new ArrayList<>(declaredServices.size());
-
-        while (!workingDeclaredServicesList.isEmpty()) {
-            sortedServices.add(popNextService(workingDeclaredServicesList, sortedServices));
-        }
-
-        return sortedServices;
+    public static void init(Context context) throws BootstrapException {
+        init(context, new Options());
     }
 
     /**
-     * Removes a service from the list that can be instanciated or has all of its dependencies in
-     * sortedServices.
+     * Initialize the AeroGear system
      *
-     * @param workingList    a mutable list to find the first element in that can be resolved given
-     *                       the values in sortedServices
-     * @param sortedServices services which have had their dependencies check and are in initialization
-     *                       order
-     * @return the next service name
-     * @throws BootstrapException if circular or undefined dependencies are detected.
+     * @param context Application context
+     * @param options AeroGear initialization options
      */
-    private String popNextService(List<String> workingList, List<String> sortedServices) {
-        boolean unresolvableServiceDetected = true;
-        String serviceUnderInstanciation = "";
-
-        for (String serviceName : workingList) {
-            List<String> dependencies = serviceRegistry.getDependenciesFor(serviceName);
-            serviceUnderInstanciation = serviceName;
-            if (dependencies.isEmpty() || sortedServices.containsAll(dependencies)) {
-                unresolvableServiceDetected = false;
-                break;
-            }
+    public static void init(Context context, Options options) throws BootstrapException {
+        if (instance == null) {
+            instance = new MobileCore(context, options);
         }
-        if (!unresolvableServiceDetected) {
-            workingList.remove(serviceUnderInstanciation);
+    }
+
+    @VisibleForTesting()
+    public static void cleanup() {
+        instance = null;
+    }
+
+    /**
+     * Creates a MobileCore instance
+     *
+     * @param context Application context
+     */
+    private MobileCore(Context context, Options options) throws BootstrapException {
+        this.configFileName = options.configFileName;
+
+        // -- Parse JSON config file
+        try (InputStream configStream = context.getAssets().open(configFileName)) {
+            this.servicesConfig = MobileCoreJsonParser.parse(configStream);
+        } catch (JSONException | IOException exception) {
+            String message = String.format("%s could not be loaded", configFileName);
+            throw new BootstrapException(message, exception);
+        }
+
+        // -- Setting default http layer
+
+        if (options.getHttpServiceModule() == null) {
+            ServiceConfiguration configuration = this.servicesConfig.get("http");
+            if (configuration == null) {
+                configuration = new ServiceConfiguration.Builder().build();
+            }
+            this.httpLayer = new OkHttpServiceModule(configuration);
         } else {
-            throw new BootstrapException(String.format("Unresolvable service detected %s", serviceUnderInstanciation));
+            this.httpLayer = options.getHttpServiceModule();
         }
-
-        return serviceUnderInstanciation;
     }
 
     /**
-     * Returns the parsed configuration object of the named configuration, or an empty ServiceConfiguration
+     * Check if the init was called
      *
-     * @param configurationName the name of the configuration to lookup
-     * @return the parsed configuration object of the named configuration, or an empty ServiceConfiguration
+     * @throws NotInitializedException
      */
-    public ServiceConfiguration getConfig(final String configurationName) {
-        ServiceConfiguration config = configurationMap.get(configurationName);
-        if (config == null) {
-            config = ServiceConfiguration.newConfiguration().setName(configurationName).build();
-            configurationMap.put(configurationName, config);
+    private static void checkIfInitialized() throws NotInitializedException {
+        if (instance == null) {
+            throw new NotInitializedException();
         }
-        return config;
-    }
-
-    @NonNull
-    public ServiceModule getService(String serviceName) {
-        return services.get(serviceName);
     }
 
     /**
-     * Returns the names of all configured services
+     * Returng the configuration for this service from the JSON config file
      *
-     * @return a list of service names.
+     * @param type Service type/name
+     * @return the configuration for this service from the JSON config file
      */
-    @NonNull
-    public List<String> getServiceNames() {
-        return new ArrayList<>(services.keySet());
+    public static ServiceConfiguration getServiceConfiguration(String type)
+        throws NotInitializedException {
+        checkIfInitialized();
+        return instance.servicesConfig.get(type);
     }
 
-    /**
-     * Builder for MobileCore.  This class ensures that required properties are set and then creates
-     * a MobileCore instance.
-     * <p>
-     * Usage.java
-     * ```
-     * MobileCore core = new MobileCore.Builder(context, R.raw.mobile_core).build();
-     * ```
-     */
-    public static class Builder {
 
-        private final Context context;
-        private boolean built = false;
-        private String mobileServiceFileName = "mobile-services.json";
-        private ServiceModuleRegistry serviceRegistry;
+    public static HttpServiceModule getHttpLayer() {
+        checkIfInitialized();
+        return instance.httpLayer;
+    }
 
-        public Builder(@NonNull Context context) {
-            this.context = context;
+    public static final class Options {
+
+        private String configFileName = "mobile-services.json";
+        // Don't have a default implementation because it should use configuration
+        private HttpServiceModule httpServiceModule;
+
+        public Options() {
         }
 
-        /**
-         * The filename of the mobile service configuration file in the assets directory.
-         * <p>
-         * defaults to mobile-services.json
-         *
-         * @return the current value, never null.
-         */
-        @NonNull
-        public String getMobileServiceFileName() {
-            return mobileServiceFileName;
+        public Options(String configFileName, HttpServiceModule httpServiceModule) {
+            this.configFileName = configFileName;
+            this.httpServiceModule = httpServiceModule;
         }
 
-        /**
-         * The filename of the mobile service configuration file in the assets directory.
-         * <p>
-         * defaults to mobile-services.json
-         *
-         * @param mobileServiceFileName a new filename.  May not be null.
-         * @return the current value, never null.
-         */
-        public Builder setMobileServiceFileName(@NonNull String mobileServiceFileName) {
+        public String getConfigFileName() {
+            return configFileName;
+        }
 
-            if (mobileServiceFileName == null) {
-                throw new IllegalArgumentException("mobileServiceFileName may not be null");
-            }
-
-            this.mobileServiceFileName = mobileServiceFileName;
+        public Options setConfigFileName(@NonNull String configFileName) {
+            this.configFileName = configFileName;
             return this;
         }
 
-        /**
-         * Builds a mobile core instance.  Please note that once this is built the Builder may not
-         * be used again.
-         *
-         * @return a mobile core instance based on Builder parameters
-         * @throws IllegalStateException if this builder has already been built.
-         */
-        public MobileCore build() {
-            if (!built) {
-                built = true;
-
-                if (serviceRegistry == null) {
-                    serviceRegistry = ServiceModuleRegistry.getInstance();
-                }
-                MobileCore core = new MobileCore(context, mobileServiceFileName, serviceRegistry);
-
-                serviceRegistry.registerServiceModule("http", OkHttpServiceModule.class);
-
-                core.bootstrap();
-                return core;
-            } else {
-                throw new IllegalStateException("MobileCore has already been built");
-            }
+        public HttpServiceModule getHttpServiceModule() {
+            return httpServiceModule;
         }
 
-        public Builder setServiceRegistry(final ServiceModuleRegistry registryService) {
-            this.serviceRegistry = registryService;
+        public Options setHttpServiceModule(@NonNull HttpServiceModule httpServiceModule) {
+            this.httpServiceModule = httpServiceModule;
             return this;
         }
 
-        public ServiceModuleRegistry getServiceRegistry() {
-            return serviceRegistry;
-        }
     }
 
 }
