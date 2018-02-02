@@ -36,8 +36,7 @@ dependencies {
     implementation project(path: ':core')
     implementation 'net.openid:appauth'
     implementation 'org.bitbucket.b_c:jose4j'
-
-    testImplementation 'junit:junit'
+    testImplementation "junit:junit"
     testImplementation 'org.mockito:mockito-core'
     testImplementation 'org.robolectric:robolectric'
 }
