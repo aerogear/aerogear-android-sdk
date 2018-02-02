@@ -7,6 +7,7 @@ import android.support.annotation.VisibleForTesting;
 import org.aerogear.mobile.core.configuration.MobileCoreJsonParser;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.exception.BootstrapException;
+import org.aerogear.mobile.core.exception.ConfigurationNotFoundException;
 import org.aerogear.mobile.core.exception.NotInitializedException;
 import org.aerogear.mobile.core.http.HttpServiceModule;
 import org.aerogear.mobile.core.http.OkHttpServiceModule;
@@ -102,7 +103,11 @@ public final class MobileCore {
     public static ServiceConfiguration getServiceConfiguration(String type)
         throws NotInitializedException {
         checkIfInitialized();
-        return instance.servicesConfig.get(type);
+        ServiceConfiguration serviceConfiguration = instance.servicesConfig.get(type);
+        if (serviceConfiguration == null) {
+            throw new ConfigurationNotFoundException(type + " not found on " + instance.configFileName);
+        }
+        return serviceConfiguration;
     }
 
 
