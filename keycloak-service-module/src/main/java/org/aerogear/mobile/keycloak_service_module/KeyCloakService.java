@@ -15,6 +15,8 @@ import okio.BufferedSink;
 
 public class KeyCloakService implements ServiceModule {
 
+    private static KeyCloakService instance;
+
     private KeyCloakConfig config;
     private String serverUrl;
     private String clientId;
@@ -28,16 +30,28 @@ public class KeyCloakService implements ServiceModule {
     private String accessToken;
 
     private KeyCloakService(KeyCloakServiceConfiguration keyCloakServiceConfiguration) {
+        this.serverUrl = keyCloakServiceConfiguration.serverUrl;
+        this.clientId = keyCloakServiceConfiguration.clientId;
+        this.audience = keyCloakServiceConfiguration.audience;
+        this.grantType = keyCloakServiceConfiguration.grantType;
+        this.subjectTokenType = keyCloakServiceConfiguration.subjectTokenType;
+        this.requestedTokenType = keyCloakServiceConfiguration.requestedTokenType;
+        this.realm = keyCloakServiceConfiguration.realm;
+        this.resource = keyCloakServiceConfiguration.resource;
+        this.httpModule = keyCloakServiceConfiguration.httpModule;
     }
 
-    public static KeyCloakService create() {
+    public static KeyCloakService getInstance() {
         ServiceConfiguration config = MobileCore.getServiceConfiguration("keycloak");
         KeyCloakServiceConfiguration keyCloakServiceConfiguration = new KeyCloakServiceConfiguration(config);
-        return new KeyCloakService(keyCloakServiceConfiguration);
+        return getInstance(keyCloakServiceConfiguration);
     }
 
-    public static KeyCloakService create(KeyCloakServiceConfiguration keyCloakServiceConfiguration) {
-        return new KeyCloakService(keyCloakServiceConfiguration);
+    public static KeyCloakService getInstance(KeyCloakServiceConfiguration keyCloakServiceConfiguration) {
+        if (instance == null) {
+            instance = new KeyCloakService(keyCloakServiceConfiguration);
+        }
+        return instance;
     }
 
     /**
