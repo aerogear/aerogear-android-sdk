@@ -37,12 +37,13 @@ public class OIDCCredentials implements ICredential {
      * @param serialisedCredential JSON string representation of the authState field produced by
      *                             {@link #deserialize(String)}.
      * @param integrityCheckParameters Integrity check parameters for the token.
+     * @throws IllegalArgumentException
      */
     public OIDCCredentials(final String serialisedCredential, final IIntegrityCheckParameters integrityCheckParameters) {
         try {
             this.authState = AuthState.jsonDeserialize(serialisedCredential);
         } catch(JSONException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException(e);
         }
         this.integrityCheckParameters = integrityCheckParameters;
     }
@@ -85,6 +86,7 @@ public class OIDCCredentials implements ICredential {
      * @param issuer - The expected Issuer of the JWT
      * @param audience - The expected Audience of the JWT
      * @return <code>true</code> if the token integrity is good.
+     * @throws IllegalArgumentException
      */
     public boolean verifyToken(final String jwtToken, final String publicKey, final String issuer, final String audience) {
         final String constructedPublicKey = beginPublicKey + publicKey + endPublicKey;
@@ -161,6 +163,7 @@ public class OIDCCredentials implements ICredential {
     /**
      * Returns stringified JSON for the OIDCCredential.
      * @return Stringified JSON OIDCCredential
+     * @throws IllegalArgumentException
      */
     public String serialize() {
         try {
@@ -175,6 +178,12 @@ public class OIDCCredentials implements ICredential {
         }
     }
 
+    /**
+     * Return a new credential from the output of {@link #serialize()}
+     * @param serializedCredential serialized credential from {@link #serialize()}
+     * @return new credential
+     * @throws IllegalArgumentException
+     */
     public static OIDCCredentials deserialize(final String serializedCredential) {
         try {
             final JSONObject jsonCredential = new JSONObject(serializedCredential);
@@ -198,7 +207,7 @@ public class OIDCCredentials implements ICredential {
     /**
      * Renew the token
      * @return
-     * @throws AuthenticationException
+     * @throws IllegalStateException
      */
     public boolean renew() throws AuthenticationException {
         throw new IllegalStateException("Not yet implemented");

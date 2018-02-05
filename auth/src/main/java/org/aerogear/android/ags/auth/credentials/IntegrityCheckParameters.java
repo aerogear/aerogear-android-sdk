@@ -25,6 +25,7 @@ public class IntegrityCheckParameters implements IIntegrityCheckParameters {
      * Get the audience parameter.
      * @return audience parameter.
      */
+    @Override
     public String getIssuer() {
         return this.issuer;
     }
@@ -33,6 +34,7 @@ public class IntegrityCheckParameters implements IIntegrityCheckParameters {
      * Get the issuer parameter.
      * @return issuer parameter.
      */
+    @Override
     public String getAudience() {
         return this.audience;
     }
@@ -41,8 +43,15 @@ public class IntegrityCheckParameters implements IIntegrityCheckParameters {
      * Get the PEM encoded public key (RSA).
      * @return public key parameter.
      */
+    @Override
     public String getPublicKey() { return this.publicKey; }
 
+    /**
+     * Return JSON serialization.
+     * @return JSON serialization of parameters.
+     * @throws IllegalStateException
+     */
+    @Override
     public String serialize() {
         try {
             return new JSONObject()
@@ -51,13 +60,14 @@ public class IntegrityCheckParameters implements IIntegrityCheckParameters {
                 .put("publicKey", this.publicKey)
                 .toString();
         } catch(JSONException e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 
     /**
      * Return json representation of the parameters
      * @return json string representation of parameters
+     * @throws IllegalArgumentException
      */
     public static IntegrityCheckParameters deserialize(final String serializedParams) {
         try {
@@ -67,7 +77,7 @@ public class IntegrityCheckParameters implements IIntegrityCheckParameters {
             final String publicKey = jsonParams.getString("publicKey");
             return new IntegrityCheckParameters(audience, issuer, publicKey);
         } catch(JSONException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException(e);
         }
     }
 
@@ -75,6 +85,7 @@ public class IntegrityCheckParameters implements IIntegrityCheckParameters {
      * Check whether the integrity check parameters are valid.
      * @return <code>true</code> if the parameters are valid.
      */
+    @Override
     public boolean isValid() {
         return issuer != null && audience != null && publicKey != null;
     }

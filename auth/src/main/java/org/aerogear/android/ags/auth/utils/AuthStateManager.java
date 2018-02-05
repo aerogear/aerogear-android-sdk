@@ -35,7 +35,7 @@ public class AuthStateManager {
     /**
      * Saves a token
      * @param authState token to be saved
-     * @throws IllegalArgumentException
+     * @throws IllegalStateException
      */
     public synchronized void save(final OIDCCredentials authState) {
         if (authState == null) {
