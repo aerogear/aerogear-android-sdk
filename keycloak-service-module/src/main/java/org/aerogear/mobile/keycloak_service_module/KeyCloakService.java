@@ -1,6 +1,5 @@
 package org.aerogear.mobile.keycloak_service_module;
 
-import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.ServiceModule;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.http.HttpRequest;
@@ -15,8 +14,6 @@ import okio.BufferedSink;
 
 public class KeyCloakService implements ServiceModule {
 
-    private static KeyCloakService instance;
-
     private KeyCloakConfig config;
     private String serverUrl;
     private String clientId;
@@ -29,29 +26,28 @@ public class KeyCloakService implements ServiceModule {
     private HttpServiceModule httpModule;
     private String accessToken;
 
-    private KeyCloakService(KeyCloakServiceConfiguration keyCloakServiceConfiguration) {
-        this.serverUrl = keyCloakServiceConfiguration.serverUrl;
-        this.clientId = keyCloakServiceConfiguration.clientId;
-        this.audience = keyCloakServiceConfiguration.audience;
-        this.grantType = keyCloakServiceConfiguration.grantType;
-        this.subjectTokenType = keyCloakServiceConfiguration.subjectTokenType;
-        this.requestedTokenType = keyCloakServiceConfiguration.requestedTokenType;
-        this.realm = keyCloakServiceConfiguration.realm;
-        this.resource = keyCloakServiceConfiguration.resource;
-        this.httpModule = keyCloakServiceConfiguration.httpModule;
+    public KeyCloakService() {
     }
 
-    public static KeyCloakService getInstance() {
-        ServiceConfiguration config = MobileCore.getServiceConfiguration("keycloak");
-        KeyCloakServiceConfiguration keyCloakServiceConfiguration = new KeyCloakServiceConfiguration(config);
-        return getInstance(keyCloakServiceConfiguration);
+    @Override
+    public String type() {
+        return "keycloak";
     }
 
-    public static KeyCloakService getInstance(KeyCloakServiceConfiguration keyCloakServiceConfiguration) {
-        if (instance == null) {
-            instance = new KeyCloakService(keyCloakServiceConfiguration);
-        }
-        return instance;
+    @Override
+    public void configure(ServiceConfiguration serviceConfiguration) {
+        this.serverUrl = serviceConfiguration.getProperty("auth-server-url");
+        this.clientId = serviceConfiguration.getProperty("clientId");
+        this.audience = serviceConfiguration.getProperty("audience");
+        this.grantType = serviceConfiguration.getProperty("grant_type");
+        this.subjectTokenType = serviceConfiguration.getProperty("subject_token_type");
+        this.requestedTokenType = serviceConfiguration.getProperty("requested_token_type");
+        this.resource = serviceConfiguration.getProperty("resource");
+        this.realm = serviceConfiguration.getProperty("realm");
+    }
+
+    @Override
+    public void destroy() {
     }
 
     /**
@@ -94,36 +90,6 @@ public class KeyCloakService implements ServiceModule {
         if (accessToken != null) {
             request.addHeader("Authorization", "Bearer " + accessToken);
         }
-    }
-
-    public static final class KeyCloakServiceConfiguration {
-
-        private String serverUrl;
-        private String clientId;
-        private String audience;
-        private String grantType;
-        private String subjectTokenType;
-        private String requestedTokenType;
-        private String resource;
-        private String realm;
-        private String core;
-        private HttpServiceModule httpModule;
-
-        public KeyCloakServiceConfiguration() {
-        }
-
-        public KeyCloakServiceConfiguration(ServiceConfiguration serviceConfiguration) {
-            this.serverUrl = serviceConfiguration.getProperty("auth-server-url");
-            this.clientId = serviceConfiguration.getProperty("clientId");
-            this.audience = serviceConfiguration.getProperty("audience");
-            this.grantType = serviceConfiguration.getProperty("grant_type");
-            this.subjectTokenType = serviceConfiguration.getProperty("subject_token_type");
-            this.requestedTokenType = serviceConfiguration.getProperty("requested_token_type");
-            this.resource = serviceConfiguration.getProperty("resource");
-            this.realm = serviceConfiguration.getProperty("realm");
-            this.httpModule = MobileCore.getHttpLayer();
-        }
-
     }
 
 }

@@ -4,8 +4,8 @@ import android.app.Application;
 import android.support.test.filters.SmallTest;
 
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
-import org.aerogear.mobile.core.exception.BootstrapException;
-import org.aerogear.mobile.core.exception.NotInitializedException;
+import org.aerogear.mobile.core.exception.ConfigurationNotFoundException;
+import org.aerogear.mobile.core.exception.InitializationException;
 import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpServiceModule;
 import org.aerogear.mobile.core.http.OkHttpServiceModule;
@@ -16,31 +16,20 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(RobolectricTestRunner.class)
 @SmallTest
 public class MobileCoreTest {
 
-    private String keycloakUrl = "http://keycloak-myproject.192.168.37.1.nip.io/auth";
-
-    @Before
-    public void setup() {
-        MobileCore.cleanup();
-    }
-
     @Test
     public void testInit() {
         Application context = RuntimeEnvironment.application;
 
-        MobileCore.init(context);
-
-        // -- Config
-        ServiceConfiguration kcConfig = MobileCore.getServiceConfiguration("keycloak");
-
-        assertEquals(keycloakUrl, kcConfig.getProperty("auth-server-url"));
+        MobileCore core = MobileCore.init(context);
 
         // -- Http
-        assertEquals(OkHttpServiceModule.class, MobileCore.getHttpLayer().getClass());
+        assertEquals(OkHttpServiceModule.class, core.getHttpLayer().getClass());
     }
 
     @Test
@@ -50,17 +39,13 @@ public class MobileCoreTest {
         MobileCore.Options options = new MobileCore.Options();
         options.setHttpServiceModule(new DummyHttpServiceModule());
 
-        MobileCore.init(context, options);
-
-        // -- Config
-        ServiceConfiguration kcConfig = MobileCore.getServiceConfiguration("keycloak");
-        assertEquals(keycloakUrl, kcConfig.getProperty("auth-server-url"));
+        MobileCore core = MobileCore.init(context, options);
 
         // -- Http Layer
-        assertEquals(DummyHttpServiceModule.class, MobileCore.getHttpLayer().getClass());
+        assertEquals(DummyHttpServiceModule.class, core.getHttpLayer().getClass());
     }
 
-    @Test(expected = BootstrapException.class)
+    @Test(expected = InitializationException.class)
     public void testInitWithWrongConfigFile() {
         Application context = RuntimeEnvironment.application;
 
@@ -70,23 +55,92 @@ public class MobileCoreTest {
         MobileCore.init(context, options);
     }
 
-    @Test(expected = NotInitializedException.class)
-    public void testGetHttpLayerBeforeInitialize() {
-        MobileCore.getHttpLayer();
+    @Test()
+    public void testInitWithDifferentConfigFile() {
+        Application context = RuntimeEnvironment.application;
+
+        MobileCore.Options options = new MobileCore.Options();
+        options.setConfigFileName("dummy-mobile-services.json");
+
+        MobileCore core = MobileCore.init(context, options);
+        DummyHttpServiceModule service = (DummyHttpServiceModule)
+            core.getInstance(DummyHttpServiceModule.class);
+
+        assertEquals("http://dummy.net", service.getUrl());
     }
 
-    @Test(expected = NotInitializedException.class)
-    public void testGetServiceConfigurationBeforeInitialize() {
-        MobileCore.getServiceConfiguration("whatever");
+    @Test(expected = ConfigurationNotFoundException.class)
+    public void testConfigurationNotFoundException() {
+        Application context = RuntimeEnvironment.application;
+
+        MobileCore core = MobileCore.init(context);
+        DummyHttpServiceModule service = (DummyHttpServiceModule)
+            core.getInstance(DummyHttpServiceModule.class);
+
+        assertNotNull(service);
+    }
+
+    @Test
+    public void testGetInstance() {
+        Application context = RuntimeEnvironment.application;
+
+        MobileCore.Options options = new MobileCore.Options();
+        options.setConfigFileName("dummy-mobile-services.json");
+
+        MobileCore core = MobileCore.init(context, options);
+        DummyHttpServiceModule service = (DummyHttpServiceModule)
+            core.getInstance(DummyHttpServiceModule.class);
+
+        assertNotNull(service);
+    }
+
+    @Test
+    public void testGetCachedInstance() {
+        Application context = RuntimeEnvironment.application;
+
+        MobileCore.Options options = new MobileCore.Options();
+        options.setConfigFileName("dummy-mobile-services.json");
+
+        MobileCore core = MobileCore.init(context, options);
+
+        DummyHttpServiceModule service1 = (DummyHttpServiceModule)
+            core.getInstance(DummyHttpServiceModule.class);
+
+        DummyHttpServiceModule service2 = (DummyHttpServiceModule)
+            core.getInstance(DummyHttpServiceModule.class);
+
+        assertNotNull(service1);
+        assertNotNull(service2);
+        assertEquals(service1, service2);
     }
 
     // -- Helpers ---------------------------------------------------------------------------------
 
     public static final class DummyHttpServiceModule implements HttpServiceModule {
 
+        private String uri;
+
         @Override
         public HttpRequest newRequest() {
             return null;
+        }
+
+        @Override
+        public String type() {
+            return "dummy";
+        }
+
+        @Override
+        public void configure(ServiceConfiguration serviceConfiguration) {
+            uri = serviceConfiguration.getUri();
+        }
+
+        @Override
+        public void destroy() {
+        }
+
+        public String getUrl() {
+            return this.uri;
         }
 
     }

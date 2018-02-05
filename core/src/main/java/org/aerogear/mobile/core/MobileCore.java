@@ -2,19 +2,18 @@ package org.aerogear.mobile.core;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
 
 import org.aerogear.mobile.core.configuration.MobileCoreJsonParser;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
-import org.aerogear.mobile.core.exception.BootstrapException;
 import org.aerogear.mobile.core.exception.ConfigurationNotFoundException;
-import org.aerogear.mobile.core.exception.NotInitializedException;
+import org.aerogear.mobile.core.exception.InitializationException;
 import org.aerogear.mobile.core.http.HttpServiceModule;
 import org.aerogear.mobile.core.http.OkHttpServiceModule;
 import org.json.JSONException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -22,44 +21,17 @@ import java.util.Map;
  */
 public final class MobileCore {
 
-    private static MobileCore instance;
-
     private final String configFileName;
     private final HttpServiceModule httpLayer;
     private final Map<String, ServiceConfiguration> servicesConfig;
-
-    /**
-     * Initialize the AeroGear system
-     *
-     * @param context Application context
-     */
-    public static void init(Context context) throws BootstrapException {
-        init(context, new Options());
-    }
-
-    /**
-     * Initialize the AeroGear system
-     *
-     * @param context Application context
-     * @param options AeroGear initialization options
-     */
-    public static void init(Context context, Options options) throws BootstrapException {
-        if (instance == null) {
-            instance = new MobileCore(context, options);
-        }
-    }
-
-    @VisibleForTesting()
-    public static void cleanup() {
-        instance = null;
-    }
+    private final Map<Class<? extends ServiceModule>, ServiceModule> services = new HashMap<>();
 
     /**
      * Creates a MobileCore instance
      *
      * @param context Application context
      */
-    private MobileCore(Context context, Options options) throws BootstrapException {
+    private MobileCore(Context context, Options options) throws InitializationException {
         this.configFileName = options.configFileName;
 
         // -- Parse JSON config file
@@ -67,31 +39,89 @@ public final class MobileCore {
             this.servicesConfig = MobileCoreJsonParser.parse(configStream);
         } catch (JSONException | IOException exception) {
             String message = String.format("%s could not be loaded", configFileName);
-            throw new BootstrapException(message, exception);
+            throw new InitializationException(message, exception);
         }
 
         // -- Setting default http layer
 
-        if (options.getHttpServiceModule() == null) {
-            ServiceConfiguration configuration = this.servicesConfig.get("http");
+        if (options.httpServiceModule == null) {
+            OkHttpServiceModule httpServiceModule = new OkHttpServiceModule();
+
+            ServiceConfiguration configuration = this.servicesConfig.get(httpServiceModule.type());
             if (configuration == null) {
                 configuration = new ServiceConfiguration.Builder().build();
             }
-            this.httpLayer = new OkHttpServiceModule(configuration);
+
+            httpServiceModule.configure(configuration);
+
+            this.httpLayer = httpServiceModule;
         } else {
-            this.httpLayer = options.getHttpServiceModule();
+            this.httpLayer = options.httpServiceModule;
         }
     }
 
     /**
-     * Check if the init was called
+     * Initialize the AeroGear system
      *
-     * @throws NotInitializedException
+     * @param context Application context
+     * @return MobileCore instance
      */
-    private static void checkIfInitialized() throws NotInitializedException {
-        if (instance == null) {
-            throw new NotInitializedException();
+    public static MobileCore init(Context context) throws InitializationException {
+        return init(context, new Options());
+    }
+
+    /**
+     * Initialize the AeroGear system
+     *
+     * @param context Application context
+     * @param options AeroGear initialization options
+     * @return MobileCore instance
+     */
+    public static MobileCore init(Context context, Options options) throws InitializationException {
+        return new MobileCore(context, options);
+    }
+
+    /**
+     * Called when mobile core instance need to be destroyed
+     */
+    public void destroy() {
+        for (Class<? extends ServiceModule> serviceKey : services.keySet()) {
+            ServiceModule serviceModule = services.get(serviceKey);
+            serviceModule.destroy();
         }
+    }
+
+    public ServiceModule getInstance(Class<? extends ServiceModule> serviceClass) {
+        return getInstance(serviceClass, null);
+    }
+
+    public ServiceModule getInstance(Class<? extends ServiceModule> serviceClass,
+                                     ServiceConfiguration serviceConfiguration) {
+
+        if (services.containsKey(serviceClass)) {
+            return services.get(serviceClass);
+        }
+
+        ServiceModule serviceModule = null;
+
+        try {
+            serviceModule = serviceClass.newInstance();
+
+            if (serviceConfiguration == null) {
+                serviceConfiguration = getServiceConfiguration(serviceModule.type());
+            }
+
+            serviceModule.configure(serviceConfiguration);
+
+            services.put(serviceClass, serviceModule);
+
+        } catch (InstantiationException e) {
+            // TODO Logger
+        } catch (IllegalAccessException e) {
+            // TODO Logger
+        }
+
+        return serviceModule;
     }
 
     /**
@@ -100,20 +130,17 @@ public final class MobileCore {
      * @param type Service type/name
      * @return the configuration for this service from the JSON config file
      */
-    public static ServiceConfiguration getServiceConfiguration(String type)
-        throws NotInitializedException {
-        checkIfInitialized();
-        ServiceConfiguration serviceConfiguration = instance.servicesConfig.get(type);
+    private ServiceConfiguration getServiceConfiguration(String type) {
+        ServiceConfiguration serviceConfiguration = this.servicesConfig.get(type);
         if (serviceConfiguration == null) {
-            throw new ConfigurationNotFoundException(type + " not found on " + instance.configFileName);
+            throw new ConfigurationNotFoundException(type + " not found on " + this.configFileName);
         }
         return serviceConfiguration;
     }
 
 
-    public static HttpServiceModule getHttpLayer() {
-        checkIfInitialized();
-        return instance.httpLayer;
+    public HttpServiceModule getHttpLayer() {
+        return this.httpLayer;
     }
 
     public static final class Options {
@@ -130,17 +157,9 @@ public final class MobileCore {
             this.httpServiceModule = httpServiceModule;
         }
 
-        public String getConfigFileName() {
-            return configFileName;
-        }
-
         public Options setConfigFileName(@NonNull String configFileName) {
             this.configFileName = configFileName;
             return this;
-        }
-
-        public HttpServiceModule getHttpServiceModule() {
-            return httpServiceModule;
         }
 
         public Options setHttpServiceModule(@NonNull HttpServiceModule httpServiceModule) {

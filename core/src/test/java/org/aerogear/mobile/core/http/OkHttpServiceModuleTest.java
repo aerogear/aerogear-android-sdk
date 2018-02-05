@@ -18,6 +18,12 @@ import static org.junit.Assert.assertNotNull;
 public class OkHttpServiceModuleTest {
 
     @Test
+    public void testType() {
+        OkHttpServiceModule module = new OkHttpServiceModule();
+        assertEquals("http", module.type());
+    }
+
+    @Test
     public void testGet() {
         HttpServiceModule module = new OkHttpServiceModule();
 

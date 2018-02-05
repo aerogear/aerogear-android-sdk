@@ -38,6 +38,20 @@ public class OkHttpServiceModule implements HttpServiceModule {
     }
 
     @Override
+    public String type() {
+        return "http";
+    }
+
+    @Override
+    public void configure(ServiceConfiguration serviceConfiguration) {
+        this.serviceConfiguration = serviceConfiguration;
+    }
+
+    @Override
+    public void destroy() {
+    }
+
+    @Override
     public HttpRequest newRequest() {
         OkHttpRequest request = new OkHttpRequest(client, new AppExecutors());
         for (Map.Entry<String, String> header : serviceConfiguration.getHeaders().entrySet()) {
