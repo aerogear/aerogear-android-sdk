@@ -28,7 +28,7 @@ subprojects {
 
     dependencyManagement {
         imports {
-            mavenBom 'org.jboss.aerogear:aerogear-android-sdk-bom:1.1.7'
+            mavenBom 'org.jboss.aerogear:aerogear-android-sdk-bom:1.1.8'
         }
     }
 }
