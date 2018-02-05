@@ -10,12 +10,13 @@ import org.aerogear.android.ags.auth.credentials.OIDCCredentials;
  */
 public class AuthStateManager {
 
+    private static AuthStateManager instance = null;
     private static final String STORE_NAME = "org.aerogear.android.auth.AuthState";
     private static final String KEY_STATE = "state";
 
     private final SharedPreferences prefs;
 
-    public AuthStateManager(final Context context) {
+    private AuthStateManager(final Context context) {
         this.prefs = context.getSharedPreferences(STORE_NAME, Context.MODE_PRIVATE);
     }
 
@@ -40,7 +41,9 @@ public class AuthStateManager {
         if (authState == null) {
             clear();
         } else {
-            if(!prefs.edit().putString(KEY_STATE, authState.serialize()).commit()) {
+            SharedPreferences.Editor e = prefs.edit();
+            SharedPreferences.Editor bleh = e.putString(KEY_STATE, authState.serialize());
+            if(!bleh.commit()) {
                 throw new IllegalStateException("Failed to update state from shared preferences");
             }
         }
@@ -54,5 +57,19 @@ public class AuthStateManager {
         if (!prefs.edit().remove(KEY_STATE).commit()) {
             throw new IllegalStateException("Failed to clear state from shared preferences");
         }
+    }
+
+    public static AuthStateManager getInstance(final Context context) {
+        if (instance == null) {
+            instance = new AuthStateManager(context);
+        }
+        return instance;
+    }
+
+    public static AuthStateManager getInstance() {
+        if (instance == null) {
+            throw new IllegalStateException("Context has not previously been provided. Cannot initialize without Context.");
+        }
+        return instance;
     }
 }
