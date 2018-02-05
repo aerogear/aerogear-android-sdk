@@ -72,10 +72,10 @@ public class OIDCCredentials implements ICredential {
      * @return <code>true</code> if the token integrity is good.
      */
     public boolean verifyToken(final String jwtToken) {
-        final String issuer = integrityCheckParameters.getIssuer();
-        final String audience = integrityCheckParameters.getAudience();
-        final String publicKey = integrityCheckParameters.getPublicKey();
-        return verifyToken(jwtToken, publicKey, issuer, audience);
+        return verifyToken(jwtToken,
+            integrityCheckParameters.getPublicKey(),
+            integrityCheckParameters.getIssuer(),
+            integrityCheckParameters.getAudience());
     }
 
     /**
@@ -96,7 +96,7 @@ public class OIDCCredentials implements ICredential {
             jwtPublicKey = utils.fromPemEncoded(constructedPublicKey);
         } catch (JoseException e) {
             Log.e(TAG, e.getMessage(), e);
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException(e);
         } catch (InvalidKeySpecException e) {
             Log.e(TAG, e.getMessage(), e);
             // If the public key is invalid then we cannot determine the tokens integrity.
@@ -171,7 +171,7 @@ public class OIDCCredentials implements ICredential {
             }
             return jsonCredential.toString();
         } catch(JSONException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException(e);
         }
     }
 
@@ -183,7 +183,7 @@ public class OIDCCredentials implements ICredential {
             final IntegrityCheckParameters icParams = IntegrityCheckParameters.deserialize(serializedIntegrityChecks);
             return new OIDCCredentials(serializedAuthState, icParams);
         } catch(JSONException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException(e);
         }
     }
 

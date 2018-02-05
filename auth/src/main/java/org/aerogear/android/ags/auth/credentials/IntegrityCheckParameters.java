@@ -5,9 +5,9 @@ import org.json.JSONObject;
 
 public class IntegrityCheckParameters implements IIntegrityCheckParameters {
 
-    private String issuer;
-    private String audience;
-    private String publicKey;
+    private final String issuer;
+    private final String audience;
+    private final String publicKey;
 
     public IntegrityCheckParameters(final String audience, final String issuer, final String publicKey) {
         this.issuer = issuer;
@@ -15,7 +15,11 @@ public class IntegrityCheckParameters implements IIntegrityCheckParameters {
         this.publicKey = publicKey;
     }
 
-    public IntegrityCheckParameters() {}
+    public IntegrityCheckParameters() {
+        this.issuer = null;
+        this.audience = null;
+        this.publicKey = null;
+    }
 
     /**
      * Get the audience parameter.
