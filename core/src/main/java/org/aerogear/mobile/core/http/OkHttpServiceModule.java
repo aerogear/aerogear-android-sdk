@@ -1,5 +1,6 @@
 package org.aerogear.mobile.core.http;
 
+import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.executor.AppExecutors;
 
@@ -43,7 +44,7 @@ public class OkHttpServiceModule implements HttpServiceModule {
     }
 
     @Override
-    public void configure(ServiceConfiguration serviceConfiguration) {
+    public void configure(MobileCore core, ServiceConfiguration serviceConfiguration) {
         this.serviceConfiguration = serviceConfiguration;
     }
 

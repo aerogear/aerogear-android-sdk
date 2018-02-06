@@ -1,5 +1,6 @@
 package org.aerogear.mobile.keycloak_service_module;
 
+import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.ServiceModule;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.http.HttpRequest;
@@ -35,7 +36,7 @@ public class KeyCloakService implements ServiceModule {
     }
 
     @Override
-    public void configure(ServiceConfiguration serviceConfiguration) {
+    public void configure(MobileCore core, ServiceConfiguration serviceConfiguration) {
         this.serverUrl = serviceConfiguration.getProperty("auth-server-url");
         this.clientId = serviceConfiguration.getProperty("clientId");
         this.audience = serviceConfiguration.getProperty("audience");
@@ -44,6 +45,7 @@ public class KeyCloakService implements ServiceModule {
         this.requestedTokenType = serviceConfiguration.getProperty("requested_token_type");
         this.resource = serviceConfiguration.getProperty("resource");
         this.realm = serviceConfiguration.getProperty("realm");
+        this. httpModule = core.getHttpLayer();
     }
 
     @Override

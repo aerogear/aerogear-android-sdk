@@ -52,7 +52,7 @@ public final class MobileCore {
                 configuration = new ServiceConfiguration.Builder().build();
             }
 
-            httpServiceModule.configure(configuration);
+            httpServiceModule.configure(this, configuration);
 
             this.httpLayer = httpServiceModule;
         } else {
@@ -110,7 +110,7 @@ public final class MobileCore {
                 serviceConfiguration = getServiceConfiguration(serviceModule.type());
             }
 
-            serviceModule.configure(serviceConfiguration);
+            serviceModule.configure(this, serviceConfiguration);
 
             services.put(serviceClass, serviceModule);
 

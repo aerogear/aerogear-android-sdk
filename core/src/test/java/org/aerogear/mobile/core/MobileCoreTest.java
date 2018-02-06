@@ -131,7 +131,7 @@ public class MobileCoreTest {
         }
 
         @Override
-        public void configure(ServiceConfiguration serviceConfiguration) {
+        public void configure(MobileCore core, ServiceConfiguration serviceConfiguration) {
             uri = serviceConfiguration.getUri();
         }
 
