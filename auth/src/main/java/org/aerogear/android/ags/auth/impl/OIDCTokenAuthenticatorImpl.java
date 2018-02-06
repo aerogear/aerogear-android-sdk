@@ -6,24 +6,23 @@ import org.aerogear.android.ags.auth.credentials.ICredential;
 import org.aerogear.android.ags.auth.credentials.OIDCCredentials;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.Principal;
-import java.util.concurrent.TimeUnit;
-
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.X509TrustManager;
 
 import okhttp3.OkHttpClient;
+
+import static org.aerogear.auth.utils.AuthStateManager.*;
 
 /**
  * Authenticates token credentials
  */
 public class OIDCTokenAuthenticatorImpl extends AbstractAuthenticator {
 
-    private static final Uri REDIRECT_URI = Uri.parse("com.feedhenry.securenativeandroidtemplate:/callback");  // unsure what this should be?
+    // This depends on how the developers app config will be passed into the SDK.
+    // TODO: Once the above is implemented, this constant will need to be refactored to use the redirect uri chosen by the developer (they may have multiple redirect uri's defined)
+    private static final Uri REDIRECT_URI = Uri.parse("com.feedhenry.securenativeandroidtemplate:/callback");
+
     private static final String TOKEN_HINT_FRAGMENT = "id_token_hint";
     private static final String REDIRECT_FRAGMENT = "redirect_uri";
 
@@ -42,17 +41,16 @@ public class OIDCTokenAuthenticatorImpl extends AbstractAuthenticator {
 
     }
 
-    public void logout(Principal principal) {
+    public void logout(final Principal principal) {
         // Get user's identity token
         OIDCCredentials credentials = (OIDCCredentials) ((IUserPrincipal) principal).getCredentials();
         String identityToken = credentials.getIdentityToken();
 
         // Construct the logout URL
         URL logoutUrl = parseLogoutURL(identityToken);
-        String serverHostname = logoutUrl.getHost();
 
-        // Build the OkHttpClient client
-        OkHttpClient client = buildHttpClient(logoutUrl, serverHostname);
+        // Using the default OkHttpServiceModule for now. This will need to be refactored for cert pinning stuff
+        OkHttpClient client = new OkHttpClient();
 
         // Construct and invoke logout request
         performLogout(client, logoutUrl);
@@ -65,29 +63,8 @@ public class OIDCTokenAuthenticatorImpl extends AbstractAuthenticator {
         request.get(logoutUrl.toString());
 
         HttpResponse response = request.execute();
-        response.onComplete(new LogoutCompleteHandler(response, AuthStateManager.getInstance())); // will compile when AuthStateManaer is refactored to singleton
+        response.onComplete(new LogoutCompleteHandler(response, getInstance()));
         response.waitForCompletionAndClose();
-    }
-
-    private OkHttpClient buildHttpClient(URL logoutUrl, String serverHostname) {
-        HttpsURLConnection connection = null;
-        try {
-            connection = (HttpsURLConnection) logoutUrl.openConnection();
-        } catch (IOException e) {
-            e.printStackTrace();
-
-        }
-
-        SSLSocketFactory sslSocketFactory = TrustKit.getInstance().getSSLSocketFactory(serverHostname);
-        X509TrustManager trustManager = TrustKit.getInstance().getTrustManager(serverHostname);
-        connection.setSSLSocketFactory(sslSocketFactory);
-
-        OkHttpClient client = new OkHttpClient.Builder()
-            .sslSocketFactory(sslSocketFactory, trustManager)
-            .connectTimeout(10, TimeUnit.SECONDS)
-            .build();
-
-        return client;
     }
 
     private URL parseLogoutURL(String identityToken) {

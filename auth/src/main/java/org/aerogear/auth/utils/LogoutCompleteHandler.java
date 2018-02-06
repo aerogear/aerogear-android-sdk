@@ -1,19 +1,22 @@
 package org.aerogear.auth.utils;
 
+import android.util.Log;
+
 import org.aerogear.mobile.core.http.HttpResponse;
 
 public class LogoutCompleteHandler implements Runnable {
 
-    private HttpResponse response;
-    private AuthStateManager authStateManager;
+    private final HttpResponse response;
+    private final AuthStateManager authStateManager;
+    private static final String TAG = LogoutCompleteHandler.class.getName();
 
-    public LogoutCompleteHandler(HttpResponse response, AuthStateManager authStateManager) {
+    public LogoutCompleteHandler(final HttpResponse response, final AuthStateManager authStateManager) {
         this.response = response;
         this.authStateManager = authStateManager;
     }
 
     private void nullifyAuthState() {
-        authStateManager.write(null);
+        authStateManager.save(null);
     }
 
 
@@ -22,7 +25,7 @@ public class LogoutCompleteHandler implements Runnable {
         if (response.getStatus() == 200) {
             nullifyAuthState();
         } else {
-            throw new RuntimeException(response.getStatus() + " " + response.stringBody());
+            Log.w(TAG, response.getStatus() + " " + response.stringBody());
         }
     }
 }
