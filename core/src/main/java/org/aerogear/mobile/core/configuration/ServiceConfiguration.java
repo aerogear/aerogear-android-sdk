@@ -5,26 +5,67 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This represents a parsed service from the mobilce-config.json
+ * This represents a parsed service configuration from JSON configuration.
  */
-public class ServiceConfiguration {
-    private String name;
-    private HashMap<String, String> properties = new HashMap<>();
-    private String type;
-    private String uri;
-    private HashMap<String, String> headers = new HashMap<>();
+public final class ServiceConfiguration {
+    private final String name;
+    private final HashMap<String, String> properties;
+    private final String type;
+    private final String uri;
+    private final HashMap<String, String> headers;
 
-
-    public void setName(String name) {
+    private ServiceConfiguration(final String name,
+                                 final HashMap<String, String> properties,
+                                 final String type,
+                                 final String uri,
+                                 final HashMap<String, String> headers) {
         this.name = name;
+        this.properties = properties;
+        this.type = type;
+        this.uri = uri;
+        this.headers = headers;
+    }
+
+    public static class Builder {
+
+        protected String name;
+        protected HashMap<String, String> properties = new HashMap<>();
+        protected String type;
+        protected String uri;
+        protected HashMap<String, String> headers = new HashMap<>();
+
+        public Builder setName(final String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder addProperty(final String name, final String value) {
+            this.properties.put(name, value);
+            return this;
+        }
+
+        public Builder setType(final String type) {
+            this.type = type;
+            return this;
+        }
+
+        public Builder setUri(final String uri) {
+            this.uri = uri;
+            return this;
+        }
+
+        public Builder addHeader(final String name, final String value) {
+            this.headers.put(name, value);
+            return this;
+        }
+
+        public ServiceConfiguration build() {
+            return new ServiceConfiguration(this.name, this.properties, this.type, this.uri, this.headers);
+        }
     }
 
     public String getName() {
         return name;
-    }
-
-    public void addProperty(String name, String value) {
-        properties.put(name, value);
     }
 
     public Map<String, String> getProperties() {
@@ -35,28 +76,19 @@ public class ServiceConfiguration {
         return properties.get(name);
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public String getType() {
         return type;
-    }
-
-    public void setUri(String uri) {
-        this.uri = uri;
     }
 
     public String getUri() {
         return uri;
     }
 
-    public void addHeader(String headerName, String headerValue) {
-        headers.put(headerName, headerValue);
-    }
-
     public Map<String, String> getHeaders() {
         return Collections.unmodifiableMap(headers);
     }
 
+    public static Builder newConfiguration() {
+        return new Builder();
+    }
 }
