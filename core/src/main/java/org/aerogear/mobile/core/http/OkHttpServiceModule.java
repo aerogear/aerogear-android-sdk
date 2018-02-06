@@ -31,7 +31,7 @@ public class OkHttpServiceModule implements HttpServiceModule {
     }
 
     @Override
-    public void bootstrap(MobileCore core, ServiceConfiguration configuration) {
+    public void bootstrap(final MobileCore core, final ServiceConfiguration configuration) {
         this.httpServiceConfiguration = configuration;
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
 

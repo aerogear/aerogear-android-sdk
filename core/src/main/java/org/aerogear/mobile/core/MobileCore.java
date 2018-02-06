@@ -162,7 +162,7 @@ public final class MobileCore {
      * @param configurationName the name of the configuration to lookup
      * @return the parsed configuration object of the named configuration, or an empty ServiceConfiguration
      */
-    public ServiceConfiguration getConfig(String configurationName) {
+    public ServiceConfiguration getConfig(final String configurationName) {
         ServiceConfiguration config = configurationMap.get(configurationName);
         if (config == null) {
             config = ServiceConfiguration.newConfiguration().setName(configurationName).build();
@@ -261,7 +261,7 @@ public final class MobileCore {
             }
         }
 
-        public Builder setServiceRegistry(ServiceModuleRegistry registryService) {
+        public Builder setServiceRegistry(final ServiceModuleRegistry registryService) {
             this.serviceRegistry = registryService;
             return this;
         }

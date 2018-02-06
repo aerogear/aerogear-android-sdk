@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This represents a parsed service from the mobilce-config.json
+ * This represents a parsed service configuration from JSON configuration.
  */
 public final class ServiceConfiguration {
     private final String name;
@@ -14,7 +14,11 @@ public final class ServiceConfiguration {
     private final String uri;
     private final HashMap<String, String> headers;
 
-    private ServiceConfiguration(String name, HashMap<String, String> properties, String type, String uri, HashMap<String, String> headers) {
+    private ServiceConfiguration(final String name,
+                                 final HashMap<String, String> properties,
+                                 final String type,
+                                 final String uri,
+                                 final HashMap<String, String> headers) {
         this.name = name;
         this.properties = properties;
         this.type = type;
@@ -30,27 +34,27 @@ public final class ServiceConfiguration {
         protected String uri;
         protected HashMap<String, String> headers = new HashMap<>();
 
-        public Builder setName(String name) {
+        public Builder setName(final String name) {
             this.name = name;
             return this;
         }
 
-        public Builder addProperty(String name, String value) {
+        public Builder addProperty(final String name, final String value) {
             this.properties.put(name, value);
             return this;
         }
 
-        public Builder setType(String type) {
+        public Builder setType(final String type) {
             this.type = type;
             return this;
         }
 
-        public Builder setUri(String uri) {
+        public Builder setUri(final String uri) {
             this.uri = uri;
             return this;
         }
 
-        public Builder addHeader(String name, String value) {
+        public Builder addHeader(final String name, final String value) {
             this.headers.put(name, value);
             return this;
         }

@@ -19,13 +19,13 @@ public class MobileCoreJsonParser {
 
     private TreeMap<String, ServiceConfiguration> values = new TreeMap<>();
 
-    private MobileCoreJsonParser(InputStream jsonStream) throws IOException, JSONException {
+    private MobileCoreJsonParser(final InputStream jsonStream) throws IOException, JSONException {
         String jsonText = readJsonStream(jsonStream);
         JSONObject jsonDocument = new JSONObject(jsonText);
         parseMobileCoreArray(jsonDocument.getJSONArray("services"));
     }
 
-    private String readJsonStream(InputStream jsonStream) throws IOException {
+    private String readJsonStream(final InputStream jsonStream) throws IOException {
         String out = "";
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(jsonStream))) {
             StringBuilder builder = new StringBuilder();
@@ -38,14 +38,14 @@ public class MobileCoreJsonParser {
         return out;
     }
 
-    private void parseMobileCoreArray(JSONArray array) throws JSONException, IOException {
+    private void parseMobileCoreArray(final JSONArray array) throws JSONException, IOException {
         int length = array.length();
         for (int i = 0; i < length; i++) {
             parseConfigObject(array.getJSONObject(i));
         }
     }
 
-    private void parseConfigObject(JSONObject object) throws JSONException, IOException {
+    private void parseConfigObject(final JSONObject object) throws JSONException, IOException {
         ServiceConfiguration.Builder serviceConfigBuilder = ServiceConfiguration.newConfiguration();
         serviceConfigBuilder.setName(object.getString("name"));
         JSONObject config = object.getJSONObject("config");
@@ -69,7 +69,7 @@ public class MobileCoreJsonParser {
 
     }
 
-    private void addHeaders(ServiceConfiguration.Builder serviceConfig, JSONObject headers) throws JSONException {
+    private void addHeaders(final ServiceConfiguration.Builder serviceConfig, final JSONObject headers) throws JSONException {
         JSONArray headerNames = headers.names();
 
         if (headerNames == null) {
@@ -92,7 +92,7 @@ public class MobileCoreJsonParser {
      * @throws IOException   if reading the stream fails
      * @throws JSONException if the json document is malformed
      */
-    public static Map<String, ServiceConfiguration> parse(InputStream jsonStream) throws IOException, JSONException {
+    public static Map<String, ServiceConfiguration> parse(final InputStream jsonStream) throws IOException, JSONException {
         MobileCoreJsonParser parser = new MobileCoreJsonParser(jsonStream);
         return parser.values;
     }
