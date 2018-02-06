@@ -15,11 +15,6 @@ import java.util.concurrent.Future;
  */
 public class AuthService implements ServiceModule {
 
-    /**
-     * Authentication service singleton.
-     */
-    private static AuthService INSTANCE;
-
     private AuthenticationChain authenticatorChain;
 
     /**
@@ -70,19 +65,4 @@ public class AuthService implements ServiceModule {
     public void setAuthenticatorChain(AuthenticationChain newChain) {
         this.authenticatorChain = newChain;
     }
-
-    /**
-     * Returns the authentication service singleton.
-     *
-     * @return the authentication service singleton
-     */
-    public static synchronized AuthService getInstance() {
-        if (INSTANCE == null) {
-            // FIXME: load the configurations from core and pass it here
-            INSTANCE = new AuthService();
-        }
-
-        return INSTANCE;
-    }
-
 }
