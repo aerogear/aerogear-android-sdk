@@ -100,7 +100,8 @@ public final class MobileCore {
      */
     private void addCoreServices() {
         if (this.configurationMap.get("http") == null) {
-            this.configurationMap.put("http", new ServiceConfiguration());
+            ServiceConfiguration config = ServiceConfiguration.newConfiguration().setName("http").build();
+            this.configurationMap.put("http", config);
         }
     }
 
@@ -164,8 +165,7 @@ public final class MobileCore {
     public ServiceConfiguration getConfig(String configurationName) {
         ServiceConfiguration config = configurationMap.get(configurationName);
         if (config == null) {
-            config = new ServiceConfiguration();
-            config.setName(configurationName);
+            config = ServiceConfiguration.newConfiguration().setName(configurationName).build();
             configurationMap.put(configurationName, config);
         }
         return config;

@@ -1,12 +1,8 @@
 package org.aerogear.mobile.core.configuration;
 
-import android.util.JsonReader;
-import android.util.JsonToken;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -50,8 +46,8 @@ public class MobileCoreJsonParser {
     }
 
     private void parseConfigObject(JSONObject object) throws JSONException, IOException {
-        ServiceConfiguration serviceConfig = new ServiceConfiguration();
-        serviceConfig.setName(object.getString("name"));
+        ServiceConfiguration.Builder serviceConfigBuilder = ServiceConfiguration.newConfiguration();
+        serviceConfigBuilder.setName(object.getString("name"));
         JSONObject config = object.getJSONObject("config");
         JSONArray namesArray = config.names();
         int namesSize = namesArray.length();
@@ -59,21 +55,21 @@ public class MobileCoreJsonParser {
             String name = namesArray.getString(i);
             switch (name) {
                 case "type":
-                    serviceConfig.setType(config.getString("type"));
+                    serviceConfigBuilder.setType(config.getString("type"));
                 case "uri":
-                    serviceConfig.setUri(config.getString("uri"));
+                    serviceConfigBuilder.setUri(config.getString("uri"));
                 case "headers":
-                    addHeaders(serviceConfig, config.getJSONObject("headers"));
+                    addHeaders(serviceConfigBuilder, config.getJSONObject("headers"));
                 default:
-                    serviceConfig.addProperty(name, config.getString(name));
+                    serviceConfigBuilder.addProperty(name, config.getString(name));
             }
         }
-
+        ServiceConfiguration serviceConfig = serviceConfigBuilder.build();
         values.put(serviceConfig.getName(), serviceConfig);
 
     }
 
-    private void addHeaders(ServiceConfiguration serviceConfig, JSONObject headers) throws JSONException {
+    private void addHeaders(ServiceConfiguration.Builder serviceConfig, JSONObject headers) throws JSONException {
         JSONArray headerNames = headers.names();
 
         if (headerNames == null) {
