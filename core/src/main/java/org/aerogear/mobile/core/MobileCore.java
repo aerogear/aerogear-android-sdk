@@ -96,16 +96,15 @@ public final class MobileCore {
     }
 
     public ServiceModule getInstance(Class<? extends ServiceModule> serviceClass,
-                                     ServiceConfiguration serviceConfiguration) {
+                                     ServiceConfiguration serviceConfiguration)
+        throws InitializationException {
 
         if (services.containsKey(serviceClass)) {
             return services.get(serviceClass);
         }
 
-        ServiceModule serviceModule = null;
-
         try {
-            serviceModule = serviceClass.newInstance();
+            ServiceModule serviceModule = serviceClass.newInstance();
 
             if (serviceConfiguration == null) {
                 serviceConfiguration = getServiceConfiguration(serviceModule.type());
@@ -115,13 +114,12 @@ public final class MobileCore {
 
             services.put(serviceClass, serviceModule);
 
-        } catch (InstantiationException e) {
-            // TODO Logger
-        } catch (IllegalAccessException e) {
-            // TODO Logger
+            return serviceModule;
+
+        } catch (IllegalAccessException | InstantiationException e) {
+            throw new InitializationException(e.getMessage(), e);
         }
 
-        return serviceModule;
     }
 
     /**
