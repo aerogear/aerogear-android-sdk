@@ -22,14 +22,6 @@ public class AuthService implements ServiceModule {
      */
     public AuthService() {}
 
-    public void bootstrap(final MobileCore core, final ServiceConfiguration serviceConfig) {
-        this.authenticatorChain = AuthenticationChain
-            .newChain()
-            .with(new OIDCTokenAuthenticatorImpl(serviceConfig))
-            .with(new OIDCAuthCodeImpl(serviceConfig))
-            .build();
-    }
-
     private void configureDefaultAuthenticationChain(final AuthenticationChain authenticationChain) {
 
     }
@@ -64,5 +56,24 @@ public class AuthService implements ServiceModule {
 
     public void setAuthenticatorChain(AuthenticationChain newChain) {
         this.authenticatorChain = newChain;
+    }
+
+    @Override
+    public String type() {
+        return "keycloak";
+    }
+
+    @Override
+    public void configure(MobileCore core, ServiceConfiguration serviceConfiguration) {
+        this.authenticatorChain = AuthenticationChain
+            .newChain()
+            .with(new OIDCTokenAuthenticatorImpl(serviceConfiguration))
+            .with(new OIDCAuthCodeImpl(serviceConfiguration))
+            .build();
+    }
+
+    @Override
+    public void destroy() {
+
     }
 }
