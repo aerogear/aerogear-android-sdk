@@ -11,37 +11,51 @@ import okhttp3.OkHttpClient;
 public class OkHttpServiceModule implements HttpServiceModule {
 
     private OkHttpClient client;
-    private ServiceConfiguration httpServiceConfiguration;
+    private ServiceConfiguration serviceConfiguration;
 
     /**
      * This is the default no argument constructor for all ServiceModules.
      */
     public OkHttpServiceModule() {
-        this.httpServiceConfiguration = ServiceConfiguration.newConfiguration().build();
-        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
-        this.client = clientBuilder.build();
+        this(new OkHttpClient.Builder().build());
     }
 
     /**
      * This constructer uses a specific client for manual configurations and testing.
+     *
      * @param client a default OkHttpClient instance to use.
      */
     public OkHttpServiceModule(OkHttpClient client) {
+        this(client, new ServiceConfiguration.Builder().build());
+    }
+
+    public OkHttpServiceModule(ServiceConfiguration serviceConfiguration) {
+        this(new OkHttpClient.Builder().build(), serviceConfiguration);
+    }
+
+    public OkHttpServiceModule(OkHttpClient client, ServiceConfiguration serviceConfiguration) {
         this.client = client;
+        this.serviceConfiguration = serviceConfiguration;
     }
 
     @Override
-    public void bootstrap(final MobileCore core, final ServiceConfiguration configuration) {
-        this.httpServiceConfiguration = configuration;
-        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
+    public String type() {
+        return "http";
+    }
 
-        this.client = clientBuilder.build();
+    @Override
+    public void configure(MobileCore core, ServiceConfiguration serviceConfiguration) {
+        this.serviceConfiguration = serviceConfiguration;
+    }
+
+    @Override
+    public void destroy() {
     }
 
     @Override
     public HttpRequest newRequest() {
         OkHttpRequest request = new OkHttpRequest(client, new AppExecutors());
-        for (Map.Entry<String, String> header : httpServiceConfiguration.getHeaders().entrySet()) {
+        for (Map.Entry<String, String> header : serviceConfiguration.getHeaders().entrySet()) {
             request.addHeader(header.getKey(), header.getValue());
         }
         return request;

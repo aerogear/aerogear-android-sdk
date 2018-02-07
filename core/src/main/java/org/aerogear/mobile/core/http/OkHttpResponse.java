@@ -1,7 +1,5 @@
 package org.aerogear.mobile.core.http;
 
-import android.util.Log;
-
 import org.aerogear.mobile.core.executor.AppExecutors;
 
 import java.io.IOException;
@@ -10,10 +8,6 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Response;
-
-/**
- * Created by summers on 1/23/18.
- */
 
 class OkHttpResponse implements HttpResponse {
 

@@ -2,14 +2,26 @@ package org.aerogear.mobile.core;
 
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 
-
 public interface ServiceModule {
 
     /**
-     * This is the method called by mobile-core to startup modules.
-     * @param core an instance of mobile core
-     * @param configuration service configuration for this instance of a service module
-     * @throws BootstrapException if bootstrapping fails.
+     * Type/name used in the mobile-service.json
+     *
+     * @return return the type/name used to identify the service config in the JSON file
      */
-    void bootstrap(MobileCore core, ServiceConfiguration configuration);
+    String type();
+
+    /**
+     * A method how create/configure the service
+     *
+     * @param core MobileCore instance
+     * @param serviceConfiguration the configuration for the service
+     */
+    void configure(MobileCore core, ServiceConfiguration serviceConfiguration);
+
+    /**
+     * Called when service destroyed
+     */
+    void destroy();
+
 }
