@@ -88,4 +88,12 @@ public class AuthService implements ServiceModule {
     public void destroy() {
 
     }
+    
+    public AuthConfiguration getAuthConfiguration() {
+        return new AuthConfiguration
+            .Builder()
+            .redirectUri("Not yet implemented - will be obtained from developer provided config")
+            .build();
+    }
+
 }
