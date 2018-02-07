@@ -56,10 +56,13 @@ public class MobileCoreJsonParser {
             switch (name) {
                 case "type":
                     serviceConfigBuilder.setType(config.getString("type"));
+                    break;
                 case "uri":
                     serviceConfigBuilder.setUri(config.getString("uri"));
+                    break;
                 case "headers":
                     addHeaders(serviceConfigBuilder, config.getJSONObject("headers"));
+                    break;
                 default:
                     serviceConfigBuilder.addProperty(name, config.getString(name));
             }
