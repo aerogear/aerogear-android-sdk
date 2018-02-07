@@ -9,6 +9,8 @@ import org.aerogear.mobile.core.exception.ConfigurationNotFoundException;
 import org.aerogear.mobile.core.exception.InitializationException;
 import org.aerogear.mobile.core.http.HttpServiceModule;
 import org.aerogear.mobile.core.http.OkHttpServiceModule;
+import org.aerogear.mobile.core.logging.Logger;
+import org.aerogear.mobile.core.logging.LoggerAdapter;
 import org.json.JSONException;
 
 import java.io.IOException;
@@ -23,6 +25,7 @@ public final class MobileCore {
 
     private final String configFileName;
     private final HttpServiceModule httpLayer;
+    private final Logger logger;
     private final Map<String, ServiceConfiguration> servicesConfig;
     private final Map<Class<? extends ServiceModule>, ServiceModule> services = new HashMap<>();
 
@@ -33,6 +36,7 @@ public final class MobileCore {
      */
     private MobileCore(Context context, Options options) throws InitializationException {
         this.configFileName = options.configFileName;
+        this.logger = options.logger;
 
         // -- Parse JSON config file
         try (InputStream configStream = context.getAssets().open(configFileName)) {
@@ -141,11 +145,16 @@ public final class MobileCore {
         return this.httpLayer;
     }
 
+    public Logger getLogger() {
+        return logger;
+    }
+
     public static final class Options {
 
         private String configFileName = "mobile-services.json";
         // Don't have a default implementation because it should use configuration
         private HttpServiceModule httpServiceModule;
+        private Logger logger = new LoggerAdapter();
 
         public Options() {
         }
@@ -162,6 +171,11 @@ public final class MobileCore {
 
         public Options setHttpServiceModule(@NonNull HttpServiceModule httpServiceModule) {
             this.httpServiceModule = httpServiceModule;
+            return this;
+        }
+
+        public Options setLogger(Logger logger) {
+            this.logger = logger;
             return this;
         }
 
