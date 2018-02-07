@@ -33,6 +33,14 @@ subprojects {
     }
 }
 
+// We want to expose the SDK version and name to the metrics subproject
+project(':metrics') {
+    project.ext {
+        versionCode = VERSION_CODE
+        versionName = VERSION_NAME
+    }
+}
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
