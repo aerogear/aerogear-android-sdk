@@ -9,6 +9,8 @@ import org.aerogear.mobile.core.exception.InitializationException;
 import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpServiceModule;
 import org.aerogear.mobile.core.http.OkHttpServiceModule;
+import org.aerogear.mobile.core.logging.Logger;
+import org.aerogear.mobile.core.logging.LoggerAdapter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,6 +32,9 @@ public class MobileCoreTest {
 
         // -- Http
         assertEquals(OkHttpServiceModule.class, core.getHttpLayer().getClass());
+
+        // -- Logger
+        assertEquals(LoggerAdapter.class, core.getLogger().getClass());
     }
 
     @Test
@@ -41,18 +46,7 @@ public class MobileCoreTest {
 
         MobileCore core = MobileCore.init(context, options);
 
-        // -- Http Layer
         assertEquals(DummyHttpServiceModule.class, core.getHttpLayer().getClass());
-    }
-
-    @Test(expected = InitializationException.class)
-    public void testInitWithWrongConfigFile() {
-        Application context = RuntimeEnvironment.application;
-
-        MobileCore.Options options = new MobileCore.Options();
-        options.setConfigFileName("wrong-file-name.json");
-
-        MobileCore.init(context, options);
     }
 
     @Test()
@@ -68,6 +62,30 @@ public class MobileCoreTest {
 
         assertEquals("http://dummy.net", service.getUrl());
     }
+
+    @Test
+    public void testInitWithDifferentLogger() {
+        Application context = RuntimeEnvironment.application;
+
+        MobileCore.Options options = new MobileCore.Options();
+        options.setLogger(new DummyLogger());
+
+        MobileCore core = MobileCore.init(context, options);
+
+        assertEquals(DummyLogger.class, core.getLogger().getClass());
+    }
+
+    @Test(expected = InitializationException.class)
+    public void testInitWithWrongConfigFile() {
+        Application context = RuntimeEnvironment.application;
+
+        MobileCore.Options options = new MobileCore.Options();
+        options.setConfigFileName("wrong-file-name.json");
+
+        MobileCore.init(context, options);
+    }
+
+
 
     @Test(expected = ConfigurationNotFoundException.class)
     public void testConfigurationNotFoundException() {
@@ -141,6 +159,74 @@ public class MobileCoreTest {
 
         public String getUrl() {
             return this.uri;
+        }
+
+    }
+
+    public static final class DummyLogger implements Logger {
+
+        @Override
+        public void info(String tag, String message) {
+        }
+
+        @Override
+        public void info(String message) {
+        }
+
+        @Override
+        public void info(String tag, String message, Exception e) {
+        }
+
+        @Override
+        public void info(String message, Exception e) {
+        }
+
+        @Override
+        public void warning(String tag, String message) {
+        }
+
+        @Override
+        public void warning(String message) {
+        }
+
+        @Override
+        public void warning(String tag, String message, Exception e) {
+        }
+
+        @Override
+        public void warning(String message, Exception e) {
+        }
+
+        @Override
+        public void debug(String tag, String message) {
+        }
+
+        @Override
+        public void debug(String message) {
+        }
+
+        @Override
+        public void debug(String tag, String message, Exception e) {
+        }
+
+        @Override
+        public void debug(String message, Exception e) {
+        }
+
+        @Override
+        public void error(String tag, String message) {
+        }
+
+        @Override
+        public void error(String message) {
+        }
+
+        @Override
+        public void error(String tag, String message, Exception e) {
+        }
+
+        @Override
+        public void error(String message, Exception e) {
         }
 
     }
