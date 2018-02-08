@@ -20,7 +20,7 @@ public class OIDCTokenAuthenticatorImpl extends AbstractAuthenticator {
     private static final String TOKEN_HINT_FRAGMENT = "id_token_hint";
     private static final String REDIRECT_FRAGMENT = "redirect_uri";
 
-    private final AuthService authService = AuthService.getInstance();
+    private final AuthService authService = new AuthService();
     private final Uri redirectUri = authService.getAuthConfiguration().getRedirectUri();
     private final AuthStateManager authStateManager = getInstance();
 
