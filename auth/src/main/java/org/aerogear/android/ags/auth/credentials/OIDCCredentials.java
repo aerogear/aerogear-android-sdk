@@ -201,7 +201,7 @@ public class OIDCCredentials implements ICredential {
      * @return <code>true</code> if user is authorized and token is not expired.
      */
     public boolean checkValidAuth() {
-        return isAuthorized() && getNeedsRenewal();
+        return isAuthorized() && !getNeedsRenewal();
     }
 
     /**
