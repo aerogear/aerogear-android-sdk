@@ -1,5 +1,9 @@
 package org.aerogear.android.ags.auth;
 
+import android.content.Context;
+
+import net.openid.appauth.AuthState;
+
 import org.aerogear.android.ags.auth.credentials.ICredential;
 import org.aerogear.android.ags.auth.impl.OIDCAuthCodeImpl;
 import org.aerogear.android.ags.auth.impl.OIDCTokenAuthenticatorImpl;
@@ -64,12 +68,20 @@ public class AuthService implements ServiceModule {
     }
 
     @Override
-    public void configure(MobileCore core, ServiceConfiguration serviceConfiguration) {
+    public void configure(final MobileCore core, final ServiceConfiguration serviceConfiguration) {
         this.authenticatorChain = AuthenticationChain
             .newChain()
             .with(new OIDCTokenAuthenticatorImpl(serviceConfiguration))
             .with(new OIDCAuthCodeImpl(serviceConfiguration))
             .build();
+    }
+
+    /**
+     * Initialize the module. This should be called before any other method when using the module.
+     * @param context
+     */
+    public void init(final Context context) {
+        AuthStateManager.getInstance(context);
     }
 
     @Override

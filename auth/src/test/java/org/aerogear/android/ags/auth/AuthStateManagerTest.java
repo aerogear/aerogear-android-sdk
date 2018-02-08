@@ -1,8 +1,9 @@
-package org.aerogear.android.ags.auth.utils;
+package org.aerogear.android.ags.auth;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import org.aerogear.android.ags.auth.AuthStateManager;
 import org.aerogear.android.ags.auth.credentials.OIDCCredentials;
 import org.json.JSONException;
 import org.junit.Before;

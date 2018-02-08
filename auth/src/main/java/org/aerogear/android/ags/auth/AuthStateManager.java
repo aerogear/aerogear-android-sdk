@@ -1,4 +1,4 @@
-package org.aerogear.android.ags.auth.utils;
+package org.aerogear.android.ags.auth;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -59,7 +59,7 @@ public class AuthStateManager {
         }
     }
 
-    public static AuthStateManager getInstance(final Context context) {
+    static AuthStateManager getInstance(final Context context) {
         if (instance == null) {
             instance = new AuthStateManager(context);
         }
