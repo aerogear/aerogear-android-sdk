@@ -39,6 +39,11 @@ public class OIDCTokenAuthenticatorImpl extends AbstractAuthenticator {
 
     }
 
+    /**
+     * Logs out a user from openID connect server.
+     *
+     * @param principal principal to be logged out.
+     */
     public void logout(final Principal principal) {
         // Get user's identity token
         OIDCCredentials credentials = (OIDCCredentials) ((IUserPrincipal) principal).getCredentials();
@@ -55,18 +60,31 @@ public class OIDCTokenAuthenticatorImpl extends AbstractAuthenticator {
         }
     }
 
-    protected void performLogout(URL logoutUrl) {
+    /**
+     * Performs the logout request against the parsed logout url.
+     *
+     * @param logoutUrl the parsed logout url {@link #parseLogoutURL(String)}.
+     */
+    private void performLogout(URL logoutUrl) {
         // Using the default OkHttpServiceModule for now. This will need to be refactored for cert pinning stuff
         HttpServiceModule serviceModule = new OkHttpServiceModule();
 
+        // Creates the get request
         HttpRequest request = serviceModule.newRequest();
         request.get(logoutUrl.toString());
 
+        // Creates and handles the response
         HttpResponse response = request.execute();
         response.onComplete(new LogoutCompleteHandler(response, authStateManager));
         response.waitForCompletionAndClose();
     }
 
+    /**
+     * Constructs the logout url using the user's idenity token.
+     *
+     * @param identityToken {@link OIDCCredentials#getIdentityToken()}
+     * @return the formatted logout url.
+     */
     private URL parseLogoutURL(String identityToken) {
         String serverUrl = this.getServiceConfig().getProperty("auth-server-url");
         String realmId = this.getServiceConfig().getProperty("realm");

@@ -89,6 +89,9 @@ public class AuthService implements ServiceModule {
 
     }
     
+    /**
+     * @return a built AuthConfiguration object.
+     */
     public AuthConfiguration getAuthConfiguration() {
         return new AuthConfiguration
             .Builder()
