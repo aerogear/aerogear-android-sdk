@@ -7,15 +7,17 @@ android {
         minSdkVersion project.ext.minSdkVersion
         targetSdkVersion project.ext.targetSdkVersion
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-        // Required for metrics, exposed by the parent project
-        versionName project.ext.versionName
     }
 
     buildTypes {
         release {
             minifyEnabled false
         }
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+        unitTests.includeAndroidResources = true
     }
 
     compileOptions {
@@ -26,12 +28,10 @@ android {
 
 dependencies {
     implementation project(path: ':core')
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    testImplementation 'junit:junit'
+    testImplementation 'org.mockito:mockito-core'
+    testImplementation 'org.json:json'
 }
 
 apply from: '../gradle-mvn-push.gradle'

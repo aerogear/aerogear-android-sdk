@@ -1,8 +1,10 @@
 package org.aerogear.mobile.core;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 
+import org.aerogear.android.core.BuildConfig;
 import org.aerogear.mobile.core.configuration.MobileCoreJsonParser;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.exception.ConfigurationNotFoundException;
@@ -23,9 +25,11 @@ import java.util.Map;
  */
 public final class MobileCore {
 
+    private static Logger logger = new LoggerAdapter();
+
+    private final String appVersion;
     private final String configFileName;
     private final HttpServiceModule httpLayer;
-    private final Logger logger;
     private final Map<String, ServiceConfiguration> servicesConfig;
     private final Map<Class<? extends ServiceModule>, ServiceModule> services = new HashMap<>();
 
@@ -36,7 +40,11 @@ public final class MobileCore {
      */
     private MobileCore(Context context, Options options) throws InitializationException {
         this.configFileName = options.configFileName;
-        this.logger = options.logger;
+
+        // -- Allow to override the default logger
+        if (options.logger != null) {
+            this.logger = options.logger;
+        }
 
         // -- Parse JSON config file
         try (InputStream configStream = context.getAssets().open(configFileName)) {
@@ -46,8 +54,10 @@ public final class MobileCore {
             throw new InitializationException(message, exception);
         }
 
-        // -- Setting default http layer
+        // -- Set the app version variable
+        this.appVersion = getAppVersion(context);
 
+        // -- Setting default http layer
         if (options.httpServiceModule == null) {
             OkHttpServiceModule httpServiceModule = new OkHttpServiceModule();
 
@@ -95,12 +105,14 @@ public final class MobileCore {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends ServiceModule> T getInstance(Class<T> serviceClass) {
         return (T) getInstance(serviceClass, null);
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends ServiceModule> T getInstance(Class<T> serviceClass,
-                                     ServiceConfiguration serviceConfiguration)
+                                                   ServiceConfiguration serviceConfiguration)
         throws InitializationException {
 
         if (services.containsKey(serviceClass)) {
@@ -140,13 +152,48 @@ public final class MobileCore {
         return serviceConfiguration;
     }
 
+    /**
+     * Get the user app version from the package manager
+     *
+     * @param context Android application context
+     * @return String app version name
+     */
+    private String getAppVersion(final Context context) throws InitializationException {
+        try {
+            return context
+                .getPackageManager()
+                .getPackageInfo(context.getPackageName(), 0)
+                .versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            // Wrap in Initialization exception
+            throw new InitializationException("Failed to read app version", e);
+        }
+    }
 
     public HttpServiceModule getHttpLayer() {
         return this.httpLayer;
     }
 
-    public Logger getLogger() {
+    public static Logger getLogger() {
         return logger;
+    }
+
+    /**
+     * Get the version name of the SDK itself
+     *
+     * @return String SDK version
+     */
+    public static String getSdkVersion() {
+        return BuildConfig.VERSION_NAME;
+    }
+
+    /**
+     * Get the version of the user app
+     *
+     * @return String App version name
+     */
+    public String getAppVersion() {
+        return appVersion;
     }
 
     public static final class Options {
@@ -178,7 +225,5 @@ public final class MobileCore {
             this.logger = logger;
             return this;
         }
-
     }
-
 }
