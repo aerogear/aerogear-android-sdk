@@ -1,4 +1,4 @@
-package org.aerogear.auth;
+package org.aerogear.android.ags.auth;
 
 /**
  * Base class for roles pojos.

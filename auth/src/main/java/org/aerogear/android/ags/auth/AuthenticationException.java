@@ -1,4 +1,4 @@
-package org.aerogear.auth;
+package org.aerogear.android.ags.auth;
 
 /**
  * Exception thrown when an error occurs authenticating a user.

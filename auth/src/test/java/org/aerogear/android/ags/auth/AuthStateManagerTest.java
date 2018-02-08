@@ -1,13 +1,17 @@
-package org.aerogear.auth.utils;
+package org.aerogear.android.ags.auth;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import org.aerogear.auth.credentials.OIDCCredentials;
+import org.aerogear.android.ags.auth.AuthStateManager;
+import org.aerogear.android.ags.auth.credentials.OIDCCredentials;
+import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import java.lang.reflect.Field;
 
 import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -27,18 +31,25 @@ public class AuthStateManagerTest {
     @Mock
     private SharedPreferences.Editor mockSharedPreferencesEditor;
 
+    private AuthStateManager authStateManager;
+
     @Before
-    public void setup() {
+    public void setup() throws NoSuchFieldException, IllegalAccessException {
         MockitoAnnotations.initMocks(this);
 
         when(mockContext.getSharedPreferences(anyString(), anyInt())).thenReturn(mockSharedPreferences);
         when(mockSharedPreferences.edit()).thenReturn(mockSharedPreferencesEditor);
+
+        // Reset the singleton for each test
+        Field authStateInstance = AuthStateManager.class.getDeclaredField("instance");
+        authStateInstance.setAccessible(true);
+        authStateInstance.set(null, null);
+        authStateManager = AuthStateManager.getInstance(mockContext);
     }
 
     @Test
-    public void testRead_EmptyStore() {
-        AuthStateManager asm = new AuthStateManager(mockContext);
-        OIDCCredentials authState = asm.read();
+    public void testLoadWithEmptyStore() {
+        OIDCCredentials authState = authStateManager.load();
 
         assertNull(authState.getAccessToken());
         assertNull(authState.getIdentityToken());
@@ -46,24 +57,22 @@ public class AuthStateManagerTest {
     }
 
     @Test
-    public void testWrite_Null() {
+    public void testSaveNull() throws JSONException {
         when(mockSharedPreferencesEditor.remove(anyString())).thenReturn(mockSharedPreferencesEditor);
         when(mockSharedPreferencesEditor.commit()).thenReturn(true);
 
-        AuthStateManager asm = new AuthStateManager(mockContext);
-        asm.write(null);
+        authStateManager.save(null);
 
         verify(mockSharedPreferencesEditor, times(1)).remove(anyString());
     }
 
     @Test
-    public void testWrite_ProvideState() {
-        when(mockOIDCCredentials.serialise()).thenReturn("TEST");
+    public void testSaveWithState() throws JSONException {
+        when(mockOIDCCredentials.serialize()).thenReturn("TEST");
         when(mockSharedPreferencesEditor.putString(anyString(), anyString())).thenReturn(mockSharedPreferencesEditor);
         when(mockSharedPreferencesEditor.commit()).thenReturn(true);
 
-        AuthStateManager asm = new AuthStateManager(mockContext);
-        asm.write(mockOIDCCredentials);
+        authStateManager.save(mockOIDCCredentials);
 
         verify(mockSharedPreferencesEditor, times(1)).putString(anyString(), eq("TEST"));
     }

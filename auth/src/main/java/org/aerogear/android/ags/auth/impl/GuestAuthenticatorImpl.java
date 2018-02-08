@@ -1,9 +1,9 @@
-package org.aerogear.auth.impl;
+package org.aerogear.android.ags.auth.impl;
 
-import org.aerogear.auth.AbstractAuthenticator;
-import org.aerogear.auth.AuthenticationException;
-import org.aerogear.auth.IRole;
-import org.aerogear.auth.credentials.ICredential;
+import org.aerogear.android.ags.auth.AbstractAuthenticator;
+import org.aerogear.android.ags.auth.AuthenticationException;
+import org.aerogear.android.ags.auth.IRole;
+import org.aerogear.android.ags.auth.credentials.ICredential;
 
 import java.security.Principal;
 import java.util.Arrays;

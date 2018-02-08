@@ -1,8 +1,15 @@
-package org.aerogear.auth;
+package org.aerogear.android.ags.auth;
 
-import org.aerogear.auth.credentials.ICredential;
-import org.aerogear.auth.impl.OIDCAuthCodeImpl;
-import org.aerogear.auth.impl.OIDCTokenAuthenticatorImpl;
+import android.content.Context;
+
+import net.openid.appauth.AuthState;
+
+import org.aerogear.android.ags.auth.credentials.ICredential;
+import org.aerogear.android.ags.auth.impl.OIDCAuthCodeImpl;
+import org.aerogear.android.ags.auth.impl.OIDCTokenAuthenticatorImpl;
+import org.aerogear.mobile.core.MobileCore;
+import org.aerogear.mobile.core.ServiceModule;
+import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 
 import java.security.Principal;
 import java.util.concurrent.Future;
@@ -10,26 +17,14 @@ import java.util.concurrent.Future;
 /**
  * Entry point for authenticating users.
  */
-public class AuthService {
-
-    /**
-     * Authentication service singleton.
-     */
-    private static AuthService INSTANCE;
+public class AuthService implements ServiceModule {
 
     private AuthenticationChain authenticatorChain;
 
     /**
      * Instantiates a new AuthService object
-     * @param config Authentication Service configuration
      */
-    private AuthService(final AuthServiceConfig config) {
-        this.authenticatorChain = AuthenticationChain
-                .newChain()
-                .with(new OIDCTokenAuthenticatorImpl(config))
-                .with(new OIDCAuthCodeImpl(config))
-                .build();
-    }
+    public AuthService() {}
 
     private void configureDefaultAuthenticationChain(final AuthenticationChain authenticationChain) {
 
@@ -67,18 +62,30 @@ public class AuthService {
         this.authenticatorChain = newChain;
     }
 
-    /**
-     * Returns the authentication service singleton.
-     *
-     * @return the authentication service singleton
-     */
-    public static synchronized AuthService getInstance() {
-        if (INSTANCE == null) {
-            // FIXME: load the configurations from core and pass it here
-            INSTANCE = new AuthService(null);
-        }
-
-        return INSTANCE;
+    @Override
+    public String type() {
+        return "keycloak";
     }
 
+    @Override
+    public void configure(final MobileCore core, final ServiceConfiguration serviceConfiguration) {
+        this.authenticatorChain = AuthenticationChain
+            .newChain()
+            .with(new OIDCTokenAuthenticatorImpl(serviceConfiguration))
+            .with(new OIDCAuthCodeImpl(serviceConfiguration))
+            .build();
+    }
+
+    /**
+     * Initialize the module. This should be called before any other method when using the module.
+     * @param context
+     */
+    public void init(final Context context) {
+        AuthStateManager.getInstance(context);
+    }
+
+    @Override
+    public void destroy() {
+
+    }
 }

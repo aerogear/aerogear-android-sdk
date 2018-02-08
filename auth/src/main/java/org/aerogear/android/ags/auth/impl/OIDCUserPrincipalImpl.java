@@ -1,8 +1,8 @@
-package org.aerogear.auth.impl;
+package org.aerogear.android.ags.auth.impl;
 
-import org.aerogear.auth.AbstractAuthenticator;
-import org.aerogear.auth.IRole;
-import org.aerogear.auth.credentials.OIDCCredentials;
+import org.aerogear.android.ags.auth.AbstractAuthenticator;
+import org.aerogear.android.ags.auth.IRole;
+import org.aerogear.android.ags.auth.credentials.OIDCCredentials;
 
 import java.util.Map;
 

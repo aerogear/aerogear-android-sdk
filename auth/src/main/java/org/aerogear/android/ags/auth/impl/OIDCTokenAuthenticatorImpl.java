@@ -1,10 +1,10 @@
-package org.aerogear.auth.impl;
+package org.aerogear.android.ags.auth.impl;
 
-import org.aerogear.auth.AbstractAuthenticator;
-import org.aerogear.auth.AuthServiceConfig;
-import org.aerogear.auth.AuthenticationException;
-import org.aerogear.auth.credentials.ICredential;
-import org.aerogear.auth.credentials.OIDCCredentials;
+import org.aerogear.android.ags.auth.AbstractAuthenticator;
+import org.aerogear.android.ags.auth.AuthenticationException;
+import org.aerogear.android.ags.auth.credentials.ICredential;
+import org.aerogear.android.ags.auth.credentials.OIDCCredentials;
+import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 
 import java.security.Principal;
 
@@ -12,8 +12,8 @@ import java.security.Principal;
  * Authenticates token credentials
  */
 public class OIDCTokenAuthenticatorImpl extends AbstractAuthenticator {
-    public OIDCTokenAuthenticatorImpl(final AuthServiceConfig config) {
-        super(config);
+    public OIDCTokenAuthenticatorImpl(final ServiceConfiguration serviceConfig) {
+        super(serviceConfig);
     }
 
     @Override

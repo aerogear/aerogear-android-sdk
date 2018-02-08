@@ -1,4 +1,4 @@
-package org.aerogear.auth.credentials;
+package org.aerogear.android.ags.auth.credentials;
 
 import java.util.Arrays;
 

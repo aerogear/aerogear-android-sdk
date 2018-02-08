@@ -1,6 +1,6 @@
-package org.aerogear.auth;
+package org.aerogear.android.ags.auth;
 
-import org.aerogear.auth.credentials.ICredential;
+import org.aerogear.android.ags.auth.credentials.ICredential;
 
 import java.security.Principal;
 import java.util.Collection;
