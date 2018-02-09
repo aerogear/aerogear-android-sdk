@@ -14,7 +14,28 @@
 
 ## Documentation
 
-You can fine the preliminary documentation [here](./docs/README.md)
+1. [End User Getting Started Guide](./docs/getting-started.adoc)
+1. [Service Contributor Guide](./docs/contributing-guide.adoc)
+
+### List of SDKs
+
+AeroGear Services SDK consist of set of separate SDKs
+
+- [Core](./docs/core/README.adoc)
+Common base for all SDKs
+- [Metrics](./docs/metrics/README.adoc)
+Mobile application metrics SDK
+- [Auth](./docs/auth/README.adoc)
+Mobile authentication SDK
+
+## Contributing
+
+See [General Contributing Guide](./CONTRIBUTING.md)
+
+## License 
+
+ See [LICENSE file](./LICENSE)
+
 
 ## Development
 
@@ -22,9 +43,18 @@ If you would like to help develop AeroGear you can join our [developer's mailing
 
 Also takes some time and skim the [contributor guide](CONTRIBUTING.md)
 
+## Contributing
+
+See [General Contributing Guide](./CONTRIBUTING.md)
+
+## License 
+
+ See [LICENSE file](./LICENSE)
+
+
 ## Questions?
 
-Join our [user mailing list](https://lists.jboss.org/mailman/listinfo/aerogear-users) for any questions or help! We really hope you enjoy app development with AeroGear!
+Join our [user mailing list](https://groups.google.com/forum/#!forum/aerogear) for any questions or help! We really hope you enjoy app development with AeroGear!
 
 ## Found a bug?
 
