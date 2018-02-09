@@ -2,14 +2,15 @@ package org.aerogear.android.ags.auth.impl;
 
 import org.aerogear.android.ags.auth.AbstractAuthenticator;
 import org.aerogear.android.ags.auth.AbstractPrincipal;
-import org.aerogear.android.ags.auth.IRole;
+import org.aerogear.android.ags.auth.RoleType;
+import org.aerogear.android.ags.auth.UserRole;
 import org.aerogear.android.ags.auth.credentials.ICredential;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
 
 /**
  * This class represent an authenticated user
@@ -29,7 +30,7 @@ public class UserPrincipalImpl extends AbstractPrincipal {
     /**
      * Roles associated with this principal.
      */
-    private final Map<String, IRole> roles;
+    private final Set<UserRole> roles;
 
     /**
      * User credentials. It can be null.
@@ -47,12 +48,12 @@ public class UserPrincipalImpl extends AbstractPrincipal {
     protected UserPrincipalImpl(final String username,
                               final ICredential credentials,
                               final String email,
-                              final Map<String, IRole> roles,
+                              final Set<UserRole> roles,
                               final AbstractAuthenticator authenticator) {
         super(authenticator);
         this.username = username;
         this.email = email;
-        this.roles = Collections.unmodifiableMap(new HashMap<String, IRole>(roles));
+        this.roles = Collections.synchronizedSet(new HashSet<>(roles));
         this.credentials = credentials;
     }
 
@@ -62,7 +63,7 @@ public class UserPrincipalImpl extends AbstractPrincipal {
     static class Builder {
         protected String username;
         protected String email;
-        protected Map<String, IRole> roles = new HashMap<>();
+        protected HashSet<UserRole> roles = new HashSet<>();
         protected AbstractAuthenticator authenticator;
         protected ICredential credentials;
 
@@ -84,27 +85,10 @@ public class UserPrincipalImpl extends AbstractPrincipal {
             return this;
         }
 
-        Builder withRole(final IRole role) {
-            this.roles.put(role.getRoleName(), role);
-            return this;
-        }
-
-        Builder withRoles(final IRole[] roles) {
+        Builder withRoles(final Set<UserRole> roles) {
             if (roles != null) {
-                return withRoles(Arrays.asList(roles));
-            } else {
-                return this;
+                this.roles.addAll(roles);
             }
-        }
-
-        Builder withRoles(final Collection<IRole> roles) {
-
-            if (roles != null) {
-                for (IRole role : roles) {
-                    this.withRole(role);
-                }
-            }
-
             return this;
         }
 
@@ -124,12 +108,24 @@ public class UserPrincipalImpl extends AbstractPrincipal {
     }
 
     /**
-     * Returns <code>true</code> if the user has the passed in role.
-     * @return true or false
+     * Checks if the user has the specified Client role.
+     * @param role role to be checked
+     * @param clientId clientID related to role
+     * @return <code>true</code> or <code>false</code>
      */
     @Override
-    public boolean hasRole(final IRole role) {
-        return roles.containsKey(role.getRoleName());
+    public boolean hasClientRole(final String role, final String clientId) {
+        return roles.contains(new UserRole(role, RoleType.CLIENT, clientId));
+    }
+
+    /**
+     * Checks if the user has the specified Realm role.
+     * @param role role to be checked
+     * @return <code>true</code> or <code>false</code>
+     */
+    @Override
+    public boolean hasRealmRole(final String role){
+        return roles.contains(new UserRole(role, RoleType.REALM, null));
     }
 
     @Override
@@ -137,9 +133,14 @@ public class UserPrincipalImpl extends AbstractPrincipal {
         return username;
     }
 
+    /**
+     * Get's user roles
+     *
+     * @return user's roles
+     */
     @Override
-    public Collection<IRole> getRoles() {
-        return roles.values();
+    public Set<UserRole> getRoles() {
+       return roles;
     }
 
     @Override
@@ -153,10 +154,21 @@ public class UserPrincipalImpl extends AbstractPrincipal {
 
     @Override
     public String toString() {
+        String roleNames = "";
+        Iterator<UserRole> i = roles.iterator();
+        if (i.hasNext()) {
+            //first element
+            roleNames.concat("[").concat(i.next().getName());
+            while(i.hasNext()) {
+                roleNames.concat(", ").concat(i.next().getName());
+            }
+        }
+        roleNames.concat("]");
+
         return "UserPrincipalImpl{" +
                 "username='" + username + '\'' +
                 ", email='" + email + '\'' +
-                ", roles=" + roles.values() +
+                ", roles=" + roleNames +
                 '}';
     }
 }

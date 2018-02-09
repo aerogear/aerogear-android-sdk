@@ -3,7 +3,7 @@ package org.aerogear.android.ags.auth;
 import org.aerogear.android.ags.auth.credentials.ICredential;
 
 import java.security.Principal;
-import java.util.Collection;
+import java.util.Set;
 
 /**
  * Public interface for user principals.
@@ -11,11 +11,19 @@ import java.util.Collection;
 public interface IUserPrincipal extends Principal {
 
     /**
-     * Checks if the user has the specified role.
+     * Checks if the user has the specified Client role.
+     * @param role role to be checked
+     * @param clientId clientID related to role
+     * @return true or false
+     */
+    boolean hasClientRole(String role, String clientId);
+
+    /**
+     * Checks if the user has the specified Realm role.
      * @param role role to be checked
      * @return true or false
      */
-    boolean hasRole(IRole role);
+    boolean hasRealmRole(String role);
 
     /**
      * Returns the username
@@ -27,7 +35,7 @@ public interface IUserPrincipal extends Principal {
      * Returns the roles associated with this principal
      * @return the roles associated with this principal
      */
-    Collection<IRole> getRoles();
+    Set<UserRole> getRoles();
 
     /**
      * Returns the credentials that authenticate this users.

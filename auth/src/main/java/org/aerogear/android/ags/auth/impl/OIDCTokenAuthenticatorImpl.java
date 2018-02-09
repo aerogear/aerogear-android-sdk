@@ -22,8 +22,8 @@ public class OIDCTokenAuthenticatorImpl extends AbstractAuthenticator {
             // Authenticate the credential
             throw new IllegalStateException("Not implemented");
         }
-
         // This authenticator can't manage this type of credential
-        return null;
+        throw new IllegalArgumentException("Invalid Credential");
+
     }
 }
