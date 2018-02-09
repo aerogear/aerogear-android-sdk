@@ -1,5 +1,7 @@
-package org.aerogear.auth.utils;
+package org.aerogear.android.ags.auth.utils;
 
+import org.aerogear.android.ags.auth.AuthStateManager;
+import org.aerogear.android.ags.auth.utils.LogoutCompleteHandler;
 import org.aerogear.mobile.core.http.HttpResponse;
 import org.junit.Before;
 import org.junit.Test;

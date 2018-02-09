@@ -1,16 +1,26 @@
 package org.aerogear.android.ags.auth.impl;
 
+import android.net.Uri;
+
 import org.aerogear.android.ags.auth.AbstractAuthenticator;
+import org.aerogear.android.ags.auth.AuthService;
+import org.aerogear.android.ags.auth.AuthStateManager;
 import org.aerogear.android.ags.auth.AuthenticationException;
+import org.aerogear.android.ags.auth.IUserPrincipal;
 import org.aerogear.android.ags.auth.credentials.ICredential;
 import org.aerogear.android.ags.auth.credentials.OIDCCredentials;
+import org.aerogear.android.ags.auth.utils.LogoutCompleteHandler;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
+import org.aerogear.mobile.core.http.HttpRequest;
+import org.aerogear.mobile.core.http.HttpResponse;
+import org.aerogear.mobile.core.http.HttpServiceModule;
+import org.aerogear.mobile.core.http.OkHttpServiceModule;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.Principal;
 
-import static org.aerogear.auth.utils.AuthStateManager.getInstance;
+import static org.aerogear.android.ags.auth.AuthStateManager.getInstance;
 
 /**
  * Authenticates token credentials

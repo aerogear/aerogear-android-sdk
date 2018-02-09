@@ -1,4 +1,4 @@
-package org.aerogear.auth;
+package org.aerogear.android.ags.auth;
 
 import android.net.Uri;
 
@@ -15,7 +15,7 @@ public class AuthConfiguration {
     /**
      * Builds a new AuthConfiguration object.
      *
-     * @param redirectUri
+     * @param redirectUri the redirect uri for the developers app.
      */
     protected AuthConfiguration(final Uri redirectUri) {
         this.redirectUri = redirectUri;

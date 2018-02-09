@@ -1,7 +1,8 @@
-package org.aerogear.auth.utils;
+package org.aerogear.android.ags.auth.utils;
 
 import android.util.Log;
 
+import org.aerogear.android.ags.auth.AuthStateManager;
 import org.aerogear.mobile.core.http.HttpResponse;
 
 /**

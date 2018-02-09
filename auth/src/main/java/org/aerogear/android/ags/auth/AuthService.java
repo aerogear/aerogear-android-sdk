@@ -2,18 +2,9 @@ package org.aerogear.android.ags.auth;
 
 import android.content.Context;
 
-<<<<<<< HEAD:auth/src/main/java/org/aerogear/android/ags/auth/AuthService.java
-import net.openid.appauth.AuthState;
-
 import org.aerogear.android.ags.auth.credentials.ICredential;
 import org.aerogear.android.ags.auth.impl.OIDCAuthCodeImpl;
 import org.aerogear.android.ags.auth.impl.OIDCTokenAuthenticatorImpl;
-=======
-import org.aerogear.auth.credentials.ICredential;
-import org.aerogear.auth.impl.OIDCAuthCodeImpl;
-import org.aerogear.auth.impl.OIDCTokenAuthenticatorImpl;
-import org.aerogear.auth.utils.AuthStateManager;
->>>>>>> update AuthService:auth/src/main/java/org/aerogear/auth/AuthService.java
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.ServiceModule;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
@@ -27,6 +18,7 @@ import java.util.concurrent.Future;
 public class AuthService implements ServiceModule {
 
     private AuthenticationChain authenticatorChain;
+    private AuthConfiguration authConfiguration;
 
     /**
      * Instantiates a new AuthService object
@@ -96,19 +88,21 @@ public class AuthService implements ServiceModule {
 
     }
 
-    @Override
-    public void destroy() {
-
-    }
-    
     /**
-     * @return a built AuthConfiguration object.
+     * Builds a new AuthConfiguration object.
      */
-    public AuthConfiguration getAuthConfiguration() {
-        return new AuthConfiguration
+    public void setAuthConfiguration() {
+        authConfiguration = new AuthConfiguration
             .Builder()
             .redirectUri("Not yet implemented - will be obtained from developer provided config")
             .build();
+    }
+
+    /**
+     * @return {@link #authConfiguration}
+     */
+    public AuthConfiguration getAuthConfiguration() {
+        return authConfiguration;
     }
 
 }
