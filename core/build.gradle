@@ -7,8 +7,8 @@ android {
         minSdkVersion project.ext.minSdkVersion
         targetSdkVersion project.ext.targetSdkVersion
 
-        versionCode 1
-        versionName "1.0"
+        // Required for metrics, exposed by the parent project
+        versionName project.ext.versionName
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -42,7 +42,6 @@ android {
 tasks.withType(JavaCompile) {
     options.compilerArgs = ["-Xlint:unchecked"]
 }
-
 
 dependencies {
     implementation "com.android.support:appcompat-v7"

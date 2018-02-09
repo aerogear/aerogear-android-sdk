@@ -28,8 +28,15 @@ subprojects {
 
     dependencyManagement {
         imports {
-            mavenBom 'org.jboss.aerogear:aerogear-android-sdk-bom:1.1.9'
+            mavenBom 'org.jboss.aerogear:aerogear-android-sdk-bom:1.1.10'
         }
+    }
+}
+
+// We want to expose the SDK version and name to the metrics subproject
+project(':core') {
+    project.ext {
+        versionName = VERSION_NAME
     }
 }
 
