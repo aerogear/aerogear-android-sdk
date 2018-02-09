@@ -1,26 +1,30 @@
-package org.aerogear.auth.impl;
+package org.aerogear.android.ags.auth.impl;
 
-import org.aerogear.auth.AbstractAuthenticator;
-import org.aerogear.auth.AuthServiceConfig;
-import org.aerogear.auth.ClientRole;
-import org.aerogear.auth.IRole;
-import org.aerogear.auth.RealmRole;
+import org.aerogear.android.ags.auth.AbstractAuthenticator;
+import org.aerogear.android.ags.auth.RoleType;
+import org.aerogear.android.ags.auth.UserRole;
+import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 
 public class UserPrincipalImplTest {
     private UserPrincipalImpl userPrincipalImpl;
+    private Set<UserRole> roles =  new HashSet<>();
 
     @Before
     public void setUp(){
-        AuthServiceConfig authServiceConfig = new AuthServiceConfig();
-        AbstractAuthenticator abstractAuthenticator = new AbstractAuthenticator(authServiceConfig);
-        ClientRole cRole = new ClientRole("cRole", "ID-123456");
-        RealmRole rRole = new RealmRole("rRole");
-        IRole[] roles = {cRole, rRole};
+        ServiceConfiguration serviceConfig = ServiceConfiguration.newConfiguration().build();
+        AbstractAuthenticator abstractAuthenticator = new AbstractAuthenticator(serviceConfig);
+        UserRole cRole = new UserRole("cRole", RoleType.CLIENT, "ID-123456");
+        UserRole rRole = new UserRole("rRole", RoleType.REALM, null);
+        roles.add(cRole);
+        roles.add(rRole);
         userPrincipalImpl = UserPrincipalImpl.newUser().withRoles(roles).withAuthenticator(abstractAuthenticator).build();
     }
 

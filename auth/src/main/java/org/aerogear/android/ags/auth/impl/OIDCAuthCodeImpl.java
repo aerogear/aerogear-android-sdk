@@ -2,30 +2,26 @@ package org.aerogear.android.ags.auth.impl;
 
 import android.util.Base64;
 
-import org.aerogear.auth.AuthServiceConfig;
-import org.aerogear.auth.AuthenticationException;
-import org.aerogear.auth.ClientRole;
-import org.aerogear.auth.IRole;
-import org.aerogear.auth.RealmRole;
-import org.aerogear.auth.RoleKey;
-import org.aerogear.auth.credentials.ICredential;
-import org.aerogear.auth.credentials.OIDCCredentials;
+import org.aerogear.android.ags.auth.AuthenticationException;
+import org.aerogear.android.ags.auth.RoleType;
+import org.aerogear.android.ags.auth.UserRole;
+import org.aerogear.android.ags.auth.credentials.ICredential;
+import org.aerogear.android.ags.auth.credentials.OIDCCredentials;
+import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**
  * Authenticates the user by using OpenID Connect.
  */
 public class OIDCAuthCodeImpl extends OIDCTokenAuthenticatorImpl {
-    
+
     private static final String USERNAME = "preferred_username";
     private static final String EMAIL = "email";
     private static final String REALM = "realm_access";
@@ -39,12 +35,11 @@ public class OIDCAuthCodeImpl extends OIDCTokenAuthenticatorImpl {
     /**
      * Creates a new OIDCAuthCodeImpl object
      *
-     * @param config the authentication service configuration
+     * @param serviceConfig {@link ServiceConfiguration}
      */
     public OIDCAuthCodeImpl(final ServiceConfiguration serviceConfig) {
         super(serviceConfig);
     }
-
 
     /**
      * Builds a new OIDCUserPrincipalImpl object after the user's credential has been authenticated
@@ -113,16 +108,16 @@ public class OIDCAuthCodeImpl extends OIDCTokenAuthenticatorImpl {
      * @return user's roles
      * @throws JSONException
      */
-    private Collection<IRole> parseRoles() throws JSONException {
-        Collection<IRole> roles = new ArrayList<IRole>();
+    private Set<UserRole> parseRoles() throws JSONException {
+        Set<UserRole> roles = new HashSet<>();
         if (userIdentity != null) {
-            Map<RoleKey, IRole> realmRoles = parseRealmRoles();
+            Set<UserRole> realmRoles = parseRealmRoles();
             if (realmRoles != null) {
-                roles.addAll(realmRoles.values());
+                roles.addAll(realmRoles);
             }
-            Map<RoleKey, IRole> clientRoles = parseClientRoles();
+            Set<UserRole> clientRoles = parseClientRoles();
             if (clientRoles != null) {
-                roles.addAll(clientRoles.values());
+                roles.addAll(clientRoles);
             }
         }
         return roles;
@@ -133,20 +128,18 @@ public class OIDCAuthCodeImpl extends OIDCTokenAuthenticatorImpl {
      *
      * @return user's realm roles
      * @throws JSONException
-     * @see RoleKey
-     * @see RealmRole
      */
-    private Map<RoleKey, IRole> parseRealmRoles() throws JSONException {
-        Map<RoleKey, IRole> realmRoles = new HashMap<>();
+    private Set<UserRole> parseRealmRoles() throws JSONException {
+        Set<UserRole> realmRoles = new HashSet<>();
         if (userIdentity.has(REALM) && userIdentity.getJSONObject(REALM).has(ROLES)) {
             String tokenRealmRolesJSON = userIdentity.getJSONObject(REALM).getString(ROLES);
 
             String realmRolesString = tokenRealmRolesJSON.substring(1, tokenRealmRolesJSON.length() - 1).replace("\"", "");
             String roles[] = realmRolesString.split(COMMA);
 
-            for (String rolename : roles) {
-                RealmRole realmRole = new RealmRole(rolename);
-                realmRoles.put(new RoleKey(realmRole, null), realmRole);
+            for (String roleName : roles) {
+                UserRole realmRole = new UserRole(roleName, RoleType.REALM, null);
+                realmRoles.add(realmRole);
             }
         }
         return realmRoles;
@@ -157,18 +150,14 @@ public class OIDCAuthCodeImpl extends OIDCTokenAuthenticatorImpl {
      *
      * @return user's client roles
      * @throws JSONException
-     * @see AuthServiceConfig for initial client
-     * @see RoleKey
-     * @see ClientRole
      */
-    private Map<RoleKey, IRole> parseClientRoles() throws JSONException {
-        Map<RoleKey, IRole> clientRoles = new HashMap<>();
+    private Set<UserRole> parseClientRoles() throws JSONException {
+        Set<UserRole> clientRoles = new HashSet<>();
 
-        AuthServiceConfig authConfig = this.getConfig();
-        JSONObject authJSON =  authConfig.toJSON();
+        ServiceConfiguration serviceConfig = this.getServiceConfig();
 
-        if (authJSON.has(RESOURCE)) {
-            String initialClientID = authJSON.get(RESOURCE).toString();  //immediate client role
+        if (serviceConfig.getProperty(RESOURCE) != null) {
+            String initialClientID = serviceConfig.getProperty(RESOURCE);  //immediate client role
 
             if (userIdentity.has(CLIENT) && userIdentity.getJSONObject(CLIENT).has(initialClientID)
                     && userIdentity.getJSONObject(CLIENT).getJSONObject(initialClientID).has(ROLES)) {
@@ -177,9 +166,9 @@ public class OIDCAuthCodeImpl extends OIDCTokenAuthenticatorImpl {
                 String clientRolesString = tokenClientRolesJSON.substring(1, tokenClientRolesJSON.length() - 1).replace("\"", "");
                 String roles[] = clientRolesString.split(COMMA);
 
-                for (String rolename : roles) {
-                    ClientRole clientRole = new ClientRole(rolename, initialClientID);
-                    clientRoles.put(new RoleKey(clientRole, initialClientID), clientRole);
+                for (String roleName : roles) {
+                    UserRole clientRole = new UserRole(roleName, RoleType.CLIENT, initialClientID);
+                    clientRoles.add(clientRole);
                 }
             }
         }

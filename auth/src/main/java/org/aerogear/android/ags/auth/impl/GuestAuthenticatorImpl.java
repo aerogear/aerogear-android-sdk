@@ -1,12 +1,13 @@
 package org.aerogear.android.ags.auth.impl;
 
 import org.aerogear.android.ags.auth.AbstractAuthenticator;
-import org.aerogear.android.ags.auth.AuthenticationException;
-import org.aerogear.android.ags.auth.IRole;
+import org.aerogear.android.ags.auth.UserRole;
 import org.aerogear.android.ags.auth.credentials.ICredential;
 
 import java.security.Principal;
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Simple authenticator to return 'guest' users.
@@ -22,20 +23,20 @@ public class GuestAuthenticatorImpl extends AbstractAuthenticator {
     /**
      * Roles to be assigned to the guest user
      */
-    private final IRole[] roles;
+    private final Set<UserRole> roles;
 
     /**
      * Builds a new guest authenticator object
      * @param guestUser the user to be returned after the 'authentication'
      * @param roles the roles to be assigned to the user
      */
-    public GuestAuthenticatorImpl(final String guestUser, final IRole[] roles) {
+    public GuestAuthenticatorImpl(final String guestUser, final Set<UserRole> roles) {
         super(null);
         this.guestUser = guestUser;
         if (roles == null) {
-            this.roles = new IRole[0];
+            this.roles = new HashSet<>();
         } else {
-            this.roles = Arrays.copyOf(roles, roles.length);
+            this.roles = Collections.synchronizedSet(new HashSet<>(roles));
         }
     }
 

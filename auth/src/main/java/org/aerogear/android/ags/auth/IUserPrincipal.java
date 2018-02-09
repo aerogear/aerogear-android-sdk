@@ -3,7 +3,7 @@ package org.aerogear.android.ags.auth;
 import org.aerogear.android.ags.auth.credentials.ICredential;
 
 import java.security.Principal;
-import java.util.Collection;
+import java.util.Set;
 
 /**
  * Public interface for user principals.
@@ -35,7 +35,7 @@ public interface IUserPrincipal extends Principal {
      * Returns the roles associated with this principal
      * @return the roles associated with this principal
      */
-    Collection<IRole> getRoles();
+    Set<UserRole> getRoles();
 
     /**
      * Returns the credentials that authenticate this users.
