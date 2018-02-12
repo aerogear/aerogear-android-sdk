@@ -1,7 +1,7 @@
 package org.aerogear.android.ags.auth.impl;
 
 import org.aerogear.android.ags.auth.AbstractAuthenticator;
-import org.aerogear.android.ags.auth.AuthService;
+import org.aerogear.android.ags.auth.AuthConfiguration;
 import org.aerogear.android.ags.auth.AuthStateManager;
 import org.aerogear.android.ags.auth.AuthenticationException;
 import org.aerogear.android.ags.auth.IUserPrincipal;
@@ -28,11 +28,11 @@ public class OIDCTokenAuthenticatorImpl extends AbstractAuthenticator {
     private static final String TOKEN_HINT_FRAGMENT = "id_token_hint";
     private static final String REDIRECT_FRAGMENT = "redirect_uri";
 
-    private final AuthService authService;
+    private final AuthConfiguration authConfiguration;
 
-    public OIDCTokenAuthenticatorImpl(final ServiceConfiguration config, AuthService authService) {
+    public OIDCTokenAuthenticatorImpl(final ServiceConfiguration config, AuthConfiguration authConfiguration) {
         super(config);
-        this.authService = authService;
+        this.authConfiguration = authConfiguration;
     }
 
     @Override
@@ -97,7 +97,7 @@ public class OIDCTokenAuthenticatorImpl extends AbstractAuthenticator {
         String serverUrl = this.getServiceConfig().getProperty("auth-server-url");
         String realmId = this.getServiceConfig().getProperty("realm");
         String baseUrl = String.format("%s/auth/realms/%s/protocol/openid-connect", serverUrl, realmId);
-        String redirectUri =  authService.getAuthConfiguration().getRedirectUri().toString();
+        String redirectUri =  authConfiguration.getRedirectUri().toString();
 
         String logoutRequestUri = String.format("%s/logout?%s=%s&%s=%s", baseUrl, TOKEN_HINT_FRAGMENT, identityToken, REDIRECT_FRAGMENT, redirectUri.toString());
 

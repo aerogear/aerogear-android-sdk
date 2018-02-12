@@ -70,8 +70,8 @@ public class AuthService implements ServiceModule {
     public void configure(final MobileCore core, final ServiceConfiguration serviceConfiguration) {
         this.authenticatorChain = AuthenticationChain
             .newChain()
-            .with(new OIDCTokenAuthenticatorImpl(serviceConfiguration, this))
-            .with(new OIDCAuthCodeImpl(serviceConfiguration, this))
+            .with(new OIDCTokenAuthenticatorImpl(serviceConfiguration, authConfiguration))
+            .with(new OIDCAuthCodeImpl(serviceConfiguration, authConfiguration))
             .build();
     }
 
