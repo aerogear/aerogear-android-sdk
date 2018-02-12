@@ -1,22 +1,34 @@
-## Creating a new Service Module in this repository
+== AeroGear Service Developer Guide
 
-This section walks through adding a new Service Module project to the SDK repository.
+Following guide describes architecture for IOS SDK and instructions for developing new AeroGear Services.
 
-### Creating the project
+For instructions about using SDK in user applications please follow link:./getting-started.adoc[User Getting Started Guide]
 
-New Service Modules in this repository should be created under the `org.aerogear.mobile.*` namespace.
+image:./images/diagram.svg[diagram,450,450,role="right"]
+
+=== SDK architecture
+
+SDK aggregates individual services SDK into one single manageable namespace. Services like AeroGear Sync, Push are build as separate SDK's that can be included into any existing or new IOS applications. SDK using gradle for dependency resolution and distribution. Each SDK is represented as separate gradle module. Modules are used and are tested in `example` application that is also used for building and demo purposes. 
+
+Central element of the SDK is the `core` module that is responsible for reading configuration and instantiating individual SDK's. Both top level users and individual SDK components can interact with Core SDK api in order to avoid strict dependencies. Every SDK is fully independent from each other and interacts with Core interfaces. 
+
+== Creating a new SDK in this repository
+
+This section walks through adding a new SDK Module project to the SDK repository.
+
+=== Creating the project
+
+New Service Modules in this repository should be created under the `org.aerogear.mobile.x` namespace.
 
 See the [`keycloak-service-module`](../keycloak-service-module/build.gradle) for examples.
 
-#### Via Android Studio
+=== Via Android Studio
 
 1. Create a new Android Library module by navigating to `File > New > New Module...` and selecting the `Android Library` option.
-
-2. Input the new module name and ensure it is created under the `org.aerogear.mobile.*` namespace. Ignore the value of the `Minimum SDK` field for now.
-
+2. Input the new module name and ensure it is created under the `org.aerogear.mobile.x` namespace. Ignore the value of the `Minimum SDK` field for now.
 3. After the module is created, update the fields in the generated `build.gradle` file to target the corresponding constants in the [`constants.gradle`](../constants.gradle) file:
-
-```groovy
+[source,groovy]
+----
 apply plugin: 'com.android.library'
 
 android {
@@ -27,15 +39,14 @@ android {
         targetSdkVersion project.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
-```
+----
 
-#### Manually/Via a terminal
+=== Manually/Via a terminal
 
-1. Create a new folder in the root of the repository with the `/*-module` suffix, with a `build.gradle` and `gradle.properties` file describing it.
-
+1. Create a new folder in the root of the repository with the `/name-module` suffix, with a `build.gradle` and `gradle.properties` file describing it.
 2. The `compileSdkVersion`, `minSdkVersion` and `targetSdkVersion` must target the corresponding constants in the [`constants.gradle`](../constants.gradle) file:
-
-```groovy
+[source,groovy]
+----
 apply plugin: 'com.android.library'
 
 android {
@@ -46,10 +57,32 @@ android {
         targetSdkVersion project.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
-```
+----
+3. Add the new module to the root [`settings.gradle`](../settings.gradle).
 
-3. Following that, add the new module to the root [`settings.gradle`](../settings.gradle).
+== Implementing SDK service class
 
-### Adding the Bill of Materials from the SDK
+Every SDK module needs to implement `ServiceModule` interface. 
+This class will be used to instantiate objects in the core and provide configuration specific for SDK.
 
-Service modules should preferably utilize dependencies defined in the `aerogear-android-sdk-bom`, see [Using the Android SDK BOM in your own projects](./using_the_android_sdk_bom.md) for details.
+[source,java]
+----
+public class MyService implements ServiceModule {
+
+    @Override
+    public void configure(final MobileCore core, final ServiceConfiguration serviceConfiguration) {
+        // Initialize your class from configuration
+        String url = serviceConfiguration.getUri();
+    }
+
+    @Override
+    public String type() {
+        return "name-of-sdk";
+    }
+
+    @Override
+    public void destroy() {
+        // Destroy SDK
+    }
+}
+----

@@ -1,0 +1,6 @@
+= AeroGear Services Auth SDK
+
+Mobile authentication SDK based on keycloak
+
+== Usage
+

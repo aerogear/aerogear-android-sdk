@@ -1,1 +1,7 @@
- 
+= AeroGear Services Metrics SDK
+
+Mobile application Metrics SDK
+
+== Importing
+
+== Usage
