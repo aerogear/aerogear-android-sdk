@@ -15,7 +15,6 @@ public class AbstractAuthenticator {
      */
     private final ServiceConfiguration serviceConfig;
 
-
     public AbstractAuthenticator(final ServiceConfiguration serviceConfig) {
         this.serviceConfig = serviceConfig;
     }

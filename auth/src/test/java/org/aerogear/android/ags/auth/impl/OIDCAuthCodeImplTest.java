@@ -1,5 +1,6 @@
 package org.aerogear.android.ags.auth.impl;
 
+import org.aerogear.android.ags.auth.AuthConfiguration;
 import org.aerogear.android.ags.auth.AuthenticationException;
 import org.aerogear.android.ags.auth.credentials.ICredential;
 import org.aerogear.android.ags.auth.credentials.OIDCCredentials;
@@ -28,9 +29,12 @@ public class OIDCAuthCodeImplTest {
 
     private ICredential credential;
 
+    private AuthConfiguration authConfiguration;
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
+
         serviceConfig = ServiceConfiguration.newConfiguration().addProperty("resource", "client-app").build();
         credential = new OIDCCredentials() {
             @Override
@@ -38,7 +42,9 @@ public class OIDCAuthCodeImplTest {
                 return accessToken;
             }
         };
-        authenticator = new OIDCAuthCodeImpl(serviceConfig);
+        authConfiguration = new AuthConfiguration.AuthConfigurationBuilder().withRedirectUri("some.redirect.uri:/callback").build();
+
+        authenticator = new OIDCAuthCodeImpl(serviceConfig, authConfiguration);
     }
 
     @Test

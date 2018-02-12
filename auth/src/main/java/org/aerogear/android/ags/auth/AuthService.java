@@ -2,8 +2,6 @@ package org.aerogear.android.ags.auth;
 
 import android.content.Context;
 
-import net.openid.appauth.AuthState;
-
 import org.aerogear.android.ags.auth.credentials.ICredential;
 import org.aerogear.android.ags.auth.impl.OIDCAuthCodeImpl;
 import org.aerogear.android.ags.auth.impl.OIDCTokenAuthenticatorImpl;
@@ -20,6 +18,7 @@ import java.util.concurrent.Future;
 public class AuthService implements ServiceModule {
 
     private AuthenticationChain authenticatorChain;
+    private AuthConfiguration authConfiguration;
 
     /**
      * Instantiates a new AuthService object
@@ -71,8 +70,8 @@ public class AuthService implements ServiceModule {
     public void configure(final MobileCore core, final ServiceConfiguration serviceConfiguration) {
         this.authenticatorChain = AuthenticationChain
             .newChain()
-            .with(new OIDCTokenAuthenticatorImpl(serviceConfiguration))
-            .with(new OIDCAuthCodeImpl(serviceConfiguration))
+            .with(new OIDCTokenAuthenticatorImpl(serviceConfiguration, authConfiguration))
+            .with(new OIDCAuthCodeImpl(serviceConfiguration, authConfiguration))
             .build();
     }
 
@@ -80,12 +79,21 @@ public class AuthService implements ServiceModule {
      * Initialize the module. This should be called before any other method when using the module.
      * @param context
      */
-    public void init(final Context context) {
+    public void init(final Context context, final AuthConfiguration authConfiguration) {
         AuthStateManager.getInstance(context);
+        this.authConfiguration = authConfiguration;
     }
 
     @Override
     public void destroy() {
 
     }
+
+    /**
+     * @return {@link #authConfiguration}
+     */
+    public AuthConfiguration getAuthConfiguration() {
+        return authConfiguration;
+    }
+
 }
