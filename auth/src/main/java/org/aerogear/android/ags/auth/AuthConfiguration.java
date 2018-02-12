@@ -15,29 +15,27 @@ public class AuthConfiguration {
     /**
      * Builds a new AuthConfiguration object.
      *
-     * @param redirectUri the redirect uri for the developers app.
+     * @param builder {@link AuthConfigurationBuilder}
      */
-    protected AuthConfiguration(final Uri redirectUri) {
-        this.redirectUri = redirectUri;
+    private AuthConfiguration(AuthConfigurationBuilder builder) {
+        this.redirectUri = builder.redirectUri;
     }
 
     /**
-     * Builds and returns a AuthConfiguration object.
+     * Builds and returns an AuthConfiguration object.
      */
-    static class Builder {
-        protected Uri redirectUri;
+    public static class AuthConfigurationBuilder {
+        private Uri redirectUri;
 
-        protected Builder() {}
+        public AuthConfigurationBuilder() {}
 
-        Builder redirectUri(final String redirectUri) {
+        public AuthConfigurationBuilder withRedirectUri(String redirectUri) {
             this.redirectUri = Uri.parse(redirectUri);
             return this;
         }
 
-        AuthConfiguration build() {
-            return new AuthConfiguration(
-                this.redirectUri
-            );
+        public AuthConfiguration build() {
+            return new AuthConfiguration(this);
         }
     }
 

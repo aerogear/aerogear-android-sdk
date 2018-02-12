@@ -2,6 +2,7 @@ package org.aerogear.android.ags.auth.impl;
 
 import android.util.Base64;
 
+import org.aerogear.android.ags.auth.AuthService;
 import org.aerogear.android.ags.auth.AuthenticationException;
 import org.aerogear.android.ags.auth.RoleType;
 import org.aerogear.android.ags.auth.UserRole;
@@ -36,9 +37,10 @@ public class OIDCAuthCodeImpl extends OIDCTokenAuthenticatorImpl {
      * Creates a new OIDCAuthCodeImpl object
      *
      * @param serviceConfig {@link ServiceConfiguration}
+     * @param authService {@link AuthService}
      */
-    public OIDCAuthCodeImpl(final ServiceConfiguration serviceConfig) {
-        super(serviceConfig);
+    public OIDCAuthCodeImpl(final ServiceConfiguration serviceConfig, final AuthService authService) {
+        super(serviceConfig, authService);
     }
 
     /**
@@ -51,10 +53,10 @@ public class OIDCAuthCodeImpl extends OIDCTokenAuthenticatorImpl {
      */
     @Override
     public Principal authenticate(final ICredential credential) throws AuthenticationException {
-        OIDCUserPrincipalImpl user;
+        Principal user;
         try {
             userIdentity = getIdentityInformation(credential);
-            user = (OIDCUserPrincipalImpl) OIDCUserPrincipalImpl
+            user = OIDCUserPrincipalImpl
                 .newUser()
                 .withAuthenticator(this)
                 .withUsername(parseUsername())

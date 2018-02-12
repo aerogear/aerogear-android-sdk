@@ -1,5 +1,9 @@
 package org.aerogear.android.ags.auth.impl;
 
+import android.content.Context;
+
+import org.aerogear.android.ags.auth.AuthConfiguration;
+import org.aerogear.android.ags.auth.AuthService;
 import org.aerogear.android.ags.auth.AuthenticationException;
 import org.aerogear.android.ags.auth.credentials.ICredential;
 import org.aerogear.android.ags.auth.credentials.OIDCCredentials;
@@ -8,6 +12,7 @@ import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
 
@@ -28,9 +33,17 @@ public class OIDCAuthCodeImplTest {
 
     private ICredential credential;
 
+    @Mock
+    private AuthService mockAuthService;
+    @Mock
+    private Context mockContext;
+
+    private AuthConfiguration authConfiguration;
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
+
         serviceConfig = ServiceConfiguration.newConfiguration().addProperty("resource", "client-app").build();
         credential = new OIDCCredentials() {
             @Override
@@ -38,7 +51,10 @@ public class OIDCAuthCodeImplTest {
                 return accessToken;
             }
         };
-        authenticator = new OIDCAuthCodeImpl(serviceConfig);
+        authConfiguration = new AuthConfiguration.AuthConfigurationBuilder().withRedirectUri("some.redirect.uri:/callback").build();
+
+        mockAuthService.init(mockContext, authConfiguration);
+        authenticator = new OIDCAuthCodeImpl(serviceConfig, mockAuthService);
     }
 
     @Test

@@ -70,8 +70,8 @@ public class AuthService implements ServiceModule {
     public void configure(final MobileCore core, final ServiceConfiguration serviceConfiguration) {
         this.authenticatorChain = AuthenticationChain
             .newChain()
-            .with(new OIDCTokenAuthenticatorImpl(serviceConfiguration))
-            .with(new OIDCAuthCodeImpl(serviceConfiguration))
+            .with(new OIDCTokenAuthenticatorImpl(serviceConfiguration, this))
+            .with(new OIDCAuthCodeImpl(serviceConfiguration, this))
             .build();
     }
 
@@ -79,23 +79,14 @@ public class AuthService implements ServiceModule {
      * Initialize the module. This should be called before any other method when using the module.
      * @param context
      */
-    public void init(final Context context) {
+    public void init(final Context context, final AuthConfiguration authConfiguration) {
         AuthStateManager.getInstance(context);
+        this.authConfiguration = authConfiguration;
     }
 
     @Override
     public void destroy() {
 
-    }
-
-    /**
-     * Builds a new AuthConfiguration object.
-     */
-    public void setAuthConfiguration() {
-        authConfiguration = new AuthConfiguration
-            .Builder()
-            .redirectUri("Not yet implemented - will be obtained from developer provided config")
-            .build();
     }
 
     /**

@@ -1,7 +1,5 @@
 package org.aerogear.android.ags.auth.impl;
 
-import android.net.Uri;
-
 import org.aerogear.android.ags.auth.AbstractAuthenticator;
 import org.aerogear.android.ags.auth.AuthService;
 import org.aerogear.android.ags.auth.AuthStateManager;
@@ -30,12 +28,11 @@ public class OIDCTokenAuthenticatorImpl extends AbstractAuthenticator {
     private static final String TOKEN_HINT_FRAGMENT = "id_token_hint";
     private static final String REDIRECT_FRAGMENT = "redirect_uri";
 
-    private final AuthService authService = new AuthService();
-    private final Uri redirectUri = authService.getAuthConfiguration().getRedirectUri();
-    private final AuthStateManager authStateManager = getInstance();
+    private final AuthService authService;
 
-    public OIDCTokenAuthenticatorImpl(final ServiceConfiguration config) {
+    public OIDCTokenAuthenticatorImpl(final ServiceConfiguration config, AuthService authService) {
         super(config);
+        this.authService = authService;
     }
 
     @Override
@@ -75,7 +72,7 @@ public class OIDCTokenAuthenticatorImpl extends AbstractAuthenticator {
      *
      * @param logoutUrl the parsed logout url {@link #parseLogoutURL(String)}.
      */
-    private void performLogout(URL logoutUrl) {
+    private void performLogout(final URL logoutUrl) {
         // Using the default OkHttpServiceModule for now. This will need to be refactored for cert pinning stuff
         HttpServiceModule serviceModule = new OkHttpServiceModule();
 
@@ -85,6 +82,7 @@ public class OIDCTokenAuthenticatorImpl extends AbstractAuthenticator {
 
         // Creates and handles the response
         HttpResponse response = request.execute();
+        AuthStateManager authStateManager = getInstance();
         response.onComplete(new LogoutCompleteHandler(response, authStateManager));
         response.waitForCompletionAndClose();
     }
@@ -95,10 +93,11 @@ public class OIDCTokenAuthenticatorImpl extends AbstractAuthenticator {
      * @param identityToken {@link OIDCCredentials#getIdentityToken()}
      * @return the formatted logout url.
      */
-    private URL parseLogoutURL(String identityToken) {
+    private URL parseLogoutURL(final String identityToken) {
         String serverUrl = this.getServiceConfig().getProperty("auth-server-url");
         String realmId = this.getServiceConfig().getProperty("realm");
         String baseUrl = String.format("%s/auth/realms/%s/protocol/openid-connect", serverUrl, realmId);
+        String redirectUri =  authService.getAuthConfiguration().getRedirectUri().toString();
 
         String logoutRequestUri = String.format("%s/logout?%s=%s&%s=%s", baseUrl, TOKEN_HINT_FRAGMENT, identityToken, REDIRECT_FRAGMENT, redirectUri.toString());
 
