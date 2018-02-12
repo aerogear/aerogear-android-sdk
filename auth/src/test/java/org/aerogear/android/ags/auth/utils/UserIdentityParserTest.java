@@ -1,7 +1,8 @@
-package org.aerogear.android.ags.auth.impl;
+package org.aerogear.android.ags.auth.utils;
 
-import org.aerogear.android.ags.auth.AuthConfiguration;
 import org.aerogear.android.ags.auth.AuthenticationException;
+import org.aerogear.android.ags.auth.RoleType;
+import org.aerogear.android.ags.auth.UserRole;
 import org.aerogear.android.ags.auth.credentials.ICredential;
 import org.aerogear.android.ags.auth.credentials.OIDCCredentials;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
@@ -11,27 +12,24 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
-import java.io.IOException;
+import java.util.Set;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
-
 @RunWith(RobolectricTestRunner.class)
-public class OIDCAuthCodeImplTest {
+public class UserIdentityParserTest {
+
+    private UserIdentityParser parser;
 
     private ServiceConfiguration serviceConfig;
 
     private String accessToken = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJhZFNveVhOQWdReFY0M2VxSFNpUlpmNmhOOXl0dkJOUXliMmZGU2RDVFZNIn0.eyJqdGkiOiJlMzkzOGU2Zi0zOGQzLTQ2MmYtYTg1OS04YjNiODA0N2NlNzkiLCJleHAiOjE5NDg2MzI2NDgsIm5iZiI6MCwiaWF0IjoxNTE2NjMyNjQ4LCJpc3MiOiJodHRwczovL2tleWNsb2FrLnNlY3VyaXR5LmZlZWRoZW5yeS5vcmcvYXV0aC9yZWFsbXMvc2VjdXJlLWFwcCIsImF1ZCI6ImNsaWVudC1hcHAiLCJzdWIiOiJiMTYxN2UzOC0zODczLTRhNDctOGE2Yy01YjgyMmFkYTI3NWUiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJjbGllbnQtYXBwIiwiYXV0aF90aW1lIjoxNTE2NjMyNjQ3LCJzZXNzaW9uX3N0YXRlIjoiYzI1NWYwYWMtODA5MS00YzkyLThmM2EtNDhmZmI4ODFhNzBiIiwiYWNyIjoiMSIsImFsbG93ZWQtb3JpZ2lucyI6WyIqIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJtb2JpbGUtdXNlciJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImNsaWVudC1hcHAiOnsicm9sZXMiOlsiaW9zLWFjY2VzcyJdfSwiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwibmFtZSI6IlVzZXIgMSIsInByZWZlcnJlZF91c2VybmFtZSI6InVzZXIxIiwiZ2l2ZW5fbmFtZSI6IlVzZXIiLCJmYW1pbHlfbmFtZSI6IjEiLCJlbWFpbCI6InVzZXIxQGZlZWRoZW5yeS5vcmcifQ.RvsLrOrLB3EFkZvYZM8-QXf6rRllCap-embNwa2V-NTMpcR7EKNMkKUQI9MbBlVSkTEBckZAK0DGSdo5CYuFoFH-xVWkzU0yQKBuFYAK1Etd50yQWwS1vHiThT95ZgeGGCB3ptafY5UCoqyg41kKqO5rb8iGyZ3ACp2xoEOE5S1rPAPszcQrbKBryOOk7H6MDZgqhZxxGUJkDVAT2v3jAd1aJ4K17qH6raabtDrAy_541vn6c0LS1ay0ooW4IVFzjFSH1-jMJvCYM6oku7brPonl2qHO8jMLrrhxylw2VXIAlregih6aNJ5c87729UtEJNTEFyqGI6GCunt2DQt7cw";
 
-    private OIDCAuthCodeImpl authenticator;
-
     private ICredential credential;
 
-    private AuthConfiguration authConfiguration;
-
     @Before
-    public void setup() {
+    public void setup() throws JSONException, AuthenticationException {
         serviceConfig = ServiceConfiguration.newConfiguration().addProperty("resource", "client-app").build();
         credential = new OIDCCredentials() {
             @Override
@@ -39,20 +37,45 @@ public class OIDCAuthCodeImplTest {
                 return accessToken;
             }
         };
-        authConfiguration = new AuthConfiguration.AuthConfigurationBuilder().withRedirectUri("some.redirect.uri:/callback").build();
+        parser = new UserIdentityParser(credential, serviceConfig);
+    }
 
-        authenticator = new OIDCAuthCodeImpl(serviceConfig, authConfiguration);
+    @Test(expected = IllegalArgumentException.class)
+    public void testUserIdentityParser_NullServiceConfig() throws JSONException, AuthenticationException {
+        parser = new UserIdentityParser(credential, null);
     }
 
     @Test
-    public void testAuthenticate() throws AuthenticationException, IOException, JSONException  {
-        OIDCUserPrincipalImpl user = (OIDCUserPrincipalImpl) authenticator.authenticate(credential);
+    public void testParsers_NullCredentials() throws JSONException, AuthenticationException {
+        parser = new UserIdentityParser(null, serviceConfig);
 
-        assertEquals(user.getAuthenticator(), authenticator);
-        assertEquals(user.getName(), "user1");
-        assertEquals(user.getCredentials(), credential);
-        assertTrue(user.hasClientRole("ios-access", "client-app"));
-        assertTrue(user.hasRealmRole("mobile-user"));
+        String expectedUsername = "Unknown Username";
+        String expectedEmail = "Unknown Email";
+
+
+        String actualUsername = parser.parseUsername();
+        String actualEmail = parser.parseEmail();
+
+        assertEquals(expectedUsername, actualUsername);
+        assertEquals(expectedEmail, actualEmail);
+        assertTrue(parser.parseRoles().isEmpty());
+    }
+
+    @Test
+    public void testParsers_WithCredentials() throws JSONException {
+        String expectedUsername = "user1";
+        String expectedEmail = "user1@feedhenry.org";
+        UserRole expectedRealmRole = new UserRole("mobile-user", RoleType.REALM, null);
+        UserRole expectedClientRole = new UserRole("ios-access", RoleType.CLIENT, "client-app");
+
+        String actualUsername = parser.parseUsername();
+        String actualEmail = parser.parseEmail();
+        Set<UserRole> actualRoles = parser.parseRoles();
+
+        assertEquals(expectedUsername, actualUsername);
+        assertEquals(expectedEmail, actualEmail);
+        assertTrue(actualRoles.contains(expectedRealmRole));
+        assertTrue(actualRoles.contains(expectedClientRole));
     }
 
 }
