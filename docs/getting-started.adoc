@@ -48,7 +48,7 @@ subprojects {
 +
 ----
 dependencies {
-    implementation group: 'com.squareup.okhttp3', name: 'okhttp'
+    implementation group: 'org.aerogear.android', name: 'core'
 }
 ----
 

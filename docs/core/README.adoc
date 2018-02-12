@@ -9,9 +9,9 @@ Main responsibilities:
 1. Network library 
 1. Default logger shared between SDK.
 
-== Importing into gradle
+== Adding dependency
 
-Add dependency
+Add dependency to your application module
 ----
 dependencies {
     implementation group: 'org.aerogear.android', name: 'core'
