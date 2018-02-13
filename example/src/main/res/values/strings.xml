@@ -5,4 +5,8 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_home">Home</string>
     <string name="nav_http">HTTP</string>
+
+    <string name="fragment_auth_login">Authenticate</string>
+
+    <string name="realm_roles">Realm Roles</string>
 </resources>
