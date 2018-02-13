@@ -1,6 +1,6 @@
 == AeroGear Service Developer Guide
 
-Following guide describes architecture for IOS SDK and instructions for developing new AeroGear Services.
+Following guide describes architecture for Android SDK and instructions for developing new AeroGear Services.
 
 For instructions about using SDK in user applications please follow link:./getting-started.adoc[User Getting Started Guide]
 
@@ -8,9 +8,9 @@ image:./images/diagram.svg[diagram,450,450,role="right"]
 
 === SDK architecture
 
-SDK aggregates individual services SDK into one single manageable namespace. Services like AeroGear Sync, Push are build as separate SDK's that can be included into any existing or new IOS applications. SDK using gradle for dependency resolution and distribution. Each SDK is represented as separate gradle module. Modules are used and are tested in `example` application that is also used for building and demo purposes. 
+SDK aggregates individual services SDK into one single manageable namespace. Services like AeroGear Sync, Push are build as separate SDK's that can be included into any existing or new Android applications. SDK using gradle for dependency resolution and distribution. Each SDK is represented as separate gradle module. Modules are used and are tested in `example` application that is also used for building and demo purposes. 
 
-Central element of the SDK is the `core` module that is responsible for reading configuration and instantiating individual SDK's. Both top level users and individual SDK components can interact with Core SDK api in order to avoid strict dependencies. Every SDK is fully independent from each other and interacts with Core interfaces. 
+Central element of the SDK is the `core` module that is responsible for reading configuration and instantiating individual SDK's that implement `ServiceModule` class. Both users and individual SDK components can interact with Core SDK api in order to avoid strict dependencies. Every SDK is fully independent from each other and interacts with core interfaces. 
 
 == Creating a new SDK in this repository
 
