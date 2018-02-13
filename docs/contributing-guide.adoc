@@ -87,9 +87,12 @@ public class MyService implements ServiceModule {
 }
 ----
 
+== Using SDK in application
+
+Using service in the application code:
 
 [source,java]
 ----
-        AuthService authService = (AuthService) activity.mobileCore.getInstance(AuthService.class);
-        authService.init(this.getContext().getApplicationContext());
+        MyService myService = (MyService) activity.mobileCore.getInstance(MyService.class);
+        myService.init(this.getContext().getApplicationContext());
 ----
