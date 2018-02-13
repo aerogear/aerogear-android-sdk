@@ -44,11 +44,6 @@ Also takes some time and skim the [contributor guide](CONTRIBUTING.md)
 
 See [General Contributing Guide](./CONTRIBUTING.md)
 
-## License 
-
- See [LICENSE file](./LICENSE)
-
-
 ## Questions?
 
 Join our [user mailing list](https://groups.google.com/forum/#!forum/aerogear) for any questions or help! We really hope you enjoy app development with AeroGear!

@@ -8,7 +8,7 @@ image:./images/diagram.svg[diagram,450,450,role="right"]
 
 === SDK architecture
 
-SDK aggregates individual services SDK into one single manageable namespace. Services like AeroGear Sync, Push are build as separate SDK's that can be included into any existing or new Android applications. SDK using gradle for dependency resolution and distribution. Each SDK is represented as separate gradle module. Modules are used and are tested in `example` application that is also used for building and demo purposes. 
+SDK aggregates individual services SDK into one single manageable namespace. Services are build as separate SDK's that can be included into any existing or new Android applications. SDK using gradle for dependency resolution and distribution. Each SDK is represented as separate gradle module. Modules are used and are tested in `example` application that is also used for building and demo purposes. 
 
 Central element of the SDK is the `core` module that is responsible for reading configuration and instantiating individual SDK's that implement `ServiceModule` class. Both users and individual SDK components can interact with Core SDK api in order to avoid strict dependencies. Every SDK is fully independent from each other and interacts with core interfaces. 
 
@@ -85,4 +85,11 @@ public class MyService implements ServiceModule {
         // Destroy SDK
     }
 }
+----
+
+
+[source,java]
+----
+        AuthService authService = (AuthService) activity.mobileCore.getInstance(AuthService.class);
+        authService.init(this.getContext().getApplicationContext());
 ----
