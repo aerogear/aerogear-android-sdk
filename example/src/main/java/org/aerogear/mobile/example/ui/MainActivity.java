@@ -1,5 +1,6 @@
 package org.aerogear.mobile.example.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -53,6 +54,27 @@ public class MainActivity extends BaseActivity
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (requestCode == AuthService.LOGIN_REQUEST_CODE) {
+//            AuthService authService = (AuthService) mobileCore.getInstance(AuthService.class);
+//            authService.handleAuthResponse(data, new Callback<IUserPrincipal>() {
+//                @Override
+//                public void onSuccess(IUserPrincipal user) {
+//                    authFragment.addElement("You are logged in!");
+//                    authFragment.addElement("Username", user.getName());
+//                }
+//
+//                @Override
+//                public void onError(Throwable error) {
+//                    authFragment.addElement("Login failed", error.getMessage());
+//                }
+//            });
+//        }
+
+        System.out.println ("Here I am");
     }
 
     @Override

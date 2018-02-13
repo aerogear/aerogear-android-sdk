@@ -15,6 +15,7 @@ public class AbstractAuthenticator {
      */
     private final ServiceConfiguration serviceConfig;
 
+
     public AbstractAuthenticator(final ServiceConfiguration serviceConfig) {
         this.serviceConfig = serviceConfig;
     }
@@ -23,14 +24,14 @@ public class AbstractAuthenticator {
      * This method must be overridden with the custom authentication for the given credential.
      *
      * @param credential user credential
-     * @return the authenticated principal
      */
-    public Principal authenticate(final ICredential credential) throws AuthenticationException {
+    public void authenticate(final ICredential credential, final Callback<Principal> callback) throws AuthenticationException {
         throw new IllegalStateException("Not implemented");
     }
 
     /**
      * Logout the given principal
+     *
      * @param principal principal to be log out
      */
     public void logout(final Principal principal) {
@@ -39,7 +40,10 @@ public class AbstractAuthenticator {
 
     /**
      * Returns the authentication service configuration
+     *
      * @return the authentication service configuration
      */
-    public ServiceConfiguration getServiceConfig() { return this.serviceConfig; }
+    public ServiceConfiguration getServiceConfig() {
+        return this.serviceConfig;
+    }
 }

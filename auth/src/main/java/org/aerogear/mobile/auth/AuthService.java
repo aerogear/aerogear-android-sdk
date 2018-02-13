@@ -1,8 +1,10 @@
 package org.aerogear.mobile.auth;
 
 import android.content.Context;
+import android.content.Intent;
 
-import org.aerogear.mobile.auth.credentials.ICredential;
+import org.aerogear.mobile.auth.credentials.KeyCloakWebCredentials;
+import org.aerogear.mobile.auth.credentials.OIDCCredentials;
 import org.aerogear.mobile.auth.impl.OIDCAuthCodeImpl;
 import org.aerogear.mobile.auth.impl.OIDCTokenAuthenticatorImpl;
 import org.aerogear.mobile.core.MobileCore;
@@ -17,17 +19,15 @@ import java.util.concurrent.Future;
  */
 public class AuthService implements ServiceModule {
 
-    private AuthenticationChain authenticatorChain;
     private AuthConfiguration authConfiguration;
+
+    private OIDCAuthCodeImpl oidcAuthCodeImpl;
+    private OIDCTokenAuthenticatorImpl oidcTokenAuthenticator;
 
     /**
      * Instantiates a new AuthService object
      */
     public AuthService() {}
-
-    private void configureDefaultAuthenticationChain(final AuthenticationChain authenticationChain) {
-
-    }
 
     /**
      * Log in the user with the given credential. Flow to be used to authenticate the user is automatically
@@ -39,8 +39,16 @@ public class AuthService implements ServiceModule {
      * @param credentials the credential
      * @return a user principal
      */
-    public Future<Principal> login(final ICredential credentials) {
-        return authenticatorChain.authenticate(credentials);
+    public void login(final KeyCloakWebCredentials credentials) throws AuthenticationException {
+        oidcAuthCodeImpl.authenticate(credentials);
+    }
+
+    public void login(final OIDCCredentials credentials, Callback<Principal> callback) throws AuthenticationException {
+        oidcTokenAuthenticator.authenticate(credentials, callback);
+    }
+
+    public void handleAuthResult(Intent intent, Callback<Principal> callback) {
+        oidcAuthCodeImpl.handleAuthResult(intent, callback);
     }
 
     /**
@@ -49,17 +57,10 @@ public class AuthService implements ServiceModule {
      *
      * @param principal principal to be logged out
      */
-    public Future<Void> logout(Principal principal) {
-        if (principal instanceof AbstractPrincipal) {
-            return authenticatorChain.logout(principal);
-        }
-
-        throw new IllegalArgumentException("Unknown principal type " + principal.getClass().getName());
+    public void logout(Principal principal) {
+        oidcTokenAuthenticator.logout(principal);
     }
 
-    public void setAuthenticatorChain(AuthenticationChain newChain) {
-        this.authenticatorChain = newChain;
-    }
 
     @Override
     public String type() {
@@ -68,11 +69,8 @@ public class AuthService implements ServiceModule {
 
     @Override
     public void configure(final MobileCore core, final ServiceConfiguration serviceConfiguration) {
-        this.authenticatorChain = AuthenticationChain
-            .newChain()
-            .with(new OIDCTokenAuthenticatorImpl(serviceConfiguration, authConfiguration))
-            .with(new OIDCAuthCodeImpl(serviceConfiguration, authConfiguration))
-            .build();
+        this.oidcAuthCodeImpl = new OIDCAuthCodeImpl(serviceConfiguration, authConfiguration);
+        this.oidcTokenAuthenticator = new OIDCTokenAuthenticatorImpl(serviceConfiguration, authConfiguration);
     }
 
     /**

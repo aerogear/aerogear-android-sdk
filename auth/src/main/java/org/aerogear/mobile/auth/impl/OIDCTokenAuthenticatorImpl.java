@@ -4,6 +4,7 @@ import org.aerogear.mobile.auth.AbstractAuthenticator;
 import org.aerogear.mobile.auth.AuthConfiguration;
 import org.aerogear.mobile.auth.AuthStateManager;
 import org.aerogear.mobile.auth.AuthenticationException;
+import org.aerogear.mobile.auth.Callback;
 import org.aerogear.mobile.auth.IUserPrincipal;
 import org.aerogear.mobile.auth.credentials.ICredential;
 import org.aerogear.mobile.auth.credentials.OIDCCredentials;
@@ -36,7 +37,7 @@ public class OIDCTokenAuthenticatorImpl extends AbstractAuthenticator {
     }
 
     @Override
-    public Principal authenticate(ICredential credential) throws AuthenticationException {
+    public void authenticate(final ICredential credential, final Callback<Principal> callback) throws AuthenticationException {
         if (credential instanceof OIDCCredentials) {
             // Authenticate the credential
             throw new IllegalStateException("Not implemented");
