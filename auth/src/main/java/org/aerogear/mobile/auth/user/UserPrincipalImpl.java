@@ -1,10 +1,6 @@
-package org.aerogear.mobile.auth.impl;
+package org.aerogear.mobile.auth.user;
 
-import org.aerogear.mobile.auth.AbstractAuthenticator;
-import org.aerogear.mobile.auth.AbstractPrincipal;
-import org.aerogear.mobile.auth.RoleType;
-import org.aerogear.mobile.auth.UserRole;
-import org.aerogear.mobile.auth.credentials.ICredential;
+import org.aerogear.mobile.auth.authenticator.AbstractAuthenticator;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -15,7 +11,7 @@ import java.util.Set;
 /**
  * This class represent an authenticated user
  */
-public class UserPrincipalImpl extends AbstractPrincipal {
+public class UserPrincipalImpl implements UserPrincipal {
 
     /**
      * The username of the principal.
@@ -33,77 +29,54 @@ public class UserPrincipalImpl extends AbstractPrincipal {
     private final Set<UserRole> roles;
 
     /**
-     * User credentials. It can be null.
-     */
-    private final ICredential credentials;
-
-    /**
      * Builds a new UserPrincipalImpl object
      *
      * @param username the username of the authenticated user
      * @param email the email of the authenticated user
      * @param roles roles assigned to the user
-     * @param authenticator the authenticator that authenticated this user
      */
     protected UserPrincipalImpl(final String username,
-                              final ICredential credentials,
                               final String email,
-                              final Set<UserRole> roles,
-                              final AbstractAuthenticator authenticator) {
-        super(authenticator);
+                              final Set<UserRole> roles) {
         this.username = username;
         this.email = email;
         this.roles = Collections.synchronizedSet(new HashSet<>(roles));
-        this.credentials = credentials;
     }
 
     /**
      * Builds and return a UserPrincipalImpl object
      */
-    static class Builder {
+    public static class Builder {
         protected String username;
         protected String email;
         protected HashSet<UserRole> roles = new HashSet<>();
-        protected AbstractAuthenticator authenticator;
-        protected ICredential credentials;
 
         protected Builder() {
         }
 
-        Builder withUsername(final String username) {
+        public Builder withUsername(final String username) {
             this.username = username;
             return this;
         }
 
-        Builder withCredentials(final ICredential credentials) {
-            this.credentials = credentials;
-            return this;
-        }
 
-        Builder withEmail(final String email) {
+        public Builder withEmail(final String email) {
             this.email = email;
             return this;
         }
 
-        Builder withRoles(final Set<UserRole> roles) {
+        public Builder withRoles(final Set<UserRole> roles) {
             if (roles != null) {
                 this.roles.addAll(roles);
             }
             return this;
         }
 
-        Builder withAuthenticator(AbstractAuthenticator authenticator) {
-            this.authenticator = authenticator;
-            return this;
-        }
-
-        UserPrincipalImpl build() {
+        public UserPrincipalImpl build() {
             return new UserPrincipalImpl(
                     this.username,
-                    this.credentials,
                     this.email,
-                    this.roles,
-                    this.authenticator);
+                    this.roles);
         }
     }
 
@@ -141,11 +114,6 @@ public class UserPrincipalImpl extends AbstractPrincipal {
     @Override
     public Set<UserRole> getRoles() {
        return roles;
-    }
-
-    @Override
-    public ICredential getCredentials() {
-        return credentials;
     }
 
     public static Builder newUser() {

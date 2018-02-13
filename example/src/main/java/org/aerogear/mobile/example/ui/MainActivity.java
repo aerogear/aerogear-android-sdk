@@ -11,6 +11,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import org.aerogear.mobile.auth.AuthService;
 import org.aerogear.mobile.example.R;
 
 import butterknife.BindView;
@@ -58,23 +59,14 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (requestCode == AuthService.LOGIN_REQUEST_CODE) {
-//            AuthService authService = (AuthService) mobileCore.getInstance(AuthService.class);
-//            authService.handleAuthResponse(data, new Callback<IUserPrincipal>() {
-//                @Override
-//                public void onSuccess(IUserPrincipal user) {
-//                    authFragment.addElement("You are logged in!");
-//                    authFragment.addElement("Username", user.getName());
-//                }
-//
-//                @Override
-//                public void onError(Throwable error) {
-//                    authFragment.addElement("Login failed", error.getMessage());
-//                }
-//            });
-//        }
-
-        System.out.println ("Here I am");
+        if (requestCode == AuthFragment.LOGIN_RESULT_CODE) {
+            //this works but isn't great.
+            //At this point the AuthService instance should have been intialised already in the AuthFragment.
+            //the mobileCore cached the instance automatically for us.
+            //need to think about how to make it more obvious.
+            AuthService authService = (AuthService) mobileCore.getInstance(AuthService.class);
+            authService.handleAuthResult(data);
+        }
     }
 
     @Override

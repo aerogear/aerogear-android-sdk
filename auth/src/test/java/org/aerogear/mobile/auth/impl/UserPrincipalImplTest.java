@@ -1,9 +1,9 @@
 package org.aerogear.mobile.auth.impl;
 
-import org.aerogear.mobile.auth.AbstractAuthenticator;
-import org.aerogear.mobile.auth.RoleType;
-import org.aerogear.mobile.auth.UserRole;
-import org.aerogear.mobile.auth.impl.UserPrincipalImpl;
+import org.aerogear.mobile.auth.authenticator.AbstractAuthenticator;
+import org.aerogear.mobile.auth.user.RoleType;
+import org.aerogear.mobile.auth.user.UserRole;
+import org.aerogear.mobile.auth.user.UserPrincipalImpl;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.junit.After;
 import org.junit.Before;

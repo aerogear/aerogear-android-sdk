@@ -1,6 +1,4 @@
-package org.aerogear.mobile.auth;
-
-import org.aerogear.mobile.auth.credentials.ICredential;
+package org.aerogear.mobile.auth.user;
 
 import java.security.Principal;
 import java.util.Set;
@@ -8,7 +6,7 @@ import java.util.Set;
 /**
  * Public interface for user principals.
  */
-public interface IUserPrincipal extends Principal {
+public interface UserPrincipal extends Principal {
 
     /**
      * Checks if the user has the specified Client role.
@@ -36,11 +34,4 @@ public interface IUserPrincipal extends Principal {
      * @return the roles associated with this principal
      */
     Set<UserRole> getRoles();
-
-    /**
-     * Returns the credentials that authenticate this users.
-     * It can be null, or obfuscated bytes.
-     * @return the credentials that authenticate this users
-     */
-    ICredential getCredentials();
 }
