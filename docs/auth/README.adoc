@@ -1,0 +1,15 @@
+= AeroGear Services Auth SDK
+
+Mobile authentication SDK based on Keycloak
+
+== Adding dependency
+
+Add dependency to your application module
+----
+dependencies {
+    implementation group: 'org.aerogear.android', name: 'auth'
+}
+----
+
+== Usage
+

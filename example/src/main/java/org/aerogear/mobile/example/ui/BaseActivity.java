@@ -7,14 +7,16 @@ import android.support.v7.app.AppCompatActivity;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.example.ExampleApplication;
 
+/**
+ * Base class for all activities that want to work with AeroGearServices SDK
+ */
 public abstract class BaseActivity extends AppCompatActivity {
 
-    MobileCore mobileCore;
+    protected MobileCore mobileCore;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         mobileCore = ((ExampleApplication) getApplication()).getMobileCore();
     }
 }

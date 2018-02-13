@@ -1,0 +1,57 @@
+== Getting Started with AeroGear Services Android SDK
+
+Following guide provides general information for starting with AeroGear Services SDK.
+If you looking for 
+
+== Bill of materials
+
+Project is using a BOM artifact to lock the dependencies (direct and transitive) down to known compatible versions. 
+Gradle itself does not offer such a mechanism but it is a well known and used concept in the Maven world (see [Dependency Management](https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Dependency_Management)).
+In order to bring this functionality to Gradle the Android SDK relies on the [dependency management plugin](https://github.com/spring-gradle-plugins/dependency-management-plugin) provided by Spring. This plugin allows us to use a standard Maven BOM in a Gradle project.
+
+== Setting up project to use any AeroGear Services SDK
+
+
+1. Add gradle plugin to 
+At the top of your gradle build file (but below `buildscripts`) add the plugin itself:
++
+----
+plugins {
+    id "io.spring.dependency-management" version "1.0.4.RELEASE"
+}
+----
+1. Import bom plugin into your gradle config
+Add following code before your `dependencies` add the `dependencyManagement` section that refers to our BOM:
++
+----
+dependencyManagement {
+    imports {
+        mavenBom 'org.jboss.aerogear:aerogear-android-sdk-bom:1.1.10'
+    }
+}
+----
+1. In case your project contains multiple modules you need to apply this to all your subprojects. Make sure to apply the previous steps to your parent modules `build.gradle` and wrap the `dependencyManagement` section as follows:
++
+----
+subprojects {
+    apply plugin: 'io.spring.dependency-management'
+
+    dependencyManagement {
+        imports {
+            mavenBom 'org.jboss.aerogear:aerogear-android-sdk-bom:1.1.10'
+        }
+    }
+}
+----
++
+1. After applying this changes developers can import the dependencies that are listed in the BOM without specifying a version:
++
+----
+dependencies {
+    implementation group: 'org.aerogear.android', name: 'core'
+}
+----
+
+== Importing individual SDK
+
+Please follow individual SDK's documentation to see how to add them to the project

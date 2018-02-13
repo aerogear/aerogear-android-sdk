@@ -1,0 +1,19 @@
+= AeroGear Services Metrics SDK
+
+Mobile application Metrics SDK
+
+== Adding dependency
+
+Add dependency to your application module
+----
+dependencies {
+    implementation group: 'org.aerogear.android', name: 'metrics'
+}
+----
+
+== Provided metrics
+
+- SDK version
+- Application version number
+
+== Usage
