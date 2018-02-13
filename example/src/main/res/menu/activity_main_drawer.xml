@@ -12,6 +12,10 @@
             android:id="@+id/nav_http"
             android:icon="@drawable/ic_http"
             android:title="@string/nav_http" />
+        <item
+            android:id="@+id/nav_auth"
+            android:icon="@drawable/ic_https"
+            android:title="Auth" />
     </group>
 
 </menu>

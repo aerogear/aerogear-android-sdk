@@ -61,6 +61,9 @@ public class MainActivity extends BaseActivity
             case R.id.nav_http:
                 navigateTo(new HttpFragment());
                 break;
+            case R.id.nav_auth:
+                navigateTo(new AuthFragment());
+                break;
             default:
                 navigateTo(new HomeFragment());
                 break;
@@ -70,7 +73,7 @@ public class MainActivity extends BaseActivity
         return true;
     }
 
-    private void navigateTo(Fragment fragment) {
+    public void navigateTo(Fragment fragment) {
         getSupportFragmentManager()
             .beginTransaction()
             .replace(R.id.content, fragment)
