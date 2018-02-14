@@ -2,6 +2,9 @@ package org.aerogear.mobile.auth.user;
 
 import java.util.Objects;
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonEmpty;
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
 /**
  * Represents a user's keycloak roles information.
  */
@@ -30,12 +33,8 @@ public class UserRole {
      * @param namespace role name space/client ID.
      */
     public UserRole(final String name, final RoleType type, final String namespace) {
-        if (name == null || type == null) {
-            throw new IllegalArgumentException("Role name and type cannot be null");
-        } else {
-            this.name = name;
-            this.type = type;
-        }
+        this.name = nonEmpty(name, "name");
+        this.type = nonNull(type, "type");
         this.namespace = namespace;
     }
 

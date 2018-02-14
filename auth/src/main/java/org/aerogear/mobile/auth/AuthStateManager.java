@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 
 import org.aerogear.mobile.auth.credentials.OIDCCredentials;
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
 /**
  * Saves, retrieves and delete a token.
  */
@@ -17,7 +19,7 @@ public class AuthStateManager {
     private final SharedPreferences prefs;
 
     private AuthStateManager(final Context context) {
-        this.prefs = context.getSharedPreferences(STORE_NAME, Context.MODE_PRIVATE);
+        this.prefs = nonNull(context, "context").getSharedPreferences(STORE_NAME, Context.MODE_PRIVATE);
     }
 
     /**
@@ -61,7 +63,7 @@ public class AuthStateManager {
 
     static AuthStateManager getInstance(final Context context) {
         if (instance == null) {
-            instance = new AuthStateManager(context);
+            instance = new AuthStateManager(nonNull(context, "context"));
         }
         return instance;
     }

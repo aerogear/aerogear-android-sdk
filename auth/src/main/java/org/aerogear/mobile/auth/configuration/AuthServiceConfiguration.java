@@ -2,6 +2,8 @@ package org.aerogear.mobile.auth.configuration;
 
 import android.net.Uri;
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
 /**
  * This represents an authentication config provided by the developer.
  */
@@ -22,7 +24,7 @@ public class AuthServiceConfiguration {
      *
      * @param builder {@link AuthConfigurationBuilder}
      */
-    private AuthServiceConfiguration(AuthConfigurationBuilder builder) {
+    private AuthServiceConfiguration(final AuthConfigurationBuilder builder) {
         this.redirectUri = builder.redirectUri;
         this.allowSelfSignedCertificate = builder.allowSelfSignedCert;
     }
@@ -41,8 +43,8 @@ public class AuthServiceConfiguration {
          * @param redirectUri
          * @return
          */
-        public AuthConfigurationBuilder withRedirectUri(String redirectUri) {
-            this.redirectUri = Uri.parse(redirectUri);
+        public AuthConfigurationBuilder withRedirectUri(final String redirectUri) {
+            this.redirectUri = Uri.parse(nonNull(redirectUri, "redirectUri"));
             return this;
         }
 
@@ -52,7 +54,7 @@ public class AuthServiceConfiguration {
          * @param allowSelfSignedCert
          * @return
          */
-        public AuthConfigurationBuilder allowSelfSignedCertificate(boolean allowSelfSignedCert) {
+        public AuthConfigurationBuilder allowSelfSignedCertificate(final boolean allowSelfSignedCert) {
             this.allowSelfSignedCert = allowSelfSignedCert;
             return this;
         }

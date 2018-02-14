@@ -36,6 +36,8 @@ import org.aerogear.mobile.core.http.OkHttpServiceModule;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
 /**
  * Authenticates the user by using OpenID Connect.
  */
@@ -63,9 +65,9 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
     public OIDCAuthenticatorImpl(final ServiceConfiguration serviceConfiguration, final AuthServiceConfiguration authServiceConfiguration, final Context context, final AuthStateManager authStateManager) {
         super(serviceConfiguration);
         this.keycloakConfiguration = new KeycloakConfiguration(serviceConfiguration);
-        this.authServiceConfiguration = authServiceConfiguration;
-        this.appContext = context;
-        this.authStateManager = authStateManager;
+        this.authServiceConfiguration = nonNull(authServiceConfiguration, "authServiceConfiguration");
+        this.appContext = nonNull(context, "context");
+        this.authStateManager = nonNull(authStateManager, "authStateManager");
     }
 
     /**
@@ -77,13 +79,15 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
      */
     @Override
     public void authenticate(final AuthenticateOptions authOptions, final Callback<UserPrincipal> callback) {
-        this.authCallback = callback;
-        OIDCAuthenticateOptions oidcAuthenticateOptions = (OIDCAuthenticateOptions) (authOptions);
+        this.authCallback = nonNull(callback, "callback");
+        OIDCAuthenticateOptions oidcAuthenticateOptions = (OIDCAuthenticateOptions) (nonNull(authOptions, "authOptions"));
         performAuthRequest(oidcAuthenticateOptions.getFromActivity(), oidcAuthenticateOptions.getResultCode());
     }
 
     // Authentication code
     private void performAuthRequest(final Activity fromActivity, final int resultCode) {
+        nonNull(fromActivity, "fromActivity");
+
         AuthorizationServiceConfiguration authServiceConfig = new AuthorizationServiceConfiguration(
             this.keycloakConfiguration.getAuthenticationEndpoint(),
             this.keycloakConfiguration.getTokenEndpoint()
@@ -111,7 +115,9 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
         fromActivity.startActivityForResult(authIntent, resultCode);
     }
 
-    public void handleAuthResult(Intent intent) {
+    public void handleAuthResult(final Intent intent) {
+        nonNull(intent, "intent");
+
         AuthorizationResponse response = AuthorizationResponse.fromIntent(intent);
         AuthorizationException error = AuthorizationException.fromIntent(intent);
 
@@ -148,6 +154,8 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
 
     @Override
     public void logout(final UserPrincipal principal) {
+        nonNull(principal, "principal");
+
         // Get user's identity token
         String identityToken = ((UserPrincipalImpl)principal).getIdentityToken();
         // Construct the logout URL

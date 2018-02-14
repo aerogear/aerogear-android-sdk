@@ -1,9 +1,11 @@
 package org.aerogear.mobile.auth.configuration;
 
 import android.net.Uri;
-import android.support.annotation.VisibleForTesting;
 
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
+
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+import static org.aerogear.mobile.core.utils.SanityCheck.nonEmpty;
 
 /**
  * A class to represent the configuration options of the Keycloak service
@@ -30,9 +32,11 @@ public class KeycloakConfiguration {
      * @param configuration the ServiceConfiguration instance for Keycloak
      */
     public KeycloakConfiguration(final ServiceConfiguration configuration) {
-        this.serverUrl = configuration.getProperty(SERVER_URL_NAME);
-        this.realmId = configuration.getProperty(REALM_ID_NAME);
-        this.clientId = configuration.getProperty(CLIENT_ID_NAME);
+        nonNull(configuration, "configuration");
+
+        this.serverUrl = nonEmpty(configuration.getProperty(SERVER_URL_NAME), SERVER_URL_NAME);
+        this.realmId = nonEmpty(configuration.getProperty(REALM_ID_NAME), REALM_ID_NAME);
+        this.clientId = nonEmpty(configuration.getProperty(CLIENT_ID_NAME), CLIENT_ID_NAME);
         this.baseUrl = String.format(BASE_URL_TEMPLATE, serverUrl, realmId);
     }
 

@@ -1,16 +1,17 @@
 package org.aerogear.mobile.auth.authenticator;
 
-import org.aerogear.mobile.auth.AuthenticationException;
+import android.support.annotation.NonNull;
+
 import org.aerogear.mobile.auth.Callback;
 import org.aerogear.mobile.auth.user.UserPrincipal;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 
-import java.security.Principal;
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 /**
  * Base class for all authenticators
  */
-public class AbstractAuthenticator {
+public abstract class AbstractAuthenticator {
 
     /**
      * Authentication service configuration.
@@ -18,8 +19,9 @@ public class AbstractAuthenticator {
     private final ServiceConfiguration serviceConfig;
 
 
-    public AbstractAuthenticator(final ServiceConfiguration serviceConfig) {
-        this.serviceConfig = serviceConfig;
+    public AbstractAuthenticator(@NonNull final ServiceConfiguration serviceConfig) {
+
+        this.serviceConfig = nonNull(serviceConfig, "serviceConfig");
     }
 
     /**

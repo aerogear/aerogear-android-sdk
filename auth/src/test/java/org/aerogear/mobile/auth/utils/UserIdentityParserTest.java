@@ -30,7 +30,12 @@ public class UserIdentityParserTest {
 
     @Before
     public void setup() throws JSONException, AuthenticationException {
-        ServiceConfiguration serviceConfig = ServiceConfiguration.newConfiguration().addProperty("resource", "client-app").build();
+        ServiceConfiguration serviceConfig = ServiceConfiguration
+            .newConfiguration()
+            .addProperty("resource", "client-app")
+            .addProperty("auth-server-url", "test.server.url")
+            .addProperty("realm", "test-realm")
+            .build();
         keycloakConfiguration = new KeycloakConfiguration(serviceConfig);
         credential = new OIDCCredentials() {
             @Override
@@ -41,7 +46,7 @@ public class UserIdentityParserTest {
         parser = new UserIdentityParser(credential, keycloakConfiguration);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void testUserIdentityParser_NullServiceConfig() throws JSONException, AuthenticationException {
         parser = new UserIdentityParser(credential, null);
     }
