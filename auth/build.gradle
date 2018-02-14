@@ -34,9 +34,14 @@ android {
 
 dependencies {
     implementation project(path: ':core')
+    implementation project(path: ':metrics')
+
     implementation 'net.openid:appauth'
     implementation 'org.bitbucket.b_c:jose4j'
+
     testImplementation "junit:junit"
     testImplementation 'org.mockito:mockito-core'
     testImplementation 'org.robolectric:robolectric'
 }
+
+apply from: '../gradle-mvn-push.gradle'

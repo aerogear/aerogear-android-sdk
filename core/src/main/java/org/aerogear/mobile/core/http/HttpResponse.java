@@ -21,6 +21,8 @@ public interface HttpResponse {
     HttpResponse onComplete(Runnable runnable);
 
     int getStatus();
+    boolean isFailed();
+    Exception getRequestError();
 
     /**
      * This is a terminal method that will block the thread called on until the http request has been

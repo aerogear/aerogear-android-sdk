@@ -61,6 +61,16 @@ class OkHttpResponse implements HttpResponse {
     }
 
     @Override
+    public boolean isFailed() {
+        return requestError != null;
+    }
+
+    @Override
+    public Exception getRequestError() {
+        return requestError;
+    }
+
+    @Override
     public void waitForCompletionAndClose() {
         try {
             requestCompleteLatch.await(DEFAULT_TIMEOUT, TimeUnit.SECONDS);

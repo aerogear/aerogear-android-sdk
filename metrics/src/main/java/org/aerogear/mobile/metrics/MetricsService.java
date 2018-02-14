@@ -1,7 +1,6 @@
 package org.aerogear.mobile.metrics;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.ServiceModule;
@@ -10,67 +9,55 @@ import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpResponse;
 import org.aerogear.mobile.core.http.HttpServiceModule;
 import org.aerogear.mobile.core.logging.Logger;
+import org.aerogear.mobile.metrics.interfaces.MetricsProvider;
+import org.aerogear.mobile.metrics.providers.DefaultMetricsProvider;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.UUID;
-
 public class MetricsService implements ServiceModule {
-    public final static String STORAGE_NAME = "org.aerogear.mobile.metrics";
-    public final static String STORAGE_KEY = "metrics-sdk-installation-id";
-
     private final static String MODULE_NAME = "metrics";
-    private final static String TAG = "AEROGEAR/METRICS";
+    public final static String TAG = "AEROGEAR/METRICS";
 
     private HttpServiceModule httpService;
     private Logger logger;
 
-    private String appVersion = null;
     private String metricsUrl = null;
 
-    /**
-     * Get or create the client ID that identifies a device as long as the user doesn't
-     * reinstall the app or delete the app storage. A random UUID is created and stored in the
-     * application shared preferences.
-     *
-     * Can be overridden to provide a different implementation for identification.
-     *
-     * @param context Android app context
-     * @return String Client ID
-     */
-    protected String getOrCreateClientId(final Context context) {
-        final SharedPreferences preferences = context
-            .getSharedPreferences(STORAGE_NAME, Context.MODE_PRIVATE);
-
-        String clientId = preferences.getString(STORAGE_KEY, null);
-        if (clientId == null) {
-            clientId = UUID.randomUUID().toString();
-
-            logger.info(TAG, "Generated a new client ID: " + clientId);
-
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString(STORAGE_KEY, clientId);
-            editor.commit();
+    // Copy all properties from the source object and add it to the top level
+    // of the root object
+    private void addToRoot(final JSONObject root, final JSONObject source) throws JSONException {
+        JSONArray names = source.names();
+        for (int i = 0; i < names.length(); ++i) {
+            String name = names.getString(i);
+            root.put(name, source.get(name));
         }
-
-        return clientId;
     }
 
-    /**
-     * This method is called to create the JSON object containing the metrics data.
-     * Can be overridden to add more data points.
-     *
-     * @param context Android app context
-     * @return JSONObject Metrics data
-     * @throws JSONException when any of the data results in invalid JSON
-     */
-    protected JSONObject metricsData(final Context context) throws JSONException {
-        final JSONObject result = new JSONObject();
-        result.put("clientId", getOrCreateClientId(context));
-        result.put("appId", context.getPackageName());
-        result.put("appVersion", appVersion);
-        result.put("sdkVersion", MobileCore.getSdkVersion());
-        return result;
+    private void aggregateSingleProvider(
+        final MetricsProvider provider,
+        final JSONObject target,
+        final Context context)
+        throws JSONException {
+
+        String namespace = provider.namespace();
+        JSONObject metrics = provider.metrics(context);
+
+        // If the namespace of a provider is null we add it's properties
+        // to the root object
+        if (namespace == null || namespace.length() == 0) {
+            addToRoot(target, metrics);
+        } else {
+            target.put(namespace, metrics);
+        }
+    }
+
+    // Iterate over all providers and add their JSON to the target metrics object
+    private void aggregateAllProviders(final JSONObject target, final Context context)
+        throws JSONException {
+        for (final MetricsProvider provider: MetricsRegistry.instance().getProviders()) {
+            aggregateSingleProvider(provider, target, context);
+        }
     }
 
     /**
@@ -83,19 +70,17 @@ public class MetricsService implements ServiceModule {
      */
     public final void init(final Context context) {
         try {
-            final JSONObject data = metricsData(context);
+            JSONObject metrics = new JSONObject();
+            aggregateAllProviders(metrics, context);
 
             // Send request to backend
             HttpRequest request = httpService.newRequest();
-            request.post(metricsUrl, data.toString().getBytes());
+            request.post(metricsUrl, metrics.toString().getBytes());
             HttpResponse response = request.execute();
 
             // Async response handling
-            response.onComplete(() -> {
-                if (response.getStatus() != 200) {
-                    logger.error(TAG, "Error sending metrics data");
-                }
-            });
+            response.onComplete(new MetricsResponseHandler(response));
+            response.waitForCompletionAndClose();
         } catch (JSONException e) {
             logger.error(TAG, e);
         }
@@ -104,9 +89,10 @@ public class MetricsService implements ServiceModule {
     @Override
     public void configure(final MobileCore core, final ServiceConfiguration serviceConfiguration) {
         metricsUrl = serviceConfiguration.getUri();
-        appVersion = core.getAppVersion();
         httpService = core.getHttpLayer();
         logger = MobileCore.getLogger();
+
+        MetricsRegistry.instance().registerProvider(new DefaultMetricsProvider());
     }
 
     @Override
@@ -116,5 +102,20 @@ public class MetricsService implements ServiceModule {
 
     @Override
     public void destroy() {
+    }
+
+    private static final class MetricsResponseHandler implements Runnable {
+        private final HttpResponse response;
+
+        public MetricsResponseHandler(final HttpResponse response) {
+            this.response = response;
+        }
+
+        @Override
+        public void run() {
+            if (response.isFailed()) {
+                MobileCore.getLogger().error(TAG, response.getRequestError());
+            }
+        }
     }
 }

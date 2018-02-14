@@ -2,6 +2,7 @@ package org.aerogear.mobile.metrics;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
@@ -57,6 +58,8 @@ public class MetricsServiceTest {
         result.put("appId", MOCK_PKG);
         result.put("appVersion", MOCK_VSN);
         result.put("sdkVersion", MobileCore.getSdkVersion());
+        result.put("platform", "android");
+        result.put("platformVersion", Build.VERSION.SDK_INT);
         return result;
     }
 
