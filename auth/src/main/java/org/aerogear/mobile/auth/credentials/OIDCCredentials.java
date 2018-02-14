@@ -22,14 +22,14 @@ import java.security.spec.InvalidKeySpecException;
 /**
  * Credentials for OIDC based authentication
  */
-public class OIDCCredentials implements ICredential {
+public class OIDCCredentials {
 
     private static final String TAG = "OIDCCredentials";
     private static final String beginPublicKey = "-----BEGIN PUBLIC KEY-----";
     private static final String endPublicKey = "-----END PUBLIC KEY-----";
 
     private final AuthState authState;
-    private final IIntegrityCheckParameters integrityCheckParameters;
+    private final IntegrityCheckParameters integrityCheckParameters;
 
     /**
      * OpenID Connect credentials containing the identity, refresh and access tokens provided on a
@@ -39,7 +39,7 @@ public class OIDCCredentials implements ICredential {
      * @param integrityCheckParameters Integrity check parameters for the token.
      * @throws IllegalArgumentException
      */
-    public OIDCCredentials(final String serialisedCredential, final IIntegrityCheckParameters integrityCheckParameters) {
+    public OIDCCredentials(final String serialisedCredential, final IntegrityCheckParameters integrityCheckParameters) {
         try {
             this.authState = AuthState.jsonDeserialize(serialisedCredential);
         } catch(JSONException e) {
@@ -50,7 +50,7 @@ public class OIDCCredentials implements ICredential {
 
     public OIDCCredentials() {
         this.authState = new AuthState();
-        this.integrityCheckParameters = new IntegrityCheckParameters();
+        this.integrityCheckParameters = new IntegrityCheckParametersImpl();
     }
 
     public String getAccessToken() {
@@ -65,7 +65,7 @@ public class OIDCCredentials implements ICredential {
         return authState.getRefreshToken();
     }
 
-    public IIntegrityCheckParameters getIntegrityCheckParameters() { return this.integrityCheckParameters; }
+    public IntegrityCheckParameters getIntegrityCheckParameters() { return this.integrityCheckParameters; }
 
     /**
      * Verify the authenticity of a JWT token against integrity parameters (provided config).
@@ -189,7 +189,7 @@ public class OIDCCredentials implements ICredential {
             final JSONObject jsonCredential = new JSONObject(serializedCredential);
             final String serializedAuthState = jsonCredential.getString("authState");
             final String serializedIntegrityChecks = jsonCredential.getString("integrityCheck");
-            final IntegrityCheckParameters icParams = IntegrityCheckParameters.deserialize(serializedIntegrityChecks);
+            final IntegrityCheckParametersImpl icParams = IntegrityCheckParametersImpl.deserialize(serializedIntegrityChecks);
             return new OIDCCredentials(serializedAuthState, icParams);
         } catch(JSONException e) {
             throw new IllegalArgumentException(e);

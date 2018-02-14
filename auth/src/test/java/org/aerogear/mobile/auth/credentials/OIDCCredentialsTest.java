@@ -2,8 +2,6 @@ package org.aerogear.mobile.auth.credentials;
 
 import net.openid.appauth.AuthState;
 
-import org.aerogear.mobile.auth.credentials.IntegrityCheckParameters;
-import org.aerogear.mobile.auth.credentials.OIDCCredentials;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -54,7 +52,7 @@ public class OIDCCredentialsTest {
 
     @Before
     public void setup() throws JSONException {
-        IntegrityCheckParameters checkParameters = new IntegrityCheckParameters(INTEGRITY_CHECK_AUDIENCE, INTEGRITY_CHECK_ISSUER, INTEGRITY_CHECK_KEY);
+        IntegrityCheckParametersImpl checkParameters = new IntegrityCheckParametersImpl(INTEGRITY_CHECK_AUDIENCE, INTEGRITY_CHECK_ISSUER, INTEGRITY_CHECK_KEY);
         this.testCredential = new OIDCCredentials(CREDENTIAL_AUTH_STATE, checkParameters);
         this.testEmptyCredential = new OIDCCredentials();
     }

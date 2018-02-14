@@ -1,6 +1,7 @@
-package org.aerogear.mobile.auth;
+package org.aerogear.mobile.auth.authenticator;
 
-import org.aerogear.mobile.auth.credentials.ICredential;
+import org.aerogear.mobile.auth.AuthenticationException;
+import org.aerogear.mobile.auth.Callback;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 
 import java.security.Principal;
@@ -23,9 +24,10 @@ public class AbstractAuthenticator {
     /**
      * This method must be overridden with the custom authentication for the given credential.
      *
-     * @param credential user credential
+     * @param authOptions the options for the authenticate action
+     * @param callback the callback function to be invoked
      */
-    public void authenticate(final ICredential credential, final Callback<Principal> callback) throws AuthenticationException {
+    public void authenticate(final AuthenticateOptions authOptions, final Callback<Principal> callback) {
         throw new IllegalStateException("Not implemented");
     }
 
