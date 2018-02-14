@@ -1,6 +1,5 @@
 package org.aerogear.mobile.auth.credentials;
 
-import org.aerogear.mobile.auth.credentials.IntegrityCheckParameters;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -21,11 +20,11 @@ public class IntegrityCheckParametersTest {
 
     private String testSerializedParams = "{\"audience\":\"" + INTEGRITY_CHECK_AUDIENCE +
         "\",\"issuer\":\"" + INTEGRITY_CHECK_ISSUER + "\",\"publicKey\":\"" + INTEGRITY_CHECK_KEY + "\"}";
-    private IntegrityCheckParameters testParams;
+    private IntegrityCheckParametersImpl testParams;
 
     @Before
     public void setup() {
-        this.testParams = new IntegrityCheckParameters(INTEGRITY_CHECK_AUDIENCE, INTEGRITY_CHECK_ISSUER, INTEGRITY_CHECK_KEY);
+        this.testParams = new IntegrityCheckParametersImpl(INTEGRITY_CHECK_AUDIENCE, INTEGRITY_CHECK_ISSUER, INTEGRITY_CHECK_KEY);
     }
 
     @Test
@@ -36,20 +35,20 @@ public class IntegrityCheckParametersTest {
 
     @Test
     public void testDeserialize() throws JSONException {
-        IntegrityCheckParameters checkParams = IntegrityCheckParameters.deserialize(testSerializedParams);
+        IntegrityCheckParametersImpl checkParams = IntegrityCheckParametersImpl.deserialize(testSerializedParams);
         assertEquals(checkParams.getAudience(), INTEGRITY_CHECK_AUDIENCE);
         assertEquals(checkParams.getIssuer(), INTEGRITY_CHECK_ISSUER);
     }
 
     @Test
     public void testIsValidSuccess() {
-        IntegrityCheckParameters checkParams = new IntegrityCheckParameters(INTEGRITY_CHECK_AUDIENCE, INTEGRITY_CHECK_ISSUER, INTEGRITY_CHECK_KEY);
+        IntegrityCheckParametersImpl checkParams = new IntegrityCheckParametersImpl(INTEGRITY_CHECK_AUDIENCE, INTEGRITY_CHECK_ISSUER, INTEGRITY_CHECK_KEY);
         assertTrue(checkParams.isValid());
     }
 
     @Test
     public void testIsValidFailure() {
-        IntegrityCheckParameters checkParams = new IntegrityCheckParameters();
+        IntegrityCheckParametersImpl checkParams = new IntegrityCheckParametersImpl();
         assertFalse(checkParams.isValid());
     }
 }

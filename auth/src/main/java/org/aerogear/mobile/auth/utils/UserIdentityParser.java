@@ -3,11 +3,11 @@ package org.aerogear.mobile.auth.utils;
 import android.util.Base64;
 
 import org.aerogear.mobile.auth.AuthenticationException;
-import org.aerogear.mobile.auth.RoleType;
-import org.aerogear.mobile.auth.UserRole;
-import org.aerogear.mobile.auth.credentials.ICredential;
+import org.aerogear.mobile.auth.user.RoleType;
+import org.aerogear.mobile.auth.user.UserRole;
+import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
 import org.aerogear.mobile.auth.credentials.OIDCCredentials;
-import org.aerogear.mobile.core.configuration.ServiceConfiguration;
+import org.aerogear.mobile.auth.user.UserPrincipalImpl;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -26,30 +26,27 @@ public class UserIdentityParser {
     private static final String COMMA = ",";
 
     /**
-     * User's credentials. Can be null.
-     */
-    private final ICredential credential;
-
-    /**
-     * The parsed keycloak service configuration {@link ServiceConfiguration}.
+     * The parsed keycloak service configuration {@link KeycloakConfiguration}.
      * Should be initialised before using this parser.
      */
-    private final ServiceConfiguration serviceConfiguration;
+    private final KeycloakConfiguration keycloakConfiguration;
 
     /**
      * The user's identity decoded from their credentials. Can be null.
      */
     private JSONObject userIdentity = new JSONObject();
 
-    public UserIdentityParser(final ICredential credential, final ServiceConfiguration serviceConfiguration) throws JSONException, AuthenticationException {
+    private OIDCCredentials credential;
+
+    public UserIdentityParser(final OIDCCredentials credential, final KeycloakConfiguration keycloakConfiguration) throws AuthenticationException {
         this.credential = credential;
         if (credential != null) {
             decodeUserIdentity();
         }
-        if (serviceConfiguration == null) {
+        if (keycloakConfiguration == null) {
             throw new IllegalArgumentException("The Keycloak service configuration has not yet been initialised");
         } else {
-            this.serviceConfiguration = serviceConfiguration;
+            this.keycloakConfiguration = keycloakConfiguration;
         }
     }
 
@@ -108,6 +105,18 @@ public class UserIdentityParser {
         return roles;
     }
 
+    public UserPrincipalImpl parseUser() throws AuthenticationException {
+        try {
+            return UserPrincipalImpl.newUser()
+                .withEmail(parseEmail())
+                .withUsername(parseUsername())
+                .withRoles(parseRoles())
+                .build();
+        } catch (JSONException jsonEx) {
+            throw new AuthenticationException(jsonEx);
+        }
+    }
+
     /**
      * Parses the user's realm roles from the user identity {@link #userIdentity}
      *
@@ -139,8 +148,8 @@ public class UserIdentityParser {
     private Set<UserRole> parseClientRoles() throws JSONException {
         Set<UserRole> clientRoles = new HashSet<>();
 
-        if (serviceConfiguration.getProperty(RESOURCE) != null) {
-            String initialClientID = serviceConfiguration.getProperty(RESOURCE);  //immediate client role
+        if (keycloakConfiguration.getClientId() != null) {
+            String initialClientID = keycloakConfiguration.getClientId();  //immediate client role
 
             if (userIdentity.has(CLIENT) && userIdentity.getJSONObject(CLIENT).has(initialClientID)
                 && userIdentity.getJSONObject(CLIENT).getJSONObject(initialClientID).has(ROLES)) {
@@ -165,7 +174,7 @@ public class UserIdentityParser {
      * @throws JSONException
      * @throws AuthenticationException
      */
-    private void decodeUserIdentity() throws JSONException, AuthenticationException {
+    private void decodeUserIdentity() throws AuthenticationException {
         String accessToken = ((OIDCCredentials) credential).getAccessToken();
 
         try {

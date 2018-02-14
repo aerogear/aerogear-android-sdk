@@ -1,9 +1,9 @@
 package org.aerogear.mobile.auth.impl;
 
-import org.aerogear.mobile.auth.AbstractAuthenticator;
-import org.aerogear.mobile.auth.RoleType;
-import org.aerogear.mobile.auth.UserRole;
-import org.aerogear.mobile.auth.impl.UserPrincipalImpl;
+import org.aerogear.mobile.auth.authenticator.AbstractAuthenticator;
+import org.aerogear.mobile.auth.user.RoleType;
+import org.aerogear.mobile.auth.user.UserRole;
+import org.aerogear.mobile.auth.user.UserPrincipalImpl;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.junit.After;
 import org.junit.Before;
@@ -26,7 +26,7 @@ public class UserPrincipalImplTest {
         UserRole rRole = new UserRole("rRole", RoleType.REALM, null);
         roles.add(cRole);
         roles.add(rRole);
-        userPrincipalImpl = UserPrincipalImpl.newUser().withRoles(roles).withAuthenticator(abstractAuthenticator).build();
+        userPrincipalImpl = UserPrincipalImpl.newUser().withRoles(roles).build();
     }
 
     @After

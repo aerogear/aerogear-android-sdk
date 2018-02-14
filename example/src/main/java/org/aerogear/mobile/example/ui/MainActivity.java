@@ -1,5 +1,6 @@
 package org.aerogear.mobile.example.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -10,6 +11,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import org.aerogear.mobile.auth.AuthService;
 import org.aerogear.mobile.example.R;
 
 import butterknife.BindView;
@@ -52,6 +54,18 @@ public class MainActivity extends BaseActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == AuthFragment.LOGIN_RESULT_CODE) {
+            //this works but isn't great.
+            //At this point the AuthService instance should have been intialised already in the AuthFragment.
+            //the mobileCore cached the instance automatically for us.
+            //need to think about how to make it more obvious.
+            AuthService authService = (AuthService) mobileCore.getInstance(AuthService.class);
+            authService.handleAuthResult(data);
         }
     }
 

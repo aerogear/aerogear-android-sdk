@@ -1,4 +1,4 @@
-package org.aerogear.mobile.auth;
+package org.aerogear.mobile.auth.user;
 
 import java.util.Objects;
 
