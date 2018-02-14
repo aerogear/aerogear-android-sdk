@@ -9,7 +9,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import org.aerogear.mobile.auth.AuthService;
-import org.aerogear.mobile.auth.user.UserPrincipalImpl;
+import org.aerogear.mobile.auth.user.UserPrincipal;
 import org.aerogear.mobile.auth.user.UserRole;
 import org.aerogear.mobile.example.R;
 
@@ -19,7 +19,7 @@ import butterknife.OnClick;
 public class AuthDetailsFragment extends BaseFragment {
     private static final String TAG = "AuthDetailsFragment";
 
-    private UserPrincipalImpl currentUser;
+    private UserPrincipal currentUser;
 
     @BindView(R.id.divider_realm)
     TextView dividerRealm;
@@ -73,7 +73,7 @@ public class AuthDetailsFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         Bundle args = getArguments();
         if (args != null ) {
-            currentUser = (UserPrincipalImpl) args.getSerializable("currentUser");
+            currentUser = (UserPrincipal) args.getSerializable("currentUser");
             updateFields();
         }
     }

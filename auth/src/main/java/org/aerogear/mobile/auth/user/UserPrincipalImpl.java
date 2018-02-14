@@ -1,8 +1,5 @@
 package org.aerogear.mobile.auth.user;
 
-import org.aerogear.mobile.auth.authenticator.AbstractAuthenticator;
-
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -52,7 +49,7 @@ public class UserPrincipalImpl implements UserPrincipal {
                               final String accessToken) {
         this.username = username;
         this.email = email;
-        this.roles = Collections.synchronizedSet(new HashSet<>(roles));
+        this.roles = new HashSet<>(roles);
         this.identityToken = identityToken;
         this.accessToken = accessToken;
     }
