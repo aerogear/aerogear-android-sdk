@@ -30,6 +30,11 @@ public interface UserPrincipal extends Principal {
     String getName();
 
     /**
+     * Returns the email
+     * @return the email
+     */
+    String getEmail();
+    /**
      * Returns the roles associated with this principal
      * @return the roles associated with this principal
      */

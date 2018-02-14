@@ -116,6 +116,11 @@ public class UserPrincipalImpl implements UserPrincipal {
        return roles;
     }
 
+    @Override
+    public String getEmail() {
+        return email;
+    }
+
     public static Builder newUser() {
         return new Builder();
     }

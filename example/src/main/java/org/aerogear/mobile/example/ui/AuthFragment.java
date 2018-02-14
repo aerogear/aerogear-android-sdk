@@ -1,6 +1,7 @@
 package org.aerogear.mobile.example.ui;
 
 import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -48,7 +49,7 @@ public class AuthFragment extends BaseFragment {
 
         AuthService authService = (AuthService) activity.mobileCore.getInstance(AuthService.class);
         AuthServiceConfiguration authServiceConfiguration = new AuthServiceConfiguration.AuthConfigurationBuilder()
-            .withRedirectUri("org.aerogear.mobile.example/callback")
+            .withRedirectUri("org.aerogear.mobile.example:/callback")
             .allowSelfSignedCertificate(true)
             .build();
         authService.init(this.getContext().getApplicationContext(), authServiceConfiguration);
@@ -61,6 +62,11 @@ public class AuthFragment extends BaseFragment {
                 @Override
                 public void onSuccess(Principal models) {
                     //user logged in, continue on..
+                    Log.d(TAG, models.getName());
+                    AuthFragment.this.activity.getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.content, new AuthDetailsFragment())
+                        .commit();
                 }
 
                 @Override
@@ -69,8 +75,10 @@ public class AuthFragment extends BaseFragment {
                 }
             });
         } else {
-            //we have the current user, we can show the user info
-            String username = currentUser.getName();
+            this.activity.getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.content, new AuthDetailsFragment())
+                .commit();
         }
 
 //        this.activity.getSupportFragmentManager()
