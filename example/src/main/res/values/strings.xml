@@ -8,5 +8,5 @@
 
     <string name="fragment_auth_login">Authenticate</string>
 
-    <string name="realm_roles">Realm Roles</string>
+    <string name="realm_roles">User Roles</string>
 </resources>

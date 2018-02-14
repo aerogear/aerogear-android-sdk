@@ -62,7 +62,7 @@ public class AuthService implements ServiceModule {
      * @param authOptions the authentication options
      * @param callback the callback function that will be invoked with the user info
      */
-    public void login(final OIDCAuthenticateOptions authOptions, final Callback<Principal> callback) {
+    public void login(final OIDCAuthenticateOptions authOptions, final Callback<UserPrincipal> callback) {
         oidcAuthenticatorImpl.authenticate(authOptions, callback);
     }
 
@@ -80,7 +80,7 @@ public class AuthService implements ServiceModule {
      *
      * @param principal principal to be logged out
      */
-    public void logout(final Principal principal) {
+    public void logout(final UserPrincipal principal) {
         this.oidcAuthenticatorImpl.logout(principal);
     }
 

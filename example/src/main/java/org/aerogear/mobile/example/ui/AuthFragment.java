@@ -45,45 +45,21 @@ public class AuthFragment extends BaseFragment {
     @OnClick(R.id.keycloak_login)
     public void doLogin() {
         Log.i(TAG, "Performing login");
-        // This will actually happen back in the activity when login is implemented.
+        AuthService authService = ((MainActivity)getActivity()).getAuthService();
+        OIDCAuthenticateOptions authOptions = new OIDCAuthenticateOptions(this.getActivity(), LOGIN_RESULT_CODE);
+        authService.login(authOptions, new Callback<UserPrincipal>() {
+            @Override
+            public void onSuccess(UserPrincipal models) {
+                //user logged in, continue on..
+                Log.i(TAG, "user logged in " + models.toString());
+                ((MainActivity)getActivity()).navigateToAuthDetailsView(models);
+            }
 
-        AuthService authService = (AuthService) activity.mobileCore.getInstance(AuthService.class);
-        AuthServiceConfiguration authServiceConfiguration = new AuthServiceConfiguration.AuthConfigurationBuilder()
-            .withRedirectUri("org.aerogear.mobile.example:/callback")
-            .allowSelfSignedCertificate(true)
-            .build();
-        authService.init(this.getContext().getApplicationContext(), authServiceConfiguration);
-
-        UserPrincipal currentUser = authService.currentUser();
-        if (currentUser == null) {
-            //not current user, let's login
-            OIDCAuthenticateOptions authOptions = new OIDCAuthenticateOptions(this.getActivity(), LOGIN_RESULT_CODE);
-            authService.login(authOptions, new Callback<Principal>() {
-                @Override
-                public void onSuccess(Principal models) {
-                    //user logged in, continue on..
-                    Log.d(TAG, models.getName());
-                    AuthFragment.this.activity.getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.content, new AuthDetailsFragment())
-                        .commit();
-                }
-
-                @Override
-                public void onError(Throwable error) {
-                    //there is an error during the login
-                }
-            });
-        } else {
-            this.activity.getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.content, new AuthDetailsFragment())
-                .commit();
-        }
-
-//        this.activity.getSupportFragmentManager()
-//            .beginTransaction()
-//            .replace(R.id.content, new AuthDetailsFragment())
-//            .commit();
+            @Override
+            public void onError(Throwable error) {
+                //there is an error during the login
+                Log.e(TAG, "logined failed due to error " + error.getLocalizedMessage());
+            }
+        });
     }
 }

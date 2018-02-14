@@ -111,6 +111,8 @@ public class UserIdentityParser {
                 .withEmail(parseEmail())
                 .withUsername(parseUsername())
                 .withRoles(parseRoles())
+                .withIdentityToken(credential.getIdentityToken())
+                .withAccessToken(credential.getAccessToken())
                 .build();
         } catch (JSONException jsonEx) {
             throw new AuthenticationException(jsonEx);

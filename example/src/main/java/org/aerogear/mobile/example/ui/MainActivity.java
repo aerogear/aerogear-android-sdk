@@ -12,7 +12,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import org.aerogear.mobile.auth.AuthService;
+import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
+import org.aerogear.mobile.auth.user.UserPrincipal;
 import org.aerogear.mobile.example.R;
+
+import java.security.Principal;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,6 +33,8 @@ public class MainActivity extends BaseActivity
     @BindView(R.id.nav_view)
     NavigationView navigationView;
 
+    private AuthService authService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +48,13 @@ public class MainActivity extends BaseActivity
             this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+        authService = (AuthService) mobileCore.getInstance(AuthService.class);
+        AuthServiceConfiguration authServiceConfiguration = new AuthServiceConfiguration.AuthConfigurationBuilder()
+            .withRedirectUri("org.aerogear.mobile.example:/callback")
+            .allowSelfSignedCertificate(true)
+            .build();
+        authService.init(getApplicationContext(), authServiceConfiguration);
 
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -60,11 +73,6 @@ public class MainActivity extends BaseActivity
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == AuthFragment.LOGIN_RESULT_CODE) {
-            //this works but isn't great.
-            //At this point the AuthService instance should have been intialised already in the AuthFragment.
-            //the mobileCore cached the instance automatically for us.
-            //need to think about how to make it more obvious.
-            AuthService authService = (AuthService) mobileCore.getInstance(AuthService.class);
             authService.handleAuthResult(data);
         }
     }
@@ -76,7 +84,12 @@ public class MainActivity extends BaseActivity
                 navigateTo(new HttpFragment());
                 break;
             case R.id.nav_auth:
-                navigateTo(new AuthFragment());
+                UserPrincipal currentUser = authService.currentUser();
+                if (currentUser != null) {
+                    navigateToAuthDetailsView(currentUser);
+                } else {
+                    navigateTo(new AuthFragment());
+                }
                 break;
             default:
                 navigateTo(new HomeFragment());
@@ -92,6 +105,18 @@ public class MainActivity extends BaseActivity
             .beginTransaction()
             .replace(R.id.content, fragment)
             .commit();
+    }
+
+    public AuthService getAuthService() {
+        return authService;
+    }
+
+    public void navigateToAuthDetailsView(UserPrincipal currentUser) {
+        AuthDetailsFragment nextFragment = new AuthDetailsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("currentUser", currentUser);
+        nextFragment.setArguments(bundle);
+        navigateTo(nextFragment);
     }
 
 }
