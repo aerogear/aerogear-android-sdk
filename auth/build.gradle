@@ -31,7 +31,8 @@ android {
         unitTests.includeAndroidResources = true
     }
 
-    task generateAuthJavadoc(type: Javadoc){
+    task generateAuthJavadoc(type: Javadoc, group: "Documentation"){
+        description = 'Generates Auth Javadoc from auth/src/main dir'
         source = android.sourceSets.main.java.srcDirs
         classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
         destinationDir = file("../docs/auth/javadoc/")
