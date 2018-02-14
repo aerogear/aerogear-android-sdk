@@ -48,42 +48,20 @@ public class MobileCoreJsonParser {
     private void parseConfigObject(final JSONObject object) throws JSONException, IOException {
         ServiceConfiguration.Builder serviceConfigBuilder = ServiceConfiguration.newConfiguration();
         serviceConfigBuilder.setName(object.getString("name"));
+        serviceConfigBuilder.setUrl(object.getString("url"));
+        serviceConfigBuilder.setType(object.getString("type"));
         JSONObject config = object.getJSONObject("config");
         JSONArray namesArray = config.names();
-        int namesSize = namesArray.length();
-        for (int i = 0; i < namesSize; i++) {
-            String name = namesArray.getString(i);
-            switch (name) {
-                case "type":
-                    serviceConfigBuilder.setType(config.getString("type"));
-                    break;
-                case "uri":
-                    serviceConfigBuilder.setUri(config.getString("uri"));
-                    break;
-                case "headers":
-                    addHeaders(serviceConfigBuilder, config.getJSONObject("headers"));
-                    break;
-                default:
-                    serviceConfigBuilder.addProperty(name, config.getString(name));
+        if(namesArray!=null){
+            int namesSize = namesArray.length();
+            for (int i = 0; i < namesSize; i++) {
+                String name = namesArray.getString(i);
+                serviceConfigBuilder.addProperty(name, config.getString(name));
             }
         }
         ServiceConfiguration serviceConfig = serviceConfigBuilder.build();
         values.put(serviceConfig.getName(), serviceConfig);
 
-    }
-
-    private void addHeaders(final ServiceConfiguration.Builder serviceConfig, final JSONObject headers) throws JSONException {
-        JSONArray headerNames = headers.names();
-
-        if (headerNames == null) {
-            return;
-        }
-
-        int namesSize = headerNames.length();
-        for (int i = 0; i < namesSize; i++) {
-            String headerName = headerNames.getString(i);
-            serviceConfig.addHeader(headerName, headers.getString(headerName));
-        }
     }
 
     /**

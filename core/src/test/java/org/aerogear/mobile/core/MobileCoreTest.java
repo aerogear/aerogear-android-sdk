@@ -11,7 +11,6 @@ import org.aerogear.mobile.core.http.HttpServiceModule;
 import org.aerogear.mobile.core.http.OkHttpServiceModule;
 import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.logging.LoggerAdapter;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -150,7 +149,7 @@ public class MobileCoreTest {
 
         @Override
         public void configure(MobileCore core, ServiceConfiguration serviceConfiguration) {
-            uri = serviceConfiguration.getUri();
+            uri = serviceConfiguration.getUrl();
         }
 
         @Override

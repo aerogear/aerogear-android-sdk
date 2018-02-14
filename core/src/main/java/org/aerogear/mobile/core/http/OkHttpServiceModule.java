@@ -4,8 +4,6 @@ import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.executor.AppExecutors;
 
-import java.util.Map;
-
 import okhttp3.OkHttpClient;
 
 public class OkHttpServiceModule implements HttpServiceModule {
@@ -55,9 +53,6 @@ public class OkHttpServiceModule implements HttpServiceModule {
     @Override
     public HttpRequest newRequest() {
         OkHttpRequest request = new OkHttpRequest(client, new AppExecutors());
-        for (Map.Entry<String, String> header : serviceConfiguration.getHeaders().entrySet()) {
-            request.addHeader(header.getKey(), header.getValue());
-        }
         return request;
     }
 
