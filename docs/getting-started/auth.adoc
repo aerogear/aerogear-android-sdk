@@ -1,6 +1,8 @@
 = AeroGear Services Auth SDK
 
-Mobile authentication SDK based on Keycloak
+Mobile authentication SDK based on link:http://www.keycloak.org/[Keycloak] using link:http://openid.net/connect/[OpenID Connect].
+
+Provides authentication features like access control and two factor authentication through Keycloak.
 
 == Adding dependency
 
@@ -13,3 +15,149 @@ dependencies {
 
 == Usage
 
+To use the Auth SDK you'll first need to:
+
+* Import the Core module. See link:../core/README.adoc[the Core documentation].
+* Specify the schema of the redirect url for your Android project in `android.defaultConfig.manifestPlaceholders` of the apps `build.gradle` file.
+It should match the schema specified in the `Valid Redirect URL` section for the client in Keycloak.
+It is recommended to use the package name of the Android app as the schema of the redirect url to avoid conflicts.
+
+=== Initializing the module
+
+`AuthService` can be retrived using the `MobileCore#getInstance` method.
+
+[source,java]
+----
+AuthService authService = mobileCore.getInstance(AuthService.class);
+----
+
+Any subsequent `MobileCore#getInstance` method will return the same instance of `AuthService`.
+
+Before the `AuthService` can be used used `AuthService#init` must be invoked once in an app.
+
+If `AuthService#init` is not invoked then an `IllegalStateException` will be thrown when using the
+service.
+
+[source,java]
+----
+AuthServiceConfiguration authServiceConfig = new AuthServiceConfiguration.AuthConfigurationBuilder()
+    .withRedirectUri("org.aerogear.mobile.example:/callback")
+    .build();
+
+// Only invoke this once, every subsequent retrieval of the AuthService will retrieve the same, already initialized, instance.
+authService.init(context, authServiceConfig);
+----
+
+=== Retrieving the current user
+
+To retrieve the current authenticated user the `AuthService#currentUser` method can be invoked.
+
+[source,java]
+----
+// authService already initialized.
+UserPrincipal currentUser = authService.currentUser();
+
+if (currentUser) {
+    // User is already authenticated, perform an action
+} else {
+    // User is not authenticates, start authentication flow
+}
+----
+
+=== Authenticating
+
+To start the authentication invoke the `AuthService#login` method.
+
+[source,java]
+----
+// authService already initialized.
+AuthService authService = mobileCore.getInstance(AuthService.class);
+
+static int LOGIN_RESULT_CODE = 1;
+Activity myActivity = this.getActivity();
+
+// Build the options object and start the authentication flow.
+OIDCAuthenticateOptions options = new OIDCAuthenticateOptions(myActivity, LOGIN_RESULT_CODE);
+
+Callback authCallback = new Callback<UserPrincipal>() {
+    @Override
+    public void onSuccess(UserPrincipal principal) {
+        // User authenticated in, continue on..
+    }
+
+    @Override
+    public void onError(Throwable error) {
+        // An error occurred during login.
+    }
+}
+
+authService.login(options, authCallback);
+----
+
+Once the browser returns to the app the result can be handled. In the activity provided to the
+`login` method override `onActivityResult`. This handler should always invoke
+`AuthService#handleAuthResponse`, providing the `Intent`. This will exchange the temporary tokens
+returned from `AuthService#login` for long-life tokens and will provide a
+`UserPrincipal` which can be used to access a users details.
+
+More information about the user returned is available in link:../core/README.adoc[the auth module JavaDocs].
+
+[source,java]
+----
+@Override
+public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    if (requestCode == LOGIN_RESULT_CODE) {
+        // The core will return the same instance of the auth service as before
+        AuthService authService = mobileCore.getInstance(AuthService.class);
+        authService.handleAuthResponse(data);
+    }
+}
+----
+
+The callback provided in `AuthService#login` will be invoked.
+
+=== Retrieving a users roles
+
+Once a `UserPrincipal` has been retrieved the roles of the user can be listed and checked. This can
+be used to perform client side access control, such as hiding UI components related to actions the
+user doesn't have permissions to perform.
+
+To list a users roles the `UserPrincipal#getRoles` method can be invoked.
+
+Roles are divided into two types. Client roles which belong to the client the user has
+authenticated against, and Realm roles which belong to the realm the client is in.
+
+In order to check if a user has a specific role you can invoke the `UserPrincipal#hasClientRole`
+and `UserPrincipal#hasRealmRole` methods and provide the role name to check for.
+
+[source,java]
+----
+// authService already initialized.
+AuthService authService = mobileCore.getInstance(AuthService.class);
+UserPrincipal currentUser = authService.currentUser();
+
+boolean hasAdminPermissions = currentUser.hasRealmRole("user_admin");
+if (hasAdminPermissions) {
+    // Show some component.
+}
+
+// Check if a user has a role from a specific client named my_client.
+boolean isModerator = currentUser.hasClientRole("my_client", "user_moderator");
+if (isModerator) {
+    // Enable some button.
+}
+----
+
+=== Logging out
+
+To logout invoke the `AuthService#logout` method. This accepts the `UserPrincipal` that was
+provided by `AuthService#handleAuthResponse`.
+
+[source,java]
+----
+// authService already initialized.
+AuthService authService = mobileCore.getInstance(AuthService.class);
+UserPrincipal currentUser = authService.currentUser();
+
+authService.logout(currentUser);
+----
