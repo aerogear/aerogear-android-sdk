@@ -16,6 +16,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MetricsService implements ServiceModule {
+    public final static String STORAGE_NAME = "org.aerogear.mobile.metrics";
+    public final static String STORAGE_KEY = "metrics-sdk-installation-id";
+
     private final static String MODULE_NAME = "metrics";
     public final static String TAG = "AEROGEAR/METRICS";
 

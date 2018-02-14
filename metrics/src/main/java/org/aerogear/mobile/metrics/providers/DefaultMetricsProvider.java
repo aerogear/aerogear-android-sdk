@@ -14,9 +14,6 @@ import org.json.JSONObject;
 import java.util.UUID;
 
 public class DefaultMetricsProvider extends MetricsProvider {
-    public final static String STORAGE_NAME = "org.aerogear.mobile.metrics";
-    public final static String STORAGE_KEY = "metrics-sdk-installation-id";
-
     /**
      * Get or create the client ID that identifies a device as long as the user doesn't
      * reinstall the app or delete the app storage. A random UUID is created and stored in the
@@ -29,16 +26,16 @@ public class DefaultMetricsProvider extends MetricsProvider {
      */
     protected String getOrCreateClientId(final Context context) {
         final SharedPreferences preferences = context
-            .getSharedPreferences(STORAGE_NAME, Context.MODE_PRIVATE);
+            .getSharedPreferences(MetricsService.STORAGE_NAME, Context.MODE_PRIVATE);
 
-        String clientId = preferences.getString(STORAGE_KEY, null);
+        String clientId = preferences.getString(MetricsService.STORAGE_KEY, null);
         if (clientId == null) {
             clientId = UUID.randomUUID().toString();
 
             MobileCore.getLogger().info(MetricsService.TAG, "Generated a new client ID: " + clientId);
 
             SharedPreferences.Editor editor = preferences.edit();
-            editor.putString(STORAGE_KEY, clientId);
+            editor.putString(MetricsService.STORAGE_KEY, clientId);
             editor.commit();
         }
 
