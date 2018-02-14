@@ -30,6 +30,13 @@ android {
     testOptions {
         unitTests.includeAndroidResources = true
     }
+
+    task generateAuthJavadoc(type: Javadoc){
+        source = android.sourceSets.main.java.srcDirs
+        classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+        destinationDir = file("../docs/auth/javadoc/")
+        failOnError false
+    }
 }
 
 dependencies {
