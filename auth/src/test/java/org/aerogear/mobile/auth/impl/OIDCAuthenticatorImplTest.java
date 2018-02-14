@@ -26,7 +26,7 @@ public class OIDCAuthenticatorImplTest {
 
     private OIDCAuthenticatorImpl authenticator;
 
-    private ICredential credential;
+    private OIDCCredentials credential;
 
     private AuthServiceConfiguration authServiceConfiguration;
 

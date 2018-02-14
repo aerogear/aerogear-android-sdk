@@ -26,7 +26,7 @@ public class UserPrincipalImplTest {
         UserRole rRole = new UserRole("rRole", RoleType.REALM, null);
         roles.add(cRole);
         roles.add(rRole);
-        userPrincipalImpl = UserPrincipalImpl.newUser().withRoles(roles).withAuthenticator(abstractAuthenticator).build();
+        userPrincipalImpl = UserPrincipalImpl.newUser().withRoles(roles).build();
     }
 
     @After
