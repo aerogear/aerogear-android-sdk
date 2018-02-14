@@ -2,6 +2,7 @@ package org.aerogear.mobile.auth.authenticator;
 
 import org.aerogear.mobile.auth.AuthenticationException;
 import org.aerogear.mobile.auth.Callback;
+import org.aerogear.mobile.auth.user.UserPrincipal;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 
 import java.security.Principal;
@@ -27,7 +28,7 @@ public class AbstractAuthenticator {
      * @param authOptions the options for the authenticate action
      * @param callback the callback function to be invoked
      */
-    public void authenticate(final AuthenticateOptions authOptions, final Callback<Principal> callback) {
+    public void authenticate(final AuthenticateOptions authOptions, final Callback<UserPrincipal> callback) {
         throw new IllegalStateException("Not implemented");
     }
 
@@ -36,7 +37,7 @@ public class AbstractAuthenticator {
      *
      * @param principal principal to be log out
      */
-    public void logout(final Principal principal) {
+    public void logout(final UserPrincipal principal) {
         throw new IllegalStateException("Not implemented");
     }
 

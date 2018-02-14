@@ -12,7 +12,7 @@ public class KeycloakConfiguration {
 
     private static final String SERVER_URL_NAME = "auth-server-url";
     private static final String REALM_ID_NAME = "realm";
-    private static final String CLIENT_ID_NAME = "clientId";
+    private static final String CLIENT_ID_NAME = "resource";
 
     private static final String TOKEN_HINT_FRAGMENT = "id_token_hint";
     private static final String REDIRECT_FRAGMENT = "redirect_uri";

@@ -1,12 +1,14 @@
 package org.aerogear.mobile.auth.user;
 
+import java.io.Serializable;
 import java.security.Principal;
 import java.util.Set;
 
 /**
  * Public interface for user principals.
+ * It extends the {@link Serializable} interface to allow instances to be easily pass around between {@link android.app.Activity} and {@link android.app.Fragment} using {@link android.os.Bundle}.
  */
-public interface UserPrincipal extends Principal {
+public interface UserPrincipal extends Serializable {
 
     /**
      * Checks if the user has the specified Client role.
@@ -39,4 +41,10 @@ public interface UserPrincipal extends Principal {
      * @return the roles associated with this principal
      */
     Set<UserRole> getRoles();
+
+    /**
+     * Returns the token that will allow access to other services.
+     * @return the access token.
+     */
+    String getAccessToken();
 }

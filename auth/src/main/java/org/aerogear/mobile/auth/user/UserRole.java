@@ -94,4 +94,13 @@ public class UserRole {
     public int hashCode() {
         return Objects.hash(name, type);
     }
+
+    @Override
+    public String toString() {
+        if (this.namespace != null) {
+            return this.namespace + ":" + this.name;
+        } else {
+            return this.name;
+        }
+    }
 }

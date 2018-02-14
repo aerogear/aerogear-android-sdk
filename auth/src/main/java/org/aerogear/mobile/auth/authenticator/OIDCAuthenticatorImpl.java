@@ -35,7 +35,6 @@ import org.aerogear.mobile.core.http.OkHttpServiceModule;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.Principal;
 
 /**
  * Authenticates the user by using OpenID Connect.
@@ -77,7 +76,7 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
      * @throws AuthenticationException
      */
     @Override
-    public void authenticate(final AuthenticateOptions authOptions, final Callback<Principal> callback) {
+    public void authenticate(final AuthenticateOptions authOptions, final Callback<UserPrincipal> callback) {
         this.authCallback = callback;
         OIDCAuthenticateOptions oidcAuthenticateOptions = (OIDCAuthenticateOptions) (authOptions);
         performAuthRequest(oidcAuthenticateOptions.getFromActivity(), oidcAuthenticateOptions.getResultCode());
@@ -148,20 +147,13 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
     }
 
     @Override
-    public void logout(Principal principal) {
+    public void logout(final UserPrincipal principal) {
         // Get user's identity token
-        OIDCCredentials credentials = this.authStateManager.load();
-        if (credentials != null) {
-            String identityToken = credentials.getIdentityToken();
-
-            // Construct the logout URL
-            URL logoutUrl = parseLogoutURL(identityToken);
-
-            // Construct and invoke logout request
-            performLogout(logoutUrl);
-        } else {
-            throw new IllegalStateException("User's credentials cannot be null");
-        }
+        String identityToken = ((UserPrincipalImpl)principal).getIdentityToken();
+        // Construct the logout URL
+        URL logoutUrl = parseLogoutURL(identityToken);
+        // Construct and invoke logout request
+        performLogout(logoutUrl);
     }
 
     /**

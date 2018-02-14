@@ -29,6 +29,16 @@ public class UserPrincipalImpl implements UserPrincipal {
     private final Set<UserRole> roles;
 
     /**
+     * Identity token. It is used for logout
+     */
+    private final String identityToken;
+
+    /**
+     * Access token for http request authorisation
+     */
+    private final String accessToken;
+
+    /**
      * Builds a new UserPrincipalImpl object
      *
      * @param username the username of the authenticated user
@@ -37,10 +47,14 @@ public class UserPrincipalImpl implements UserPrincipal {
      */
     protected UserPrincipalImpl(final String username,
                               final String email,
-                              final Set<UserRole> roles) {
+                              final Set<UserRole> roles,
+                              final String identityToken,
+                              final String accessToken) {
         this.username = username;
         this.email = email;
         this.roles = Collections.synchronizedSet(new HashSet<>(roles));
+        this.identityToken = identityToken;
+        this.accessToken = accessToken;
     }
 
     /**
@@ -50,6 +64,8 @@ public class UserPrincipalImpl implements UserPrincipal {
         protected String username;
         protected String email;
         protected HashSet<UserRole> roles = new HashSet<>();
+        protected String idToken;
+        protected String accessToken;
 
         protected Builder() {
         }
@@ -72,11 +88,23 @@ public class UserPrincipalImpl implements UserPrincipal {
             return this;
         }
 
+        public Builder withIdentityToken(final String idToken) {
+            this.idToken = idToken;
+            return this;
+        }
+
+        public Builder withAccessToken(final String accessToken) {
+            this.accessToken = accessToken;
+            return this;
+        }
+
         public UserPrincipalImpl build() {
             return new UserPrincipalImpl(
                     this.username,
                     this.email,
-                    this.roles);
+                    this.roles,
+                    this.idToken,
+                    this.accessToken);
         }
     }
 
@@ -143,5 +171,23 @@ public class UserPrincipalImpl implements UserPrincipal {
                 ", email='" + email + '\'' +
                 ", roles=" + roleNames +
                 '}';
+    }
+
+    /**
+     * Returns the identity token. It is used during logout.
+     * @return
+     */
+    public String getIdentityToken() {
+        return identityToken;
+    }
+
+    /**
+     * Returns the access token for the current logged user.
+     * This token can be added to HTTP requests as the "Authorization: Bearer" header.
+     * @return
+     */
+    @Override
+    public String getAccessToken() {
+        return accessToken;
     }
 }

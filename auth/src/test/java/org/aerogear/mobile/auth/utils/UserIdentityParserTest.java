@@ -30,7 +30,7 @@ public class UserIdentityParserTest {
 
     @Before
     public void setup() throws JSONException, AuthenticationException {
-        ServiceConfiguration serviceConfig = ServiceConfiguration.newConfiguration().addProperty("clientId", "client-app").build();
+        ServiceConfiguration serviceConfig = ServiceConfiguration.newConfiguration().addProperty("resource", "client-app").build();
         keycloakConfiguration = new KeycloakConfiguration(serviceConfig);
         credential = new OIDCCredentials() {
             @Override

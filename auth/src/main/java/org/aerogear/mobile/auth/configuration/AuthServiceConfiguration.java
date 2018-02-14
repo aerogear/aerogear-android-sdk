@@ -36,12 +36,23 @@ public class AuthServiceConfiguration {
 
         public AuthConfigurationBuilder() {}
 
-        public AuthConfigurationBuilder withRedirectUri(final String redirectUri) {
+        /**
+         * Allow specify the value of the redirect uri
+         * @param redirectUri
+         * @return
+         */
+        public AuthConfigurationBuilder withRedirectUri(String redirectUri) {
             this.redirectUri = Uri.parse(redirectUri);
             return this;
         }
 
-        public AuthConfigurationBuilder allowSelfSignedCertificate(final boolean allowSelfSignedCert) {
+        /**
+         * Specify if self sign certificate is allow.
+         * NOTE: this is not for production use and it should only be used for testing purpose.
+         * @param allowSelfSignedCert
+         * @return
+         */
+        public AuthConfigurationBuilder allowSelfSignedCertificate(boolean allowSelfSignedCert) {
             this.allowSelfSignedCert = allowSelfSignedCert;
             return this;
         }

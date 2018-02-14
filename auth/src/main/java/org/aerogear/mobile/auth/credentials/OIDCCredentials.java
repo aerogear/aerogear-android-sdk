@@ -188,14 +188,10 @@ public class OIDCCredentials {
         try {
             final JSONObject jsonCredential = new JSONObject(serializedCredential);
             final String serializedAuthState = jsonCredential.getString("authState");
-
-            final IntegrityCheckParametersImpl icParams;
-
-            if (jsonCredential.has("integrityCheck")) {
-                final String serializedIntegrityChecks = jsonCredential.getString("integrityCheck");
+            final String serializedIntegrityChecks = jsonCredential.optString("integrityCheck", null);
+            IntegrityCheckParametersImpl icParams = null;
+            if (serializedIntegrityChecks != null) {
                 icParams = IntegrityCheckParametersImpl.deserialize(serializedIntegrityChecks);
-            } else {
-                icParams = null;
             }
             return new OIDCCredentials(serializedAuthState, icParams);
         } catch(JSONException e) {
