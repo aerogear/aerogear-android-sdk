@@ -36,12 +36,12 @@ public class AuthServiceConfiguration {
 
         public AuthConfigurationBuilder() {}
 
-        public AuthConfigurationBuilder withRedirectUri(String redirectUri) {
+        public AuthConfigurationBuilder withRedirectUri(final String redirectUri) {
             this.redirectUri = Uri.parse(redirectUri);
             return this;
         }
 
-        public AuthConfigurationBuilder allowSelfSignedCertificate(boolean allowSelfSignedCert) {
+        public AuthConfigurationBuilder allowSelfSignedCertificate(final boolean allowSelfSignedCert) {
             this.allowSelfSignedCert = allowSelfSignedCert;
             return this;
         }

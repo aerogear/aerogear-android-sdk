@@ -62,7 +62,7 @@ public class AuthService implements ServiceModule {
      * @param authOptions the authentication options
      * @param callback the callback function that will be invoked with the user info
      */
-    public void login(final OIDCAuthenticateOptions authOptions, Callback<Principal> callback) {
+    public void login(final OIDCAuthenticateOptions authOptions, final Callback<Principal> callback) {
         oidcAuthenticatorImpl.authenticate(authOptions, callback);
     }
 
@@ -70,7 +70,7 @@ public class AuthService implements ServiceModule {
      * This function should be called in the start activity's "onActivityResult" method to allow the SDK to process the response from the authentication server.
      * @param data The intent data that is passed to "onActivityResult"
      */
-    public void handleAuthResult(Intent data) {
+    public void handleAuthResult(final Intent data) {
         oidcAuthenticatorImpl.handleAuthResult(data);
     }
 
@@ -80,7 +80,7 @@ public class AuthService implements ServiceModule {
      *
      * @param principal principal to be logged out
      */
-    public void logout(Principal principal) {
+    public void logout(final Principal principal) {
         this.oidcAuthenticatorImpl.logout(principal);
     }
 

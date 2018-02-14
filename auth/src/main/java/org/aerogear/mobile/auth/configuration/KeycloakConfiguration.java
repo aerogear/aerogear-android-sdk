@@ -29,7 +29,7 @@ public class KeycloakConfiguration {
      * Create a new instance of the Keycloak configuration from the given instance of ServiceConfiguration.
      * @param configuration the ServiceConfiguration instance for Keycloak
      */
-    public KeycloakConfiguration(ServiceConfiguration configuration) {
+    public KeycloakConfiguration(final ServiceConfiguration configuration) {
         this.serverUrl = configuration.getProperty(SERVER_URL_NAME);
         this.realmId = configuration.getProperty(REALM_ID_NAME);
         this.clientId = configuration.getProperty(CLIENT_ID_NAME);
@@ -66,7 +66,7 @@ public class KeycloakConfiguration {
      * @param redirectUri the redirect uri
      * @return the full logout URL string
      */
-    public String getLogoutUrl(String identityToken, String redirectUri) {
+    public String getLogoutUrl(final String identityToken, final String redirectUri) {
         return String.format(LOGOUT_URL_TEMPLATE, this.baseUrl, TOKEN_HINT_FRAGMENT, identityToken, REDIRECT_FRAGMENT, redirectUri);
     }
 
