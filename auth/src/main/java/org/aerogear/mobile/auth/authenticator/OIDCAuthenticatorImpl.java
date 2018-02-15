@@ -41,6 +41,8 @@ import java.net.URL;
  */
 public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
 
+    private final static String SCOPE_OPENID = "openid";
+
     private AuthState authState;
 
     private AuthorizationService authService;
@@ -105,7 +107,8 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
             authServiceConfig,
             this.keycloakConfiguration.getClientId(),
             ResponseTypeValues.CODE,
-            this.authServiceConfiguration.getRedirectUri()).build();
+            this.authServiceConfiguration.getRedirectUri()
+        ).setScopes(SCOPE_OPENID).build();
 
         Intent authIntent = authService.getAuthorizationRequestIntent(authRequest);
         fromActivity.startActivityForResult(authIntent, resultCode);
