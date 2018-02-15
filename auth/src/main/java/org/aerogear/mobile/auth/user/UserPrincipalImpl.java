@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonEmpty;
 
 /**
  * This class represent an authenticated user
@@ -47,7 +48,7 @@ public class UserPrincipalImpl implements UserPrincipal {
                               final Set<UserRole> roles,
                               final String identityToken,
                               final String accessToken) {
-        this.username = username;
+        this.username = nonEmpty(username, "username");
         this.email = email;
         this.roles = new HashSet<>(roles);
         this.identityToken = identityToken;
@@ -68,7 +69,7 @@ public class UserPrincipalImpl implements UserPrincipal {
         }
 
         public Builder withUsername(final String username) {
-            this.username = username;
+            this.username = nonEmpty(username, "username");
             return this;
         }
 
@@ -113,6 +114,8 @@ public class UserPrincipalImpl implements UserPrincipal {
      */
     @Override
     public boolean hasClientRole(final String role, final String clientId) {
+        nonEmpty(role, "role");
+
         return roles.contains(new UserRole(role, RoleType.CLIENT, clientId));
     }
 
@@ -123,6 +126,8 @@ public class UserPrincipalImpl implements UserPrincipal {
      */
     @Override
     public boolean hasRealmRole(final String role){
+        nonEmpty(role, "role");
+
         return roles.contains(new UserRole(role, RoleType.REALM, null));
     }
 

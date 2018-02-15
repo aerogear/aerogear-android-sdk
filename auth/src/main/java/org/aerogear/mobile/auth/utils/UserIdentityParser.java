@@ -15,6 +15,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
 public class UserIdentityParser {
 
     private static final String USERNAME = "preferred_username";
@@ -43,11 +45,7 @@ public class UserIdentityParser {
         if (credential != null) {
             decodeUserIdentity();
         }
-        if (keycloakConfiguration == null) {
-            throw new IllegalArgumentException("The Keycloak service configuration has not yet been initialised");
-        } else {
-            this.keycloakConfiguration = keycloakConfiguration;
-        }
+        this.keycloakConfiguration = nonNull(keycloakConfiguration, "keycloakConfiguration");
     }
 
     /**

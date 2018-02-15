@@ -3,6 +3,8 @@ package org.aerogear.mobile.auth.credentials;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonEmpty;
+
 public class IntegrityCheckParametersImpl implements IntegrityCheckParameters {
 
     private final String issuer;
@@ -71,7 +73,7 @@ public class IntegrityCheckParametersImpl implements IntegrityCheckParameters {
      */
     public static IntegrityCheckParametersImpl deserialize(final String serializedParams) {
         try {
-            final JSONObject jsonParams = new JSONObject(serializedParams);
+            final JSONObject jsonParams = new JSONObject(nonEmpty(serializedParams, "serializedParams"));
             final String audience = jsonParams.getString("audience");
             final String issuer = jsonParams.getString("issuer");
             final String publicKey = jsonParams.getString("publicKey");

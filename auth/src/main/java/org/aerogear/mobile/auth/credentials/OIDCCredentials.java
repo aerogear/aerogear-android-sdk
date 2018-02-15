@@ -19,6 +19,8 @@ import org.json.JSONObject;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonEmpty;
+
 /**
  * Credentials for OIDC based authentication
  */
@@ -73,7 +75,7 @@ public class OIDCCredentials {
      * @return <code>true</code> if the token integrity is good.
      */
     public boolean verifyToken(final String jwtToken) {
-        return verifyToken(jwtToken,
+        return verifyToken(nonEmpty(jwtToken, "jwtToken"),
             integrityCheckParameters.getPublicKey(),
             integrityCheckParameters.getIssuer(),
             integrityCheckParameters.getAudience());
@@ -89,6 +91,9 @@ public class OIDCCredentials {
      * @throws IllegalArgumentException
      */
     public boolean verifyToken(final String jwtToken, final String publicKey, final String issuer, final String audience) {
+        nonEmpty(publicKey, "publicKey");
+        nonEmpty(jwtToken, "jwtToken");
+
         final String constructedPublicKey = beginPublicKey + publicKey + endPublicKey;
 
         // Convert the public key from a string to a Java security key
@@ -185,6 +190,8 @@ public class OIDCCredentials {
      * @throws IllegalArgumentException
      */
     public static OIDCCredentials deserialize(final String serializedCredential) {
+        nonEmpty(serializedCredential, "serializedCredential");
+
         try {
             final JSONObject jsonCredential = new JSONObject(serializedCredential);
             final String serializedAuthState = jsonCredential.getString("authState");
