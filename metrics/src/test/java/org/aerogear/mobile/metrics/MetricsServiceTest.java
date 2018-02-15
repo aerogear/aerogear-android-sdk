@@ -2,6 +2,10 @@ package org.aerogear.mobile.metrics;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.test.mock.MockPackageManager;
 
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
@@ -18,17 +22,18 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class MetricsServiceTest {
+    public final static String MOCK_VSN = "1.2.3";
+
     private final static String MOCK_PKG = "org.aerogear.test";
     private final static String MOCK_URL = "https://dummy";
-    private final static String MOCK_VSN = "1.2.3";
     private final static String MOCK_CID = "12345";
-
-    private Logger logger = new LoggerAdapter();
 
     @Mock
     private MobileCore core;
@@ -51,24 +56,32 @@ public class MetricsServiceTest {
     @Mock
     private SharedPreferences sharedPreferences;
 
+    @Mock
+    private PackageManager packageManager;
+
     private JSONObject expectedResponse() throws JSONException {
         final JSONObject result = new JSONObject();
         result.put("clientId", MOCK_CID);
         result.put("appId", MOCK_PKG);
         result.put("appVersion", MOCK_VSN);
         result.put("sdkVersion", MobileCore.getSdkVersion());
+        result.put("platform", "android");
+        result.put("platformVersion", Build.VERSION.SDK_INT);
         return result;
     }
 
     @Before
-    public void setup() throws JSONException {
+    public void setup() throws Exception {
         when(core.getHttpLayer()).thenReturn(httpService);
+
+        when(context.getPackageManager()).thenReturn(packageManager);
+        when(packageManager.getPackageInfo(MOCK_PKG, 0))
+            .thenReturn(new MockPackageInfo());
+        when(context.getPackageName()).thenReturn(MOCK_PKG);
 
         when(httpService.newRequest()).thenReturn(request);
         when(request.execute()).thenReturn(response);
 
-        when(core.getAppVersion()).thenReturn(MOCK_VSN);
-        when(context.getPackageName()).thenReturn(MOCK_PKG);
         when(config.getUri()).thenReturn(MOCK_URL);
 
         when(sharedPreferences.getString(MetricsService.STORAGE_KEY, null))
@@ -87,5 +100,11 @@ public class MetricsServiceTest {
         // Verify that the data that would be posted is equal to
         // the expected data
         verify(request).post(MOCK_URL, expectedResponse().toString().getBytes());
+    }
+
+    private final static class MockPackageInfo extends PackageInfo {
+        public MockPackageInfo() {
+            this.versionName = MOCK_VSN;
+        }
     }
 }

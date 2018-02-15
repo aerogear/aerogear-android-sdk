@@ -28,7 +28,6 @@ android {
 
 dependencies {
     implementation project(path: ':core')
-
     testImplementation 'junit:junit'
     testImplementation 'org.mockito:mockito-core'
     testImplementation 'org.json:json'

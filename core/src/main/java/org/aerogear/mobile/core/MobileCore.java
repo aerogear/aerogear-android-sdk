@@ -1,5 +1,6 @@
 package org.aerogear.mobile.core;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -27,7 +28,6 @@ public final class MobileCore {
 
     private static Logger logger = new LoggerAdapter();
 
-    private final String appVersion;
     private final String configFileName;
     private final HttpServiceModule httpLayer;
     private final Map<String, ServiceConfiguration> servicesConfig;
@@ -53,9 +53,6 @@ public final class MobileCore {
             String message = String.format("%s could not be loaded", configFileName);
             throw new InitializationException(message, exception);
         }
-
-        // -- Set the app version variable
-        this.appVersion = getAppVersion(context);
 
         // -- Setting default http layer
         if (options.httpServiceModule == null) {
@@ -152,24 +149,6 @@ public final class MobileCore {
         return serviceConfiguration;
     }
 
-    /**
-     * Get the user app version from the package manager
-     *
-     * @param context Android application context
-     * @return String app version name
-     */
-    private String getAppVersion(final Context context) throws InitializationException {
-        try {
-            return context
-                .getPackageManager()
-                .getPackageInfo(context.getPackageName(), 0)
-                .versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            // Wrap in Initialization exception
-            throw new InitializationException("Failed to read app version", e);
-        }
-    }
-
     public HttpServiceModule getHttpLayer() {
         return this.httpLayer;
     }
@@ -185,15 +164,6 @@ public final class MobileCore {
      */
     public static String getSdkVersion() {
         return BuildConfig.VERSION_NAME;
-    }
-
-    /**
-     * Get the version of the user app
-     *
-     * @return String App version name
-     */
-    public String getAppVersion() {
-        return appVersion;
     }
 
     public static final class Options {

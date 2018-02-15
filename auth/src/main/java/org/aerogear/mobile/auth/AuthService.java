@@ -8,12 +8,15 @@ import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
 import org.aerogear.mobile.auth.authenticator.OIDCAuthenticateOptions;
 import org.aerogear.mobile.auth.credentials.OIDCCredentials;
 import org.aerogear.mobile.auth.authenticator.OIDCAuthenticatorImpl;
+import org.aerogear.mobile.auth.metrics.AuthMetricsProvider;
 import org.aerogear.mobile.auth.user.UserPrincipal;
 import org.aerogear.mobile.auth.utils.UserIdentityParser;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.ServiceModule;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.logging.Logger;
+import org.aerogear.mobile.metrics.MetricsRegistry;
+import org.aerogear.mobile.metrics.MetricsService;
 
 import java.security.Principal;
 
@@ -106,6 +109,7 @@ public class AuthService implements ServiceModule {
         this.authStateManager = AuthStateManager.getInstance(context);
         this.authServiceConfiguration = authServiceConfiguration;
         this.oidcAuthenticatorImpl = new OIDCAuthenticatorImpl(this.serviceConfiguration, this.authServiceConfiguration, this.appContext, this.authStateManager);
+        MetricsRegistry.instance().registerProvider(new AuthMetricsProvider());
     }
 
     @Override
