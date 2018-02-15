@@ -1,11 +1,12 @@
 package org.aerogear.mobile.auth.user;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * Represents a user's keycloak roles information.
  */
-public class UserRole {
+public class UserRole implements Serializable {
 
     /**
      * Role name. Can't be null.
