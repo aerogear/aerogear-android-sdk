@@ -6,13 +6,7 @@ android {
     defaultConfig {
         minSdkVersion project.ext.minSdkVersion
         targetSdkVersion project.ext.targetSdkVersion
-
-        versionCode 1
-        versionName "1.0"
-
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-        manifestPlaceholders = ['appAuthRedirectScheme': 'com.aerogear.android.auth']
     }
 
     buildTypes {
@@ -40,3 +34,5 @@ dependencies {
     testImplementation 'org.mockito:mockito-core'
     testImplementation 'org.robolectric:robolectric'
 }
+
+apply from: "../gradle-mvn-push.gradle"
