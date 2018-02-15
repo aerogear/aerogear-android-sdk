@@ -103,7 +103,7 @@ public class MetricsService implements ServiceModule {
 
     @Override
     public void configure(final MobileCore core, final ServiceConfiguration serviceConfiguration) {
-        metricsUrl = serviceConfiguration.getUri();
+        metricsUrl = serviceConfiguration.getUrl();
         appVersion = core.getAppVersion();
         httpService = core.getHttpLayer();
         logger = MobileCore.getLogger();

@@ -28,11 +28,12 @@ public class MobileCoreParserTest {
         try (InputStream configStream = context.getAssets().open("mobile-services.json")) {
             Map<String, ServiceConfiguration> configs = MobileCoreJsonParser.parse(configStream);
 
-            assertNotNull(configs.get("prometheus"));
+            assertNotNull(configs.get("metrics"));
 
             ServiceConfiguration keyCloakServiceConfiguration = configs.get("keycloak");
-            assertEquals("http://keycloak-myproject.192.168.37.1.nip.io/auth", keyCloakServiceConfiguration.getProperty("auth-server-url"));
+            assertEquals("https://keycloak-myproject.192.168.64.74.nip.io/auth", keyCloakServiceConfiguration.getProperty("auth-server-url"));
         } catch (JSONException | IOException exception) {
+            System.out.println(exception);
             fail("mobile-services.json not file");
         }
     }

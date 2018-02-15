@@ -8,22 +8,20 @@ import java.util.Map;
  * This represents a parsed service configuration from JSON configuration.
  */
 public final class ServiceConfiguration {
+
     private final String name;
-    private final HashMap<String, String> properties;
     private final String type;
-    private final String uri;
-    private final HashMap<String, String> headers;
+    private final String url;
+    private final HashMap<String, String> properties;
 
     private ServiceConfiguration(final String name,
                                  final HashMap<String, String> properties,
                                  final String type,
-                                 final String uri,
-                                 final HashMap<String, String> headers) {
+                                 final String url) {
         this.name = name;
         this.properties = properties;
         this.type = type;
-        this.uri = uri;
-        this.headers = headers;
+        this.url = url;
     }
 
     public static class Builder {
@@ -32,7 +30,6 @@ public final class ServiceConfiguration {
         protected HashMap<String, String> properties = new HashMap<>();
         protected String type;
         protected String uri;
-        protected HashMap<String, String> headers = new HashMap<>();
 
         public Builder setName(final String name) {
             this.name = name;
@@ -49,18 +46,14 @@ public final class ServiceConfiguration {
             return this;
         }
 
-        public Builder setUri(final String uri) {
+        public Builder setUrl(final String uri) {
             this.uri = uri;
             return this;
         }
 
-        public Builder addHeader(final String name, final String value) {
-            this.headers.put(name, value);
-            return this;
-        }
 
         public ServiceConfiguration build() {
-            return new ServiceConfiguration(this.name, this.properties, this.type, this.uri, this.headers);
+            return new ServiceConfiguration(this.name, this.properties, this.type, this.uri);
         }
     }
 
@@ -80,12 +73,8 @@ public final class ServiceConfiguration {
         return type;
     }
 
-    public String getUri() {
-        return uri;
-    }
-
-    public Map<String, String> getHeaders() {
-        return Collections.unmodifiableMap(headers);
+    public String getUrl() {
+        return url;
     }
 
     public static Builder newConfiguration() {

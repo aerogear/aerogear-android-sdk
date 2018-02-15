@@ -69,7 +69,7 @@ public class MetricsServiceTest {
 
         when(core.getAppVersion()).thenReturn(MOCK_VSN);
         when(context.getPackageName()).thenReturn(MOCK_PKG);
-        when(config.getUri()).thenReturn(MOCK_URL);
+        when(config.getUrl()).thenReturn(MOCK_URL);
 
         when(sharedPreferences.getString(MetricsService.STORAGE_KEY, null))
             .thenReturn(MOCK_CID);

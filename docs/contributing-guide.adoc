@@ -72,7 +72,7 @@ public class MyService implements ServiceModule {
     @Override
     public void configure(final MobileCore core, final ServiceConfiguration serviceConfiguration) {
         // Initialize your class from configuration
-        String url = serviceConfiguration.getUri();
+        String url = serviceConfiguration.getUrl();
     }
 
     @Override
