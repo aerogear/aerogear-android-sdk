@@ -72,8 +72,7 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
      * Builds a new OIDCUserPrincipalImpl object after the user's credential has been authenticated
      *
      * @param authOptions the OIDC authentication options
-     * @return a new OIDCUserPrincipalImpl object with the user's identity that was decoded from the user's credential
-     * @throws AuthenticationException
+     * @param callback the callback will be invoked with a new OIDCUserPrincipalImpl object with the user's identity that was decoded from the user's credential
      */
     @Override
     public void authenticate(final AuthenticateOptions authOptions, final Callback<UserPrincipal> callback) {
