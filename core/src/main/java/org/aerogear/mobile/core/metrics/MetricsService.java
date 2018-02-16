@@ -7,7 +7,9 @@ import org.aerogear.mobile.core.metrics.interfaces.MetricsPublisher;
 import org.aerogear.mobile.core.metrics.interfaces.Observer;
 
 public class MetricsService implements ServiceModule {
-    public final static String TAG = "AEROGEAR/METRICS";
+
+    private final static String TAG = "AEROGEAR/METRICS";
+
     private DefaultMetrics defaultMetrics;
     private Observer observer;
 
@@ -49,8 +51,8 @@ public class MetricsService implements ServiceModule {
      * - Platform version
      */
     public void sendDefaultMetrics() {
-        getPublisherForNamespace("default")
-            .pushMetrics(defaultMetrics.getDefaultMetrics());
+        getPublisherForNamespace(defaultMetrics.identifier())
+            .pushMetrics(defaultMetrics.data());
     }
 
     @Override

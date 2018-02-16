@@ -16,7 +16,7 @@ import java.util.UUID;
  * Collects some default metrics about the App and SDK versions as well as the
  * client ID
  */
-public class DefaultMetrics {
+public class DefaultMetrics implements Metrics {
     private final static String STORAGE_NAME = "org.aerogear.mobile.metrics";
     private final static String STORAGE_KEY = "metrics-sdk-installation-id";
 
@@ -34,6 +34,16 @@ public class DefaultMetrics {
         this.sdkVersion = MobileCore.getSdkVersion();
         this.platform = "android";
         this.platformVersion = String.valueOf(Build.VERSION.SDK_INT);
+    }
+
+    @Override
+    public String identifier() {
+        return "default";
+    }
+
+    @Override
+    public Map<String, String> data() {
+        return getDefaultMetrics();
     }
 
     /**
@@ -98,4 +108,5 @@ public class DefaultMetrics {
 
         return clientId;
     }
+
 }
