@@ -25,7 +25,7 @@ public class AppMetrics implements Metrics {
 
     @Override
     public String identifier() {
-        return "default";
+        return "app";
     }
 
     /**
