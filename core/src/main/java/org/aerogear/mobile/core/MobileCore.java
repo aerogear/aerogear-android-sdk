@@ -27,18 +27,25 @@ public final class MobileCore {
 
     private static Logger logger = new LoggerAdapter();
 
-    private final String appVersion;
+    private final Context context;
     private final String configFileName;
     private final HttpServiceModule httpLayer;
     private final Map<String, ServiceConfiguration> servicesConfig;
     private final Map<Class<? extends ServiceModule>, ServiceModule> services = new HashMap<>();
+    private final String appVersion;
 
     /**
      * Creates a MobileCore instance
      *
      * @param context Application context
      */
-    private MobileCore(Context context, Options options) throws InitializationException {
+    private MobileCore(Context context, Options options)
+        throws InitializationException, IllegalStateException {
+        if (context == null) {
+            throw new IllegalStateException("Context should not be null");
+        }
+
+        this.context = context.getApplicationContext();
         this.configFileName = options.configFileName;
 
         // -- Allow to override the default logger
@@ -136,6 +143,14 @@ public final class MobileCore {
             throw new InitializationException(e.getMessage(), e);
         }
 
+    }
+
+    /**
+     * Get application context
+     * @return Application context
+     */
+    public Context getContext() {
+        return context;
     }
 
     /**
