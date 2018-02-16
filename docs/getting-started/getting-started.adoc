@@ -3,9 +3,93 @@
 Following guide provides general information for starting with AeroGear Services SDK.
 If you looking for 
 
+== Prerequisites
+You will need the following installed on your system
+ * Android SDK or Android Studio from [Google](https://developer.android.com/studio/index.html)
+It is reccomended you have the following installed  
+* The latest version of [OpenJDK](http://openjdk.java.net/install/index.html)
+
+== Installing
+As of the writing of this guide, the Aerogear Android SDK is not in jcenter and needs to be installed manually.
+
+=== Clone and build the library
+```sh
+git clone https://github.com/aerogear/aerogear-android-sdk
+cd aerogear-android-sdk
+./gradlew install
+```
+
+You can verify the install went well by checking your local maven repository
+
+```
+ls ~/.m2/repository/org/aerogear
+
+#Should output auth  core
+
+```
+
+
+
+== Using the SDK
+
+=== MavenLocal()
+
+If you are using a build of the SDK from source you will need to add mavenLocal() to the build.gradle file in your project's root directory.
+
+```groovy
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        mavenLocal() // <-- Add This line
+    }
+}
+```
+
+=== Reference the Dependencies
+
+In the build.gradle file for your app you can begin adding dependencies provided by the sdk.
+
+```
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:27.0.2'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'org.aerogear:core:5.0.0-SNAPSHOT'
+    implementation 'org.aerogear:auth:5.0.0-SNAPSHOT' //If you are using IDM services provided by KeyCloak
+}
+```
+
+=== Using the SDK
+
+In an example Android Activity you can use the SDK as follows
+
+```java
+
+class MyActivity extends AppCompatActivity {
+
+    MobileCore core;
+    MetricsService metrics;
+
+    void onStart() {
+        super.onStart();
+        core = MobileCore.init(this);
+        metrics = core.getService(MetricsService.class);
+    }
+
+    void onStop() {
+        metrics = null;
+        core.destroy();
+    }
+
+}
+
+```
+
+
 == Bill of materials
 
-Project is using a BOM artifact to lock the dependencies (direct and transitive) down to known compatible versions. 
+Our project provides a BOM artifact to lock the dependencies (direct and transitive) down to known compatible versions. 
 Gradle itself does not offer such a mechanism but it is a well known and used concept in the Maven world (see [Dependency Management](https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Dependency_Management)).
 In order to bring this functionality to Gradle the Android SDK relies on the [dependency management plugin](https://github.com/spring-gradle-plugins/dependency-management-plugin) provided by Spring. This plugin allows us to use a standard Maven BOM in a Gradle project.
 
@@ -48,10 +132,13 @@ subprojects {
 +
 ----
 dependencies {
-    implementation group: 'org.aerogear.android', name: 'core'
+    implementation group: 'org.aerogear', name: 'core'
 }
 ----
 
 == Importing individual SDK
 
 Please follow individual SDK's documentation to see how to add them to the project
+
+ * link:../core/README.md[Core]
+ * link:../auth/README.md[Auth] 
