@@ -8,8 +8,6 @@ import org.aerogear.mobile.core.metrics.interfaces.Observer;
 
 public class MetricsService implements ServiceModule {
 
-    private final static String TAG = "AEROGEAR/METRICS";
-
     private DefaultMetrics defaultMetrics;
     private Observer observer;
 
