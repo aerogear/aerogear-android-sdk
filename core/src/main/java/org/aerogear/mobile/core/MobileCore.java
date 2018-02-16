@@ -82,11 +82,10 @@ public final class MobileCore {
             this.httpLayer = options.httpServiceModule;
         }
 
-        // -- init and send default metrics
-        initMetrics();
+        sendDefaultMetrics();
     }
 
-    private void initMetrics() {
+    private void sendDefaultMetrics() {
         MetricsService metrics = getInstance(MetricsService.class);
         metrics.sendDefaultMetrics();
     }
