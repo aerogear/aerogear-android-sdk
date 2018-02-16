@@ -49,6 +49,9 @@ public class MetricsService implements ServiceModule {
      * Send default metrics
      */
     public void sendDefaultMetrics() {
+        if(observer == null) {
+            throw new IllegalStateException("Observer should not be null. Be sure you have called configure or retrive this from MobileCore.getInstance().");
+        }
         for (Metrics metrics : defaultMetrics) {
             getPublisherForNamespace(metrics.identifier())
                 .pushMetrics(metrics.data());
