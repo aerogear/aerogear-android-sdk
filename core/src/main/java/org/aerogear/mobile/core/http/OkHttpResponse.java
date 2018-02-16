@@ -104,4 +104,16 @@ class OkHttpResponse implements HttpResponse {
             return "";
         }
     }
+
+    @Override
+    public boolean requestFailed() {
+        return this.requestError != null;
+    }
+
+    @Override
+    public Exception getRequestError() {
+        return this.requestError;
+    }
+
+
 }

@@ -13,6 +13,8 @@ import org.aerogear.mobile.core.http.HttpServiceModule;
 import org.aerogear.mobile.core.http.OkHttpServiceModule;
 import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.logging.LoggerAdapter;
+import org.aerogear.mobile.core.metrics.MetricsService;
+import org.aerogear.mobile.core.metrics.interfaces.MetricsPublisher;
 import org.json.JSONException;
 
 import java.io.IOException;
@@ -79,6 +81,18 @@ public final class MobileCore {
         } else {
             this.httpLayer = options.httpServiceModule;
         }
+
+        // -- init and send default metrics
+        initMetrics();
+    }
+
+    private void initMetrics() {
+        MetricsService metrics = getInstance(MetricsService.class);
+        metrics.sendDefaultMetrics();
+    }
+
+    public MetricsPublisher createMetricsPublisher(final String namespace) {
+        return getInstance(MetricsService.class).getPublisherForNamespace(namespace);
     }
 
     /**
