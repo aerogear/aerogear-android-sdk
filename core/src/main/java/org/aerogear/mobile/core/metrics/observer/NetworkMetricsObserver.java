@@ -1,4 +1,4 @@
-package org.aerogear.mobile.core.metrics;
+package org.aerogear.mobile.core.metrics.observer;
 
 import android.content.Context;
 
@@ -7,8 +7,10 @@ import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpResponse;
 import org.aerogear.mobile.core.http.HttpServiceModule;
 import org.aerogear.mobile.core.logging.Logger;
-import org.aerogear.mobile.core.metrics.interfaces.MetricsPublisher;
-import org.aerogear.mobile.core.metrics.interfaces.Observer;
+import org.aerogear.mobile.core.metrics.MetricsService;
+import org.aerogear.mobile.core.metrics.Observer;
+import org.aerogear.mobile.core.metrics.publisher.MetricsProducer;
+import org.aerogear.mobile.core.metrics.MetricsPublisher;
 import org.json.JSONException;
 import org.json.JSONObject;
 

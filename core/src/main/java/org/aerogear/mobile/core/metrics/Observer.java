@@ -1,4 +1,4 @@
-package org.aerogear.mobile.core.metrics.interfaces;
+package org.aerogear.mobile.core.metrics;
 
 import java.util.Map;
 

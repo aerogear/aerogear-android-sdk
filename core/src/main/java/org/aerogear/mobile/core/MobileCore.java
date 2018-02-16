@@ -14,7 +14,7 @@ import org.aerogear.mobile.core.http.OkHttpServiceModule;
 import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.logging.LoggerAdapter;
 import org.aerogear.mobile.core.metrics.MetricsService;
-import org.aerogear.mobile.core.metrics.interfaces.MetricsPublisher;
+import org.aerogear.mobile.core.metrics.MetricsPublisher;
 import org.json.JSONException;
 
 import java.io.IOException;

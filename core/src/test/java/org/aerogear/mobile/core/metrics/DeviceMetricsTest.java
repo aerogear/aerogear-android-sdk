@@ -3,7 +3,7 @@ package org.aerogear.mobile.core.metrics;
 import android.app.Application;
 import android.support.test.filters.SmallTest;
 
-import org.aerogear.mobile.core.http.OkHttpServiceModule;
+import org.aerogear.mobile.core.metrics.metrics.DeviceMetrics;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -16,11 +16,11 @@ import static org.junit.Assert.assertNotNull;
 
 @RunWith(RobolectricTestRunner.class)
 @SmallTest
-public class DefaultMetricsTest {
+public class DeviceMetricsTest {
     @Test
     public void testType() {
         Application context = RuntimeEnvironment.application;
-        DefaultMetrics metrics = new DefaultMetrics(context);
+        DeviceMetrics metrics = new DeviceMetrics(context);
         Map<String, String> result = metrics.getDefaultMetrics();
         assertNotNull(result.get("clientId"));
         assertNotNull(result.get("appId"));

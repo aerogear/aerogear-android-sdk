@@ -3,12 +3,17 @@ package org.aerogear.mobile.core.metrics;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.ServiceModule;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
-import org.aerogear.mobile.core.metrics.interfaces.MetricsPublisher;
-import org.aerogear.mobile.core.metrics.interfaces.Observer;
+import org.aerogear.mobile.core.metrics.observer.LoggerMetricsObserver;
+import org.aerogear.mobile.core.metrics.observer.NetworkMetricsObserver;
+import org.aerogear.mobile.core.metrics.metrics.AppMetrics;
+import org.aerogear.mobile.core.metrics.metrics.DeviceMetrics;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MetricsService implements ServiceModule {
 
-    private DefaultMetrics defaultMetrics;
+    private List<Metrics> defaultMetrics = new ArrayList<>();
     private Observer observer;
 
     @Override
@@ -18,7 +23,9 @@ public class MetricsService implements ServiceModule {
 
     @Override
     public void configure(MobileCore core, ServiceConfiguration serviceConfiguration) {
-        defaultMetrics = new DefaultMetrics(core.getContext());
+        defaultMetrics.add(new AppMetrics(core.getContext()));
+        defaultMetrics.add(new DeviceMetrics(core.getContext()));
+
         String metricsUrl = serviceConfiguration.getUrl();
         if (metricsUrl == null) {
             observer = new LoggerMetricsObserver(MobileCore.getLogger());
@@ -26,7 +33,6 @@ public class MetricsService implements ServiceModule {
             observer = new NetworkMetricsObserver(core, metricsUrl);
         }
     }
-
 
     /**
      * Returns a namespaced observable that can be used to publish metrics
@@ -40,17 +46,13 @@ public class MetricsService implements ServiceModule {
     }
 
     /**
-     * Send default metrics including:
-     * - Client ID
-     * - App ID
-     * - App version
-     * - SDK version
-     * - Platform (always "android")
-     * - Platform version
+     * Send default metrics
      */
     public void sendDefaultMetrics() {
-        getPublisherForNamespace(defaultMetrics.identifier())
-            .pushMetrics(defaultMetrics.data());
+        for (Metrics metrics : defaultMetrics) {
+            getPublisherForNamespace(metrics.identifier())
+                .pushMetrics(metrics.data());
+        }
     }
 
     @Override

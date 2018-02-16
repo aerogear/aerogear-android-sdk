@@ -1,82 +1,62 @@
-package org.aerogear.mobile.core.metrics;
+package org.aerogear.mobile.core.metrics.metrics;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Build;
 
 import org.aerogear.mobile.core.MobileCore;
-import org.json.JSONException;
+import org.aerogear.mobile.core.metrics.Metrics;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 /**
- * Collects some default metrics about the App and SDK versions as well as the
- * client ID
+ * Collects device metrics
  */
-public class DefaultMetrics implements Metrics {
+public class DeviceMetrics implements Metrics {
+
     private final static String STORAGE_NAME = "org.aerogear.mobile.metrics";
     private final static String STORAGE_KEY = "metrics-sdk-installation-id";
 
     private final String clientId;
-    private final String appId;
-    private final String appVersion;
-    private final String sdkVersion;
     private final String platform;
     private final String platformVersion;
 
-    public DefaultMetrics(final Context context) {
+    public DeviceMetrics(final Context context) {
         this.clientId = getOrCreateClientId(context);
-        this.appId = context.getPackageName();
-        this.appVersion = MobileCore.getAppVersion();
-        this.sdkVersion = MobileCore.getSdkVersion();
         this.platform = "android";
         this.platformVersion = String.valueOf(Build.VERSION.SDK_INT);
     }
 
     @Override
     public String identifier() {
-        return "default";
+        return "device";
     }
 
     @Override
     public Map<String, String> data() {
-        return getDefaultMetrics();
-    }
-
-    /**
-     * Return default metrics in JSON format
-     * @return JSONObject with metrics data
-     * @throws JSONException
-     */
-    public Map<String, String> getDefaultMetrics() {
-        Map<String, String>defaultMetrics = new HashMap<>();
-        defaultMetrics.put("clientId", clientId);
-        defaultMetrics.put("appId", appId);
-        defaultMetrics.put("appVersion", appVersion);
-        defaultMetrics.put("sdkVersion", sdkVersion);
-        defaultMetrics.put("platform", platform);
-        defaultMetrics.put("platformVersion", platformVersion);
-        return defaultMetrics;
+        Map<String, String> data = new HashMap<>();
+        data.put("clientId", clientId);
+        data.put("platform", platform);
+        data.put("platformVersion", platformVersion);
+        return data;
     }
 
     /**
      * Get or create the client ID that identifies a device as long as the user doesn't
      * reinstall the app or delete the app storage. A random UUID is created and stored in the
      * application shared preferences.
-     * <p>
-     * Can be overridden to provide a different implementation for identification.
      *
-     * @param context Android app context
-     * @return String Client ID
+     * @param context Application context
+     * @return Client ID
      */
     private String getOrCreateClientId(final Context context) {
         final SharedPreferences preferences = context
             .getSharedPreferences(STORAGE_NAME, Context.MODE_PRIVATE);
 
         String clientId = preferences.getString(STORAGE_KEY, null);
+
         if (clientId == null) {
             clientId = UUID.randomUUID().toString();
 

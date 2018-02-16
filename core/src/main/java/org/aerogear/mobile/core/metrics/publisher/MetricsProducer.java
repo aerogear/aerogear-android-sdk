@@ -1,7 +1,7 @@
-package org.aerogear.mobile.core.metrics;
+package org.aerogear.mobile.core.metrics.publisher;
 
-import org.aerogear.mobile.core.metrics.interfaces.MetricsPublisher;
-import org.aerogear.mobile.core.metrics.interfaces.Observer;
+import org.aerogear.mobile.core.metrics.MetricsPublisher;
+import org.aerogear.mobile.core.metrics.Observer;
 
 import java.util.Map;
 
