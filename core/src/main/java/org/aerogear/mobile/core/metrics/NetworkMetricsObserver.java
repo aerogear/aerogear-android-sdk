@@ -41,11 +41,13 @@ public class NetworkMetricsObserver implements Observer {
 
         // Send request to backend
         HttpRequest request = httpService.newRequest();
-        request.post(metricsUrl, namespacedMetrics.toString().getBytes());
-        HttpResponse response = request.execute();
+        if (request !=  null) {
+            request.post(metricsUrl, namespacedMetrics.toString().getBytes());
+            HttpResponse response = request.execute();
 
-        // Async response handling
-        response.onComplete(new MetricsResponseHandler(response));
+            // Async response handling
+            response.onComplete(new MetricsResponseHandler(response));
+        }
     }
 
     @Override

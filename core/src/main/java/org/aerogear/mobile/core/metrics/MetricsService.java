@@ -5,7 +5,6 @@ import org.aerogear.mobile.core.ServiceModule;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.metrics.interfaces.MetricsPublisher;
 import org.aerogear.mobile.core.metrics.interfaces.Observer;
-import org.json.JSONException;
 
 public class MetricsService implements ServiceModule {
     public final static String TAG = "AEROGEAR/METRICS";
@@ -50,12 +49,8 @@ public class MetricsService implements ServiceModule {
      * - Platform version
      */
     public void sendDefaultMetrics() {
-        try {
-            getPublisherForNamespace("default")
-                .pushMetrics(defaultMetrics.getDefaultMetrics());
-        } catch (JSONException e) {
-            MobileCore.getLogger().error(TAG, e);
-        }
+        getPublisherForNamespace("default")
+            .pushMetrics(defaultMetrics.getDefaultMetrics());
     }
 
     @Override

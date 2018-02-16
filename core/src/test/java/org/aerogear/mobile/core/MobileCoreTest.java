@@ -11,6 +11,7 @@ import org.aerogear.mobile.core.http.HttpServiceModule;
 import org.aerogear.mobile.core.http.OkHttpServiceModule;
 import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.logging.LoggerAdapter;
+import org.aerogear.mobile.core.metrics.MetricsService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -34,6 +35,9 @@ public class MobileCoreTest {
 
         // -- Logger
         assertEquals(LoggerAdapter.class, core.getLogger().getClass());
+
+        // -- Metrics
+        assertEquals(MetricsService.class, core.getInstance(MetricsService.class).getClass());
     }
 
     @Test

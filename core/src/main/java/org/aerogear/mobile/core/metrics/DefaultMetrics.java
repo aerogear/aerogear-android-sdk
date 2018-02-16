@@ -7,7 +7,6 @@ import android.os.Build;
 
 import org.aerogear.mobile.core.MobileCore;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +41,7 @@ public class DefaultMetrics {
      * @return JSONObject with metrics data
      * @throws JSONException
      */
-    public Map<String, String> getDefaultMetrics() throws JSONException {
+    public Map<String, String> getDefaultMetrics() {
         Map<String, String>defaultMetrics = new HashMap<>();
         defaultMetrics.put("clientId", clientId);
         defaultMetrics.put("appId", appId);

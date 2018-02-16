@@ -1,8 +1,7 @@
 package org.aerogear.mobile.core.metrics;
 
-import org.aerogear.mobile.core.metrics.interfaces.Observer;
 import org.aerogear.mobile.core.metrics.interfaces.MetricsPublisher;
-import org.json.JSONObject;
+import org.aerogear.mobile.core.metrics.interfaces.Observer;
 
 import java.util.Map;
 
