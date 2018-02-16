@@ -30,7 +30,7 @@ public class DefaultMetrics implements Metrics {
     public DefaultMetrics(final Context context) {
         this.clientId = getOrCreateClientId(context);
         this.appId = context.getPackageName();
-        this.appVersion = getAppVersion(context);
+        this.appVersion = MobileCore.getAppVersion();
         this.sdkVersion = MobileCore.getSdkVersion();
         this.platform = "android";
         this.platformVersion = String.valueOf(Build.VERSION.SDK_INT);
@@ -60,25 +60,6 @@ public class DefaultMetrics implements Metrics {
         defaultMetrics.put("platform", platform);
         defaultMetrics.put("platformVersion", platformVersion);
         return defaultMetrics;
-    }
-
-    /**
-     * Get the user app version from the package manager
-     *
-     * @param context Android application context
-     * @return String app version name
-     */
-    private String getAppVersion(final Context context) {
-
-        try {
-            return context
-                .getPackageManager()
-                .getPackageInfo(context.getPackageName(), 0)
-                .versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            MobileCore.getLogger().error(e.getMessage(), e);
-            return "";
-        }
     }
 
     /**

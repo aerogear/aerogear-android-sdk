@@ -28,13 +28,13 @@ import java.util.Map;
 public final class MobileCore {
 
     private static Logger logger = new LoggerAdapter();
+    private static String appVersion;
 
     private final Context context;
     private final String configFileName;
     private final HttpServiceModule httpLayer;
     private final Map<String, ServiceConfiguration> servicesConfig;
     private final Map<Class<? extends ServiceModule>, ServiceModule> services = new HashMap<>();
-    private final String appVersion;
 
     /**
      * Creates a MobileCore instance
@@ -52,7 +52,7 @@ public final class MobileCore {
 
         // -- Allow to override the default logger
         if (options.logger != null) {
-            this.logger = options.logger;
+            logger = options.logger;
         }
 
         // -- Parse JSON config file
@@ -64,7 +64,7 @@ public final class MobileCore {
         }
 
         // -- Set the app version variable
-        this.appVersion = getAppVersion(context);
+        appVersion = getAppVersion(context);
 
         // -- Setting default http layer
         if (options.httpServiceModule == null) {
@@ -221,7 +221,7 @@ public final class MobileCore {
      *
      * @return String App version name
      */
-    public String getAppVersion() {
+    public static String getAppVersion() {
         return appVersion;
     }
 
