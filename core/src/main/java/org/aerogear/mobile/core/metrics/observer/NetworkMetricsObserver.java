@@ -7,10 +7,9 @@ import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpResponse;
 import org.aerogear.mobile.core.http.HttpServiceModule;
 import org.aerogear.mobile.core.logging.Logger;
-import org.aerogear.mobile.core.metrics.MetricsService;
+import org.aerogear.mobile.core.metrics.MetricsPublisher;
 import org.aerogear.mobile.core.metrics.Observer;
 import org.aerogear.mobile.core.metrics.publisher.MetricsProducer;
-import org.aerogear.mobile.core.metrics.MetricsPublisher;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -43,12 +42,12 @@ public class NetworkMetricsObserver implements Observer {
 
         // Send request to backend
         HttpRequest request = httpService.newRequest();
-        if (request !=  null) {
+        if (request != null) {
             request.post(metricsUrl, namespacedMetrics.toString().getBytes());
             HttpResponse response = request.execute();
 
             // Async response handling
-            response.onComplete(new MetricsResponseHandler(response));
+            response.onComplete(new MetricsResponseHandler(response, logger));
         }
     }
 
@@ -57,7 +56,7 @@ public class NetworkMetricsObserver implements Observer {
         try {
             sendData(namespace, data);
         } catch (JSONException e) {
-            logger.error(MetricsService.TAG, e);
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -68,15 +67,17 @@ public class NetworkMetricsObserver implements Observer {
 
     private static final class MetricsResponseHandler implements Runnable {
         private final HttpResponse response;
+        private Logger logger;
 
-        public MetricsResponseHandler(final HttpResponse response) {
+        public MetricsResponseHandler(final HttpResponse response, Logger logger) {
             this.response = response;
+            this.logger = logger;
         }
 
         @Override
         public void run() {
             if (response.requestFailed()) {
-                MobileCore.getLogger().error(MetricsService.TAG, response.getRequestError());
+                logger.error(response.getRequestError().getMessage(), response.getRequestError());
             }
         }
     }
