@@ -17,14 +17,14 @@ dependencies {
 
 To use the Auth SDK you'll first need to:
 
-* Import the Core module. See link:../core/README.adoc[the Core documentation].
+* Import the Core module. See link:./core.adoc[the Core documentation].
 * Specify the schema of the redirect url for your Android project in `android.defaultConfig.manifestPlaceholders` of the apps `build.gradle` file.
 It should match the schema specified in the `Valid Redirect URL` section for the client in Keycloak.
 It is recommended to use the package name of the Android app as the schema of the redirect url to avoid conflicts.
 
-=== Initializing the module
+=== Initializing the SDK
 
-`AuthService` can be retrived using the `MobileCore#getInstance` method.
+`AuthService` can be retrieved using the `MobileCore#getInstance` method.
 
 [source,java]
 ----
@@ -50,7 +50,8 @@ authService.init(context, authServiceConfig);
 
 === Retrieving the current user
 
-To retrieve the current authenticated user the `AuthService#currentUser` method can be invoked.
+To retrieve the current authenticated user the `AuthService#currentUser` method can be invoked. This will be `null` if there is
+no user authenticated. So it can be used to check whether to start the authentication flow or not.
 
 [source,java]
 ----
@@ -58,7 +59,12 @@ To retrieve the current authenticated user the `AuthService#currentUser` method 
 UserPrincipal currentUser = authService.currentUser();
 
 if (currentUser) {
-    // User is already authenticated, perform an action
+    // User is authenticated, get the users name
+    String userName = currentUser.getName();
+    // Get the users email address
+    String userEmail = currentUser.getEmail();
+    // Get the access token of the authenticated user
+    String accessToken = currentUser.getAccessToken();
 } else {
     // User is not authenticates, start authentication flow
 }
@@ -150,7 +156,7 @@ if (isModerator) {
 
 === Logging out
 
-To logout invoke the `AuthService#logout` method. This accepts the `UserPrincipal` that was
+To logout, invoke the `AuthService#logout` method. This accepts the `UserPrincipal` that was
 provided by `AuthService#handleAuthResponse`.
 
 [source,java]
