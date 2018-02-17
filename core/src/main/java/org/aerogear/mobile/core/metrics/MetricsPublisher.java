@@ -1,8 +1,10 @@
 package org.aerogear.mobile.core.metrics;
 
-import java.util.Map;
-
 public interface MetricsPublisher {
-    String namespace();
-    void pushMetrics(final Map<String, String> data);
+
+    /**
+     * Allows to publish metrics to external source
+     */
+    void publish(Metrics... metrics);
+
 }

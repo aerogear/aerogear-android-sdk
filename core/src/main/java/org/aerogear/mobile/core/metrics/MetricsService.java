@@ -3,18 +3,23 @@ package org.aerogear.mobile.core.metrics;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.ServiceModule;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
-import org.aerogear.mobile.core.metrics.observer.LoggerMetricsObserver;
-import org.aerogear.mobile.core.metrics.observer.NetworkMetricsObserver;
 import org.aerogear.mobile.core.metrics.metrics.AppMetrics;
 import org.aerogear.mobile.core.metrics.metrics.DeviceMetrics;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.aerogear.mobile.core.metrics.publisher.LoggerMetricsPublisher;
+import org.aerogear.mobile.core.metrics.publisher.NetworkMetricsPublisher;
 
 public class MetricsService implements ServiceModule {
 
-    private List<Metrics> defaultMetrics = new ArrayList<>();
-    private Observer observer;
+    private Metrics[] defaultMetrics;
+    private MetricsPublisher publisher;
+
+    public MetricsService setPublisher(MetricsPublisher publisher) {
+        if (publisher == null) {
+            throw new IllegalStateException("publisher should not be null");
+        }
+        this.publisher = publisher;
+        return this;
+    }
 
     @Override
     public String type() {
@@ -23,42 +28,44 @@ public class MetricsService implements ServiceModule {
 
     @Override
     public void configure(MobileCore core, ServiceConfiguration serviceConfiguration) {
-        defaultMetrics.add(new AppMetrics(core.getContext()));
-        defaultMetrics.add(new DeviceMetrics(core.getContext()));
+        defaultMetrics = new Metrics[]{
+            new AppMetrics(core.getContext()),
+            new DeviceMetrics(core.getContext())
+        };
 
         String metricsUrl = serviceConfiguration.getUrl();
         if (metricsUrl == null) {
-            observer = new LoggerMetricsObserver(MobileCore.getLogger());
+            publisher = new LoggerMetricsPublisher(MobileCore.getLogger());
         } else {
-            observer = new NetworkMetricsObserver(core, metricsUrl);
-        }
-    }
-
-    /**
-     * Returns a namespaced observable that can be used to publish metrics
-     * under the given namespace
-     *
-     * @param namespace The name of the object the metrics are wrapped into
-     * @return Observable an object that allows to send metrics
-     */
-    public MetricsPublisher getPublisherForNamespace(final String namespace) {
-        return observer.getObservableForNamespace(namespace);
-    }
-
-    /**
-     * Send default metrics
-     */
-    public void sendDefaultMetrics() {
-        if(observer == null) {
-            throw new IllegalStateException("Observer should not be null. Be sure you have called configure or retrive this from MobileCore.getInstance().");
-        }
-        for (Metrics metrics : defaultMetrics) {
-            getPublisherForNamespace(metrics.identifier())
-                .pushMetrics(metrics.data());
+            publisher = new NetworkMetricsPublisher(core.getHttpLayer().newRequest(), metricsUrl);
         }
     }
 
     @Override
     public void destroy() {
     }
+
+    /**
+     * Send default metrics
+     */
+    public void sendDefaultMetrics() {
+        if (publisher == null) {
+            throw new IllegalStateException("Make sure you have called configure or get this instance from MobileCore.getInstance()");
+        }
+        publisher.publish(defaultMetrics);
+    }
+
+    /**
+     * Send metrics
+     *
+     * @param metrics Metrics to send
+     */
+    public MetricsService publish(Metrics... metrics) {
+        if (publisher == null) {
+            throw new IllegalStateException("Make sure you have called configure or get this instance from MobileCore.getInstance()");
+        }
+        publisher.publish(metrics);
+        return this;
+    }
+
 }
