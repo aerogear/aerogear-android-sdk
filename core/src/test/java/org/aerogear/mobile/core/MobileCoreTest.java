@@ -7,6 +7,7 @@ import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.exception.ConfigurationNotFoundException;
 import org.aerogear.mobile.core.exception.InitializationException;
 import org.aerogear.mobile.core.http.HttpRequest;
+import org.aerogear.mobile.core.http.HttpResponse;
 import org.aerogear.mobile.core.http.HttpServiceModule;
 import org.aerogear.mobile.core.http.OkHttpServiceModule;
 import org.aerogear.mobile.core.logging.Logger;
@@ -17,6 +18,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
+import static java.net.HttpURLConnection.HTTP_OK;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -89,7 +91,6 @@ public class MobileCoreTest {
     }
 
 
-
     @Test(expected = ConfigurationNotFoundException.class)
     public void testConfigurationNotFoundException() {
         Application context = RuntimeEnvironment.application;
@@ -143,7 +144,62 @@ public class MobileCoreTest {
 
         @Override
         public HttpRequest newRequest() {
-            return null;
+            return new HttpRequest() {
+                @Override
+                public HttpRequest addHeader(String key, String value) {
+                    return this;
+                }
+
+                @Override
+                public void get(String url) {
+                }
+
+                @Override
+                public void post(String url, byte[] body) {
+                }
+
+                @Override
+                public void put(String url, byte[] body) {
+                }
+
+                @Override
+                public void delete(String url) {
+                }
+
+                @Override
+                public HttpResponse execute() {
+                    return new HttpResponse() {
+                        @Override
+                        public HttpResponse onComplete(Runnable runnable) {
+                            return this;
+                        }
+
+                        @Override
+                        public int getStatus() {
+                            return HTTP_OK;
+                        }
+
+                        @Override
+                        public void waitForCompletionAndClose() {
+                        }
+
+                        @Override
+                        public String stringBody() {
+                            return "";
+                        }
+
+                        @Override
+                        public boolean requestFailed() {
+                            return false;
+                        }
+
+                        @Override
+                        public Exception getRequestError() {
+                            return null;
+                        }
+                    };
+                }
+            };
         }
 
         @Override
