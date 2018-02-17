@@ -90,10 +90,6 @@ public final class MobileCore {
         metrics.sendDefaultMetrics();
     }
 
-    public MetricsPublisher createMetricsPublisher(final String namespace) {
-        return getInstance(MetricsService.class).getPublisherForNamespace(namespace);
-    }
-
     /**
      * Initialize the AeroGear system
      *
