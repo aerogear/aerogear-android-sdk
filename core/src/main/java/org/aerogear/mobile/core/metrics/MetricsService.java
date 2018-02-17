@@ -13,6 +13,10 @@ public class MetricsService implements ServiceModule {
     private Metrics[] defaultMetrics;
     private MetricsPublisher publisher;
 
+    public MetricsPublisher getPublisher() {
+        return publisher;
+    }
+
     public MetricsService setPublisher(MetricsPublisher publisher) {
         if (publisher == null) {
             throw new IllegalStateException("publisher should not be null");
