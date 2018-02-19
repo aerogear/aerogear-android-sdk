@@ -17,6 +17,14 @@
                 "ssl-required": "external",
                 "url": "https://keycloak.security.feedhenry.org/auth"
             }
+        },
+        {
+            "id": "metrics",
+            "name": "metrics",
+            "url": "http://www.mocky.io/v2/5a8aaa642f00007200e470a9",
+            "type": "metrics",
+            "config": {
+            }
         }
     ]
 }
