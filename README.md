@@ -15,6 +15,7 @@
 ## Documentation
 
 1. [End User Getting Started Guide](./docs/getting-started/getting-started.adoc)
+1. [Troubleshooting](./docs/troubleshooting.adoc)
 1. [Service Contributor Guide](./docs/contributing-guide.adoc)
 
 ### List of SDKs
@@ -22,7 +23,6 @@
 AeroGear Services SDK consist of set of separate SDKs
 
 - [Core](./docs/core/README.adoc): Common base for all SDKs
-- [Metrics](./docs/metrics/README.adoc): Mobile application metrics SDK
 - [Auth](./docs/auth/README.adoc):  Mobile authentication SDK
 
 ## Contributing
@@ -32,7 +32,6 @@ See [General Contributing Guide](./CONTRIBUTING.md)
 ## License 
 
  See [LICENSE file](./LICENSE)
-
 
 ## Development
 

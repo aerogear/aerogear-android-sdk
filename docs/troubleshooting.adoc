@@ -1,0 +1,19 @@
+== AeroGear Android Troubleshooting
+
+=== invokedynamic requires --min-sdk-version >= 26
+
+The Android SDK is using Java 8, so if you are using a min version less than 26 you need to add the follow lines to you app/build.gradle
+
+[source]
+----
+android {
+
+    ...
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+}
+----
