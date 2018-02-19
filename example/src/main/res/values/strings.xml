@@ -1,12 +1,41 @@
 <resources>
+    <!-- Strings related to apps -->
     <string name="app_name">AeroGear</string>
 
+    <!-- Strings related to Navigation -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_home">Home</string>
     <string name="nav_http">HTTP</string>
+    <string name="nav_auth">Auth</string>
+    <string name="nav_checks">Self Defense Checks</string>
 
+    <!-- Strings related to Authentication -->
     <string name="fragment_auth_login">Authenticate</string>
 
+    <!-- Strings related to User Roles -->
     <string name="realm_roles">User Roles</string>
+
+    <!-- Strings related to Device -->
+    <string name="fragment_title_device">Device Trust</string>
+    <string name="trust_score_header_title">Device Trust Score</string>
+    <string name="trust_score">0%</string>
+    <string name="root_detected_positive">Root Access Detected</string>
+    <string name="root_detected_negative">No Root Access Detected</string>
+    <string name="emulator_detected_positive">Emulator Access Detected</string>
+    <string name="emulator_detected_negative">No Emulator Access Detected</string>
+    <string name="debugger_detected_positive">Debugger Detected</string>
+    <string name="debugger_detected_negative">No Debugger Detected</string>
+    <string name="device_lock_detected_positive">Device Lock Enabled</string>
+    <string name="device_lock_detected_negative">No Device Lock Enabled</string>
+    <string name="hooking_detected_positive">Hooking Framework Detected</string>
+    <string name="hooking_detected_negative">No Hooking Framework Detected</string>
+    <string name="allow_backup_detected_positive">App Data Backup Recovery Enabled</string>
+    <string name="allow_backup_detected_negative">App Data Backup Recovery Disabled</string>
+    <string name="device_encrypted_positive">Device Encryption Active</string>
+    <string name="device_encrypted_negative">Device Encryption Inactive</string>
+    <string name="device_os_latest_positive">Device Running Latest OS</string>
+    <string name="device_os_latest_negative">Device OS Outdated</string>
+    <string name="developer_options_positive">Developer Options Enabled</string>
+    <string name="developer_options_negative">Developer Options Disabled</string>
 </resources>

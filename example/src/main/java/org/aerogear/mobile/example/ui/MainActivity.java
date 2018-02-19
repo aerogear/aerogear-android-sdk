@@ -16,8 +16,6 @@ import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
 import org.aerogear.mobile.auth.user.UserPrincipal;
 import org.aerogear.mobile.example.R;
 
-import java.security.Principal;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -90,6 +88,9 @@ public class MainActivity extends BaseActivity
                 } else {
                     navigateTo(new AuthFragment());
                 }
+                break;
+            case R.id.nav_checks:
+                navigateTo(new SecurityServiceFragment());
                 break;
             default:
                 navigateTo(new HomeFragment());
