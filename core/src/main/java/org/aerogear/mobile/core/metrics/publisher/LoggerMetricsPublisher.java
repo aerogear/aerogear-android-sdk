@@ -17,10 +17,8 @@ public final class LoggerMetricsPublisher implements MetricsPublisher {
 
     @Override
     public void publish(Metrics... metrics) {
-        logger.info("Metrics collected");
         for (Metrics m : metrics) {
             logger.debug("Metrics -> [" + m.identifier() + "]:" + m.data().toString());
         }
     }
-
 }

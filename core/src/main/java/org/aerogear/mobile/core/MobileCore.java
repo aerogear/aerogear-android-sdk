@@ -27,8 +27,10 @@ import java.util.Map;
  */
 public final class MobileCore {
 
+    private static final String TAG = "AEROGEAR/CORE";
     private static Logger logger = new LoggerAdapter();
     private static String appVersion;
+
 
     private final Context context;
     private final String configFileName;
@@ -86,8 +88,12 @@ public final class MobileCore {
     }
 
     private void sendDefaultMetrics() {
-        MetricsService metrics = getInstance(MetricsService.class);
-        metrics.sendDefaultMetrics();
+        try {
+            MetricsService metrics = getInstance(MetricsService.class);
+            metrics.sendDefaultMetrics();
+        } catch (ConfigurationNotFoundException e) {
+            logger.debug(TAG, "Metrics not configured, not sending anything");
+        }
     }
 
     /**
