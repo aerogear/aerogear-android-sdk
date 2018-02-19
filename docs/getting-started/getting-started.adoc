@@ -45,9 +45,9 @@ If you are using a build of the SDK from source you will need to add mavenLocal(
 ----
 allprojects {
     repositories {
+        mavenLocal() // <-- Add This line
         google()
         jcenter()
-        mavenLocal() // <-- Add This line
     }
 }
 ----
