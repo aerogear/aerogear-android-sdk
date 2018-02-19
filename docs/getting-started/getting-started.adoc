@@ -4,29 +4,34 @@ Following guide provides general information for starting with AeroGear Services
 If you looking for 
 
 == Prerequisites
-You will need the following installed on your system
- * Android SDK or Android Studio from [Google](https://developer.android.com/studio/index.html)
+You will need the following installed on your system  
+
+ * Android SDK or Android Studio from https://developer.android.com/studio/index.html[Google]
+
 It is reccomended you have the following installed  
-* The latest version of [OpenJDK](http://openjdk.java.net/install/index.html)
+
+ * The latest version of http://openjdk.java.net/install/index.html[OpenJDK]
 
 == Installing
 As of the writing of this guide, the Aerogear Android SDK is not in jcenter and needs to be installed manually.
 
 === Clone and build the library
-```sh
+
+[source, sh]
+----
 git clone https://github.com/aerogear/aerogear-android-sdk
 cd aerogear-android-sdk
 ./gradlew install
-```
+----
 
 You can verify the install went well by checking your local maven repository
 
-```
+----
 ls ~/.m2/repository/org/aerogear
 
 #Should output auth  core
 
-```
+----
 
 
 
@@ -36,7 +41,8 @@ ls ~/.m2/repository/org/aerogear
 
 If you are using a build of the SDK from source you will need to add mavenLocal() to the build.gradle file in your project's root directory.
 
-```groovy
+[source, groovy]
+----
 allprojects {
     repositories {
         google()
@@ -44,13 +50,13 @@ allprojects {
         mavenLocal() // <-- Add This line
     }
 }
-```
+----
 
 === Reference the Dependencies
 
 In the build.gradle file for your app you can begin adding dependencies provided by the sdk.
 
-```
+----
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:27.0.2'
@@ -58,13 +64,14 @@ dependencies {
     implementation 'org.aerogear:core:5.0.0-SNAPSHOT'
     implementation 'org.aerogear:auth:5.0.0-SNAPSHOT' //If you are using IDM services provided by KeyCloak
 }
-```
+----
 
 === Using the SDK
 
 In an example Android Activity you can use the SDK as follows
 
-```java
+[source, java]
+----
 
 class MyActivity extends AppCompatActivity {
 
@@ -84,7 +91,7 @@ class MyActivity extends AppCompatActivity {
 
 }
 
-```
+----
 
 
 == Bill of materials
@@ -142,3 +149,4 @@ Please follow individual SDK's documentation to see how to add them to the proje
 
  * link:../core/README.md[Core]
  * link:../auth/README.md[Auth] 
+
