@@ -81,8 +81,10 @@ public class SecurityServiceFragment extends BaseFragment {
         return view;
     }
 
+    /**
+     * Executes all test and calls setTrustScore() to calculate an average score
+     */
     public void runTests() {
-
         // perform detections
         detectRoot();
         detectDeviceLock();
@@ -98,7 +100,6 @@ public class SecurityServiceFragment extends BaseFragment {
         setTrustScore();
     }
 
-    // tag::detectRoot[]
     /**
      * Detect if the device is rooted.
      */
@@ -106,9 +107,7 @@ public class SecurityServiceFragment extends BaseFragment {
         totalTests++;
         //TODO: add check
     }
-    // end::detectRoot[]
 
-    // tag::detectDeviceLock[]
     /**
      * Detect if the device has a lock screen setup (pin, password etc).
      */
@@ -116,9 +115,7 @@ public class SecurityServiceFragment extends BaseFragment {
         totalTests++;
         //TODO: add check
     }
-    // end::detectDeviceLock[]
 
-    // tag::debuggerDetected[]
     /**
      * Detect if a debugger is attached to the application.
      */
@@ -126,7 +123,6 @@ public class SecurityServiceFragment extends BaseFragment {
         totalTests++;
         //TODO: add check
     }
-    // end::debuggerDetected[]
 
     /**
      * Detect if the application is being run in an emulator.
@@ -136,10 +132,6 @@ public class SecurityServiceFragment extends BaseFragment {
         //TODO: add check
     }
 
-    // tag::isEmulator[]
-
-
-    // tag::detectHookingFramework[]
     /**
      * Detect if a hooking framework application is installed on the device
      */
@@ -147,10 +139,7 @@ public class SecurityServiceFragment extends BaseFragment {
         totalTests++;
         //TODO: add check
     }
-    // end::detectHookingFramework[]
 
-
-    // tag::detectBackupEnabled[]
     /**
      * Function to check if the backup flag is enabled in the application manifest file
      */
@@ -158,9 +147,7 @@ public class SecurityServiceFragment extends BaseFragment {
         totalTests++;
         //TODO: add check
     }
-    // end::detectBackupEnabled[]
 
-    // tag::detectDeviceEncryptionStatus[]
     /**
      * Function to check if the devices filesystem is encrypted
      */
@@ -168,9 +155,7 @@ public class SecurityServiceFragment extends BaseFragment {
         totalTests++;
         //TODO: add check
     }
-    // end::detectDeviceEncryptionStatus[]
 
-    // tag::detectLatestOS[]
     /**
      * Function to check if the device is running the latest Android OS
      */
@@ -178,9 +163,7 @@ public class SecurityServiceFragment extends BaseFragment {
         totalTests++;
         //TODO: add check
     }
-    // end::detectLatestOS[]
 
-    // tag::detectDeveloperOptions[]
     /**
      * Detect if the developer options mode is enabled on the device
      */
@@ -188,7 +171,6 @@ public class SecurityServiceFragment extends BaseFragment {
         totalTests++;
         //TODO: add check
     }
-    // end::detectDeveloperOptions[]
 
     /**
      * Function to allow updates to the radio buttons UI
