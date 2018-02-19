@@ -9,7 +9,7 @@ Provides authentication features like access control and two factor authenticati
 Add dependency to your application module
 ----
 dependencies {
-    implementation group: 'org.aerogear.android', name: 'auth'
+    implementation 'org.aerogear:auth:5.0.0-SNAPSHOT'
 }
 ----
 
