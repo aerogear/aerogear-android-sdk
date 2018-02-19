@@ -1,11 +1,11 @@
 == Single Sign-On (SSO) via the Device Browser
 
-The Auth SDK uses OpenID https://github.com/openid/AppAuth-Android[AppAuth library] and implements OpenID's http://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth[auhtorization code flow] to achieve SSO via the device browser.
+The Auth SDK uses OpenID Connect  http://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth[Auhtorization Code Flow] to achieve SSO via a mobile device browser.
 
 '''
 
 === Prerequisite's
-. Add the Android SDK to your app - link:../getting-started.adoc[Getting Started with AeroGear Services Android SDK]
+. Add the Android SDK to your app - link:../getting-started.adoc[Getting Started with AeroGear Services Android SDK].
 . Import the Core SDK module - link:../core/README.adoc[AeroGear Services Core SDK].
 . Import the Auth SDK module - link:/README.adoc[AeroGear Services Auth SDK]. 
 . Setup a Keycloak instance:
@@ -27,26 +27,35 @@ The route should look like `https://keycloak-myproject.192.168.37.1.nip.io/auth/
 For this guide, let's assume that you have two apps, **Email App** and **Messaging App**.
 
 ==== Setup Keycloak Email Client
-. Once you have a keycloak instance running, navigate to the Keycloak Console. This can be done by navigating to the exposed route (described in step 4 of the Prerequisite’s) and clicking on *Administration Console*.
+. Once you have a keycloak instance running, navigate to the Keycloak Console. This can be done by navigating to the exposed route (described in step 4 of the <<Prerequisite’s>>) and clicking on *Administration Console*.
 . Sign in using the username and password specified when creating Keycloak.
 . Add a new *Realm* if one has not yet been created (if you've setup Keycloak in Openshift the realm will be `myproject`).
 . Inside the *Realm*, create a new OIDC client by clicking on the *Clients* tab in the left menu. 
-. On clicking *Create*, you will be brought to the *Add Client* page.  The *Client ID* is the client identifier for OIDC requests. This should be a simple alpha-numeric string e.g. the name of your app - `emailapp`.  Next select *openid-connect* in the *Client Protocol* drop down box. The *Client Template* listbox can be ignored for this setup. For the *Root URL* enter in your base url for the *Email App*. Finally click *Save* and now a client for the *Email App* has been created.
-. On creating the client, you will be brought to the *Client Settings* page.  The important configuration on this page is the *Valid Redirect URI*.  This value (schema) should be the same as the schema that has been specified in the *Email App Android Project* (more on this later). For information on the other configuration items in the client settings see link:/http://www.keycloak.org/docs/latest/server_admin/index.html#oidc-clients[Keycloak OIDC Clients]
+. On clicking *Create*, you will be brought to the *Add Client* page.  The *Client ID* is the client identifier for OIDC requests. This should be a simple alpha-numeric string e.g. the name of your app - `emailapp`.  Next select *openid-connect* in the *Client Protocol* drop down box. The *Client Template* and *Root URL* can be ignored for this setup. Finally click *Save* and now a client for the *Email App* has been created.
+. On creating the client, you will be brought to the *Client Settings* page.  The important configuration on this page is the *Valid Redirect URI*.  This value (schema) should be the same as the schema that has been specified in the *Email App Android Project* (more on this later). Also ensure that *Enabled* and *Standard Flow Enabled* are set to *On*. The *Client Protocol* must be *openid-connect* and ensure that you enter a valid base url for the *Web Origin* configuration. For more information on the  configuration items in the client settings see link:/http://www.keycloak.org/docs/latest/server_admin/index.html#oidc-clients[Keycloak OIDC Clients].
+. Finally, create a user inside the Realm by navigating to *Users* on the left hand side.  Click add user and fill in the user details.  On clicking save, ensure to navigate to the *Credentials* tab of the new user and give them a password.  You'll be prompted to change this password on first login.
 
 ==== Setup Keycloak Messaging Client
-. Follow steps 4-6 of <<Setup Keycloak Email Client>>.
+. Follow steps 4-7 of <<Setup Keycloak Email Client>>.
 
 ==== Setup Email App
-. It's important that the redirct uri in the Email App is also one of the *Valid Redirect URIs* specified in the *Keycloak Email Client*.  This ensures that the device browser used to perform the login knows to return to the *Email App* after performing authentication.  The redirect uri for the Email App can be specified in `android.defaultConfig.manifestPlaceholders` in the `build.gradle` file of the app.  It's best practice to use the package identifier of the app as the schema of the redirect uri to avoid conflicts.
-. Now you need to instruct the Auth SDK to use this redirect uri. To do this the Auth SDK needs to be initialised.  A quick guide on how to initialise the Auth SDK can be found here - link:/toAidensDocs.adoc[Initializing the SDK].
+. It's important that the redirct uri in the Email App is also one of the *Valid Redirect URIs* specified in the *Keycloak Email Client*.  This ensures that the device browser used to perform the login knows to return to the *Email App* after performing authentication.  The redirect uri for the Email App can be specified in `android.defaultConfig.manifestPlaceholders` in the `build.gradle` file of the app.  It's best practice to use the package identifier of the app as the schema of the redirect uri to avoid conflicts e.g.
+```
+manifestPlaceholders = ['appAuthRedirectScheme': 'org.aerogear.mobile.emailapp']
+```
+Where `org.aerogear.mobile.emailapp` is your package identifier. +
+
+. Now you need to instruct the Auth SDK in the Email App to use this redirect uri. To do this the Auth SDK needs to be initialised.  A quick guide on how to initialise the Auth SDK can be found here - link:/toAidensDocs.adoc[Initializing the SDK].  +
+[NOTE]
+this is the redirect uri that needs to be added to the *Keycloak Email Client* i.e. one of the *Valid Redirect URIs* should be `org.aerogear.mobile.emailapp:/callback`. +
+
+
 . Lastly, your app needs a `mobile-service.json` configuration file. In this file you can specifiy different services your app uses like Keycloak.  So the information entered previously for <<Setup Keycloak Email Client>> will need to be specified in this JSON file.  The configuration should have the following configuration items:
 ```
 {
     "version": 1,
     "clusterName": "https://192.168.37.1:8443",
     "namespace": "myproject",
-    "clientId": "email-app",
     "services": [
         {
             "id": "keycloak",
@@ -60,7 +69,6 @@ For this guide, let's assume that you have two apps, **Email App** and **Messagi
 ```
 *`clusterName`*: This is the URL to your Openshift cluster. +
 *`namespace`*: This is the project in Openshift where you can access resources e.g. the two Android app's you have created. +
-*`clientId`*: . +
 *`services`*: These are the services your app uses.  For this setup we are only using Keycloak. +
 *`id`*: The ID of the service. +
 *`name`*: The name of the service. +
@@ -74,7 +82,6 @@ So after adding in that Keycloak Email Client configuration, the `mobile-service
     "version": 1,
     "clusterName": "https://192.168.37.1:8443",
     "namespace": "myproject",
-    "clientId": "emailapp",
     "services": [
         {
             "id": "keycloak",
@@ -102,4 +109,4 @@ So after adding in that Keycloak Email Client configuration, the `mobile-service
 
 '''
 
-Now that everything is setup, sign into the *Email App*. You should be redirected to your device browser which should have loaded the Keyclock login page.  Next, enter in your credentials and login.  You have now been authenticated on the *Email App* via your device browser.  Finally, try sign into the *Messaging App*, you should be automatically logged in as you have been previously authenticated in the *Email App* via the *_same_* device browser.
+Now that everything is setup, sign into the *Email App* with the user you have previously created. You should be redirected to your device browser which should have loaded the Keyclock login page.  Next, enter in your credentials and login.  You'll be asked to enter a new password for the user. You have now been authenticated on the *Email App* via your device browser.  Finally, try sign into the *Messaging App* with the same user credentials, you should be automatically logged in as you have been previously authenticated in the *Email App* via the *_same_* device browser.
