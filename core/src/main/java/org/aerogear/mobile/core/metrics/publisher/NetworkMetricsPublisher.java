@@ -39,7 +39,7 @@ public class NetworkMetricsPublisher implements MetricsPublisher {
                 json.put(m.identifier(), new JSONObject(m.data()));
             }
             json.put("timestamp", System.currentTimeMillis());
-            json.put("appId", AppIdGenerator.getOrCreateClientId(context));
+            json.put("clientId", AppIdGenerator.getOrCreateClientId(context));
             httpRequest.post(url, json.toString().getBytes());
 
             MobileCore.getLogger().debug("Sending metrics");
