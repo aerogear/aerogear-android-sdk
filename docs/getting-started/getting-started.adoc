@@ -147,6 +147,6 @@ dependencies {
 
 Please follow individual SDK's documentation to see how to add them to the project
 
- * link:../core/README.md[Core]
- * link:../auth/README.md[Auth] 
+ * link:./core.adoc[Core]
+ * link:./auth.adoc[Auth] 
 
