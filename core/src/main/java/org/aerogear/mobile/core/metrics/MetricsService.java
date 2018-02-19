@@ -41,7 +41,7 @@ public class MetricsService implements ServiceModule {
         if (metricsUrl == null) {
             publisher = new LoggerMetricsPublisher(MobileCore.getLogger());
         } else {
-            publisher = new NetworkMetricsPublisher(core.getHttpLayer().newRequest(), metricsUrl);
+            publisher = new NetworkMetricsPublisher(core.getContext(), core.getHttpLayer().newRequest(), metricsUrl);
         }
     }
 
