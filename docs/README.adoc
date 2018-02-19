@@ -1,9 +1,6 @@
 = Documentation for AeroGear Android SDK
 
-To build the link:http://asciibinder.org/[asciibinder] website:
-
-. Create a docker image using the Dockerfile in this directory.
-. Run the `build.sh` script in the master branch.
+To build the link:http://asciibinder.org/[asciibinder] website, run the `build.sh` script in the master branch.
 
 To contribute to the documentation, see link:./contributing-guide.adoc[].
 
