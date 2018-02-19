@@ -93,14 +93,11 @@ class MyActivity extends AppCompatActivity {
 
 ----
 
-
 == Bill of materials
 
 Our project provides a BOM artifact to lock the dependencies (direct and transitive) down to known compatible versions. 
 Gradle itself does not offer such a mechanism but it is a well known and used concept in the Maven world (see link:https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Dependency_Management[Dependency Management]
 ).
-
-
 
 In order to bring this functionality to Gradle the Android SDK relies on the link:https://github.com/spring-gradle-plugins/dependency-management-plugin[dependency management plugin] provided by Spring. This plugin allows us to use a standard Maven BOM in a Gradle project.
 

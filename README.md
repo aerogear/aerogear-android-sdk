@@ -15,6 +15,7 @@
 ## Documentation
 
 1. [End User Getting Started Guide](./docs/getting-started/getting-started.adoc)
+1. [Troubleshooting](./docs/troubleshooting.adoc)
 1. [Service Contributor Guide](./docs/contributing-guide.adoc)
 
 ### List of SDKs
@@ -31,7 +32,6 @@ See [General Contributing Guide](./CONTRIBUTING.md)
 ## License 
 
  See [LICENSE file](./LICENSE)
-
 
 ## Development
 
