@@ -4,6 +4,7 @@ Following guide provides general information for starting with AeroGear Services
 If you looking for 
 
 == Prerequisites
+
 You will need the following installed on your system  
 
  * Android SDK or Android Studio from https://developer.android.com/studio/index.html[Google]
@@ -13,6 +14,7 @@ It is reccomended you have the following installed
  * The latest version of http://openjdk.java.net/install/index.html[OpenJDK]
 
 == Installing
+
 As of the writing of this guide, the Aerogear Android SDK is not in jcenter and needs to be installed manually.
 
 === Clone and build the library
@@ -29,11 +31,8 @@ You can verify the install went well by checking your local maven repository
 ----
 ls ~/.m2/repository/org/aerogear
 
-#Should output auth  core
-
+# Should output auth core
 ----
-
-
 
 == Using the SDK
 
@@ -58,9 +57,7 @@ In the build.gradle file for your app you can begin adding dependencies provided
 
 ----
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:27.0.2'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    ...
     implementation 'org.aerogear:core:5.0.0-SNAPSHOT'
     implementation 'org.aerogear:auth:5.0.0-SNAPSHOT' //If you are using IDM services provided by KeyCloak
 }
@@ -78,13 +75,16 @@ class MyActivity extends AppCompatActivity {
     MobileCore core;
     MetricsService metrics;
 
-    void onStart() {
-        super.onStart();
+    void onCreate() {
+        super.onCreate();
+
         core = MobileCore.init(this);
         metrics = core.getService(MetricsService.class);
     }
 
-    void onStop() {
+    void onDestroy() {
+        super.onDestroy()
+
         metrics = null;
         core.destroy();
     }
@@ -97,23 +97,27 @@ class MyActivity extends AppCompatActivity {
 == Bill of materials
 
 Our project provides a BOM artifact to lock the dependencies (direct and transitive) down to known compatible versions. 
-Gradle itself does not offer such a mechanism but it is a well known and used concept in the Maven world (see [Dependency Management](https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Dependency_Management)).
-In order to bring this functionality to Gradle the Android SDK relies on the [dependency management plugin](https://github.com/spring-gradle-plugins/dependency-management-plugin) provided by Spring. This plugin allows us to use a standard Maven BOM in a Gradle project.
+Gradle itself does not offer such a mechanism but it is a well known and used concept in the Maven world (see link:https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Dependency_Management[Dependency Management]
+).
+
+
+
+In order to bring this functionality to Gradle the Android SDK relies on the link:https://github.com/spring-gradle-plugins/dependency-management-plugin[dependency management plugin] provided by Spring. This plugin allows us to use a standard Maven BOM in a Gradle project.
 
 == Setting up project to use any AeroGear Services SDK
 
-
 1. Add gradle plugin to 
 At the top of your gradle build file (but below `buildscripts`) add the plugin itself:
-+
+
 ----
 plugins {
     id "io.spring.dependency-management" version "1.0.4.RELEASE"
 }
 ----
+
 1. Import bom plugin into your gradle config
 Add following code before your `dependencies` add the `dependencyManagement` section that refers to our BOM:
-+
+
 ----
 dependencyManagement {
     imports {
@@ -121,8 +125,9 @@ dependencyManagement {
     }
 }
 ----
+
 1. In case your project contains multiple modules you need to apply this to all your subprojects. Make sure to apply the previous steps to your parent modules `build.gradle` and wrap the `dependencyManagement` section as follows:
-+
+
 ----
 subprojects {
     apply plugin: 'io.spring.dependency-management'
@@ -134,9 +139,10 @@ subprojects {
     }
 }
 ----
-+
+
+
 1. After applying this changes developers can import the dependencies that are listed in the BOM without specifying a version:
-+
+
 ----
 dependencies {
     implementation group: 'org.aerogear', name: 'core'
