@@ -4,7 +4,7 @@ Following guide describes architecture for Android SDK and instructions for deve
 
 For instructions about using SDK in user applications please follow link:./getting-started.adoc[User Getting Started Guide]
 
-image:./images/diagram.svg[diagram,450,450,role="right"]
+image:./shared/diagram.svg[diagram,450,450,role="right"]
 
 === SDK architecture
 
