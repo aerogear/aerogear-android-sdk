@@ -32,14 +32,15 @@ public class NetworkMetricsPublisher implements MetricsPublisher {
             for (final Metrics m : metrics) {
                 json.put(m.identifier(), new JSONObject(m.data()));
             }
-
+            json.put("timestamp","TODO");
+            json.put("appId","TODO");
             httpRequest.post(url, json.toString().getBytes());
 
             MobileCore.getLogger().debug("Sending metrics");
             HttpResponse httpResponse = httpRequest.execute();
             httpResponse.onComplete(() -> {
                 if (httpResponse.getStatus() == HTTP_OK) {
-                    MobileCore.getLogger().debug("Metrics sent");
+                    MobileCore.getLogger().debug("Metrics sent",json.toString());
                 } else {
                     MobileCore.getLogger().error(httpResponse.getRequestError().getMessage(),
                         httpResponse.getRequestError());
