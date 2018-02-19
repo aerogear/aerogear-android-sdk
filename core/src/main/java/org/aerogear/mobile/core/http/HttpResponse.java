@@ -10,7 +10,6 @@ import java.io.IOException;
 public interface HttpResponse {
 
     /**
-     *
      * Creates a callback to be called when the response is finished successfully.
      *
      * The response is delivered immediately if the request has already been finished.
@@ -34,4 +33,18 @@ public interface HttpResponse {
      * @return the body as a string.
      */
     String stringBody();
+
+    /**
+     * Returns true if the requests failed. Use getStatus to identify
+     * the reason
+     *
+     * @return true if request failed
+     */
+    boolean requestFailed();
+
+    /**
+     * Returns the request error if it failed
+     * @return Exception request error or null
+     */
+    Exception getRequestError();
 }

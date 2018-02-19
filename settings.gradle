@@ -1,1 +1,1 @@
-include ':core', ':auth', ':metrics', ':example'
+include ':core', ':auth', ':example'

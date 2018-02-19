@@ -13,6 +13,8 @@ import org.aerogear.mobile.core.http.HttpServiceModule;
 import org.aerogear.mobile.core.http.OkHttpServiceModule;
 import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.logging.LoggerAdapter;
+import org.aerogear.mobile.core.metrics.MetricsService;
+import org.aerogear.mobile.core.metrics.MetricsPublisher;
 import org.json.JSONException;
 
 import java.io.IOException;
@@ -25,14 +27,16 @@ import java.util.Map;
  */
 public final class MobileCore {
 
+    private static final String TAG = "AEROGEAR/CORE";
     private static Logger logger = new LoggerAdapter();
+    private static String appVersion;
+
 
     private final Context context;
     private final String configFileName;
     private final HttpServiceModule httpLayer;
     private final Map<String, ServiceConfiguration> servicesConfig;
     private final Map<Class<? extends ServiceModule>, ServiceModule> services = new HashMap<>();
-    private final String appVersion;
 
     /**
      * Creates a MobileCore instance
@@ -50,7 +54,7 @@ public final class MobileCore {
 
         // -- Allow to override the default logger
         if (options.logger != null) {
-            this.logger = options.logger;
+            logger = options.logger;
         }
 
         // -- Parse JSON config file
@@ -62,7 +66,7 @@ public final class MobileCore {
         }
 
         // -- Set the app version variable
-        this.appVersion = getAppVersion(context);
+        appVersion = getAppVersion(context);
 
         // -- Setting default http layer
         if (options.httpServiceModule == null) {
@@ -78,6 +82,17 @@ public final class MobileCore {
             this.httpLayer = httpServiceModule;
         } else {
             this.httpLayer = options.httpServiceModule;
+        }
+
+        sendDefaultMetrics();
+    }
+
+    private void sendDefaultMetrics() {
+        try {
+            MetricsService metrics = getInstance(MetricsService.class);
+            metrics.sendDefaultMetrics();
+        } catch (ConfigurationNotFoundException e) {
+            logger.debug(TAG, "Metrics not configured, not sending anything");
         }
     }
 
@@ -207,7 +222,7 @@ public final class MobileCore {
      *
      * @return String App version name
      */
-    public String getAppVersion() {
+    public static String getAppVersion() {
         return appVersion;
     }
 
