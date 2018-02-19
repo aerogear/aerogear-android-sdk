@@ -3,7 +3,6 @@ package org.aerogear.mobile.auth;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import org.aerogear.mobile.auth.AuthStateManager;
 import org.aerogear.mobile.auth.credentials.OIDCCredentials;
 import org.json.JSONException;
 import org.junit.Before;

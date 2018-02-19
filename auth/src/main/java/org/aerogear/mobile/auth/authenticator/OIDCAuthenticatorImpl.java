@@ -1,26 +1,17 @@
 package org.aerogear.mobile.auth.authenticator;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 
-import net.openid.appauth.AppAuthConfiguration;
 import net.openid.appauth.AuthState;
 import net.openid.appauth.AuthorizationException;
-import net.openid.appauth.AuthorizationRequest;
 import net.openid.appauth.AuthorizationResponse;
 import net.openid.appauth.AuthorizationService;
-import net.openid.appauth.AuthorizationServiceConfiguration;
-import net.openid.appauth.ResponseTypeValues;
 import net.openid.appauth.TokenResponse;
-import net.openid.appauth.browser.BrowserBlacklist;
-import net.openid.appauth.browser.VersionedBrowserMatcher;
 
 import org.aerogear.mobile.auth.AuthStateManager;
-import org.aerogear.mobile.auth.AuthenticationException;
 import org.aerogear.mobile.auth.Callback;
-import org.aerogear.mobile.auth.ConnectionBuilderForTesting;
 import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
 import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
 import org.aerogear.mobile.auth.credentials.OIDCCredentials;
@@ -43,8 +34,6 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
  */
 public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
 
-    private final static String SCOPE_OPENID = "openid";
-
     private AuthState authState;
 
     private AuthorizationService authService;
@@ -52,11 +41,11 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
     private final KeycloakConfiguration keycloakConfiguration;
     private final AuthServiceConfiguration authServiceConfiguration;
 
-    private final Context appContext;
-
     private Callback authCallback;
 
     private final AuthStateManager authStateManager;
+
+    private final AuthorizationServiceFactory authorizationServiceFactory;
 
     /**
      * Creates a new OIDCAuthenticatorImpl object
@@ -64,11 +53,14 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
      * @param serviceConfiguration {@link ServiceConfiguration}
      * @param authServiceConfiguration {@link AuthServiceConfiguration}
      */
-    public OIDCAuthenticatorImpl(final ServiceConfiguration serviceConfiguration, final AuthServiceConfiguration authServiceConfiguration, final Context context, final AuthStateManager authStateManager) {
+    public OIDCAuthenticatorImpl(final ServiceConfiguration serviceConfiguration,
+                                 final AuthServiceConfiguration authServiceConfiguration,
+                                 final AuthStateManager authStateManager,
+                                 final AuthorizationServiceFactory authorizationServiceFactory) {
         super(serviceConfiguration);
         this.keycloakConfiguration = new KeycloakConfiguration(serviceConfiguration);
         this.authServiceConfiguration = nonNull(authServiceConfiguration, "authServiceConfiguration");
-        this.appContext = nonNull(context, "context");
+        this.authorizationServiceFactory = nonNull(authorizationServiceFactory,"authorizationServiceFactory");
         this.authStateManager = nonNull(authStateManager, "authStateManager");
     }
 
@@ -89,31 +81,12 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
     private void performAuthRequest(final Activity fromActivity, final int resultCode) {
         nonNull(fromActivity, "fromActivity");
 
-        AuthorizationServiceConfiguration authServiceConfig = new AuthorizationServiceConfiguration(
-            this.keycloakConfiguration.getAuthenticationEndpoint(),
-            this.keycloakConfiguration.getTokenEndpoint()
-        );
-        this.authState = new AuthState(authServiceConfig);
+        AuthorizationServiceFactory.ServiceWrapper wrapper = this.authorizationServiceFactory.createAuthorizationService(keycloakConfiguration, authServiceConfiguration);
 
-        AppAuthConfiguration.Builder appAuthConfigurationBuilder = new AppAuthConfiguration.Builder()
-            .setBrowserMatcher(new BrowserBlacklist(
-                VersionedBrowserMatcher.CHROME_CUSTOM_TAB));
+        this.authState = wrapper.getAuthState();
+        this.authService = wrapper.getAuthorizationService();
 
-        if (this.authServiceConfiguration.isAllowSelfSignedCertificate()) {
-            appAuthConfigurationBuilder.setConnectionBuilder(new ConnectionBuilderForTesting());
-        }
-
-        AppAuthConfiguration appAuthConfig = appAuthConfigurationBuilder.build();
-
-        this.authService = new AuthorizationService(this.appContext, appAuthConfig);
-        AuthorizationRequest authRequest = new AuthorizationRequest.Builder(
-            authServiceConfig,
-            this.keycloakConfiguration.getClientId(),
-            ResponseTypeValues.CODE,
-            this.authServiceConfiguration.getRedirectUri()
-        ).setScopes(SCOPE_OPENID).build();
-
-        Intent authIntent = authService.getAuthorizationRequestIntent(authRequest);
+        Intent authIntent = authService.getAuthorizationRequestIntent(wrapper.getAuthorizationRequest());
         fromActivity.startActivityForResult(authIntent, resultCode);
     }
 
@@ -199,12 +172,10 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
      */
     private URL parseLogoutURL(final String identityToken) {
         String logoutRequestUri = this.keycloakConfiguration.getLogoutUrl(identityToken, this.authServiceConfiguration.getRedirectUri().toString());
-        URL url = null;
         try {
-            url = new URL(logoutRequestUri);
+            return new URL(logoutRequestUri);
         } catch (MalformedURLException e) {
             throw new IllegalArgumentException("Could not parse logout url");
         }
-        return url;
     }
 }

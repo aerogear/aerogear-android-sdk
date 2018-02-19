@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
+import org.aerogear.mobile.auth.authenticator.AuthorizationServiceFactory;
 import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
 import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
 import org.aerogear.mobile.auth.authenticator.OIDCAuthenticateOptions;
@@ -19,7 +20,6 @@ import org.aerogear.mobile.core.logging.Logger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
@@ -211,7 +211,7 @@ public class AuthService implements ServiceModule {
         this.appContext = nonNull(context, "context");
         this.authStateManager = AuthStateManager.getInstance(context);
         this.authServiceConfiguration = nonNull(authServiceConfiguration, "authServiceConfiguration");
-        this.oidcAuthenticatorImpl = new OIDCAuthenticatorImpl(this.serviceConfiguration, this.authServiceConfiguration, this.appContext, this.authStateManager);
+        this.oidcAuthenticatorImpl = new OIDCAuthenticatorImpl(this.serviceConfiguration, this.authServiceConfiguration, this.authStateManager, new AuthorizationServiceFactory(appContext));
 
         status.updateStatus(ReadynessStatus.STEP.INITIALIZED);
     }
