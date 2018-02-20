@@ -2,6 +2,7 @@ package org.aerogear.mobile.example.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +10,11 @@ import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import org.aerogear.mobile.auth.AuthService;
 import org.aerogear.mobile.example.R;
+import org.aerogear.mobile.security.Check;
+import org.aerogear.mobile.security.SecurityCheckResult;
+import org.aerogear.mobile.security.SecurityService;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -63,22 +68,18 @@ public class SecurityServiceFragment extends BaseFragment {
     // Used to calculate trust store percentage
     private float totalTests = 0;
     private float totalTestFailures = 0;
+    private SecurityService securityService;
 
     @Override
     public int getLayoutResId() {
         return R.layout.fragment_security_service;
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater,@Nullable ViewGroup container,
-                              @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_security_service, container, false);
-        ButterKnife.bind(this, view);
-
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        securityService = activity.mobileCore.getInstance(SecurityService.class);
         runTests();
-
-        return view;
     }
 
     /**
@@ -105,7 +106,10 @@ public class SecurityServiceFragment extends BaseFragment {
      */
     public void detectRoot() {
         totalTests++;
-        //TODO: add check
+        SecurityCheckResult result = securityService.check(Check.IS_ROOTED);
+        if (result.passed()) {
+            setDetected(rootAccess, R.string.root_detected_positive);
+        }
     }
 
     /**

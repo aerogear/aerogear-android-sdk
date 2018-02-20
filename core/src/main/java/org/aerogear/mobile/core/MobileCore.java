@@ -157,7 +157,6 @@ public final class MobileCore {
         } catch (IllegalAccessException | InstantiationException e) {
             throw new InitializationException(e.getMessage(), e);
         }
-
     }
 
     /**
