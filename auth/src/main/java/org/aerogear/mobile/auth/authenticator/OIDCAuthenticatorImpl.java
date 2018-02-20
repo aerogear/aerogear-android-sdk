@@ -125,7 +125,7 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
             public void onTokenRequestCompleted(@Nullable TokenResponse tokenResponse, @Nullable AuthorizationException exception) {
                 if (tokenResponse != null) {
                     authState.update(tokenResponse, exception);
-                    OIDCCredentials oidcTokens = new OIDCCredentials(authState.jsonSerializeString(), null);
+                    OIDCCredentials oidcTokens = new OIDCCredentials(authState.jsonSerializeString());
                     authStateManager.save(oidcTokens);
                     try {
                         UserIdentityParser parser = new UserIdentityParser(oidcTokens, keycloakConfiguration);
