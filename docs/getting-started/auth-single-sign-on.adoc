@@ -1,0 +1,34 @@
+== Single Sign-On (SSO)
+
+The Auth SDK uses OpenID Connect  http://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth[Auhtorization Code Flow] to achieve SSO via a mobile device browser.
+
+'''
+
+=== Prerequisite's
+. Two Android app's that have imported and initialised the Auth SDK module - link:/auth.adoc[AeroGear Services Auth SDK].
+
+'''
+
+=== Steps to achieve SSO via a device browser
+For this guide, let's assume that your two Android apps are called **Email App** and **Messaging App**.
+
+==== Setup Keycloak Email Client
+. After following link:/auth.adoc[Setting up Keycloak] guide in the Auth SDK getting started guide, there will already be a client created in your Keycloak instance. You can use this client as the *Keycloak Email Client* if you'd like. Just ensure you have the following in the client configuration settings:
+
+.. *Client ID* is the client identifier for OIDC requests. This should be a simple alpha-numeric string. You can change this to the name of your app - `emailapp`.
+.. *Enabled* should be set to *ON*.
+.. The *openid-connect* option should be selected in the *Client Protocol* drop down box. 
+.. For this example, the *public* option can be selected in the *Access Type* drop down box.
+.. *Standard Flow Enabled* should be set to *ON*.
+.. *Direct Access Grants Enabled* should be set to *ON*.
+.. *Valid Redirect URIs* should contain the redirect URL that has been specified in your *Email App Android Project*.  See the last point under the link:/auth.adoc[Usage] section of the Auth SDK getting started guide.
+
+. If you'd like to create a new client for the *Keycloak Email Client* then follow this Keycloak guide - link:http://www.keycloak.org/docs/latest/server_admin/index.html#oidc-clients[Keycloak OIDC Clients] and ensure your client has the configuration specified in step 1 i-vii.
+
+. Finally, create a user inside the Realm by navigating to *Users* on the left hand side.  Click add user and fill in the user details.  On clicking save, ensure to navigate to the *Credentials* tab of the new user and give them a password.  You'll be prompted to change this password on first login.
+
+==== Setup Keycloak Messaging Client
+. Create a new client in Keycloak by following this Keycloak guide link:http://www.keycloak.org/docs/latest/server_admin/index.html#oidc-clients[Keycloak OIDC Clients] and ensure the *Keycloak Messaging Client* configuration has the settings specified in step 1 i-vii of <<Setup Keycloak Email Client>>.
+
+'''
+Now that your two Android apps and Keycloak clients are setup, sign into the *Email App* with the user you have previously created. You should be redirected to your device browser which should have loaded the Keyclock login page.  Next, enter in your credentials and login.  You'll be asked to enter a new password for the user. You have now been authenticated on the *Email App* via your device browser.  Finally, try sign into the *Messaging App* with the same user credentials, you should be automatically logged in as that user has been previously authenticated in the *Email App* via the *_same_* device browser.
