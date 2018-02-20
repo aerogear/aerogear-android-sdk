@@ -31,12 +31,14 @@ public class JwksManager {
     private static final String ENTRY_SUFFIX_FOR_KEY_CONTENT = "jwks_content";
     private static final String ENTRY_SUFFIX_FOR_REQUEST_DATE = "requested_date";
 
-    private HttpServiceModule httpModule;
-    private AuthServiceConfiguration authServiceConfiguration;
-    private SharedPreferences sharedPrefs;
+    private final HttpServiceModule httpModule;
+    private final AuthServiceConfiguration authServiceConfiguration;
+    private final SharedPreferences sharedPrefs;
     private static final Logger logger = MobileCore.getLogger();
 
-    public JwksManager(Context context, MobileCore mobileCore, AuthServiceConfiguration authServiceConfiguration) {
+    public JwksManager(final Context context,
+                       final MobileCore mobileCore,
+                       final AuthServiceConfiguration authServiceConfiguration) {
         this.httpModule = mobileCore.getHttpLayer();
         this.authServiceConfiguration = authServiceConfiguration;
         this.sharedPrefs = context.getSharedPreferences(STORE_NAME, Context.MODE_PRIVATE);
@@ -49,7 +51,7 @@ public class JwksManager {
      * It will trigger a request to fetch the JWKS in the background if there is no cached key found, or {@link AuthServiceConfiguration#getMinTimeBetweenJwksRequests()} is passed since the key set is requested last time.
      * @return the cached JWKS, or null if it doesn't exist
      */
-    public JsonWebKeySet load(KeycloakConfiguration keyCloakConfig) {
+    public JsonWebKeySet load(final KeycloakConfiguration keyCloakConfig) {
         boolean needFetchNow = true;
         JsonWebKeySet jwks = null;
         String namespace = keyCloakConfig.getRealmName();
@@ -75,7 +77,7 @@ public class JwksManager {
      * @param keycloakConfiguration the configuration of the keycloak server
      * @param forceFetch if set to true, the request will be trigger immediately.
      */
-    public void fetchJwksIfNeeded(KeycloakConfiguration keycloakConfiguration, boolean forceFetch) {
+    public void fetchJwksIfNeeded(final KeycloakConfiguration keycloakConfiguration, final boolean forceFetch) {
         if (forceFetch || shouldRequestJwks(keycloakConfiguration)) {
             fetchJwks(keycloakConfiguration, null);
         }
@@ -86,7 +88,7 @@ public class JwksManager {
      * @param keycloakConfiguration the configuration of the keycloak server
      * @param callback the callback function to be invoked when the request is completed. Can be null.
      */
-    public void fetchJwks(KeycloakConfiguration keycloakConfiguration, @Nullable Callback<JsonWebKeySet> callback) {
+    public void fetchJwks(final KeycloakConfiguration keycloakConfiguration, @Nullable final Callback<JsonWebKeySet> callback) {
         String jwksUrl = keycloakConfiguration.getJwksUrl();
         HttpRequest getRequest = httpModule.newRequest();
         getRequest.get(jwksUrl);
@@ -126,7 +128,7 @@ public class JwksManager {
      * @param keyCloakConfig the configuration of the Keycloak server
      * @return true if the request should be triggered
      */
-    private boolean shouldRequestJwks(KeycloakConfiguration keyCloakConfig) {
+    private boolean shouldRequestJwks(final KeycloakConfiguration keyCloakConfig) {
         boolean shouldRequest = true;
         String namespace = keyCloakConfig.getRealmName();
         String requestedDateEntryName = buildEntryNameForQuestedDate(namespace);
@@ -144,7 +146,7 @@ public class JwksManager {
      * @param namespace the namespace associated with the JWKS
      * @param jwksContent the content of the JWKS
      */
-    private void persistJwksContent(String namespace, String jwksContent) {
+    private void persistJwksContent(final String namespace, final String jwksContent) {
         if (jwksContent != null && !jwksContent.isEmpty()) {
             long timeFetched = new Date().getTime();
             SharedPreferences.Editor editor = this.sharedPrefs.edit();
@@ -161,7 +163,7 @@ public class JwksManager {
      * @param namespace the namespace associated with the JWKS
      * @return the full entry name
      */
-    private String buildEntryNameForKeyContent(String namespace) {
+    private String buildEntryNameForKeyContent(final String namespace) {
         return String.format("%s_%s", namespace, ENTRY_SUFFIX_FOR_KEY_CONTENT);
     }
 
@@ -170,7 +172,7 @@ public class JwksManager {
      * @param namespace the namespace associated with the JWKS
      * @return the full entry name
      */
-    private String buildEntryNameForQuestedDate(String namespace) {
+    private String buildEntryNameForQuestedDate(final String namespace) {
         return String.format("%s_%s", namespace, ENTRY_SUFFIX_FOR_REQUEST_DATE);
     }
 

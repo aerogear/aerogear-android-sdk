@@ -13,6 +13,7 @@ import org.jose4j.jwk.VerificationJwkSelector;
 import org.jose4j.jws.AlgorithmIdentifiers;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
+import org.jose4j.jwt.consumer.ErrorCodeValidator;
 import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
@@ -74,9 +75,8 @@ public class OIDCCredentials {
      * @param keycloakConfig
      * @return
      */
-    public boolean verifyClaims(JsonWebKeySet jwks, KeycloakConfiguration keycloakConfig) {
-        boolean isValid = false;
-        String issuer = keycloakConfig.getHostUrl();
+    public boolean verifyClaims(final JsonWebKeySet jwks, final KeycloakConfiguration keycloakConfig) {
+        String issuer = keycloakConfig.getHostUrl() + "/realms/secure-app";
         String audience = keycloakConfig.getClientId();
         JwksVerificationKeyResolver jwksKeyResolver = new JwksVerificationKeyResolver(jwks.getJsonWebKeys());
         // Validate and process the JWT.
@@ -95,12 +95,15 @@ public class OIDCCredentials {
         try {
             //  Validate the JWT and process it to the Claims
             JwtClaims jwtClaims = jwtConsumer.processToClaims(this.getAccessToken());
-            isValid = true;
+            return true;
         } catch (InvalidJwtException e) {
             Log.e(TAG, "Invalid JWT provided", e);
-            isValid = false;
+
+            for (ErrorCodeValidator.Error e1 : e.getErrorDetails()) {
+                Log.e(TAG, e1.getErrorMessage());
+            }
         }
-        return isValid;
+        return false;
     }
 
     /**
