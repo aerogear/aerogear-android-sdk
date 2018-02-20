@@ -42,6 +42,8 @@ public class AuthService implements ServiceModule {
     private Logger logger;
     private JwksManager jwksManager;
 
+    private MobileCore mobileCore;
+
     /**
      * Variable holdind current status of the service. Used to check if the service is ready to be
      * used.

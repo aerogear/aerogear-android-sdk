@@ -7,24 +7,16 @@ import net.openid.appauth.AuthState;
 import org.aerogear.mobile.auth.AuthenticationException;
 import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
 import org.jose4j.jwa.AlgorithmConstraints;
-import org.jose4j.jwk.JsonWebKey;
 import org.jose4j.jwk.JsonWebKeySet;
-import org.jose4j.jwk.VerificationJwkSelector;
 import org.jose4j.jws.AlgorithmIdentifiers;
-import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.ErrorCodeValidator;
 import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
-import org.jose4j.keys.RsaKeyUtil;
 import org.jose4j.keys.resolvers.JwksVerificationKeyResolver;
-import org.jose4j.lang.JoseException;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.security.PublicKey;
-import java.security.spec.InvalidKeySpecException;
 
 import static org.aerogear.mobile.core.utils.SanityCheck.nonEmpty;
 
@@ -185,5 +177,24 @@ public class OIDCCredentials {
      */
     public boolean renew() throws AuthenticationException {
         throw new IllegalStateException("Not yet implemented");
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        OIDCCredentials that = (OIDCCredentials) o;
+
+        if (authState == that.authState) {
+            return true;
+        }
+
+        return authState != null ? authState.jsonSerializeString().equals(that.authState.jsonSerializeString()) : that.authState == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return authState != null ? authState.hashCode() : 0;
     }
 }

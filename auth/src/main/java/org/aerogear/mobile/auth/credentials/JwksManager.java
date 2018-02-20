@@ -3,13 +3,13 @@ package org.aerogear.mobile.auth.credentials;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.aerogear.mobile.auth.Callback;
 import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
 import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
 import org.aerogear.mobile.core.MobileCore;
-import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpResponse;
 import org.aerogear.mobile.core.http.HttpServiceModule;
@@ -18,6 +18,8 @@ import org.jose4j.jwk.JsonWebKeySet;
 import org.jose4j.lang.JoseException;
 
 import java.util.Date;
+
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 /**
  * A class that is responsible for manage the Json Web Key Set(JWKS).
@@ -36,13 +38,12 @@ public class JwksManager {
     private final SharedPreferences sharedPrefs;
     private static final Logger logger = MobileCore.getLogger();
 
-    public JwksManager(final Context context,
-                       final MobileCore mobileCore,
-                       final AuthServiceConfiguration authServiceConfiguration) {
-        this.httpModule = mobileCore.getHttpLayer();
-        this.authServiceConfiguration = authServiceConfiguration;
-        this.sharedPrefs = context.getSharedPreferences(STORE_NAME, Context.MODE_PRIVATE);
-
+    public JwksManager(@NonNull final Context context,
+                       @NonNull final MobileCore mobileCore,
+                       @NonNull final AuthServiceConfiguration authServiceConfiguration) {
+        this.httpModule = nonNull(mobileCore, "mobileCore").getHttpLayer();
+        this.authServiceConfiguration = nonNull(authServiceConfiguration, "authServiceConfiguration");
+        this.sharedPrefs = nonNull(context, "context").getSharedPreferences(STORE_NAME, Context.MODE_PRIVATE);
     }
 
     /**
@@ -76,11 +77,15 @@ public class JwksManager {
      * 2. {@link AuthServiceConfiguration#getMinTimeBetweenJwksRequests()} is passed since the key set is requested last time.
      * @param keycloakConfiguration the configuration of the keycloak server
      * @param forceFetch if set to true, the request will be trigger immediately.
+     * @return whether the keys has been fetched or not.
      */
-    public void fetchJwksIfNeeded(final KeycloakConfiguration keycloakConfiguration, final boolean forceFetch) {
+    public boolean fetchJwksIfNeeded(final KeycloakConfiguration keycloakConfiguration, final boolean forceFetch) {
         if (forceFetch || shouldRequestJwks(keycloakConfiguration)) {
             fetchJwks(keycloakConfiguration, null);
+            return true;
         }
+
+        return false;
     }
 
     /**
@@ -88,8 +93,8 @@ public class JwksManager {
      * @param keycloakConfiguration the configuration of the keycloak server
      * @param callback the callback function to be invoked when the request is completed. Can be null.
      */
-    public void fetchJwks(final KeycloakConfiguration keycloakConfiguration, @Nullable final Callback<JsonWebKeySet> callback) {
-        String jwksUrl = keycloakConfiguration.getJwksUrl();
+    public void fetchJwks(@NonNull final KeycloakConfiguration keycloakConfiguration, @Nullable final Callback<JsonWebKeySet> callback) {
+        String jwksUrl = nonNull(keycloakConfiguration, "keycloakConfiguration").getJwksUrl();
         HttpRequest getRequest = httpModule.newRequest();
         getRequest.get(jwksUrl);
         HttpResponse response = getRequest.execute();
@@ -133,7 +138,7 @@ public class JwksManager {
         String namespace = keyCloakConfig.getRealmName();
         String requestedDateEntryName = buildEntryNameForQuestedDate(namespace);
         long lastRequestDate = this.sharedPrefs.getLong(requestedDateEntryName, 0);
-        long currentTime = new Date().getTime();
+        long currentTime = System.currentTimeMillis();
         long duration = currentTime - lastRequestDate;
         if (duration < this.authServiceConfiguration.getMinTimeBetweenJwksRequests() * MILLISECONDS_PER_MINUTE) {
             shouldRequest = false;
