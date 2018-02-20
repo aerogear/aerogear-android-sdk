@@ -33,7 +33,6 @@ public class DeviceMetricsTest {
         DeviceMetrics deviceMetrics = new DeviceMetrics(context);
         Map<String, String> result = deviceMetrics.data();
 
-        assertNotNull(result.get("clientId"));
         assertNotNull(result.get("platform"));
         assertNotNull(result.get("platformVersion"));
     }
