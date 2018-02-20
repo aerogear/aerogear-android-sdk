@@ -7,7 +7,7 @@ import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpResponse;
 import org.aerogear.mobile.core.metrics.Metrics;
 import org.aerogear.mobile.core.metrics.MetricsPublisher;
-import org.aerogear.mobile.core.utils.AppIdGenerator;
+import org.aerogear.mobile.core.utils.ClientIdGenerator;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -39,7 +39,7 @@ public class NetworkMetricsPublisher implements MetricsPublisher {
                 json.put(m.identifier(), new JSONObject(m.data()));
             }
             json.put("timestamp", System.currentTimeMillis());
-            json.put("clientId", AppIdGenerator.getOrCreateClientId(context));
+            json.put("clientId", ClientIdGenerator.getOrCreateClientId(context));
             httpRequest.post(url, json.toString().getBytes());
 
             MobileCore.getLogger().debug("Sending metrics");

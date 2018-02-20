@@ -10,7 +10,7 @@ import java.util.UUID;
 /**
  * Helper for generating ID's
  */
-public class AppIdGenerator {
+public class ClientIdGenerator {
 
     private final static String STORAGE_NAME = "org.aerogear.mobile.metrics";
     private final static String STORAGE_KEY = "metrics-sdk-installation-id";
