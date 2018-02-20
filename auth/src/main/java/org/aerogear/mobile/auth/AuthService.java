@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
 import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
 import org.aerogear.mobile.auth.authenticator.OIDCAuthenticateOptions;
+import org.aerogear.mobile.auth.credentials.JwksManager;
 import org.aerogear.mobile.auth.credentials.OIDCCredentials;
 import org.aerogear.mobile.auth.authenticator.OIDCAuthenticatorImpl;
 import org.aerogear.mobile.auth.user.UserPrincipal;
@@ -15,6 +16,7 @@ import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.ServiceModule;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.logging.Logger;
+import org.jose4j.jwk.JsonWebKeySet;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,6 +40,7 @@ public class AuthService implements ServiceModule {
 
     private Context appContext;
     private Logger logger;
+    private JwksManager jwksManager;
 
     /**
      * Variable holdind current status of the service. Used to check if the service is ready to be
@@ -127,7 +130,6 @@ public class AuthService implements ServiceModule {
                     Arrays.toString(methodsToBeInvoked.toArray())));
         }
     }
-
     /**
      * Instantiates a new AuthService object
      */
@@ -141,13 +143,20 @@ public class AuthService implements ServiceModule {
         status.checkReadyness();
 
         UserPrincipal currentUser = null;
-        OIDCCredentials currentCredentials = this.authStateManager.load();
-        if (!currentCredentials.isExpired() && currentCredentials.isAuthorized()) {
-            try {
-                UserIdentityParser parser = new UserIdentityParser(currentCredentials, keycloakConfiguration);
-                currentUser = parser.parseUser();
-            } catch (AuthenticationException ae) {
-                logger.error("Failed to parse user identity from credential", ae);
+        JsonWebKeySet jwks = jwksManager.load(keycloakConfiguration);
+        if (jwks != null) {
+            OIDCCredentials currentCredentials = this.authStateManager.load();
+            if (!currentCredentials.isExpired() && currentCredentials.isAuthorized()) {
+                try {
+                    boolean isTokenValid = currentCredentials.verifyClaims(jwks, keycloakConfiguration);
+                    if (isTokenValid) {
+                        UserIdentityParser parser = new UserIdentityParser(currentCredentials, keycloakConfiguration);
+                        currentUser = parser.parseUser();
+                    }
+                } catch (AuthenticationException ae) {
+                    logger.error("Failed to parse user identity from credential", ae);
+                    currentUser = null;
+                }
             }
         }
         return currentUser;
