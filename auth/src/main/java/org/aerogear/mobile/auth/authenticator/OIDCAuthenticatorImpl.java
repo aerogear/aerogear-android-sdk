@@ -23,6 +23,7 @@ import org.aerogear.mobile.auth.Callback;
 import org.aerogear.mobile.auth.ConnectionBuilderForTesting;
 import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
 import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
+import org.aerogear.mobile.auth.credentials.JwksManager;
 import org.aerogear.mobile.auth.credentials.OIDCCredentials;
 import org.aerogear.mobile.auth.user.UserPrincipal;
 import org.aerogear.mobile.auth.user.UserPrincipalImpl;
@@ -32,6 +33,7 @@ import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpServiceModule;
 import org.aerogear.mobile.core.http.OkHttpServiceModule;
+import org.jose4j.jwk.JsonWebKeySet;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -57,6 +59,7 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
     private Callback authCallback;
 
     private final AuthStateManager authStateManager;
+    private final JwksManager jwksManager;
 
     /**
      * Creates a new OIDCAuthenticatorImpl object
@@ -64,12 +67,13 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
      * @param serviceConfiguration {@link ServiceConfiguration}
      * @param authServiceConfiguration {@link AuthServiceConfiguration}
      */
-    public OIDCAuthenticatorImpl(final ServiceConfiguration serviceConfiguration, final AuthServiceConfiguration authServiceConfiguration, final Context context, final AuthStateManager authStateManager) {
+    public OIDCAuthenticatorImpl(final ServiceConfiguration serviceConfiguration, final AuthServiceConfiguration authServiceConfiguration, final Context context, final AuthStateManager authStateManager, final JwksManager jwksManager) {
         super(serviceConfiguration);
         this.keycloakConfiguration = new KeycloakConfiguration(serviceConfiguration);
         this.authServiceConfiguration = nonNull(authServiceConfiguration, "authServiceConfiguration");
         this.appContext = nonNull(context, "context");
         this.authStateManager = nonNull(authStateManager, "authStateManager");
+        this.jwksManager = nonNull(jwksManager, "jwksManager");
     }
 
     /**
@@ -138,12 +142,22 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
             public void onTokenRequestCompleted(@Nullable TokenResponse tokenResponse, @Nullable AuthorizationException exception) {
                 if (tokenResponse != null) {
                     authState.update(tokenResponse, exception);
-                    OIDCCredentials oidcTokens = new OIDCCredentials(authState.jsonSerializeString(), null);
+                    OIDCCredentials oidcTokens = new OIDCCredentials(authState.jsonSerializeString());
                     authStateManager.save(oidcTokens);
                     try {
                         UserIdentityParser parser = new UserIdentityParser(oidcTokens, keycloakConfiguration);
                         UserPrincipalImpl user = parser.parseUser();
-                        authCallback.onSuccess(user);
+                        jwksManager.fetchJwks(keycloakConfiguration, new Callback<JsonWebKeySet>() {
+                            @Override
+                            public void onSuccess(JsonWebKeySet models) {
+                                authCallback.onSuccess(user);
+                            }
+
+                            @Override
+                            public void onError(Throwable error) {
+                                authCallback.onError(error);
+                            }
+                        });
                     } catch(Exception e) {
                         authCallback.onError(e);
                     }
