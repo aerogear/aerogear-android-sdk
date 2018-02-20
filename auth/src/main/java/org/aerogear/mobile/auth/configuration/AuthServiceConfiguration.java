@@ -22,7 +22,7 @@ public class AuthServiceConfiguration {
      * Specify the minimum time between requests to get the JWKS (Json web key set) in minutes.
      * The default value is 1440 (1 day).
      */
-    private int minTimeBetweenJwksRequests = 24*60;
+    private final int minTimeBetweenJwksRequests;
 
 
     /**
@@ -42,7 +42,7 @@ public class AuthServiceConfiguration {
     public static class AuthConfigurationBuilder {
         private Uri redirectUri;
         private boolean allowSelfSignedCert;
-        private int minTimeBetweenJwksRequests;
+        private int minTimeBetweenJwksRequests = 24*60;
 
         public AuthConfigurationBuilder() {}
 

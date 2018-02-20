@@ -52,94 +52,22 @@ public class OIDCCredentialsTest {
 
     @Before
     public void setup() throws JSONException {
-        IntegrityCheckParametersImpl checkParameters = new IntegrityCheckParametersImpl(INTEGRITY_CHECK_AUDIENCE, INTEGRITY_CHECK_ISSUER, INTEGRITY_CHECK_KEY);
-        this.testCredential = new OIDCCredentials(CREDENTIAL_AUTH_STATE, checkParameters);
+        this.testCredential = new OIDCCredentials(CREDENTIAL_AUTH_STATE);
         this.testEmptyCredential = new OIDCCredentials();
-    }
-
-    @Test
-    public void testValidPublicKey() {
-        assertTrue("Expect Token Validation with Correct Public Key to Succeed", testEmptyCredential.verifyToken(VALID_ACCESS_TOKEN, VALID_PUBLIC_KEY, VALID_ISSUER, VALID_AUDIENCE));
-    }
-
-    @Test
-    public void testInvalidPublicKey() {
-        assertFalse("Expect Token Validation with Wrong Public Key to Fail", testEmptyCredential.verifyToken(VALID_ACCESS_TOKEN, INVALID_PUBLIC_KEY, VALID_ISSUER, VALID_AUDIENCE));
-    }
-
-    @Test
-    public void testInvalidPublicKeyFormat() {
-        assertFalse("Expect Token Validation with Wrong Public Key Format to Fail", testEmptyCredential.verifyToken(VALID_ACCESS_TOKEN, INVALID_PUBLIC_KEY_FORMAT, VALID_ISSUER, VALID_AUDIENCE));
-    }
-
-    @Test
-    public void testValidAudience() {
-        assertTrue("Expect Token Validation with Valid Audience to Succeed", testEmptyCredential.verifyToken(VALID_ACCESS_TOKEN, VALID_PUBLIC_KEY, VALID_ISSUER, VALID_AUDIENCE));
-    }
-
-    @Test
-    public void testInvalidAudience() {
-        assertFalse("Expect Token Validation with Wrong Audience to Fail", testEmptyCredential.verifyToken(VALID_ACCESS_TOKEN, VALID_PUBLIC_KEY, VALID_ISSUER, INVALID_AUDIENCE));
-    }
-
-    @Test
-    public void testValidIssuer() {
-        assertTrue("Expect Token Validation with Valid Issuer to Succeed", testEmptyCredential.verifyToken(VALID_ACCESS_TOKEN, VALID_PUBLIC_KEY, VALID_ISSUER, VALID_AUDIENCE));
-    }
-
-    @Test
-    public void testInvalidIssuer() {
-        assertFalse("Expect Token Validation with Wrong Issuer to Fail", testEmptyCredential.verifyToken(VALID_ACCESS_TOKEN, VALID_PUBLIC_KEY, INVALID_ISSUER, VALID_AUDIENCE));
-    }
-
-    @Test
-    public void testExpiredExpirationTime() {
-        assertFalse("Expect Token Validation with Expired Time to Fail", testEmptyCredential.verifyToken(EXPIRED_ACCESS_TOKEN, VALID_PUBLIC_KEY, VALID_ISSUER, VALID_AUDIENCE));
-    }
-
-    @Test
-    public void testValidAccessToken() {
-        assertTrue("Expect Token Validation with Valid Access Token to Succeed", testEmptyCredential.verifyToken(VALID_ACCESS_TOKEN, VALID_PUBLIC_KEY, VALID_ISSUER, VALID_AUDIENCE));
-    }
-
-    @Test
-    public void testTamperedAccessToken() {
-        assertFalse("Expect Token Validation with Tampered Access Token to Fail", testEmptyCredential.verifyToken(TAMPERED_ACCESS_TOKEN, VALID_PUBLIC_KEY, VALID_ISSUER, VALID_AUDIENCE));
-    }
-
-    @Test
-    public void testValidIdentityToken() {
-        assertTrue("Expect Token Validation with Valid Identity Token to Succeed", testEmptyCredential.verifyToken(VALID_IDENTITY_TOKEN, VALID_PUBLIC_KEY, VALID_ISSUER, VALID_AUDIENCE));
-    }
-
-    @Test
-    public void testTamperedIdentityToken() {
-        assertFalse("Expect Token Validation with Tampered Identity Token to Fail", testEmptyCredential.verifyToken(TAMPERED_IDENTITY_TOKEN, VALID_PUBLIC_KEY, VALID_ISSUER, VALID_AUDIENCE));
-    }
-
-    @Test
-    public void testValidRefreshToken() {
-        assertTrue("Expect Token Validation with Valid Refresh Token to Succeed", testEmptyCredential.verifyToken(VALID_REFRESH_TOKEN, VALID_PUBLIC_KEY, VALID_ISSUER, VALID_AUDIENCE));
-    }
-
-    @Test
-    public void testTamperedRefreshToken() {
-        assertFalse("Expect Token Validation with Tampered Refresh Token to Fail", testEmptyCredential.verifyToken(TAMPERED_REFRESH_TOKEN, VALID_PUBLIC_KEY, VALID_ISSUER, VALID_AUDIENCE));
     }
 
     @Test
     public void testSerialize() throws JSONException {
         JSONObject serializedCredential = new JSONObject(this.testCredential.serialize());
         assertEquals(serializedCredential.get("authState"), CREDENTIAL_AUTH_STATE);
-        assertNotNull(serializedCredential.getString("integrityCheck"));
     }
 
-    @Test
-    public void testDeserialize() throws JSONException {
-        OIDCCredentials credential = OIDCCredentials.deserialize(testSerializedCredential);
-        assertEquals(credential.getIntegrityCheckParameters().getAudience(), INTEGRITY_CHECK_AUDIENCE);
-        assertEquals(credential.getIntegrityCheckParameters().getIssuer(), INTEGRITY_CHECK_ISSUER);
-        assertEquals(credential.getIntegrityCheckParameters().getPublicKey(), VALID_PUBLIC_KEY);
-    }
+//    @Test
+//    public void testDeserialize() throws JSONException {
+//        OIDCCredentials credential = OIDCCredentials.deserialize(testSerializedCredential);
+//        assertEquals(credential.getIntegrityCheckParameters().getAudience(), INTEGRITY_CHECK_AUDIENCE);
+//        assertEquals(credential.getIntegrityCheckParameters().getIssuer(), INTEGRITY_CHECK_ISSUER);
+//        assertEquals(credential.getIntegrityCheckParameters().getPublicKey(), VALID_PUBLIC_KEY);
+//    }
 
 }
