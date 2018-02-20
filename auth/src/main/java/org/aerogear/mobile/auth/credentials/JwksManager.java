@@ -36,10 +36,10 @@ public class JwksManager {
     private SharedPreferences sharedPrefs;
     private static final Logger logger = MobileCore.getLogger();
 
-    public JwksManager(MobileCore mobileCore, AuthServiceConfiguration authServiceConfiguration) {
+    public JwksManager(Context context, MobileCore mobileCore, AuthServiceConfiguration authServiceConfiguration) {
         this.httpModule = mobileCore.getHttpLayer();
         this.authServiceConfiguration = authServiceConfiguration;
-        this.sharedPrefs = mobileCore.getContext().getSharedPreferences(STORE_NAME, Context.MODE_PRIVATE);
+        this.sharedPrefs = context.getSharedPreferences(STORE_NAME, Context.MODE_PRIVATE);
 
     }
 

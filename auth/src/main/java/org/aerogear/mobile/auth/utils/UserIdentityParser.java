@@ -37,6 +37,7 @@ public class UserIdentityParser {
      */
     private JSONObject userIdentity = new JSONObject();
 
+    //TODO: use JwtClaims instead of using the raw credential instance
     private OIDCCredentials credential;
 
     public UserIdentityParser(final OIDCCredentials credential, final KeycloakConfiguration keycloakConfiguration) throws AuthenticationException {
