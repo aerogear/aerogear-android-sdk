@@ -1,4 +1,4 @@
-package org.aerogear.mobile.auth.impl;
+package org.aerogear.mobile.auth.user;
 
 import org.aerogear.mobile.auth.user.RoleType;
 import org.aerogear.mobile.auth.user.UserRole;

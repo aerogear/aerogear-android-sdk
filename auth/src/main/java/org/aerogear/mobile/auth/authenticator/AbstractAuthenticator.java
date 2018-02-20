@@ -30,25 +30,21 @@ public abstract class AbstractAuthenticator {
      * @param authOptions the options for the authenticate action
      * @param callback the callback function to be invoked
      */
-    public void authenticate(final AuthenticateOptions authOptions, final Callback<UserPrincipal> callback) {
-        throw new IllegalStateException("Not implemented");
-    }
+    public abstract void authenticate(final AuthenticateOptions authOptions, final Callback<UserPrincipal> callback);
 
     /**
      * Logout the given principal
      *
      * @param principal principal to be log out
      */
-    public void logout(final UserPrincipal principal) {
-        throw new IllegalStateException("Not implemented");
-    }
+    public abstract void logout(final UserPrincipal principal);
 
     /**
      * Returns the authentication service configuration
      *
      * @return the authentication service configuration
      */
-    public ServiceConfiguration getServiceConfig() {
+    protected ServiceConfiguration getServiceConfig() {
         return this.serviceConfig;
     }
 }
