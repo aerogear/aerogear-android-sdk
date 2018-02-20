@@ -40,6 +40,7 @@ public class AuthService implements ServiceModule {
 
     private Context appContext;
     private Logger logger;
+    private MobileCore mobileCore;
     private JwksManager jwksManager;
 
     /**
@@ -146,13 +147,11 @@ public class AuthService implements ServiceModule {
         JsonWebKeySet jwks = jwksManager.load(keycloakConfiguration);
         if (jwks != null) {
             OIDCCredentials currentCredentials = this.authStateManager.load();
-            if (!currentCredentials.isExpired() && currentCredentials.isAuthorized()) {
+            boolean isTokenValid = currentCredentials.verifyClaims(jwks, keycloakConfiguration);
+            if (isTokenValid && !currentCredentials.isExpired() && currentCredentials.isAuthorized()) {
                 try {
-                    boolean isTokenValid = currentCredentials.verifyClaims(jwks, keycloakConfiguration);
-                    if (isTokenValid) {
-                        UserIdentityParser parser = new UserIdentityParser(currentCredentials, keycloakConfiguration);
-                        currentUser = parser.parseUser();
-                    }
+                    UserIdentityParser parser = new UserIdentityParser(currentCredentials, keycloakConfiguration);
+                    currentUser = parser.parseUser();
                 } catch (AuthenticationException ae) {
                     logger.error("Failed to parse user identity from credential", ae);
                     currentUser = null;
@@ -202,6 +201,7 @@ public class AuthService implements ServiceModule {
     @Override
     public void configure(final MobileCore core, final ServiceConfiguration serviceConfiguration) {
         this.logger = MobileCore.getLogger();
+        this.mobileCore = nonNull(core, "mobileCore");
         this.serviceConfiguration = nonNull(serviceConfiguration, "serviceConfiguration");
         this.keycloakConfiguration = new KeycloakConfiguration(serviceConfiguration);
 
@@ -220,7 +220,8 @@ public class AuthService implements ServiceModule {
         this.appContext = nonNull(context, "context");
         this.authStateManager = AuthStateManager.getInstance(context);
         this.authServiceConfiguration = nonNull(authServiceConfiguration, "authServiceConfiguration");
-        this.oidcAuthenticatorImpl = new OIDCAuthenticatorImpl(this.serviceConfiguration, this.authServiceConfiguration, this.appContext, this.authStateManager);
+        this.jwksManager = new JwksManager(this.appContext, this.mobileCore, this.authServiceConfiguration);
+        this.oidcAuthenticatorImpl = new OIDCAuthenticatorImpl(this.serviceConfiguration, this.authServiceConfiguration, this.appContext, this.authStateManager, this.jwksManager);
 
         status.updateStatus(ReadynessStatus.STEP.INITIALIZED);
     }
