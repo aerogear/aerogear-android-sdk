@@ -15,7 +15,11 @@
         <item
             android:id="@+id/nav_auth"
             android:icon="@drawable/ic_https"
-            android:title="Auth" />
+            android:title="@string/nav_auth" />
+        <item
+            android:id="@+id/nav_checks"
+            android:icon="@drawable/ic_phone_lock"
+            android:title="@string/nav_checks" />
     </group>
 
 </menu>
