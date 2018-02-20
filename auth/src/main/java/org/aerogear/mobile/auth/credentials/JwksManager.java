@@ -3,9 +3,12 @@ package org.aerogear.mobile.auth.credentials;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.Nullable;
 
+import org.aerogear.mobile.auth.Callback;
 import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
 import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
+import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpResponse;
@@ -19,7 +22,7 @@ import java.util.Date;
 /**
  * A class that is responsible for manage the Json Web Key Set(JWKS).
  */
-class JwksManager {
+public class JwksManager {
 
     private static final int MILLISECONDS_PER_MINUTE = 60*1000;
 
@@ -31,13 +34,13 @@ class JwksManager {
     private HttpServiceModule httpModule;
     private AuthServiceConfiguration authServiceConfiguration;
     private SharedPreferences sharedPrefs;
-    private Logger logger;
+    private static final Logger logger = MobileCore.getLogger();
 
-    JwksManager(Context context, HttpServiceModule httpModule, AuthServiceConfiguration authServiceConfiguration, Logger logger) {
-        this.httpModule = httpModule;
+    public JwksManager(MobileCore mobileCore, AuthServiceConfiguration authServiceConfiguration) {
+        this.httpModule = mobileCore.getHttpLayer();
         this.authServiceConfiguration = authServiceConfiguration;
-        this.sharedPrefs = context.getSharedPreferences(STORE_NAME, Context.MODE_PRIVATE);
-        this.logger = logger;
+        this.sharedPrefs = mobileCore.getContext().getSharedPreferences(STORE_NAME, Context.MODE_PRIVATE);
+
     }
 
     /**
@@ -74,29 +77,48 @@ class JwksManager {
      */
     public void fetchJwksIfNeeded(KeycloakConfiguration keycloakConfiguration, boolean forceFetch) {
         if (forceFetch || shouldRequestJwks(keycloakConfiguration)) {
-            String jwksUrl = keycloakConfiguration.getJwksUrl();
-            HttpRequest getRequest = httpModule.newRequest();
-            getRequest.get(jwksUrl);
-            HttpResponse response = getRequest.execute();
-            response.onComplete(() -> {
-                //this is invoked on a background thread.
-                if (response.getStatus() == 200) {
-                    String jwksContent = response.stringBody();
-                    boolean isValidKeyset = true;
-                    try {
-                        new JsonWebKeySet(jwksContent);
-                    } catch (JoseException e) {
-                        isValidKeyset = false;
-                        logger.warning("failed to parse the content of JWKS key. content = " + jwksContent);
-                    }
-                    if (isValidKeyset) {
-                        persistJwksContent(keycloakConfiguration.getRealmName(), jwksContent);
-                    }
-                } else {
-                    logger.warning("failed to fetch JWKS from server. url = " + jwksUrl + " statusCode = " + response.getStatus());
-                }
-            });
+            fetchJwks(keycloakConfiguration, null);
         }
+    }
+
+    /**
+     * Call the remote endpoint to load the JWKS and save it locally.
+     * @param keycloakConfiguration the configuration of the keycloak server
+     * @param callback the callback function to be invoked when the request is completed. Can be null.
+     */
+    public void fetchJwks(KeycloakConfiguration keycloakConfiguration, @Nullable Callback<JsonWebKeySet> callback) {
+        String jwksUrl = keycloakConfiguration.getJwksUrl();
+        HttpRequest getRequest = httpModule.newRequest();
+        getRequest.get(jwksUrl);
+        HttpResponse response = getRequest.execute();
+        response.onComplete(() -> {
+            JsonWebKeySet jwks = null;
+            JwksException error = null;
+            //this is invoked on a background thread.
+            if (response.getStatus() == 200) {
+                String jwksContent = response.stringBody();
+                try {
+                    jwks = new JsonWebKeySet(jwksContent);
+                } catch (JoseException e) {
+                    jwks = null;
+                    error = new JwksException(e);
+                    logger.warning("failed to parse JWKS key content. content = " + jwksContent);
+                }
+                if (jwks != null) {
+                    persistJwksContent(keycloakConfiguration.getRealmName(), jwksContent);
+                }
+            } else {
+                logger.warning("failed to fetch JWKS from server. url = " + jwksUrl + " statusCode = " + response.getStatus());
+                error = new JwksException("failed to fetch JWKS from server");
+            }
+            if (callback != null) {
+                if (jwks != null) {
+                    callback.onSuccess(jwks);
+                } else {
+                    callback.onError(error);
+                }
+            }
+        });
     }
 
     /**

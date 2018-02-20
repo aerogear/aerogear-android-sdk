@@ -1,17 +1,16 @@
 package org.aerogear.mobile.auth.utils;
 
-import android.util.Base64;
-
 import org.aerogear.mobile.auth.AuthenticationException;
-import org.aerogear.mobile.auth.user.RoleType;
-import org.aerogear.mobile.auth.user.UserRole;
 import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
 import org.aerogear.mobile.auth.credentials.OIDCCredentials;
+import org.aerogear.mobile.auth.user.RoleType;
 import org.aerogear.mobile.auth.user.UserPrincipalImpl;
+import org.aerogear.mobile.auth.user.UserRole;
+import org.jose4j.jws.JsonWebSignature;
+import org.jose4j.lang.JoseException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -179,16 +178,17 @@ public class UserIdentityParser {
 
         try {
             // Decode the Access Token to Extract the Identity Information
-            String[] splitToken = accessToken.split("\\.");
-            byte[] decodedBytes = Base64.decode(splitToken[1], Base64.URL_SAFE);
-            String decoded = new String(decodedBytes, "UTF-8");
+            JsonWebSignature signature = new JsonWebSignature();
+            signature.setCompactSerialization(accessToken);
+            //Note: this does not verify the token
+            String decoded = signature.getUnverifiedPayload();
             try {
                 userIdentity = new JSONObject(decoded);
             } catch (JSONException e) {
                 throw new AuthenticationException(e.getMessage(), e.getCause());
             }
 
-        } catch (UnsupportedEncodingException e) {
+        } catch (JoseException e) {
             throw new AuthenticationException(e.getMessage(), e.getCause());
         }
     }

@@ -1,19 +1,29 @@
 package org.aerogear.mobile.auth.authenticator;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 
+import net.openid.appauth.AppAuthConfiguration;
 import net.openid.appauth.AuthState;
 import net.openid.appauth.AuthorizationException;
+import net.openid.appauth.AuthorizationRequest;
 import net.openid.appauth.AuthorizationResponse;
 import net.openid.appauth.AuthorizationService;
+import net.openid.appauth.AuthorizationServiceConfiguration;
+import net.openid.appauth.ResponseTypeValues;
 import net.openid.appauth.TokenResponse;
+import net.openid.appauth.browser.BrowserBlacklist;
+import net.openid.appauth.browser.VersionedBrowserMatcher;
 
 import org.aerogear.mobile.auth.AuthStateManager;
+import org.aerogear.mobile.auth.AuthenticationException;
 import org.aerogear.mobile.auth.Callback;
+import org.aerogear.mobile.auth.ConnectionBuilderForTesting;
 import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
 import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
+import org.aerogear.mobile.auth.credentials.JwksManager;
 import org.aerogear.mobile.auth.credentials.OIDCCredentials;
 import org.aerogear.mobile.auth.user.UserPrincipal;
 import org.aerogear.mobile.auth.user.UserPrincipalImpl;
@@ -23,6 +33,7 @@ import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpServiceModule;
 import org.aerogear.mobile.core.http.OkHttpServiceModule;
+import org.jose4j.jwk.JsonWebKeySet;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -44,6 +55,7 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
     private Callback authCallback;
 
     private final AuthStateManager authStateManager;
+    private final JwksManager jwksManager;
 
     private final AuthorizationServiceFactory authorizationServiceFactory;
 
@@ -56,12 +68,14 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
     public OIDCAuthenticatorImpl(final ServiceConfiguration serviceConfiguration,
                                  final AuthServiceConfiguration authServiceConfiguration,
                                  final AuthStateManager authStateManager,
-                                 final AuthorizationServiceFactory authorizationServiceFactory) {
+                                 final AuthorizationServiceFactory authorizationServiceFactory,
+                                 final JwksManager jwksManager) {
         super(serviceConfiguration);
         this.keycloakConfiguration = new KeycloakConfiguration(serviceConfiguration);
         this.authServiceConfiguration = nonNull(authServiceConfiguration, "authServiceConfiguration");
         this.authorizationServiceFactory = nonNull(authorizationServiceFactory,"authorizationServiceFactory");
         this.authStateManager = nonNull(authStateManager, "authStateManager");
+        this.jwksManager = nonNull(jwksManager, "jwksManager");
     }
 
     /**
@@ -116,7 +130,17 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
                     try {
                         UserIdentityParser parser = new UserIdentityParser(oidcTokens, keycloakConfiguration);
                         UserPrincipalImpl user = parser.parseUser();
-                        authCallback.onSuccess(user);
+                        jwksManager.fetchJwks(keycloakConfiguration, new Callback<JsonWebKeySet>() {
+                            @Override
+                            public void onSuccess(JsonWebKeySet models) {
+                                authCallback.onSuccess(user);
+                            }
+
+                            @Override
+                            public void onError(Throwable error) {
+                                authCallback.onError(error);
+                            }
+                        });
                     } catch(Exception e) {
                         authCallback.onError(e);
                     }
