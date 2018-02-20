@@ -34,12 +34,17 @@ public class NetworkMetricsPublisher implements MetricsPublisher {
         try {
 
             JSONObject json = new JSONObject();
-            // Can we build DTO here instead of operating on JSONObject?
-            for (final Metrics m : metrics) {
-                json.put(m.identifier(), new JSONObject(m.data()));
-            }
-            json.put("timestamp", System.currentTimeMillis());
+
             json.put("clientId", ClientIdGenerator.getOrCreateClientId(context));
+            json.put("timestamp", System.currentTimeMillis());
+
+            JSONObject data = new JSONObject();
+            for (final Metrics m : metrics) {
+                data.put(m.identifier(), new JSONObject(m.data()));
+            }
+
+            json.put("data", data);
+
             httpRequest.post(url, json.toString().getBytes());
 
             MobileCore.getLogger().debug("Sending metrics");
