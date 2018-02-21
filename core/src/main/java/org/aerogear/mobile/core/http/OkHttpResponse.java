@@ -12,10 +12,10 @@ import okhttp3.Response;
 class OkHttpResponse implements HttpResponse {
 
     private static final long DEFAULT_TIMEOUT = 30;
+    private final CountDownLatch requestCompleteLatch = new CountDownLatch(1);
     private Response response;
     private Runnable completionHandler;
     private Exception requestError;
-    private CountDownLatch requestCompleteLatch = new CountDownLatch(1);
     private boolean closed = false;
 
     public OkHttpResponse(final Call okHttpCall, AppExecutors appExecutors) {

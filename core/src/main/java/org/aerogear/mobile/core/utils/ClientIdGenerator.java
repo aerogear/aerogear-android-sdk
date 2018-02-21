@@ -10,10 +10,16 @@ import java.util.UUID;
 /**
  * Helper for generating ID's
  */
-public class ClientIdGenerator {
+public final class ClientIdGenerator {
 
     private final static String STORAGE_NAME = "org.aerogear.mobile.metrics";
     private final static String STORAGE_KEY = "metrics-sdk-installation-id";
+
+    /**
+     * Utility classes are not meant to be instantiated.
+     */
+    private ClientIdGenerator() {
+    }
 
     /**
      * Get or create the client ID that identifies a device as long as the user doesn't

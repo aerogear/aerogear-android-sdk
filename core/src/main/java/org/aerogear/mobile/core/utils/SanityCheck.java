@@ -3,7 +3,7 @@ package org.aerogear.mobile.core.utils;
 /**
  * Utility class used to check that passed in parameters complies to specific rules.
  */
-public class SanityCheck {
+public final class SanityCheck {
 
     /**
      * Utility classes are not meant to be instantiated.
