@@ -46,6 +46,9 @@ public class MetricsService implements ServiceModule {
     }
 
     @Override
+    public boolean requiresConfiguration() { return true; }
+
+    @Override
     public void destroy() {
     }
 

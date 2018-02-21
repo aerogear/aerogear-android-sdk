@@ -21,6 +21,9 @@ public class SecurityService implements ServiceModule{
     }
 
     @Override
+    public boolean requiresConfiguration() { return false; }
+
+    @Override
     public void destroy() {}
 
     /**

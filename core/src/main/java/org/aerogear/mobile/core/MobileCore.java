@@ -145,7 +145,7 @@ public final class MobileCore {
             ServiceModule serviceModule = serviceClass.newInstance();
 
             if (serviceConfiguration == null) {
-                serviceConfiguration = getServiceConfiguration(serviceModule.type());
+                serviceConfiguration = getServiceConfiguration(serviceModule.type(), serviceModule.requiresConfiguration());
             }
 
             serviceModule.configure(this, serviceConfiguration);
@@ -173,9 +173,9 @@ public final class MobileCore {
      * @param type Service type/name
      * @return the configuration for this service from the JSON config file
      */
-    private ServiceConfiguration getServiceConfiguration(String type) {
+    private ServiceConfiguration getServiceConfiguration(String type, boolean requiresConfiguration) {
         ServiceConfiguration serviceConfiguration = this.servicesConfig.get(type);
-        if (serviceConfiguration == null) {
+        if (serviceConfiguration == null && requiresConfiguration) {
             throw new ConfigurationNotFoundException(type + " not found on " + this.configFileName);
         }
         return serviceConfiguration;
