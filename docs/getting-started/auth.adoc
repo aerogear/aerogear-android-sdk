@@ -24,7 +24,7 @@ See link:../../example/src/build.gradle[the example app build.gradle file].
 * Navigate to your Openshift cluster and in the Service Catalog search for the Keycloak service.
 * Click on the Keycloak service and you will be prompted to fill in details about your app.  For now you can leave these as they are.  Navigate through the setup and click Create.
 This will provision the Keycloak service in the project you specified and create a public Client to be used with an app along with a bearer-only client.
-See link:http://www.keycloak.org/docs/3.1/server_admin/topics/clients/client-oidc.html[Keycloak OIDC client documentation].
+See link:http://www.keycloak.org/docs/latest/server_admin/index.html#oidc-clients[Keycloak OIDC client documentation].
 
 After provisioning, the Keycloak service will be available at the exposed Route. You can view this route inside your project or use the below command to get the route:
 ----
@@ -157,7 +157,7 @@ The callback provided in `AuthService#login` will be invoked.
 
 === Retrieving a users roles
 
-Once a `UserPrincipal` has been retrieved the link:http://www.keycloak.org/docs/3.1/server_admin/topics/roles.html[roles] of the user can be listed and checked. This can
+Once a `UserPrincipal` has been retrieved the link:http://www.keycloak.org/docs/latest/server_admin/index.html#roles[roles] of the user can be listed and checked. This can
 be used to perform client side access control, such as hiding UI components related to actions the
 user doesn't have permissions to perform.
 
