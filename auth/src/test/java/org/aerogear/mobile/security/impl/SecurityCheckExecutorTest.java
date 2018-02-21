@@ -3,7 +3,7 @@ package org.aerogear.mobile.security.impl;
 import android.content.Context;
 
 import org.aerogear.mobile.core.metrics.MetricsService;
-import org.aerogear.mobile.security.Check;
+import org.aerogear.mobile.security.SecurityCheckType;
 import org.aerogear.mobile.security.SecurityCheck;
 import org.aerogear.mobile.security.SecurityCheckExecutor;
 import org.aerogear.mobile.security.SecurityCheckResult;
@@ -25,7 +25,7 @@ public class SecurityCheckExecutorTest {
     Context context;
 
     @Mock
-    Check check;
+    SecurityCheckType securityCheckType;
 
     @Mock
     MetricsService metricsService;
@@ -40,22 +40,22 @@ public class SecurityCheckExecutorTest {
         executor = new SecurityCheckExecutorImpl(context);
         mockSecurityCheck = new MockSecurityCheck();
 
-        when(check.getSecurityCheck()).thenReturn(mockSecurityCheck);
+        when(securityCheckType.getSecurityCheck()).thenReturn(mockSecurityCheck);
     }
 
     @Test
     public void testSendMetrics() {
         when(metricsService.publish(any())).thenReturn(null);
 
-        executor.addCheck(check).addCheck(check).sendMetrics(metricsService).execute();
+        executor.addCheck(securityCheckType).sendMetrics(metricsService).execute();
 
-        verify(metricsService, times(2)).publish(any());
+        verify(metricsService, times(1)).publish(any());
 
     }
 
     @Test
     public void testExecute() {
-        SecurityCheckResult[] results = executor.addCheck(check).execute();
+        SecurityCheckResult[] results = executor.addCheck(securityCheckType).execute();
         assertEquals(1, results.length);
         assertEquals(true, results[0].passed());
     }

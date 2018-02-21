@@ -7,7 +7,7 @@ public class SecurityCheckResultImpl implements SecurityCheckResult {
     private final String name;
     private final boolean passed;
 
-    public SecurityCheckResultImpl(String name, boolean passed) {
+    public SecurityCheckResultImpl(final String name, final boolean passed) {
         this.name = name;
         this.passed = passed;
     }

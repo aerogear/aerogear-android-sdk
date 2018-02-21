@@ -3,28 +3,36 @@ package org.aerogear.mobile.security.impl;
 import android.content.Context;
 
 import org.aerogear.mobile.core.metrics.MetricsService;
-import org.aerogear.mobile.security.Check;
+import org.aerogear.mobile.security.SecurityCheckType;
 import org.aerogear.mobile.security.SecurityCheck;
 import org.aerogear.mobile.security.SecurityCheckExecutor;
 import org.aerogear.mobile.security.SecurityCheckResult;
 import org.aerogear.mobile.security.metrics.SecurityCheckResultMetric;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 
 public class SecurityCheckExecutorImpl implements SecurityCheckExecutor {
-    private final ArrayList<SecurityCheck> checks;
+    private final Collection<SecurityCheck> checks;
     private final Context context;
 
     private MetricsService metricsService;
 
     public SecurityCheckExecutorImpl(Context context) {
-        this.checks = new ArrayList<>();
+        this.checks = new HashSet<>();
         this.context = context;
     }
 
     @Override
-    public SecurityCheckExecutor addCheck(Check check) {
-        checks.add(check.getSecurityCheck());
+    public SecurityCheckExecutor addCheck(SecurityCheckType securityCheckType) {
+        return addCheck(securityCheckType.getSecurityCheck());
+    }
+
+    @Override
+    public SecurityCheckExecutor addCheck(SecurityCheck check) {
+        checks.add(check);
         return this;
     }
 
@@ -60,14 +68,14 @@ public class SecurityCheckExecutorImpl implements SecurityCheckExecutor {
      * @return Array of results.
      */
     private SecurityCheckResult[] getTestResults() {
-        ArrayList<SecurityCheckResult> results = new ArrayList<>();
+        List<SecurityCheckResult> results = new ArrayList<>();
         for (SecurityCheck check : checks) {
             results.add(check.test(context));
         }
         return buildResultArray(results);
     }
 
-    private SecurityCheckResult[] buildResultArray(ArrayList<SecurityCheckResult> results) {
+    private SecurityCheckResult[] buildResultArray(List<SecurityCheckResult> results) {
         return results.toArray(new SecurityCheckResult[results.size()]);
     }
 }

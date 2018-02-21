@@ -29,7 +29,7 @@ public class SecurityService implements ServiceModule{
     public void destroy() {}
 
     /**
-     * Retrieve a {@link SecurityCheckExecutor} to run multiple {@link Check checks} chained.
+     * Retrieve a {@link SecurityCheckExecutor} to run multiple {@link SecurityCheckType checks} chained.
      *
      * @return A new executor.
      */
@@ -38,17 +38,17 @@ public class SecurityService implements ServiceModule{
     }
 
     /**
-     * Perform a single {@link Check} and get the {@link SecurityCheckResult result} for it.
+     * Perform a single {@link SecurityCheckType} and get the {@link SecurityCheckResult result} for it.
      *
-     * @param check The check to execute.
-     * @return The result of the check.
+     * @param securityCheckType The check type to execute.
+     * @return The result of the security check from the check type provided.
      */
-    public SecurityCheckResult check(Check check) {
-        return check.getSecurityCheck().test(core.getContext());
+    public SecurityCheckResult check(SecurityCheckType securityCheckType) {
+        return securityCheckType.getSecurityCheck().test(core.getContext());
     }
 
-    public SecurityCheckResult checkAndSendMetric(Check check, MetricsService metricsService) {
-        SecurityCheckResult result = check(check);
+    public SecurityCheckResult checkAndSendMetric(SecurityCheckType securityCheckType, MetricsService metricsService) {
+        SecurityCheckResult result = check(securityCheckType);
         metricsService.publish(new SecurityCheckResultMetric(result));
         return result;
     }

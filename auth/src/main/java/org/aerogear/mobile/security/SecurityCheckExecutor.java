@@ -4,12 +4,20 @@ import org.aerogear.mobile.core.metrics.MetricsService;
 
 public interface SecurityCheckExecutor {
     /**
-     * Add a {@link Check check} to be executed on {@link #execute()}.
+     * Add a {@link SecurityCheckType check type} to be executed on {@link #execute()}.
      *
-     * @param check The check to add.
+     * @param securityCheckType The check type to add.
      * @return {@link SecurityCheckExecutor}
      */
-    SecurityCheckExecutor addCheck(Check check);
+    SecurityCheckExecutor addCheck(SecurityCheckType securityCheckType);
+
+    /**
+     * Add a {@link SecurityCheck} to be executed on {@link #execute()}.
+     *
+     * @param check The security check to add.
+     * @return {@link SecurityCheckExecutor}
+     */
+    SecurityCheckExecutor addCheck(SecurityCheck check);
 
     /**
      * Set that metrics should be sent on {@link #execute()} using the {@link MetricsService} provided.
