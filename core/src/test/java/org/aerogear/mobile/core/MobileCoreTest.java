@@ -213,6 +213,9 @@ public class MobileCoreTest {
         }
 
         @Override
+        public boolean requiresConfiguration() { return true; }
+
+        @Override
         public void destroy() {
         }
 

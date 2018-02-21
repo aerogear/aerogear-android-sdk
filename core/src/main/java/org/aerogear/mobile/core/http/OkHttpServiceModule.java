@@ -47,6 +47,9 @@ public class OkHttpServiceModule implements HttpServiceModule {
     }
 
     @Override
+    public boolean requiresConfiguration() { return true; }
+
+    @Override
     public void destroy() {
     }
 

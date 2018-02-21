@@ -148,6 +148,10 @@ public final class MobileCore {
                 serviceConfiguration = getServiceConfiguration(serviceModule.type());
             }
 
+            if(serviceConfiguration == null && serviceModule.requiresConfiguration()) {
+                throw new ConfigurationNotFoundException(serviceModule.type() + " not found on " + this.configFileName);
+            }
+
             serviceModule.configure(this, serviceConfiguration);
 
             services.put(serviceClass, serviceModule);
@@ -157,7 +161,6 @@ public final class MobileCore {
         } catch (IllegalAccessException | InstantiationException e) {
             throw new InitializationException(e.getMessage(), e);
         }
-
     }
 
     /**
@@ -175,11 +178,7 @@ public final class MobileCore {
      * @return the configuration for this service from the JSON config file
      */
     private ServiceConfiguration getServiceConfiguration(String type) {
-        ServiceConfiguration serviceConfiguration = this.servicesConfig.get(type);
-        if (serviceConfiguration == null) {
-            throw new ConfigurationNotFoundException(type + " not found on " + this.configFileName);
-        }
-        return serviceConfiguration;
+        return this.servicesConfig.get(type);
     }
 
     /**

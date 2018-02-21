@@ -217,6 +217,9 @@ public class AuthService implements ServiceModule {
     }
 
     @Override
+    public boolean requiresConfiguration() { return true; }
+
+    @Override
     public void destroy() {
 
     }
