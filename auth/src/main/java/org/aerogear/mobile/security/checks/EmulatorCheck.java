@@ -7,6 +7,7 @@ import org.aerogear.mobile.security.SecurityCheck;
 import org.aerogear.mobile.security.SecurityCheckResult;
 import org.aerogear.mobile.security.impl.SecurityCheckResultImpl;
 
+
 /**
  * A check for whether the device the application is running on an emulator
  */
