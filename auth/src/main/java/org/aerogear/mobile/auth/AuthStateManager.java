@@ -43,9 +43,8 @@ public class AuthStateManager {
         if (authState == null) {
             clear();
         } else {
-            SharedPreferences.Editor e = prefs.edit();
-            SharedPreferences.Editor bleh = e.putString(KEY_STATE, authState.serialize());
-            if(!bleh.commit()) {
+            SharedPreferences.Editor e = prefs.edit().putString(KEY_STATE, authState.serialize());
+            if(!e.commit()) {
                 throw new IllegalStateException("Failed to update state from shared preferences");
             }
         }
