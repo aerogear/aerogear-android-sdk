@@ -18,7 +18,7 @@ public class SecurityService implements ServiceModule{
     }
 
     @Override
-    public void configure(MobileCore core, ServiceConfiguration serviceConfiguration) {
+    public void configure(final MobileCore core, final ServiceConfiguration serviceConfiguration) {
         this.core = core;
     }
 
@@ -43,11 +43,11 @@ public class SecurityService implements ServiceModule{
      * @param securityCheckType The check type to execute.
      * @return The result of the security check from the check type provided.
      */
-    public SecurityCheckResult check(SecurityCheckType securityCheckType) {
+    public SecurityCheckResult check(final SecurityCheckType securityCheckType) {
         return securityCheckType.getSecurityCheck().test(core.getContext());
     }
 
-    public SecurityCheckResult checkAndSendMetric(SecurityCheckType securityCheckType, MetricsService metricsService) {
+    public SecurityCheckResult checkAndSendMetric(final SecurityCheckType securityCheckType, final MetricsService metricsService) {
         SecurityCheckResult result = check(securityCheckType);
         metricsService.publish(new SecurityCheckResultMetric(result));
         return result;

@@ -18,7 +18,7 @@ public class RootedCheck implements SecurityCheck {
      * @return <code>true</code> if the device is rooted.
      */
     @Override
-    public SecurityCheckResult test(Context context) {
+    public SecurityCheckResult test(final Context context) {
         RootBeer rootBeer = new RootBeer(context);
         return new SecurityCheckResultImpl(NAME, rootBeer.isRooted());
     }

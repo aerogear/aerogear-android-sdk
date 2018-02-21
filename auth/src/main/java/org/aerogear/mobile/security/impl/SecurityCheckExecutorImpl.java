@@ -20,24 +20,24 @@ public class SecurityCheckExecutorImpl implements SecurityCheckExecutor {
 
     private MetricsService metricsService;
 
-    public SecurityCheckExecutorImpl(Context context) {
+    public SecurityCheckExecutorImpl(final Context context) {
         this.checks = new HashSet<>();
         this.context = context;
     }
 
     @Override
-    public SecurityCheckExecutor addCheck(SecurityCheckType securityCheckType) {
+    public SecurityCheckExecutor addCheck(final SecurityCheckType securityCheckType) {
         return addCheck(securityCheckType.getSecurityCheck());
     }
 
     @Override
-    public SecurityCheckExecutor addCheck(SecurityCheck check) {
+    public SecurityCheckExecutor addCheck(final SecurityCheck check) {
         checks.add(check);
         return this;
     }
 
     @Override
-    public SecurityCheckExecutor sendMetrics(MetricsService metricsService) {
+    public SecurityCheckExecutor sendMetrics(final MetricsService metricsService) {
         this.metricsService = metricsService;
         return this;
     }
@@ -56,7 +56,7 @@ public class SecurityCheckExecutorImpl implements SecurityCheckExecutor {
      *
      * @param results Array of results
      */
-    private void publishResultMetrics(SecurityCheckResult[] results) {
+    private void publishResultMetrics(final SecurityCheckResult[] results) {
         for(SecurityCheckResult result : results) {
             this.metricsService.publish(new SecurityCheckResultMetric(result));
         }
@@ -68,14 +68,11 @@ public class SecurityCheckExecutorImpl implements SecurityCheckExecutor {
      * @return Array of results.
      */
     private SecurityCheckResult[] getTestResults() {
-        final List<SecurityCheckResult> results = new ArrayList<>();
+        SecurityCheckResult[] results = new SecurityCheckResult[checks.size()];
+        int i = 0;
         for (SecurityCheck check : checks) {
-            results.add(check.test(context));
+            results[i++] = check.test(context);
         }
-        return buildResultArray(results);
-    }
-
-    private SecurityCheckResult[] buildResultArray(List<SecurityCheckResult> results) {
-        return results.toArray(new SecurityCheckResult[results.size()]);
+        return results;
     }
 }
