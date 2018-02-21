@@ -1,80 +1,50 @@
 package org.aerogear.mobile.core.http;
 
-import android.util.Log;
-
 import org.aerogear.mobile.core.executor.AppExecutors;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
 
 import okhttp3.Call;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
-import okhttp3.Response;
 
 /**
  * This is a implementation of HttpRequest based on OKHttp
  */
-
 public class OkHttpRequest implements HttpRequest {
 
     private final OkHttpClient client;
     private final AppExecutors appExecutors;
-    private Map<String, String> headers = new HashMap<>();
+    private final Map<String, String> headers = new HashMap<>();
     private Call call;
 
-
-
-    public OkHttpRequest(OkHttpClient client, AppExecutors executors) {
+    public OkHttpRequest(final OkHttpClient client, final AppExecutors executors) {
         this.client = client;
         this.appExecutors = executors;
         this.headers.put(CONTENT_TYPE_HEADER, JSON_MIME_TYPE);
     }
 
     @Override
-    public HttpRequest addHeader(String key, String value) {
+    public HttpRequest addHeader(final String key, final String value) {
         this.headers.put(key, value);
         return this;
     }
 
     @Override
-    public void get(String url) {
-
-        Request.Builder getRequestBuilder = new Request.Builder().url(url);
-
+    public void get(final String url) {
+        Request.Builder getRequestBuilder = requestBuilderWithUrl(url);
         addHeaders(getRequestBuilder);
-
         Request getRequest = getRequestBuilder.build();
-
         call = client.newCall(getRequest);
     }
 
     @Override
-    public void post(String url, byte[] body) {
+    public void post(final String url, final byte[] body) {
         RequestBody requestBody = RequestBody.create(MediaType.parse(headers.get(CONTENT_TYPE_HEADER)), body);
-        Request.Builder postRequestBuilder = new Request.Builder().url(url).post(requestBody);
-
-        addHeaders(postRequestBuilder);
-
-        Request postRequest= postRequestBuilder.build();
-        call = client.newCall(postRequest);
-    }
-
-    private void addHeaders(Request.Builder requestBuilder) {
-        for (Map.Entry<String, String> header : headers.entrySet()) {
-            requestBuilder.header(header.getKey(), header.getValue());
-        }
-    }
-
-    @Override
-    public void put(String url, byte[] body) {
-        RequestBody requestBody = RequestBody.create(MediaType.parse(headers.get(CONTENT_TYPE_HEADER)), body);
-        Request.Builder postRequestBuilder = new Request.Builder().url(url).put(requestBody);
-
+        Request.Builder postRequestBuilder = requestBuilderWithUrl(url).post(requestBody);
         addHeaders(postRequestBuilder);
 
         Request postRequest= postRequestBuilder.build();
@@ -82,9 +52,18 @@ public class OkHttpRequest implements HttpRequest {
     }
 
     @Override
-    public void delete(String url) {
-        Request.Builder deleteRequestBuilder = new Request.Builder().url(url).delete();
+    public void put(final String url, final byte[] body) {
+        RequestBody requestBody = RequestBody.create(MediaType.parse(headers.get(CONTENT_TYPE_HEADER)), body);
+        Request.Builder postRequestBuilder = requestBuilderWithUrl(url).put(requestBody);
+        addHeaders(postRequestBuilder);
 
+        Request postRequest= postRequestBuilder.build();
+        call = client.newCall(postRequest);
+    }
+
+    @Override
+    public void delete(final String url) {
+        Request.Builder deleteRequestBuilder = requestBuilderWithUrl(url).delete();
         addHeaders(deleteRequestBuilder);
 
         Request deleteRequest = deleteRequestBuilder.build();
@@ -94,5 +73,15 @@ public class OkHttpRequest implements HttpRequest {
     @Override
     public HttpResponse execute() {
         return new OkHttpResponse(call, appExecutors);
+    }
+
+    private Request.Builder requestBuilderWithUrl(final String url) {
+        return new Request.Builder().url(url);
+    }
+
+    private void addHeaders(final Request.Builder requestBuilder) {
+        for (Map.Entry<String, String> header : headers.entrySet()) {
+            requestBuilder.header(header.getKey(), header.getValue());
+        }
     }
 }

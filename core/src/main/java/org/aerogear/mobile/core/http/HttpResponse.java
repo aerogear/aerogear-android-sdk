@@ -1,6 +1,5 @@
 package org.aerogear.mobile.core.http;
 
-import java.io.IOException;
 
 /**
  * Generic interface for responses from HTTP Services.  Concrete classes will have the handle Android's
@@ -19,6 +18,11 @@ public interface HttpResponse {
      */
     HttpResponse onComplete(Runnable runnable);
 
+    /**
+     * Returns the HTTP status code of the response.
+     *
+     * @return the status code.
+     */
     int getStatus();
 
     /**

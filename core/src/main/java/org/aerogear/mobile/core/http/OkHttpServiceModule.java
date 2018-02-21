@@ -23,15 +23,15 @@ public class OkHttpServiceModule implements HttpServiceModule {
      *
      * @param client a default OkHttpClient instance to use.
      */
-    public OkHttpServiceModule(OkHttpClient client) {
+    public OkHttpServiceModule(final OkHttpClient client) {
         this(client, new ServiceConfiguration.Builder().build());
     }
 
-    public OkHttpServiceModule(ServiceConfiguration serviceConfiguration) {
+    public OkHttpServiceModule(final ServiceConfiguration serviceConfiguration) {
         this(new OkHttpClient.Builder().build(), serviceConfiguration);
     }
 
-    public OkHttpServiceModule(OkHttpClient client, ServiceConfiguration serviceConfiguration) {
+    public OkHttpServiceModule(final OkHttpClient client, final ServiceConfiguration serviceConfiguration) {
         this.client = client;
         this.serviceConfiguration = serviceConfiguration;
     }
@@ -42,7 +42,7 @@ public class OkHttpServiceModule implements HttpServiceModule {
     }
 
     @Override
-    public void configure(MobileCore core, ServiceConfiguration serviceConfiguration) {
+    public void configure(final MobileCore core, final ServiceConfiguration serviceConfiguration) {
         this.serviceConfiguration = serviceConfiguration;
     }
 

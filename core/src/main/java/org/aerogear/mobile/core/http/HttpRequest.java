@@ -6,8 +6,8 @@ package org.aerogear.mobile.core.http;
 
 public interface HttpRequest {
 
-    public static final String CONTENT_TYPE_HEADER = "Content-Type";
-    public static final String JSON_MIME_TYPE = "application/json";
+    String CONTENT_TYPE_HEADER = "Content-Type";
+    String JSON_MIME_TYPE = "application/json";
     HttpRequest addHeader(String key, String value);
 
     /**
