@@ -3,8 +3,8 @@ package org.aerogear.mobile.core.metrics;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.ServiceModule;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
-import org.aerogear.mobile.core.metrics.metrics.AppMetrics;
-import org.aerogear.mobile.core.metrics.metrics.DeviceMetrics;
+import org.aerogear.mobile.core.metrics.impl.AppMetrics;
+import org.aerogear.mobile.core.metrics.impl.DeviceMetrics;
 import org.aerogear.mobile.core.metrics.publisher.LoggerMetricsPublisher;
 import org.aerogear.mobile.core.metrics.publisher.NetworkMetricsPublisher;
 

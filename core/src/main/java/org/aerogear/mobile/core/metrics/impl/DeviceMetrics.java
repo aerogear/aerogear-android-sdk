@@ -1,15 +1,12 @@
-package org.aerogear.mobile.core.metrics.metrics;
+package org.aerogear.mobile.core.metrics.impl;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Build;
 
-import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.metrics.Metrics;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * Collects device metrics
