@@ -30,6 +30,8 @@ android {
 dependencies {
     implementation project(path: ':core')
     implementation 'net.openid:appauth'
+    //noinspection GradleCompatible
+    implementation 'com.android.support:customtabs:26.1.0'
     implementation 'org.bitbucket.b_c:jose4j'
     implementation 'com.scottyab:rootbeer-lib:0.0.6'
     testImplementation "junit:junit"
