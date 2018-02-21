@@ -2,16 +2,20 @@ package org.aerogear.mobile.security.impl;
 
 import android.content.Context;
 
+import org.aerogear.mobile.core.metrics.MetricsService;
 import org.aerogear.mobile.security.Check;
 import org.aerogear.mobile.security.SecurityCheck;
 import org.aerogear.mobile.security.SecurityCheckExecutor;
 import org.aerogear.mobile.security.SecurityCheckResult;
+import org.aerogear.mobile.security.metrics.SecurityCheckResultMetric;
 
 import java.util.ArrayList;
 
 public class SecurityCheckExecutorImpl implements SecurityCheckExecutor {
     private final ArrayList<SecurityCheck> checks;
     private final Context context;
+
+    private MetricsService metricsService;
 
     public SecurityCheckExecutorImpl(Context context) {
         this.checks = new ArrayList<>();
@@ -25,8 +29,29 @@ public class SecurityCheckExecutorImpl implements SecurityCheckExecutor {
     }
 
     @Override
+    public SecurityCheckExecutor sendMetrics(MetricsService metricsService) {
+        this.metricsService = metricsService;
+        return this;
+    }
+
+    @Override
     public SecurityCheckResult[] execute() {
+        SecurityCheckResult[] results = getTestResults();
+        if (metricsService != null) {
+            publishResultMetrics(results);
+        }
         return getTestResults();
+    }
+
+    /**
+     * Publish each {@link SecurityCheckResult result} provided as an {@link SecurityCheckResultMetric}.
+     *
+     * @param results Array of results
+     */
+    private void publishResultMetrics(SecurityCheckResult[] results) {
+        for(SecurityCheckResult result : results) {
+            this.metricsService.publish(new SecurityCheckResultMetric(result));
+        }
     }
 
     /**

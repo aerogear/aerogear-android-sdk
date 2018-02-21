@@ -1,5 +1,7 @@
 package org.aerogear.mobile.security;
 
+import org.aerogear.mobile.core.metrics.Metrics;
+
 public interface SecurityCheckResult {
     /**
      * Get the name of the security check that this is the result of. This can be used for
