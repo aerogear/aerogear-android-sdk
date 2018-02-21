@@ -68,7 +68,7 @@ public class SecurityCheckExecutorImpl implements SecurityCheckExecutor {
      * @return Array of results.
      */
     private SecurityCheckResult[] getTestResults() {
-        List<SecurityCheckResult> results = new ArrayList<>();
+        final List<SecurityCheckResult> results = new ArrayList<>();
         for (SecurityCheck check : checks) {
             results.add(check.test(context));
         }
