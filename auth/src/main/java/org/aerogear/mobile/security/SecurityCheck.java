@@ -2,6 +2,12 @@ package org.aerogear.mobile.security;
 
 import android.content.Context;
 
+/**
+ * Interface for a single check to be executed.
+ *
+ * An example of a check would be detecting whether the device an application is running on is
+ * rooted.
+ */
 public interface SecurityCheck {
     /**
      * Perform the check and return a result

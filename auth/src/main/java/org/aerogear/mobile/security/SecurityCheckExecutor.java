@@ -2,6 +2,12 @@ package org.aerogear.mobile.security;
 
 import org.aerogear.mobile.core.metrics.MetricsService;
 
+/**
+ * Interface for performing multiple {@link SecurityCheck checks} and reporting their
+ * {@link SecurityCheckResult} results.
+ *
+ * Also allowing for the results of a check to be used as a metric.
+ */
 public interface SecurityCheckExecutor {
     /**
      * Add a {@link SecurityCheckType check type} to be executed on {@link #execute()}.

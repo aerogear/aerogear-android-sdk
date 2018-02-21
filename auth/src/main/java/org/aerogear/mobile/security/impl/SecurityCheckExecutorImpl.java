@@ -9,11 +9,16 @@ import org.aerogear.mobile.security.SecurityCheckExecutor;
 import org.aerogear.mobile.security.SecurityCheckResult;
 import org.aerogear.mobile.security.metrics.SecurityCheckResultMetric;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 
+/**
+ * Implementation of {@link SecurityCheckExecutor}.
+ *
+ * If {@link #sendMetrics(MetricsService)} is invoked then upon {@link #execute()} each
+ * {@link SecurityCheckResult result} will be converted to a {@link SecurityCheckResultMetric} and
+ * published individually. Not as a batch.
+ */
 public class SecurityCheckExecutorImpl implements SecurityCheckExecutor {
     private final Collection<SecurityCheck> checks;
     private final Context context;

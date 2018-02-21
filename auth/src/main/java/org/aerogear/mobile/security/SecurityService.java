@@ -7,6 +7,12 @@ import org.aerogear.mobile.core.metrics.MetricsService;
 import org.aerogear.mobile.security.impl.SecurityCheckExecutorImpl;
 import org.aerogear.mobile.security.metrics.SecurityCheckResultMetric;
 
+/**
+ * Service for running security checks in an application.
+ *
+ * Checks can be run individually using {@link #check(SecurityCheckType)} , or can be chained
+ * together using an {@link SecurityCheckExecutor} by using {@link #getCheckExecutor()}.
+ */
 public class SecurityService implements ServiceModule{
     private final static String TYPE = "security";
 

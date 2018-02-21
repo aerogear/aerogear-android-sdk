@@ -7,6 +7,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Metric representation of {@link SecurityCheckResult}. This is intended to be used with the
+ * {@link org.aerogear.mobile.core.metrics.MetricsService}.
+ */
 public class SecurityCheckResultMetric implements Metrics {
 
     private final String identifier;
@@ -28,7 +32,7 @@ public class SecurityCheckResultMetric implements Metrics {
     }
 
     private Map<String, String> getDataFromResult(final SecurityCheckResult result) {
-        HashMap<String, String> data = new HashMap<>();
+        final Map<String, String> data = new HashMap<>();
         data.put("passed", String.valueOf(result.passed()));
         return data;
     }
