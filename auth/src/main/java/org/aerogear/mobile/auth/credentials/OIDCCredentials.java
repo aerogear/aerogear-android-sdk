@@ -68,11 +68,11 @@ public class OIDCCredentials {
      * @return
      */
     public boolean verifyClaims(final JsonWebKeySet jwks, final KeycloakConfiguration keycloakConfig) {
-        String issuer = keycloakConfig.getHostUrl() + "/realms/secure-app";
-        String audience = keycloakConfig.getClientId();
-        JwksVerificationKeyResolver jwksKeyResolver = new JwksVerificationKeyResolver(jwks.getJsonWebKeys());
+        final String issuer = keycloakConfig.getIssuer();
+        final String audience = keycloakConfig.getClientId();
+        final JwksVerificationKeyResolver jwksKeyResolver = new JwksVerificationKeyResolver(jwks.getJsonWebKeys());
         // Validate and process the JWT.
-        JwtConsumer jwtConsumer = new JwtConsumerBuilder()
+        final JwtConsumer jwtConsumer = new JwtConsumerBuilder()
             .setRequireExpirationTime() // require the JWT to have an expiration time
             .setAllowedClockSkewInSeconds(30) // allow some leeway in validating time based claims to account for clock skew
             .setRequireSubject() // require the subject claim
@@ -86,12 +86,12 @@ public class OIDCCredentials {
 
         try {
             //  Validate the JWT and process it to the Claims
-            JwtClaims jwtClaims = jwtConsumer.processToClaims(this.getAccessToken());
+            final JwtClaims jwtClaims = jwtConsumer.processToClaims(this.getAccessToken());
             return true;
-        } catch (InvalidJwtException e) {
+        } catch (final InvalidJwtException e) {
             Log.e(TAG, "Invalid JWT provided", e);
 
-            for (ErrorCodeValidator.Error e1 : e.getErrorDetails()) {
+            for (final ErrorCodeValidator.Error e1 : e.getErrorDetails()) {
                 Log.e(TAG, e1.getErrorMessage());
             }
         }
