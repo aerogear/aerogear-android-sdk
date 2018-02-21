@@ -18,9 +18,12 @@ import org.aerogear.mobile.auth.authenticator.OIDCAuthenticateOptions;
 import org.aerogear.mobile.auth.authenticator.OIDCAuthenticatorImpl;
 import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
 import org.aerogear.mobile.auth.AuthenticationException;
+import org.aerogear.mobile.auth.credentials.JwksManager;
 import org.aerogear.mobile.auth.credentials.OIDCCredentials;
 import org.aerogear.mobile.auth.user.UserPrincipal;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
+import org.jose4j.jwk.JsonWebKey;
+import org.jose4j.jwk.JsonWebKeySet;
 import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
@@ -147,6 +150,9 @@ public class OIDCAuthenticatorImplTest {
     @Mock
     private TokenResponse tokenResponse;
 
+    @Mock
+    private JwksManager jwksManager;
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
@@ -176,7 +182,12 @@ public class OIDCAuthenticatorImplTest {
             }
         };
         authServiceConfiguration = new AuthServiceConfiguration.AuthConfigurationBuilder().withRedirectUri("some.redirect.uri:/callback").build();
-        authenticator = new OIDCAuthenticatorImpl(serviceConfig, authServiceConfiguration, authStateManager, authorizationServiceFactory);
+        authenticator = new OIDCAuthenticatorImpl(serviceConfig, authServiceConfiguration, authStateManager, authorizationServiceFactory, jwksManager);
+
+        doAnswer(invocation -> {
+            ((Callback<JsonWebKeySet>)invocation.getArguments()[1]).onSuccess(null);
+            return null;
+        }).when(jwksManager).fetchJwks(any(), any(Callback.class));
     }
 
     @Test

@@ -18,6 +18,12 @@ public class AuthServiceConfiguration {
      */
     private final boolean allowSelfSignedCertificate;
 
+    /**
+     * Specify the minimum time between requests to get the JWKS (Json web key set) in minutes.
+     * The default value is 1440 (1 day).
+     */
+    private final int minTimeBetweenJwksRequests;
+
 
     /**
      * Builds a new AuthServiceConfiguration object.
@@ -27,6 +33,7 @@ public class AuthServiceConfiguration {
     private AuthServiceConfiguration(final AuthConfigurationBuilder builder) {
         this.redirectUri = builder.redirectUri;
         this.allowSelfSignedCertificate = builder.allowSelfSignedCert;
+        this.minTimeBetweenJwksRequests = builder.minTimeBetweenJwksRequests;
     }
 
     /**
@@ -35,6 +42,7 @@ public class AuthServiceConfiguration {
     public static class AuthConfigurationBuilder {
         private Uri redirectUri;
         private boolean allowSelfSignedCert;
+        private int minTimeBetweenJwksRequests = 24*60;
 
         public AuthConfigurationBuilder() {}
 
@@ -59,6 +67,11 @@ public class AuthServiceConfiguration {
             return this;
         }
 
+        public AuthConfigurationBuilder withMinTimeBetweenJwksRequests(int minTimeBetweenJwksRequests) {
+            this.minTimeBetweenJwksRequests = minTimeBetweenJwksRequests;
+            return this;
+        }
+
         public AuthServiceConfiguration build() {
             return new AuthServiceConfiguration(this);
         }
@@ -77,5 +90,13 @@ public class AuthServiceConfiguration {
     public boolean isAllowSelfSignedCertificate() {
         return allowSelfSignedCertificate;
     }
+
+    /**
+     * @return The minimum time between Json web key set requests. In minutes. Default value is 1440 (1 day).
+     */
+    public int getMinTimeBetweenJwksRequests() {
+        return minTimeBetweenJwksRequests;
+    }
+
 
 }

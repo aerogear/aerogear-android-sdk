@@ -81,4 +81,28 @@ public class KeycloakConfiguration {
     public String getHostUrl() {
         return this.serverUrl;
     }
+
+    /**
+     * Get the realm name of the Keycloak service
+     * @return the realm name
+     */
+    public String getRealmName() {
+        return this.realmId;
+    }
+
+    /**
+     * Returns the URL where keys can be retrieved.
+     * @return the URL where keys can be retrieved.
+     */
+    public String getJwksUrl() {
+        return this.baseUrl + "/certs";
+    }
+
+    /**
+     * Returns the JWT Issuer
+     * @return the JWT Issuer
+     */
+    public String getIssuer() {
+        return String.format("%s/realms/%s", getHostUrl(), getRealmName());
+    }
 }

@@ -23,7 +23,7 @@ public interface HttpRequest {
     void delete(String url);
 
     /**
-     * Create a HTTPResponse and begin executing the request
+     * Create a HTTPResponse and begin executing the request. The request will be executed on a background thread.
      * @return an HTTPResponse instance that is executing the HttpRequest
      */
     HttpResponse execute();

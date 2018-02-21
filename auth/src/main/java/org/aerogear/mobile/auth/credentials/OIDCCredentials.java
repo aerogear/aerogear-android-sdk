@@ -5,19 +5,18 @@ import android.util.Log;
 import net.openid.appauth.AuthState;
 
 import org.aerogear.mobile.auth.AuthenticationException;
+import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
 import org.jose4j.jwa.AlgorithmConstraints;
+import org.jose4j.jwk.JsonWebKeySet;
 import org.jose4j.jws.AlgorithmIdentifiers;
 import org.jose4j.jwt.JwtClaims;
+import org.jose4j.jwt.consumer.ErrorCodeValidator;
 import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
-import org.jose4j.keys.RsaKeyUtil;
-import org.jose4j.lang.JoseException;
+import org.jose4j.keys.resolvers.JwksVerificationKeyResolver;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.security.PublicKey;
-import java.security.spec.InvalidKeySpecException;
 
 import static org.aerogear.mobile.core.utils.SanityCheck.nonEmpty;
 
@@ -31,28 +30,24 @@ public class OIDCCredentials {
     private static final String endPublicKey = "-----END PUBLIC KEY-----";
 
     private final AuthState authState;
-    private final IntegrityCheckParameters integrityCheckParameters;
 
     /**
      * OpenID Connect credentials containing the identity, refresh and access tokens provided on a
      * successful authentication with OpenID Connect.
      * @param serialisedCredential JSON string representation of the authState field produced by
      *                             {@link #deserialize(String)}.
-     * @param integrityCheckParameters Integrity check parameters for the token.
      * @throws IllegalArgumentException
      */
-    public OIDCCredentials(final String serialisedCredential, final IntegrityCheckParameters integrityCheckParameters) {
+    public OIDCCredentials(final String serialisedCredential) {
         try {
             this.authState = AuthState.jsonDeserialize(serialisedCredential);
         } catch(JSONException e) {
             throw new IllegalArgumentException(e);
         }
-        this.integrityCheckParameters = integrityCheckParameters;
     }
 
     public OIDCCredentials() {
         this.authState = new AuthState();
-        this.integrityCheckParameters = new IntegrityCheckParametersImpl();
     }
 
     public String getAccessToken() {
@@ -67,71 +62,40 @@ public class OIDCCredentials {
         return authState.getRefreshToken();
     }
 
-    public IntegrityCheckParameters getIntegrityCheckParameters() { return this.integrityCheckParameters; }
-
     /**
-     * Verify the authenticity of a JWT token against integrity parameters (provided config).
-     * @param jwtToken The JWT token to verify.
-     * @return <code>true</code> if the token integrity is good.
+     * Verify the token and its claims against the given Keycloak configuration
+     * @param keycloakConfig
+     * @return
      */
-    public boolean verifyToken(final String jwtToken) {
-        return verifyToken(nonEmpty(jwtToken, "jwtToken"),
-            integrityCheckParameters.getPublicKey(),
-            integrityCheckParameters.getIssuer(),
-            integrityCheckParameters.getAudience());
-    }
-
-    /**
-     * A function to verify the authenticity of a JWT token against a public key, expected issuer and audience.
-     * @param jwtToken - The JWT Token to Verify.
-     * @param publicKey - The Public Key from Keycloak, without the Begin/End tags.
-     * @param issuer - The expected Issuer of the JWT
-     * @param audience - The expected Audience of the JWT
-     * @return <code>true</code> if the token integrity is good.
-     * @throws IllegalArgumentException
-     */
-    public boolean verifyToken(final String jwtToken, final String publicKey, final String issuer, final String audience) {
-        nonEmpty(publicKey, "publicKey");
-        nonEmpty(jwtToken, "jwtToken");
-
-        final String constructedPublicKey = beginPublicKey + publicKey + endPublicKey;
-
-        // Convert the public key from a string to a Java security key
-        final RsaKeyUtil utils = new RsaKeyUtil();
-        final PublicKey jwtPublicKey;
-        try {
-            jwtPublicKey = utils.fromPemEncoded(constructedPublicKey);
-        } catch (JoseException e) {
-            Log.e(TAG, e.getMessage(), e);
-            throw new IllegalArgumentException(e);
-        } catch (InvalidKeySpecException e) {
-            Log.e(TAG, e.getMessage(), e);
-            // If the public key is invalid then we cannot determine the tokens integrity.
-            return false;
-        }
-
-
+    public boolean verifyClaims(final JsonWebKeySet jwks, final KeycloakConfiguration keycloakConfig) {
+        final String issuer = keycloakConfig.getIssuer();
+        final String audience = keycloakConfig.getClientId();
+        final JwksVerificationKeyResolver jwksKeyResolver = new JwksVerificationKeyResolver(jwks.getJsonWebKeys());
         // Validate and process the JWT.
-        JwtConsumer jwtConsumer = new JwtConsumerBuilder()
-                .setRequireExpirationTime() // require the JWT to have an expiration time
-                .setAllowedClockSkewInSeconds(30) // allow some leeway in validating time based claims to account for clock skew
-                .setRequireSubject() // require the subject claim
-                .setExpectedIssuer(issuer) // whom the JWT needs to have been issued by
-                .setExpectedAudience(audience) // to whom the JWT is intended for
-                .setVerificationKey(jwtPublicKey) // verify the signature with the public key
-                .setJwsAlgorithmConstraints( // only allow the expected signature algorithm(s) in the given context
-                        new AlgorithmConstraints(AlgorithmConstraints.ConstraintType.WHITELIST, // which is only RS256 here
-                                AlgorithmIdentifiers.RSA_USING_SHA256))
-                .build(); // create the JwtConsumer instance
+        final JwtConsumer jwtConsumer = new JwtConsumerBuilder()
+            .setRequireExpirationTime() // require the JWT to have an expiration time
+            .setAllowedClockSkewInSeconds(30) // allow some leeway in validating time based claims to account for clock skew
+            .setRequireSubject() // require the subject claim
+            .setExpectedIssuer(issuer) // whom the JWT needs to have been issued by
+            .setExpectedAudience(audience) // to whom the JWT is intended for
+            .setVerificationKeyResolver(jwksKeyResolver)
+            .setJwsAlgorithmConstraints( // only allow the expected signature algorithm(s) in the given context
+                new AlgorithmConstraints(AlgorithmConstraints.ConstraintType.WHITELIST, // which is only RS256 here
+                    AlgorithmIdentifiers.RSA_USING_SHA256))
+            .build(); // create the JwtConsumer instance
 
         try {
             //  Validate the JWT and process it to the Claims
-            JwtClaims jwtClaims = jwtConsumer.processToClaims(jwtToken);
+            final JwtClaims jwtClaims = jwtConsumer.processToClaims(this.getAccessToken());
             return true;
-        } catch (InvalidJwtException e) {
+        } catch (final InvalidJwtException e) {
             Log.e(TAG, "Invalid JWT provided", e);
-            return false;
+
+            for (final ErrorCodeValidator.Error e1 : e.getErrorDetails()) {
+                Log.e(TAG, e1.getErrorMessage());
+            }
         }
+        return false;
     }
 
     /**
@@ -174,9 +138,6 @@ public class OIDCCredentials {
         try {
             final JSONObject jsonCredential = new JSONObject()
                 .put("authState", this.authState.jsonSerializeString());
-            if (this.integrityCheckParameters != null) {
-                jsonCredential.put("integrityCheck", this.integrityCheckParameters.serialize());
-            }
             return jsonCredential.toString();
         } catch(JSONException e) {
             throw new IllegalArgumentException(e);
@@ -195,12 +156,7 @@ public class OIDCCredentials {
         try {
             final JSONObject jsonCredential = new JSONObject(serializedCredential);
             final String serializedAuthState = jsonCredential.getString("authState");
-            final String serializedIntegrityChecks = jsonCredential.optString("integrityCheck", null);
-            IntegrityCheckParametersImpl icParams = null;
-            if (serializedIntegrityChecks != null) {
-                icParams = IntegrityCheckParametersImpl.deserialize(serializedIntegrityChecks);
-            }
-            return new OIDCCredentials(serializedAuthState, icParams);
+            return new OIDCCredentials(serializedAuthState);
         } catch(JSONException e) {
             throw new IllegalArgumentException(e);
         }
@@ -221,5 +177,24 @@ public class OIDCCredentials {
      */
     public boolean renew() throws AuthenticationException {
         throw new IllegalStateException("Not yet implemented");
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        OIDCCredentials that = (OIDCCredentials) o;
+
+        if (authState == that.authState) {
+            return true;
+        }
+
+        return authState != null ? authState.jsonSerializeString().equals(that.authState.jsonSerializeString()) : that.authState == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return authState != null ? authState.hashCode() : 0;
     }
 }
