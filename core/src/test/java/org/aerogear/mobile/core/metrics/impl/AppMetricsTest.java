@@ -1,4 +1,4 @@
-package org.aerogear.mobile.core.metrics.metrics;
+package org.aerogear.mobile.core.metrics.impl;
 
 import android.app.Application;
 import android.support.test.filters.SmallTest;

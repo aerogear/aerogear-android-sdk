@@ -1,9 +1,8 @@
-package org.aerogear.mobile.core.metrics.metrics;
+package org.aerogear.mobile.core.metrics.impl;
 
 import android.app.Application;
 import android.support.test.filters.SmallTest;
 
-import org.aerogear.mobile.core.metrics.metrics.DeviceMetrics;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;

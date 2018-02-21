@@ -1,4 +1,4 @@
-package org.aerogear.mobile.core.metrics.metrics;
+package org.aerogear.mobile.core.metrics.impl;
 
 import android.content.Context;
 
