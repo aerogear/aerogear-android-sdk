@@ -50,7 +50,7 @@ public class UserPrincipalImpl implements UserPrincipal {
                               final String accessToken) {
         this.username = nonEmpty(username, "username");
         this.email = email;
-        this.roles = new HashSet<>(roles);
+        this.roles = new HashSet(roles);
         this.identityToken = identityToken;
         this.accessToken = accessToken;
     }
@@ -61,7 +61,7 @@ public class UserPrincipalImpl implements UserPrincipal {
     public static class Builder {
         protected String username;
         protected String email;
-        protected HashSet<UserRole> roles = new HashSet<>();
+        protected Set<UserRole> roles = new HashSet();
         protected String idToken;
         protected String accessToken;
 

@@ -78,7 +78,7 @@ public class AuthService implements ServiceModule {
              */
             String methodName;
 
-            STEP(int val, String methodName) {
+            STEP(final int val, final String methodName) {
                 this.bitValue = (byte)val;
                 this.methodName = methodName;
             }
@@ -93,7 +93,7 @@ public class AuthService implements ServiceModule {
          * Mark one step as executed.
          * @param step executed step
          */
-        public void updateStatus(STEP step) {
+        public void updateStatus(final STEP step) {
             initialisationStatus |= step.bitValue;
         }
 
@@ -102,7 +102,7 @@ public class AuthService implements ServiceModule {
          * @param step step to be checked
          * @return true if it has been executed
          */
-        public boolean checkState(STEP step) {
+        public boolean checkState(final STEP step) {
             return ((initialisationStatus & step.bitValue) > 0);
         }
 
