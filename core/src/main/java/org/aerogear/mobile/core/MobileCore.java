@@ -118,7 +118,7 @@ public final class MobileCore {
     }
 
     /**
-     * Called when mobile core instance need to be destroyed
+     * Called when mobile core instance needs to be destroyed
      */
     public void destroy() {
         for (Class<? extends ServiceModule> serviceKey : services.keySet()) {
@@ -172,7 +172,7 @@ public final class MobileCore {
     }
 
     /**
-     * Returng the configuration for this service from the JSON config file
+     * Returns the configuration for this service from the JSON config file
      *
      * @param type Service type/name
      * @return the configuration for this service from the JSON config file
