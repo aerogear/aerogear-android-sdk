@@ -197,6 +197,10 @@ public final class MobileCore {
         return logger;
     }
 
+    public String getConfigFileName() {
+        return configFileName;
+    }
+
     /**
      * Get the version name of the SDK itself
      *
@@ -215,9 +219,12 @@ public final class MobileCore {
         return appVersion;
     }
 
+    @SuppressWarnings({"UnusedReturnValue", "WeakerAccess"})
     public static final class Options {
 
-        private String configFileName = "mobile-services.json";
+        public static final String DEFAULT_CONFIG_FILE_NAME = "mobile-services.json";
+
+        private String configFileName = DEFAULT_CONFIG_FILE_NAME;
         // Don't have a default implementation because it should use configuration
         private HttpServiceModule httpServiceModule;
         private Logger logger = new LoggerAdapter();
