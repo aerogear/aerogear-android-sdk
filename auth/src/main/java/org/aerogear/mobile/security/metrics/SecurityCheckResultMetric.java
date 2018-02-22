@@ -1,11 +1,15 @@
 package org.aerogear.mobile.security.metrics;
 
+import android.support.annotation.NonNull;
+
 import org.aerogear.mobile.core.metrics.Metrics;
 import org.aerogear.mobile.security.SecurityCheckResult;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 /**
  * Metric representation of {@link SecurityCheckResult}. This is intended to be used with the
@@ -16,8 +20,8 @@ public class SecurityCheckResultMetric implements Metrics {
     private final String identifier;
     private final Map<String, String> data;
 
-    public SecurityCheckResultMetric(final SecurityCheckResult result) {
-        this.identifier = result.getName();
+    public SecurityCheckResultMetric(@NonNull final SecurityCheckResult result) {
+        this.identifier = nonNull(result, "result").getName();
         this.data = getDataFromResult(result);
     }
 

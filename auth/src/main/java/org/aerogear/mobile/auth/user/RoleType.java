@@ -6,5 +6,14 @@ import java.io.Serializable;
  * Keycloak role types
  */
 public enum RoleType implements Serializable {
-    REALM, CLIENT
+
+    /**
+     * Represents a Keycloak realm.
+     */
+    REALM,
+
+    /**
+     * Represents a Keycloak client.
+     */
+    CLIENT
 }

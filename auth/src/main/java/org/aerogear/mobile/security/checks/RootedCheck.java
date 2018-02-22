@@ -22,7 +22,7 @@ public class RootedCheck implements SecurityCheck {
      */
     @Override
     public SecurityCheckResult test(final Context context) {
-        RootBeer rootBeer = new RootBeer(context);
+        final RootBeer rootBeer = new RootBeer(context);
         return new SecurityCheckResultImpl(NAME, rootBeer.isRooted());
     }
 }
