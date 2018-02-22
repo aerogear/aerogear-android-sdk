@@ -8,78 +8,50 @@ As part of the Auth SDK module, there is a self defence check feature.  This fea
 
 == Usage
 
-The `SecurityService` can be retrieved using the `MobileCore#getInstance` method.
+To begin using the self defence checks in your app, you'll need to retrieve an instance of `SecurityService`. The `SecurityService` can be retrieved using the `MobileCore#getInstance` method.
 
 [source, java]
 ----
-SecurityService securityService = mobileCore.getInstance(SecurityService.class);
+SecurityService securityService = MobileCore.getInstance(SecurityService.class);
 ----
 
 Any subsequent `MobileCore#getInstance` method will return the same instance of `SecurityService`.
 
-The `SecurityService#check` method can be used to run different secuirty checks.  It expects a `SecurityCheckType` paramater and returns `SecurityCheckResult`.
+=== Invoking a Single Self Defence Check
+The `SecurityService#check` method can be used to run a single secuirty check.  It expects a `SecurityCheckType` paramater and returns `SecurityCheckResult`.
 
 [source, java]
 ----
 SecurityCheckResult result = securityService.check(SecurityCheckType.<check_type>);
 ----
 
-=== Detecting Root Access
+See all available `SecurityCheckType` link:auth-self-defence-javadoc.adoc[here].
 
-To detect if a device has been compromised (rooted/jailbreak) the `SecurityCheckType#IS_ROOTED` can be used.  This function uses the link:https://github.com/scottyab/rootbeer[Rootbeer] library to check if root access is present on the device.
-
-[source, java]
-----
-SecurityCheckResult result = securityService.check(SecurityCheckType.IS_ROOTED);
-if (result.passed()) {
-    // device is rooted
-}
-----
-
-=== Detecting if Lock Screen is Set
-
-To detect if a device has a lock screen set (with pin, fingerprint, pattern) the `SecurityCheckType#HAS_SCREENLOCK` function can be used.  This function uses Android's link:https://developer.android.com/reference/android/app/KeyguardManager.html[KeyguardManager] class. 
+=== Invoking Multiple Self Defence Checks
+To run multiple self defence checks you'll first need to invoke the `SecurityService#getCheckExecutor` method.  This methods returns `SecurityCheckExecutor` where checks can be added (chained) to the executor.
 
 [source, java]
 ----
-SecurityCheckResult result = securityService.check(SecurityCheckType.HAS_SCREENLOCK);
-if (result.passed()) {
-    // device has screenlock
-}
+SecurityCheckExecutor checkExecutor = securityService.getCheckExecutor();
 ----
 
-=== Detecting if Debugger is Attached
-
-To detect if an Android debugger is attached to the app the `SecurityCheckType#IS_DEBUGGER` function can be used.  This function uses Android's link:https://developer.android.com/reference/android/os/Debug.html[Debug] class.
+The `SecurityCheckExecutor#addCheck` method can be used to add multiple self defence checks to the `checkExecutor`.  The `addCheck` function accepts `SecurityCheckType` as a parameter and returns the `SecurityCheckExecutor`. 
 
 [source, java]
 ----
-SecurityCheckResult result = securityService.check(SecurityCheckType.IS_DEBUGGER);
-if (result.passed()) {
-    // debugger is attached to app
-}
+// add two checks to the checkExecutor
+checkExecutor.addCheck(SecurityCheckType.<check_type>).addCheck(SecurityCheckType.<check_type>);
 ----
 
-=== Detecting Emulator Access
-
-To detect if the app is being run on an emulator the `SecurityCheckType#IS_EMULATOR` function can be used.  This function uses Android's link:https://developer.android.com/reference/android/os/Build.html[Build] class.
+To run all the security self defence checks that have been added to the `checkExecutor` the `SecurityCheckExecutor#execute` method must be invoked.  This method returns an array of `SecurityCheckResult`.
 
 [source, java]
 ----
-SecurityCheckResult result = securityService.check(SecurityCheckType.IS_EMULATOR);
-if (result.passed()) {
-    // app is being run on an emulator
-}
+SecurityCheckResult results[] = checkExecutor.execute();
 ----
 
-=== Detecting Developer Mode Enabled
-
-To detect if Developer Mode has been enabled on the device the `SecurityCheckType#IS_DEVELOPER_MODE` function can be used.  This function uses Android's link:https://developer.android.com/reference/android/provider/Settings.html[Settings] class.
-
+The `SecurityCheckExecutor` allows for multiple checks to be chained so the above can be refactored to:
 [source, java]
 ----
-SecurityCheckResult result = securityService.check(SecurityCheckType.IS_DEVELOPER_MODE);
-if (result.passed()) {
-    // developer mode has been enabled in the device
-}
+SecurityCheckResult results[] = securityService.getCheckExecutor().addCheck(SecurityCheckType.<check_type>).addCheck(SecurityCheckType.<check_type>).execute();
 ----
