@@ -2,10 +2,6 @@ package org.aerogear.mobile.core.http;
 
 import android.support.test.filters.SmallTest;
 
-import org.aerogear.mobile.core.http.HttpRequest;
-import org.aerogear.mobile.core.http.HttpResponse;
-import org.aerogear.mobile.core.http.HttpServiceModule;
-import org.aerogear.mobile.core.http.OkHttpServiceModule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
