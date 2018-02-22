@@ -82,7 +82,7 @@ public class MyApplication extends Application {
         mobileCore = MobileCore.init(this);
         metricsService = mobileCore.getInstance(MetricsService.class);
 
-        metricsService.sendDefaultMetrics();
+        metricsService.sendAppAndDeviceMetrics();
     }
 
     @Override

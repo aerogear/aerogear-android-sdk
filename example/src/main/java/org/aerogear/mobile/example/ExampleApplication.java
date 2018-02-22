@@ -4,8 +4,6 @@ import android.app.Application;
 
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.metrics.MetricsService;
-import org.aerogear.mobile.core.metrics.impl.AppMetrics;
-import org.aerogear.mobile.core.metrics.impl.DeviceMetrics;
 
 public class ExampleApplication extends Application {
 
@@ -19,7 +17,7 @@ public class ExampleApplication extends Application {
         mobileCore = MobileCore.init(this);
         metricsService = mobileCore.getInstance(MetricsService.class);
 
-        metricsService.sendDefaultMetrics();
+        metricsService.sendAppAndDeviceMetrics();
     }
 
     @Override
