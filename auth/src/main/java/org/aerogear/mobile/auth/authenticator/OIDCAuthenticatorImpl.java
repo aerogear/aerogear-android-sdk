@@ -51,7 +51,7 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
     /**
      * Creates a new OIDCAuthenticatorImpl object
      *
-     * @param serviceConfiguration {@link ServiceConfiguration}
+     * @param serviceConfiguration     {@link ServiceConfiguration}
      * @param authServiceConfiguration {@link AuthServiceConfiguration}
      */
     public OIDCAuthenticatorImpl(final ServiceConfiguration serviceConfiguration,
@@ -62,7 +62,7 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
         super(serviceConfiguration);
         this.keycloakConfiguration = new KeycloakConfiguration(serviceConfiguration);
         this.authServiceConfiguration = nonNull(authServiceConfiguration, "authServiceConfiguration");
-        this.authorizationServiceFactory = nonNull(authorizationServiceFactory,"authorizationServiceFactory");
+        this.authorizationServiceFactory = nonNull(authorizationServiceFactory, "authorizationServiceFactory");
         this.authStateManager = nonNull(authStateManager, "authStateManager");
         this.jwksManager = nonNull(jwksManager, "jwksManager");
     }
@@ -71,7 +71,7 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
      * Builds a new OIDCUserPrincipalImpl object after the user's credential has been authenticated
      *
      * @param authOptions the OIDC authentication options
-     * @param callback the callback will be invoked with a new OIDCUserPrincipalImpl object with the user's identity that was decoded from the user's credential
+     * @param callback    the callback will be invoked with a new OIDCUserPrincipalImpl object with the user's identity that was decoded from the user's credential
      */
     @Override
     public void authenticate(final AuthenticateOptions authOptions, final Callback<UserPrincipal> callback) {
@@ -128,7 +128,7 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
                             authCallback.onError(error);
                         }
                     });
-                } catch(Exception e) {
+                } catch (Exception e) {
                     authCallback.onError(e);
                 }
             } else {
@@ -142,7 +142,7 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
         nonNull(principal, "principal");
 
         // Get user's identity token
-        String identityToken = ((UserPrincipalImpl)principal).getIdentityToken();
+        String identityToken = ((UserPrincipalImpl) principal).getIdentityToken();
         // Construct the logout URL
         URL logoutUrl = parseLogoutURL(identityToken);
         // Construct and invoke logout request

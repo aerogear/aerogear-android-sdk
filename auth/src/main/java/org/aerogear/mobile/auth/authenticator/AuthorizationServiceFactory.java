@@ -32,6 +32,7 @@ public class AuthorizationServiceFactory {
      * the `openid` library.
      */
     public static class ServiceWrapper {
+
         private final AuthorizationService authorizationService;
         private final AuthState authState;
         private final AuthorizationRequest authorizationRequest;
@@ -59,6 +60,7 @@ public class AuthorizationServiceFactory {
 
     /**
      * Builds a new AuthorizationServiceFactory
+     *
      * @param appContext the application context
      */
     public AuthorizationServiceFactory(@NonNull final Context appContext) {
@@ -67,7 +69,8 @@ public class AuthorizationServiceFactory {
 
     /**
      * Creates and initializes a new {@link AuthorizationService} ready to be used for authenticating with Keycloak.
-     * @param keycloakConfiguration configuration to be used to access keycloak
+     *
+     * @param keycloakConfiguration    configuration to be used to access keycloak
      * @param authServiceConfiguration the authentication service configuration
      * @return a wrapper object containing all the `openid` object used to handle the OIDC authentication
      */

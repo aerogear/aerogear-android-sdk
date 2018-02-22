@@ -17,6 +17,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 public class AuthDetailsFragment extends BaseFragment {
+
     private static final String TAG = "AuthDetailsFragment";
 
     private UserPrincipal currentUser;
@@ -72,7 +73,7 @@ public class AuthDetailsFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Bundle args = getArguments();
-        if (args != null ) {
+        if (args != null) {
             currentUser = (UserPrincipal) args.getSerializable("currentUser");
             updateFields();
         }

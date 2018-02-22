@@ -21,6 +21,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class AuthStateManagerTest {
+
     @Mock
     private Context mockContext;
     @Mock

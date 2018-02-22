@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="org.aerogear.mobile.example.ui.MainActivity">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="org.aerogear.mobile.example.ui.MainActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/authentication_header_image_height"
             android:scaleType="centerCrop"
-            android:src="@drawable/ag_background" />
+            android:src="@drawable/ag_background"/>
 
         <ImageButton
             android:id="@+id/user_profile_photo"
@@ -27,7 +27,7 @@
             android:elevation="@dimen/authentication_banner_image_elevation"
             android:padding="@dimen/authentication_banner_image_padding"
             android:scaleType="centerCrop"
-            android:src="@drawable/aerogear_icon" />
+            android:src="@drawable/aerogear_icon"/>
 
         <RelativeLayout
             android:id="@+id/profile_layout"
@@ -47,7 +47,7 @@
                 android:layout_marginTop="@dimen/authentication_name_margin_top"
                 android:textColor="#fff"
                 android:textSize="24sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/user_email"
@@ -57,7 +57,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/authentication_email_margin_top"
                 android:textColor="#fff"
-                android:textSize="14sp" />
+                android:textSize="14sp"/>
         </RelativeLayout>
 
 
@@ -74,15 +74,16 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/section_header_padding"
                 android:text="@string/realm_roles"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <ListView
                 android:id="@+id/realm_roles"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="none" />
+                android:scrollbars="none"/>
 
         </LinearLayout>
+
         <Button
             android:id="@+id/keycloak_logout"
             style="@style/Widget.AppCompat.Button.Colored"
@@ -91,6 +92,6 @@
             android:layout_marginBottom="@dimen/authentication_button_margin_bottom"
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
-            android:text="Logout" />
+            android:text="Logout"/>
     </RelativeLayout>
 </RelativeLayout>

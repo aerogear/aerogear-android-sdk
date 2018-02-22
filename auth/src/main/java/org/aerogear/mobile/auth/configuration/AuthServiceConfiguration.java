@@ -40,14 +40,17 @@ public class AuthServiceConfiguration {
      * Builds and returns an AuthServiceConfiguration object.
      */
     public static class AuthConfigurationBuilder {
+
         private Uri redirectUri;
         private boolean allowSelfSignedCert;
-        private int minTimeBetweenJwksRequests = 24*60;
+        private int minTimeBetweenJwksRequests = 24 * 60;
 
-        public AuthConfigurationBuilder() {}
+        public AuthConfigurationBuilder() {
+        }
 
         /**
          * Allow specify the value of the redirect uri
+         *
          * @param redirectUri
          * @return
          */
@@ -59,6 +62,7 @@ public class AuthServiceConfiguration {
         /**
          * Specify if self sign certificate is allow.
          * NOTE: this is not for production use and it should only be used for testing purpose.
+         *
          * @param allowSelfSignedCert
          * @return
          */

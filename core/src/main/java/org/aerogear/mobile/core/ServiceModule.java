@@ -3,6 +3,7 @@ package org.aerogear.mobile.core;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 
 public interface ServiceModule {
+
     /**
      * Type/name used in the mobile-service.json
      *
@@ -13,7 +14,7 @@ public interface ServiceModule {
     /**
      * A method how create/configure the service
      *
-     * @param core MobileCore instance
+     * @param core                 MobileCore instance
      * @param serviceConfiguration the configuration for the service
      */
     void configure(MobileCore core, ServiceConfiguration serviceConfiguration);

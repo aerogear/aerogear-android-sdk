@@ -2,9 +2,9 @@ package org.aerogear.mobile.auth.utils;
 
 import org.aerogear.mobile.auth.AuthenticationException;
 import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
+import org.aerogear.mobile.auth.credentials.OIDCCredentials;
 import org.aerogear.mobile.auth.user.RoleType;
 import org.aerogear.mobile.auth.user.UserRole;
-import org.aerogear.mobile.auth.credentials.OIDCCredentials;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.json.JSONException;
 import org.junit.Before;
@@ -39,7 +39,7 @@ public class UserIdentityParserTest {
         keycloakConfiguration = new KeycloakConfiguration(serviceConfig);
         credential = new OIDCCredentials() {
             @Override
-            public String getAccessToken(){
+            public String getAccessToken() {
                 return accessToken;
             }
         };

@@ -12,17 +12,13 @@ import net.openid.appauth.TokenRequest;
 import net.openid.appauth.TokenResponse;
 
 import org.aerogear.mobile.auth.AuthStateManager;
-import org.aerogear.mobile.auth.Callback;
-import org.aerogear.mobile.auth.authenticator.AuthorizationServiceFactory;
-import org.aerogear.mobile.auth.authenticator.OIDCAuthenticateOptions;
-import org.aerogear.mobile.auth.authenticator.OIDCAuthenticatorImpl;
-import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
 import org.aerogear.mobile.auth.AuthenticationException;
+import org.aerogear.mobile.auth.Callback;
+import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
 import org.aerogear.mobile.auth.credentials.JwksManager;
 import org.aerogear.mobile.auth.credentials.OIDCCredentials;
 import org.aerogear.mobile.auth.user.UserPrincipal;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
-import org.jose4j.jwk.JsonWebKey;
 import org.jose4j.jwk.JsonWebKeySet;
 import org.json.JSONException;
 import org.junit.Before;
@@ -34,8 +30,6 @@ import org.robolectric.RobolectricTestRunner;
 
 import java.io.IOException;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
@@ -169,15 +163,15 @@ public class OIDCAuthenticatorImplTest {
         when(authState.jsonSerializeString()).thenReturn(AUTH_STATE);
 
         doAnswer(invocation -> {
-            ((AuthorizationService.TokenResponseCallback)invocation.getArguments()[1]).onTokenRequestCompleted(tokenResponse, null);
+            ((AuthorizationService.TokenResponseCallback) invocation.getArguments()[1]).onTokenRequestCompleted(tokenResponse, null);
             return null;
         }).when(authorizationService).performTokenRequest(
-                any(TokenRequest.class),
-                any(AuthorizationService.TokenResponseCallback.class));
+            any(TokenRequest.class),
+            any(AuthorizationService.TokenResponseCallback.class));
 
         credential = new OIDCCredentials() {
             @Override
-            public String getAccessToken(){
+            public String getAccessToken() {
                 return accessToken;
             }
         };
@@ -185,13 +179,13 @@ public class OIDCAuthenticatorImplTest {
         authenticator = new OIDCAuthenticatorImpl(serviceConfig, authServiceConfiguration, authStateManager, authorizationServiceFactory, jwksManager);
 
         doAnswer(invocation -> {
-            ((Callback<JsonWebKeySet>)invocation.getArguments()[1]).onSuccess(null);
+            ((Callback<JsonWebKeySet>) invocation.getArguments()[1]).onSuccess(null);
             return null;
         }).when(jwksManager).fetchJwks(any(), any(Callback.class));
     }
 
     @Test
-    public void testAuthenticate() throws AuthenticationException, IOException, JSONException  {
+    public void testAuthenticate() throws AuthenticationException, IOException, JSONException {
         OIDCAuthenticateOptions opts = new OIDCAuthenticateOptions(activity, 0);
 
         authenticator.authenticate(opts, new Callback<UserPrincipal>() {

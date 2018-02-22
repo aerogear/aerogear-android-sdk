@@ -3,10 +3,10 @@ package org.aerogear.mobile.security.impl;
 import android.content.Context;
 
 import org.aerogear.mobile.core.metrics.MetricsService;
-import org.aerogear.mobile.security.SecurityCheckType;
 import org.aerogear.mobile.security.SecurityCheck;
 import org.aerogear.mobile.security.SecurityCheckExecutor;
 import org.aerogear.mobile.security.SecurityCheckResult;
+import org.aerogear.mobile.security.SecurityCheckType;
 import org.aerogear.mobile.security.metrics.SecurityCheckResultMetric;
 
 import java.util.Collection;
@@ -14,12 +14,13 @@ import java.util.HashSet;
 
 /**
  * Implementation of {@link SecurityCheckExecutor}.
- *
+ * <p>
  * If {@link #sendMetrics(MetricsService)} is invoked then upon {@link #execute()} each
  * {@link SecurityCheckResult result} will be converted to a {@link SecurityCheckResultMetric} and
  * published individually. Not as a batch.
  */
 public class SecurityCheckExecutorImpl implements SecurityCheckExecutor {
+
     private final Collection<SecurityCheck> checks;
     private final Context context;
 
@@ -62,7 +63,7 @@ public class SecurityCheckExecutorImpl implements SecurityCheckExecutor {
      * @param results Array of results
      */
     private void publishResultMetrics(final SecurityCheckResult[] results) {
-        for(SecurityCheckResult result : results) {
+        for (SecurityCheckResult result : results) {
             this.metricsService.publish(new SecurityCheckResultMetric(result));
         }
     }

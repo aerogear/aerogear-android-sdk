@@ -9,7 +9,6 @@ import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
 import org.jose4j.jwa.AlgorithmConstraints;
 import org.jose4j.jwk.JsonWebKeySet;
 import org.jose4j.jws.AlgorithmIdentifiers;
-import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.ErrorCodeValidator;
 import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.JwtConsumer;
@@ -34,6 +33,7 @@ public class OIDCCredentials {
     /**
      * OpenID Connect credentials containing the identity, refresh and access tokens provided on a
      * successful authentication with OpenID Connect.
+     *
      * @param serialisedCredential JSON string representation of the authState field produced by
      *                             {@link #deserialize(String)}.
      * @throws IllegalArgumentException
@@ -41,7 +41,7 @@ public class OIDCCredentials {
     public OIDCCredentials(final String serialisedCredential) {
         try {
             this.authState = AuthState.jsonDeserialize(serialisedCredential);
-        } catch(JSONException e) {
+        } catch (JSONException e) {
             throw new IllegalArgumentException(e);
         }
     }
@@ -64,6 +64,7 @@ public class OIDCCredentials {
 
     /**
      * Verify the token and its claims against the given Keycloak configuration
+     *
      * @param keycloakConfig
      * @return
      */
@@ -101,6 +102,7 @@ public class OIDCCredentials {
 
     /**
      * Returns whether this token is expired or not.
+     *
      * @return <code>true</code> if expired.
      */
     public boolean isExpired() {
@@ -109,6 +111,7 @@ public class OIDCCredentials {
 
     /**
      * Check whether new access token is needed.
+     *
      * @return <code>true</code> if access token is needed
      */
     public boolean getNeedsRenewal() {
@@ -124,6 +127,7 @@ public class OIDCCredentials {
 
     /**
      * Check if the user is authenticated/authorized.
+     *
      * @return <code>true</code> if the user is authenticated/authorized.
      */
     public boolean isAuthorized() {
@@ -132,6 +136,7 @@ public class OIDCCredentials {
 
     /**
      * Returns stringified JSON for the OIDCCredential.
+     *
      * @return Stringified JSON OIDCCredential
      * @throws IllegalArgumentException
      */
@@ -140,13 +145,14 @@ public class OIDCCredentials {
             final JSONObject jsonCredential = new JSONObject()
                 .put("authState", this.authState.jsonSerializeString());
             return jsonCredential.toString();
-        } catch(JSONException e) {
+        } catch (JSONException e) {
             throw new IllegalArgumentException(e);
         }
     }
 
     /**
      * Return a new credential from the output of {@link #serialize()}
+     *
      * @param serializedCredential serialized credential from {@link #serialize()}
      * @return new credential
      * @throws IllegalArgumentException
@@ -158,13 +164,14 @@ public class OIDCCredentials {
             final JSONObject jsonCredential = new JSONObject(serializedCredential);
             final String serializedAuthState = jsonCredential.getString("authState");
             return new OIDCCredentials(serializedAuthState);
-        } catch(JSONException e) {
+        } catch (JSONException e) {
             throw new IllegalArgumentException(e);
         }
     }
 
     /**
      * Check whether the user is authorized and not expired.
+     *
      * @return <code>true</code> if user is authorized and token is not expired.
      */
     public boolean checkValidAuth() {
@@ -173,6 +180,7 @@ public class OIDCCredentials {
 
     /**
      * Renew the token
+     *
      * @return
      * @throws IllegalStateException
      */

@@ -40,14 +40,14 @@ public class UserPrincipalImpl implements UserPrincipal {
      * Builds a new UserPrincipalImpl object
      *
      * @param username the username of the authenticated user
-     * @param email the email of the authenticated user
-     * @param roles roles assigned to the user
+     * @param email    the email of the authenticated user
+     * @param roles    roles assigned to the user
      */
     protected UserPrincipalImpl(final String username,
-                              final String email,
-                              final Set<UserRole> roles,
-                              final String identityToken,
-                              final String accessToken) {
+                                final String email,
+                                final Set<UserRole> roles,
+                                final String identityToken,
+                                final String accessToken) {
         this.username = nonEmpty(username, "username");
         this.email = email;
         this.roles = new HashSet(roles);
@@ -59,6 +59,7 @@ public class UserPrincipalImpl implements UserPrincipal {
      * Builds and return a UserPrincipalImpl object
      */
     public static class Builder {
+
         protected String username;
         protected String email;
         protected Set<UserRole> roles = new HashSet();
@@ -98,17 +99,18 @@ public class UserPrincipalImpl implements UserPrincipal {
 
         public UserPrincipalImpl build() {
             return new UserPrincipalImpl(
-                    this.username,
-                    this.email,
-                    this.roles,
-                    this.idToken,
-                    this.accessToken);
+                this.username,
+                this.email,
+                this.roles,
+                this.idToken,
+                this.accessToken);
         }
     }
 
     /**
      * Checks if the user has the specified Client role.
-     * @param role role to be checked
+     *
+     * @param role     role to be checked
      * @param clientId clientID related to role
      * @return <code>true</code> or <code>false</code>
      */
@@ -121,11 +123,12 @@ public class UserPrincipalImpl implements UserPrincipal {
 
     /**
      * Checks if the user has the specified Realm role.
+     *
      * @param role role to be checked
      * @return <code>true</code> or <code>false</code>
      */
     @Override
-    public boolean hasRealmRole(final String role){
+    public boolean hasRealmRole(final String role) {
         nonEmpty(role, "role");
 
         return roles.contains(new UserRole(role, RoleType.REALM, null));
@@ -143,7 +146,7 @@ public class UserPrincipalImpl implements UserPrincipal {
      */
     @Override
     public Set<UserRole> getRoles() {
-       return roles;
+        return roles;
     }
 
     @Override
@@ -162,21 +165,22 @@ public class UserPrincipalImpl implements UserPrincipal {
         if (i.hasNext()) {
             //first element
             roleNames.concat("[").concat(i.next().getName());
-            while(i.hasNext()) {
+            while (i.hasNext()) {
                 roleNames.concat(", ").concat(i.next().getName());
             }
         }
         roleNames.concat("]");
 
         return "UserPrincipalImpl{" +
-                "username='" + username + '\'' +
-                ", email='" + email + '\'' +
-                ", roles=" + roleNames +
-                '}';
+            "username='" + username + '\'' +
+            ", email='" + email + '\'' +
+            ", roles=" + roleNames +
+            '}';
     }
 
     /**
      * Returns the identity token. It is used during logout.
+     *
      * @return
      */
     public String getIdentityToken() {
@@ -186,6 +190,7 @@ public class UserPrincipalImpl implements UserPrincipal {
     /**
      * Returns the access token for the current logged user.
      * This token can be added to HTTP requests as the "Authorization: Bearer" header.
+     *
      * @return
      */
     @Override
