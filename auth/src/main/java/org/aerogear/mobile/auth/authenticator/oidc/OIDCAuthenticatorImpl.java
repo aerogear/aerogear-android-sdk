@@ -1,4 +1,4 @@
-package org.aerogear.mobile.auth.authenticator;
+package org.aerogear.mobile.auth.authenticator.oidc;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,6 +10,10 @@ import net.openid.appauth.AuthorizationService;
 
 import org.aerogear.mobile.auth.AuthStateManager;
 import org.aerogear.mobile.auth.Callback;
+import org.aerogear.mobile.auth.authenticator.AbstractAuthenticator;
+import org.aerogear.mobile.auth.authenticator.AuthenticateOptions;
+import org.aerogear.mobile.auth.authenticator.AuthorizationServiceFactory;
+import org.aerogear.mobile.auth.authenticator.DefaultAuthenticateOptions;
 import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
 import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
 import org.aerogear.mobile.auth.credentials.JwksManager;
@@ -76,8 +80,8 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
     @Override
     public void authenticate(final AuthenticateOptions authOptions, final Callback<UserPrincipal> callback) {
         this.authCallback = nonNull(callback, "callback");
-        OIDCAuthenticateOptions oidcAuthenticateOptions = (OIDCAuthenticateOptions) (nonNull(authOptions, "authOptions"));
-        performAuthRequest(oidcAuthenticateOptions.getFromActivity(), oidcAuthenticateOptions.getResultCode());
+        DefaultAuthenticateOptions defaultAuthenticateOptions = (DefaultAuthenticateOptions) (nonNull(authOptions, "authOptions"));
+        performAuthRequest(defaultAuthenticateOptions.getFromActivity(), defaultAuthenticateOptions.getResultCode());
     }
 
     // Authentication code

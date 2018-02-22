@@ -5,12 +5,12 @@ import android.support.annotation.NonNull;
 
 import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
-public class OIDCAuthenticateOptions implements AuthenticateOptions {
+public class DefaultAuthenticateOptions implements AuthenticateOptions {
 
     private final Activity fromActivity;
     private final int resultCode;
 
-    public OIDCAuthenticateOptions(@NonNull final Activity fromActivity, final int resultCode) {
+    public DefaultAuthenticateOptions(@NonNull final Activity fromActivity, final int resultCode) {
         this.fromActivity = nonNull(fromActivity, "fromActivity");
         this.resultCode = resultCode;
     }

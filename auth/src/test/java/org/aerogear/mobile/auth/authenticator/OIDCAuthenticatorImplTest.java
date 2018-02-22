@@ -13,16 +13,13 @@ import net.openid.appauth.TokenResponse;
 
 import org.aerogear.mobile.auth.AuthStateManager;
 import org.aerogear.mobile.auth.Callback;
-import org.aerogear.mobile.auth.authenticator.AuthorizationServiceFactory;
-import org.aerogear.mobile.auth.authenticator.OIDCAuthenticateOptions;
-import org.aerogear.mobile.auth.authenticator.OIDCAuthenticatorImpl;
+import org.aerogear.mobile.auth.authenticator.oidc.OIDCAuthenticatorImpl;
 import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
 import org.aerogear.mobile.auth.AuthenticationException;
 import org.aerogear.mobile.auth.credentials.JwksManager;
 import org.aerogear.mobile.auth.credentials.OIDCCredentials;
 import org.aerogear.mobile.auth.user.UserPrincipal;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
-import org.jose4j.jwk.JsonWebKey;
 import org.jose4j.jwk.JsonWebKeySet;
 import org.json.JSONException;
 import org.junit.Before;
@@ -192,7 +189,7 @@ public class OIDCAuthenticatorImplTest {
 
     @Test
     public void testAuthenticate() throws AuthenticationException, IOException, JSONException  {
-        OIDCAuthenticateOptions opts = new OIDCAuthenticateOptions(activity, 0);
+        DefaultAuthenticateOptions opts = new DefaultAuthenticateOptions(activity, 0);
 
         authenticator.authenticate(opts, new Callback<UserPrincipal>() {
             @Override

@@ -23,12 +23,12 @@ public class OIDCAuthenticateOptionsTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testParameterValidation() {
-        new OIDCAuthenticateOptions(null, 5);
+        new DefaultAuthenticateOptions(null, 5);
     }
 
     @Test
     public void testGetOptions() {
-        OIDCAuthenticateOptions opts = new OIDCAuthenticateOptions(activity, 5);
+        DefaultAuthenticateOptions opts = new DefaultAuthenticateOptions(activity, 5);
         Assert.assertEquals(activity, opts.getFromActivity());
         Assert.assertEquals(5, opts.getResultCode());
     }
