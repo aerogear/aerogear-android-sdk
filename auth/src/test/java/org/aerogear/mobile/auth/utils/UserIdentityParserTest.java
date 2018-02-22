@@ -46,7 +46,7 @@ public class UserIdentityParserTest {
         parser = new UserIdentityParser(credential, keycloakConfiguration);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testUserIdentityParser_NullServiceConfig() throws JSONException, AuthenticationException {
         parser = new UserIdentityParser(credential, null);
     }

@@ -21,7 +21,7 @@ public class OIDCAuthenticateOptionsTest {
         MockitoAnnotations.initMocks(this);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testParameterValidation() {
         new OIDCAuthenticateOptions(null, 5);
     }

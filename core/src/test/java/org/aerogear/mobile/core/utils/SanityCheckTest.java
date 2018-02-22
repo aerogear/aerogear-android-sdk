@@ -16,8 +16,8 @@ public class SanityCheckTest {
         try {
             SanityCheck.nonNull(null, "test-param");
             Assert.fail("null value has not been detected");
-        } catch(NullPointerException npe) {
-            Assert.assertEquals("Parameter 'test-param' can't be null", npe.getMessage());
+        } catch(IllegalArgumentException iae) {
+            Assert.assertEquals("Parameter 'test-param' can't be null", iae.getMessage());
         }
     }
 
@@ -26,8 +26,8 @@ public class SanityCheckTest {
         try {
             SanityCheck.nonNull(null, "Test error message for %s param with custom %s string", "test-param", "custom-string");
             Assert.fail("null value has not been detected");
-        } catch(NullPointerException npe) {
-            Assert.assertEquals("Test error message for test-param param with custom custom-string string", npe.getMessage());
+        } catch(IllegalArgumentException iae) {
+            Assert.assertEquals("Test error message for test-param param with custom custom-string string", iae.getMessage());
         }
     }
 

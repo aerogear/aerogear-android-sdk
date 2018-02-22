@@ -38,7 +38,7 @@ public final class SanityCheck {
      */
     public static <T> T nonNull(final T value, final String customMessage, final Object ... params) {
         if (value == null) {
-            throw new NullPointerException(String.format(customMessage, params));
+            throw new IllegalArgumentException(String.format(customMessage, params));
         }
         return value;
     }
