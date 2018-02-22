@@ -4,6 +4,7 @@ import junit.framework.Assert;
 
 import net.openid.appauth.AuthState;
 
+import org.aerogear.mobile.auth.AuthenticationException;
 import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
 import org.jose4j.jwk.JsonWebKey;
 import org.jose4j.jwk.JsonWebKeySet;
@@ -71,7 +72,13 @@ public class OIDCCredentialsTest {
         assertEquals(serializedCredential.get("authState"), CREDENTIAL_AUTH_STATE);
     }
 
-    @Test
+    @Test(expected = UnsupportedOperationException.class)
+    public void testRenew() throws AuthenticationException {
+        OIDCCredentials testCredential = new OIDCCredentials(CREDENTIAL_AUTH_STATE);
+        testCredential.renew();
+    }
+
+        @Test
     public void testDeserialize() throws JSONException {
         OIDCCredentials testCredential = new OIDCCredentials(CREDENTIAL_AUTH_STATE);
         String serialized = testCredential.serialize();
