@@ -17,7 +17,7 @@ public class MetricsService implements ServiceModule {
         return publisher;
     }
 
-    public MetricsService setPublisher(MetricsPublisher publisher) {
+    public MetricsService setPublisher(final MetricsPublisher publisher) {
         if (publisher == null) {
             throw new IllegalStateException("publisher should not be null");
         }
@@ -31,13 +31,13 @@ public class MetricsService implements ServiceModule {
     }
 
     @Override
-    public void configure(MobileCore core, ServiceConfiguration serviceConfiguration) {
+    public void configure(final MobileCore core, final ServiceConfiguration serviceConfiguration) {
         defaultMetrics = new Metrics[]{
             new AppMetrics(core.getContext()),
             new DeviceMetrics(core.getContext())
         };
 
-        String metricsUrl = serviceConfiguration.getUrl();
+        final String metricsUrl = serviceConfiguration.getUrl();
         if (metricsUrl == null) {
             publisher = new LoggerMetricsPublisher(MobileCore.getLogger());
         } else {
@@ -67,7 +67,7 @@ public class MetricsService implements ServiceModule {
      *
      * @param metrics Metrics to send
      */
-    public MetricsService publish(Metrics... metrics) {
+    public MetricsService publish(final Metrics... metrics) {
         if (publisher == null) {
             throw new IllegalStateException("Make sure you have called configure or get this instance from MobileCore.getInstance()");
         }

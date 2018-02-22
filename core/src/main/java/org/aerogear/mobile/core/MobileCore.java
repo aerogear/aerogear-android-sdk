@@ -31,7 +31,6 @@ public final class MobileCore {
     private static Logger logger = new LoggerAdapter();
     private static String appVersion;
 
-
     private final Context context;
     private final String configFileName;
     private final HttpServiceModule httpLayer;
@@ -43,7 +42,7 @@ public final class MobileCore {
      *
      * @param context Application context
      */
-    private MobileCore(Context context, Options options)
+    private MobileCore(final Context context, final Options options)
         throws InitializationException, IllegalStateException {
         if (context == null) {
             throw new IllegalStateException("Context should not be null");
@@ -70,7 +69,7 @@ public final class MobileCore {
 
         // -- Setting default http layer
         if (options.httpServiceModule == null) {
-            OkHttpServiceModule httpServiceModule = new OkHttpServiceModule();
+            final OkHttpServiceModule httpServiceModule = new OkHttpServiceModule();
 
             ServiceConfiguration configuration = this.servicesConfig.get(httpServiceModule.type());
             if (configuration == null) {
@@ -89,8 +88,7 @@ public final class MobileCore {
 
     private void sendDefaultMetrics() {
         try {
-            MetricsService metrics = getInstance(MetricsService.class);
-            metrics.sendDefaultMetrics();
+            getInstance(MetricsService.class).sendDefaultMetrics();
         } catch (ConfigurationNotFoundException e) {
             logger.debug(TAG, "Metrics not configured, not sending anything");
         }
@@ -142,7 +140,7 @@ public final class MobileCore {
         }
 
         try {
-            ServiceModule serviceModule = serviceClass.newInstance();
+            final ServiceModule serviceModule = serviceClass.newInstance();
 
             if (serviceConfiguration == null) {
                 serviceConfiguration = getServiceConfiguration(serviceModule.type());
@@ -235,22 +233,22 @@ public final class MobileCore {
         public Options() {
         }
 
-        public Options(String configFileName, HttpServiceModule httpServiceModule) {
+        public Options(final String configFileName, final HttpServiceModule httpServiceModule) {
             this.configFileName = configFileName;
             this.httpServiceModule = httpServiceModule;
         }
 
-        public Options setConfigFileName(@NonNull String configFileName) {
+        public Options setConfigFileName(@NonNull final String configFileName) {
             this.configFileName = configFileName;
             return this;
         }
 
-        public Options setHttpServiceModule(@NonNull HttpServiceModule httpServiceModule) {
+        public Options setHttpServiceModule(@NonNull final HttpServiceModule httpServiceModule) {
             this.httpServiceModule = httpServiceModule;
             return this;
         }
 
-        public Options setLogger(Logger logger) {
+        public Options setLogger(final Logger logger) {
             this.logger = logger;
             return this;
         }

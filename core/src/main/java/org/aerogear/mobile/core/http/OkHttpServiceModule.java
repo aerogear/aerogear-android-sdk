@@ -8,7 +8,7 @@ import okhttp3.OkHttpClient;
 
 public class OkHttpServiceModule implements HttpServiceModule {
 
-    private OkHttpClient client;
+    private final OkHttpClient client;
     private ServiceConfiguration serviceConfiguration;
 
     /**
@@ -55,7 +55,7 @@ public class OkHttpServiceModule implements HttpServiceModule {
 
     @Override
     public HttpRequest newRequest() {
-        OkHttpRequest request = new OkHttpRequest(client, new AppExecutors());
+        final OkHttpRequest request = new OkHttpRequest(client, new AppExecutors());
         return request;
     }
 

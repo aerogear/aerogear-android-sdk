@@ -34,7 +34,6 @@ public class NetworkMetricsPublisher implements MetricsPublisher {
     public void publish(final Metrics... metrics) {
 
         try {
-
             final JSONObject json = new JSONObject();
 
             json.put("clientId", ClientIdGenerator.getOrCreateClientId(context));

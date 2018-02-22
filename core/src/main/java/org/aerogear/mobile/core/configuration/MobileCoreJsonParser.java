@@ -17,49 +17,49 @@ import java.util.TreeMap;
  */
 public class MobileCoreJsonParser {
 
-    private TreeMap<String, ServiceConfiguration> values = new TreeMap<>();
+    private final Map<String, ServiceConfiguration> values = new TreeMap<>();
 
     private MobileCoreJsonParser(final InputStream jsonStream) throws IOException, JSONException {
-        String jsonText = readJsonStream(jsonStream);
-        JSONObject jsonDocument = new JSONObject(jsonText);
+        final String jsonText = readJsonStream(jsonStream);
+        final JSONObject jsonDocument = new JSONObject(jsonText);
         parseMobileCoreArray(jsonDocument.getJSONArray("services"));
     }
 
     private String readJsonStream(final InputStream jsonStream) throws IOException {
-        String out = "";
+        final StringBuilder builder = new StringBuilder();
+
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(jsonStream))) {
-            StringBuilder builder = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
                 builder.append(line).append('\n');
             }
-            out = builder.toString();
         }
-        return out;
+        return builder.toString();
     }
 
     private void parseMobileCoreArray(final JSONArray array) throws JSONException, IOException {
-        int length = array.length();
+        final int length = array.length();
         for (int i = 0; i < length; i++) {
             parseConfigObject(array.getJSONObject(i));
         }
     }
 
     private void parseConfigObject(final JSONObject object) throws JSONException, IOException {
-        ServiceConfiguration.Builder serviceConfigBuilder = ServiceConfiguration.newConfiguration();
+        final ServiceConfiguration.Builder serviceConfigBuilder = ServiceConfiguration.newConfiguration();
         serviceConfigBuilder.setName(object.getString("name"));
         serviceConfigBuilder.setUrl(object.getString("url"));
         serviceConfigBuilder.setType(object.getString("type"));
-        JSONObject config = object.getJSONObject("config");
-        JSONArray namesArray = config.names();
+
+        final JSONObject config = object.getJSONObject("config");
+        final JSONArray namesArray = config.names();
         if(namesArray!=null){
             int namesSize = namesArray.length();
             for (int i = 0; i < namesSize; i++) {
-                String name = namesArray.getString(i);
+                final String name = namesArray.getString(i);
                 serviceConfigBuilder.addProperty(name, config.getString(name));
             }
         }
-        ServiceConfiguration serviceConfig = serviceConfigBuilder.build();
+        final ServiceConfiguration serviceConfig = serviceConfigBuilder.build();
         values.put(serviceConfig.getName(), serviceConfig);
 
     }

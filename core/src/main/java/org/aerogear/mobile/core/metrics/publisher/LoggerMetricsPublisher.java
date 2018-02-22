@@ -11,13 +11,13 @@ public final class LoggerMetricsPublisher implements MetricsPublisher {
 
     private final Logger logger;
 
-    public LoggerMetricsPublisher(Logger logger) {
+    public LoggerMetricsPublisher(final Logger logger) {
         this.logger = logger;
     }
 
     @Override
-    public void publish(Metrics... metrics) {
-        for (Metrics m : metrics) {
+    public void publish(final Metrics... metrics) {
+        for (final Metrics m : metrics) {
             logger.debug("Metrics -> [" + m.identifier() + "]:" + m.data().toString());
         }
     }
