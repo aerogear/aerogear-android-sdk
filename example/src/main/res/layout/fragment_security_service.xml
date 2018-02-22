@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -25,7 +24,7 @@
                 android:textAlignment="center"
                 android:textAppearance="@android:style/TextAppearance.DeviceDefault"
                 android:textColor="@color/white"
-                android:textSize="70sp" />
+                android:textSize="70sp"/>
 
             <TextView
                 android:id="@+id/trustScoreHeader"
@@ -35,7 +34,7 @@
                 android:paddingBottom="10dp"
                 android:text="@string/trust_score_header_title"
                 android:textAlignment="center"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"/>
 
             <ProgressBar
                 android:id="@+id/trustScore"
@@ -48,7 +47,7 @@
                 android:progress="100"
                 android:progressBackgroundTint="@color/primary"
                 android:progressTint="@color/green"
-                android:textAlignment="center" />
+                android:textAlignment="center"/>
 
             <RadioButton
                 android:id="@+id/emulatorAccess"
@@ -59,7 +58,7 @@
                 android:buttonTint="@color/primary_dark"
                 android:padding="15dp"
                 android:text="@string/emulator_detected_negative"
-                android:textColor="@color/green" />
+                android:textColor="@color/green"/>
 
             <RadioButton
                 android:id="@+id/debuggerAccess"
@@ -70,7 +69,7 @@
                 android:buttonTint="@color/primary_dark"
                 android:padding="15dp"
                 android:text="@string/debugger_detected_negative"
-                android:textColor="@color/green" />
+                android:textColor="@color/green"/>
 
             <RadioButton
                 android:id="@+id/rootAccess"
@@ -81,7 +80,7 @@
                 android:buttonTint="@color/primary_dark"
                 android:padding="15dp"
                 android:text="@string/root_detected_negative"
-                android:textColor="@color/green" />
+                android:textColor="@color/green"/>
 
             <RadioButton
                 android:id="@+id/hookingDetected"
@@ -92,7 +91,7 @@
                 android:buttonTint="@color/primary_dark"
                 android:padding="15dp"
                 android:text="@string/hooking_detected_negative"
-                android:textColor="@color/green" />
+                android:textColor="@color/green"/>
 
             <RadioButton
                 android:id="@+id/lockScreenSetup"
@@ -103,7 +102,7 @@
                 android:buttonTint="@color/primary_dark"
                 android:padding="15dp"
                 android:text="@string/device_lock_detected_positive"
-                android:textColor="@color/green" />
+                android:textColor="@color/green"/>
 
             <RadioButton
                 android:id="@+id/allowBackup"
@@ -114,7 +113,7 @@
                 android:buttonTint="@color/primary_dark"
                 android:padding="15dp"
                 android:text="@string/allow_backup_detected_negative"
-                android:textColor="@color/green" />
+                android:textColor="@color/green"/>
 
             <RadioButton
                 android:id="@+id/deviceEncrypted"
@@ -125,7 +124,7 @@
                 android:buttonTint="@color/primary_dark"
                 android:padding="15dp"
                 android:text="@string/device_encrypted_positive"
-                android:textColor="@color/green" />
+                android:textColor="@color/green"/>
 
             <RadioButton
                 android:id="@+id/deviceOS"
@@ -136,7 +135,7 @@
                 android:buttonTint="@color/primary_dark"
                 android:padding="15dp"
                 android:text="@string/device_os_latest_positive"
-                android:textColor="@color/green" />
+                android:textColor="@color/green"/>
 
             <RadioButton
                 android:id="@+id/developerOptions"
@@ -147,7 +146,7 @@
                 android:buttonTint="@color/primary_dark"
                 android:padding="15dp"
                 android:text="@string/developer_options_negative"
-                android:textColor="@color/green" />
+                android:textColor="@color/green"/>
 
         </LinearLayout>
 
