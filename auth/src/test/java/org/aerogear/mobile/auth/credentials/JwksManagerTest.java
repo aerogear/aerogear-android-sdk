@@ -105,7 +105,7 @@ public class JwksManagerTest {
         when(httpResponse.getStatus()).thenReturn(200);
         when(httpResponse.stringBody()).thenReturn(JWKS_CONTENT);
 
-        when(authServiceConfiguration.getMinTimeBetweenJwksRequests()).thenReturn(24*60);
+        when(authServiceConfiguration.getMinTimeBetweenJwksRequests()).thenReturn(24 * 60);
 
         keySet = null;
         exception = null;
@@ -127,7 +127,7 @@ public class JwksManagerTest {
 
             @Override
             public void onError(Throwable error) {
-               exception = error;
+                exception = error;
                 lock.countDown();
             }
         });

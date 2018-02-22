@@ -23,6 +23,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+
 /**
  * An example implementation of {@link ConnectionBuilder} that permits connecting to http
  * links, and ignores certificates for https connections. *THIS SHOULD NOT BE USED IN PRODUCTION
@@ -42,15 +43,17 @@ public class ConnectionBuilderForTesting implements ConnectionBuilder {
     private static final String HTTPS = "https";
 
     @SuppressLint("TrustAllX509TrustManager")
-    private static final TrustManager[] ANY_CERT_MANAGER = new TrustManager[] {
+    private static final TrustManager[] ANY_CERT_MANAGER = new TrustManager[]{
         new X509TrustManager() {
             public X509Certificate[] getAcceptedIssuers() {
                 return null;
             }
 
-            public void checkClientTrusted(X509Certificate[] certs, String authType) {}
+            public void checkClientTrusted(X509Certificate[] certs, String authType) {
+            }
 
-            public void checkServerTrusted(X509Certificate[] certs, String authType) {}
+            public void checkServerTrusted(X509Certificate[] certs, String authType) {
+            }
         }
     };
 

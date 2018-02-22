@@ -5,7 +5,6 @@ import junit.framework.Assert;
 import net.openid.appauth.AuthState;
 
 import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
-import org.jose4j.jwk.JsonWebKey;
 import org.jose4j.jwk.JsonWebKeySet;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,22 +12,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
 
-import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
 public class OIDCCredentialsTest {
 
     private final String VALID_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAkr1fDOUrTZc1MnpY9brGiA7Cz6X1nX77pmrUEgnMq2mxU7ibSW0CAk5e5a4wkmLGYf8EyvaFPHT1fMrFmDK03oN8Q2anh+3e894cXBXazHzzaJD+Lz1HfOOZFeInkAasxWSo8KN1+Kg+1Z7QyrPLhfcbIwfH2Stabx+3lfEMtPGws7tqWg93piA8is1PwIV5/8k4CqLe7jNtUyYS4BKR07oBY6VVxXOKKQAQ3ToLN++sjfaXAjDuE1Go7iW9q7Yt6q9qu4JCX+k6IWu68y/H6cicLXwS1VXPMwFjDOj7cQZB7A3t4q0F+6NVL+t7UjrAAK/7V3lPB+rDwHO92iwlZwIDAQAB";
-    private final String VALID_KEYCLOAK_HOST_URL="https://keycloak.security.feedhenry.org/auth";
+    private final String VALID_KEYCLOAK_HOST_URL = "https://keycloak.security.feedhenry.org/auth";
     private final String VALID_AUDIENCE = "client-app";
     private final String EXPIRED_ACCESS_TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJhZFNveVhOQWdReFY0M2VxSFNpUlpmNmhOOXl0dkJOUXliMmZGU2RDVFZNIn0.eyJqdGkiOiJkMWVmMWIyMS00OTVlLTRjYjMtYmQzNS1mMTM5YzcxNGFlOWIiLCJleHAiOjE1MTY2MjA5MzgsIm5iZiI6MCwiaWF0IjoxNTE2NjIwNjM4LCJpc3MiOiJodHRwczovL2tleWNsb2FrLnNlY3VyaXR5LmZlZWRoZW5yeS5vcmcvYXV0aC9yZWFsbXMvc2VjdXJlLWFwcCIsImF1ZCI6ImNsaWVudC1hcHAiLCJzdWIiOiJiMTYxN2UzOC0zODczLTRhNDctOGE2Yy01YjgyMmFkYTI3NWUiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJjbGllbnQtYXBwIiwiYXV0aF90aW1lIjoxNTE2NjIwNjM3LCJzZXNzaW9uX3N0YXRlIjoiODg0MzZjMTAtNjQ3Yy00OTM4LTgwZmYtODAzMTBhYjc1NTNhIiwiYWNyIjoiMSIsImFsbG93ZWQtb3JpZ2lucyI6WyIqIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJtb2JpbGUtdXNlciJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImNsaWVudC1hcHAiOnsicm9sZXMiOlsiaW9zLWFjY2VzcyJdfSwiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwibmFtZSI6IlVzZXIgMSIsInByZWZlcnJlZF91c2VybmFtZSI6InVzZXIxIiwiZ2l2ZW5fbmFtZSI6IlVzZXIiLCJmYW1pbHlfbmFtZSI6IjEiLCJlbWFpbCI6InVzZXIxQGZlZWRoZW5yeS5vcmcifQ.Hy7mII0Z4d70jcZJTvDeIRi_tZPp7k5qID-c94XmpTUrCT7YJkWjV158oq5iG2bs-RdHSdmUYSCc2ZrUMWAUmsdVxUe621oLzI50csqW3iXQfEO4urUYYFHIknkqP76PIdwFW80zMANCeiXMZEy8D4iJ_UkzDoo872w4iCNApZVnFxk2S15WbyPQPiXbSaMjLkZsEiKKjzfacDtPtSpgbtq9s5DuU7QrBvkmGZYofY94-gORglXpu3KIhs4oXmk2-2CTDqsOpV-eS1OyeZQ080Xfr5N9X7Rfe-fvTToTuFiuMOPOpzgkYDUuCU7Tcymp7EXjpBf2YX65m3QtYY9SYA";
     // WARNING: Tokens Expire on 10/01/2031 @ 2:50pm (UTC)

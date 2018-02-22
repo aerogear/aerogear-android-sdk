@@ -9,11 +9,12 @@ import org.aerogear.mobile.security.metrics.SecurityCheckResultMetric;
 
 /**
  * Service for running security checks in an application.
- *
+ * <p>
  * Checks can be run individually using {@link #check(SecurityCheckType)} , or can be chained
  * together using an {@link SecurityCheckExecutor} by using {@link #getCheckExecutor()}.
  */
-public class SecurityService implements ServiceModule{
+public class SecurityService implements ServiceModule {
+
     private final static String TYPE = "security";
 
     private MobileCore core;
@@ -29,10 +30,13 @@ public class SecurityService implements ServiceModule{
     }
 
     @Override
-    public boolean requiresConfiguration() { return false; }
+    public boolean requiresConfiguration() {
+        return false;
+    }
 
     @Override
-    public void destroy() {}
+    public void destroy() {
+    }
 
     /**
      * Retrieve a {@link SecurityCheckExecutor} to run multiple {@link SecurityCheckType checks} chained.

@@ -5,12 +5,12 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import org.aerogear.mobile.auth.authenticator.AuthorizationServiceFactory;
+import org.aerogear.mobile.auth.authenticator.OIDCAuthenticateOptions;
+import org.aerogear.mobile.auth.authenticator.OIDCAuthenticatorImpl;
 import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
 import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
-import org.aerogear.mobile.auth.authenticator.OIDCAuthenticateOptions;
 import org.aerogear.mobile.auth.credentials.JwksManager;
 import org.aerogear.mobile.auth.credentials.OIDCCredentials;
-import org.aerogear.mobile.auth.authenticator.OIDCAuthenticatorImpl;
 import org.aerogear.mobile.auth.user.UserPrincipal;
 import org.aerogear.mobile.auth.utils.UserIdentityParser;
 import org.aerogear.mobile.core.MobileCore;
@@ -55,6 +55,7 @@ public class AuthService implements ServiceModule {
      * with appropriate message describing why the service is not ready yet.
      */
     private static class ReadynessStatus {
+
         /**
          * Enumeration of all the steps that must be executed to make this service ready
          */
@@ -62,11 +63,11 @@ public class AuthService implements ServiceModule {
             /**
              * This steps is related to the 'configure' method
              */
-            CONFIGURED(1<<0, "configure"),
+            CONFIGURED(1 << 0, "configure"),
             /**
              * This step is related to the 'initialize' method
              */
-            INITIALIZED(1<<1, "initialize");
+            INITIALIZED(1 << 1, "initialize");
 
             /**
              * We store here all the executed step. Each bit represent a different step.
@@ -79,7 +80,7 @@ public class AuthService implements ServiceModule {
             String methodName;
 
             STEP(final int val, final String methodName) {
-                this.bitValue = (byte)val;
+                this.bitValue = (byte) val;
                 this.methodName = methodName;
             }
         }
@@ -91,6 +92,7 @@ public class AuthService implements ServiceModule {
 
         /**
          * Mark one step as executed.
+         *
          * @param step executed step
          */
         public void updateStatus(final STEP step) {
@@ -99,6 +101,7 @@ public class AuthService implements ServiceModule {
 
         /**
          * Checks if the provided step has been executed.
+         *
          * @param step step to be checked
          * @return true if it has been executed
          */
@@ -132,13 +135,16 @@ public class AuthService implements ServiceModule {
                     Arrays.toString(methodsToBeInvoked.toArray())));
         }
     }
+
     /**
      * Instantiates a new AuthService object
      */
-    public AuthService() {}
+    public AuthService() {
+    }
 
     /**
      * Return the user that is currently logged and is still valid. Otherwise returns null
+     *
      * @return the current logged in. Could be null.
      */
     public UserPrincipal currentUser() {
@@ -168,7 +174,7 @@ public class AuthService implements ServiceModule {
      * The login will be asynchronous.
      *
      * @param authOptions the authentication options
-     * @param callback the callback function that will be invoked with the user info
+     * @param callback    the callback function that will be invoked with the user info
      */
     public void login(@NonNull final OIDCAuthenticateOptions authOptions, @NonNull final Callback<UserPrincipal> callback) {
         status.checkReadyness();
@@ -177,6 +183,7 @@ public class AuthService implements ServiceModule {
 
     /**
      * This function should be called in the start activity's "onActivityResult" method to allow the SDK to process the response from the authentication server.
+     *
      * @param data The intent data that is passed to "onActivityResult"
      */
     public void handleAuthResult(@NonNull final Intent data) {
@@ -212,6 +219,7 @@ public class AuthService implements ServiceModule {
 
     /**
      * Initialize the module. This should be called before any other method when using the module.
+     *
      * @param context
      */
     public void init(final Context context, final AuthServiceConfiguration authServiceConfiguration) {
@@ -228,7 +236,9 @@ public class AuthService implements ServiceModule {
     }
 
     @Override
-    public boolean requiresConfiguration() { return true; }
+    public boolean requiresConfiguration() {
+        return true;
+    }
 
     @Override
     public void destroy() {

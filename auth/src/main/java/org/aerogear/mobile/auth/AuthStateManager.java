@@ -24,6 +24,7 @@ public class AuthStateManager {
 
     /**
      * Reads credentials from storage.
+     *
      * @return OIDCCredentials
      */
     public OIDCCredentials load() {
@@ -36,6 +37,7 @@ public class AuthStateManager {
 
     /**
      * Saves a token
+     *
      * @param authState token to be saved
      * @throws IllegalStateException
      */
@@ -44,7 +46,7 @@ public class AuthStateManager {
             clear();
         } else {
             SharedPreferences.Editor e = prefs.edit().putString(KEY_STATE, authState.serialize());
-            if(!e.commit()) {
+            if (!e.commit()) {
                 throw new IllegalStateException("Failed to update state from shared preferences");
             }
         }
@@ -52,6 +54,7 @@ public class AuthStateManager {
 
     /**
      * Deletes a token
+     *
      * @throws IllegalArgumentException
      */
     public synchronized void clear() {

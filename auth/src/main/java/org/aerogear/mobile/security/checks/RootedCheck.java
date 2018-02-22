@@ -12,6 +12,7 @@ import org.aerogear.mobile.security.impl.SecurityCheckResultImpl;
  * A check for whether the device the application is running on is rooted.
  */
 public class RootedCheck implements SecurityCheck {
+
     private static final String NAME = "detectRooted";
 
     /**

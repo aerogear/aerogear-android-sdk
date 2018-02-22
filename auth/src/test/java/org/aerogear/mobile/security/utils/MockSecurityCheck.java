@@ -7,6 +7,7 @@ import org.aerogear.mobile.security.SecurityCheckResult;
 import org.aerogear.mobile.security.impl.SecurityCheckResultImpl;
 
 public class MockSecurityCheck implements SecurityCheck {
+
     @Override
     public SecurityCheckResult test(Context context) {
         return new SecurityCheckResultImpl("mockTest", true);

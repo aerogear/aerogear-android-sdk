@@ -7,7 +7,7 @@ import org.aerogear.mobile.security.checks.RootedCheck;
  */
 public enum SecurityCheckType {
     /**
-     *  Detect whether the device is rooted.
+     * Detect whether the device is rooted.
      */
     IS_ROOTED(new RootedCheck());
 
