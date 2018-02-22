@@ -11,6 +11,8 @@ import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
 /**
  * This class is responsible for consuming a reader and producing a tree of config values to be
  * consumed by modules.
@@ -26,6 +28,7 @@ public class MobileCoreJsonParser {
     }
 
     private String readJsonStream(final InputStream jsonStream) throws IOException {
+        nonNull(jsonStream, "jsonStream");
         final StringBuilder builder = new StringBuilder();
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(jsonStream))) {
@@ -38,19 +41,21 @@ public class MobileCoreJsonParser {
     }
 
     private void parseMobileCoreArray(final JSONArray array) throws JSONException, IOException {
-        final int length = array.length();
+        final int length = nonNull(array, "json array").length();
         for (int i = 0; i < length; i++) {
             parseConfigObject(array.getJSONObject(i));
         }
     }
 
-    private void parseConfigObject(final JSONObject object) throws JSONException, IOException {
-        final ServiceConfiguration.Builder serviceConfigBuilder = ServiceConfiguration.newConfiguration();
-        serviceConfigBuilder.setName(object.getString("name"));
-        serviceConfigBuilder.setUrl(object.getString("url"));
-        serviceConfigBuilder.setType(object.getString("type"));
+    private void parseConfigObject(final JSONObject jsonObject) throws JSONException, IOException {
+        nonNull(jsonObject, "jsonObject");
 
-        final JSONObject config = object.getJSONObject("config");
+        final ServiceConfiguration.Builder serviceConfigBuilder = ServiceConfiguration.newConfiguration();
+        serviceConfigBuilder.setName(jsonObject.getString("name"));
+        serviceConfigBuilder.setUrl(jsonObject.getString("url"));
+        serviceConfigBuilder.setType(jsonObject.getString("type"));
+
+        final JSONObject config = jsonObject.getJSONObject("config");
         final JSONArray namesArray = config.names();
         if(namesArray!=null){
             int namesSize = namesArray.length();
@@ -61,7 +66,6 @@ public class MobileCoreJsonParser {
         }
         final ServiceConfiguration serviceConfig = serviceConfigBuilder.build();
         values.put(serviceConfig.getName(), serviceConfig);
-
     }
 
     /**

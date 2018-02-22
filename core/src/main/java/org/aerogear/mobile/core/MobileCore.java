@@ -14,13 +14,14 @@ import org.aerogear.mobile.core.http.OkHttpServiceModule;
 import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.logging.LoggerAdapter;
 import org.aerogear.mobile.core.metrics.MetricsService;
-import org.aerogear.mobile.core.metrics.MetricsPublisher;
 import org.json.JSONException;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 /**
  * MobileCore is the entry point into AeroGear mobile services
@@ -42,14 +43,9 @@ public final class MobileCore {
      *
      * @param context Application context
      */
-    private MobileCore(final Context context, final Options options)
-        throws InitializationException, IllegalStateException {
-        if (context == null) {
-            throw new IllegalStateException("Context should not be null");
-        }
-
-        this.context = context.getApplicationContext();
-        this.configFileName = options.configFileName;
+    private MobileCore(final Context context, final Options options) throws InitializationException, IllegalStateException {
+        this.context = nonNull(context, "context").getApplicationContext();
+        this.configFileName = nonNull(options, "options").configFileName;
 
         // -- Allow to override the default logger
         if (options.logger != null) {
@@ -57,7 +53,7 @@ public final class MobileCore {
         }
 
         // -- Parse JSON config file
-        try (InputStream configStream = context.getAssets().open(configFileName)) {
+        try (final InputStream configStream = context.getAssets().open(configFileName)) {
             this.servicesConfig = MobileCoreJsonParser.parse(configStream);
         } catch (JSONException | IOException exception) {
             String message = String.format("%s could not be loaded", configFileName);
@@ -100,7 +96,7 @@ public final class MobileCore {
      * @param context Application context
      * @return MobileCore instance
      */
-    public static MobileCore init(Context context) throws InitializationException {
+    public static MobileCore init(final Context context) throws InitializationException {
         return init(context, new Options());
     }
 
@@ -111,7 +107,7 @@ public final class MobileCore {
      * @param options AeroGear initialization options
      * @return MobileCore instance
      */
-    public static MobileCore init(Context context, Options options) throws InitializationException {
+    public static MobileCore init(final Context context, final Options options) throws InitializationException {
         return new MobileCore(context, options);
     }
 
@@ -126,12 +122,12 @@ public final class MobileCore {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends ServiceModule> T getInstance(Class<T> serviceClass) {
+    public <T extends ServiceModule> T getInstance(final Class<T> serviceClass) {
         return (T) getInstance(serviceClass, null);
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends ServiceModule> T getInstance(Class<T> serviceClass,
+    public <T extends ServiceModule> T getInstance(final Class<T> serviceClass,
                                                    ServiceConfiguration serviceConfiguration)
         throws InitializationException {
 
@@ -175,7 +171,7 @@ public final class MobileCore {
      * @param type Service type/name
      * @return the configuration for this service from the JSON config file
      */
-    private ServiceConfiguration getServiceConfiguration(String type) {
+    private ServiceConfiguration getServiceConfiguration(final String type) {
         return this.servicesConfig.get(type);
     }
 
@@ -186,6 +182,7 @@ public final class MobileCore {
      * @return String app version name
      */
     private String getAppVersion(final Context context) throws InitializationException {
+        nonNull(context, "context");
         try {
             return context
                 .getPackageManager()
@@ -233,18 +230,18 @@ public final class MobileCore {
         public Options() {
         }
 
-        public Options(final String configFileName, final HttpServiceModule httpServiceModule) {
-            this.configFileName = configFileName;
-            this.httpServiceModule = httpServiceModule;
+        public Options(@NonNull final String configFileName, @NonNull final HttpServiceModule httpServiceModule) {
+            this.configFileName = nonNull(configFileName, "configFileName");
+            this.httpServiceModule = nonNull(httpServiceModule, "httpServiceModule");
         }
 
         public Options setConfigFileName(@NonNull final String configFileName) {
-            this.configFileName = configFileName;
+            this.configFileName = nonNull(configFileName, "configFileName");
             return this;
         }
 
         public Options setHttpServiceModule(@NonNull final HttpServiceModule httpServiceModule) {
-            this.httpServiceModule = httpServiceModule;
+            this.httpServiceModule = nonNull(httpServiceModule, "httpServiceModule");
             return this;
         }
 

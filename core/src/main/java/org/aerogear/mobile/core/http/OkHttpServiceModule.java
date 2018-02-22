@@ -55,8 +55,6 @@ public class OkHttpServiceModule implements HttpServiceModule {
 
     @Override
     public HttpRequest newRequest() {
-        final OkHttpRequest request = new OkHttpRequest(client, new AppExecutors());
-        return request;
+        return new OkHttpRequest(client, new AppExecutors());
     }
-
 }

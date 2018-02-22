@@ -8,6 +8,8 @@ import org.aerogear.mobile.core.metrics.Metrics;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
 /**
  * Collects app metrics
  */
@@ -18,7 +20,7 @@ public class AppMetrics implements Metrics {
     private final String sdkVersion;
 
     public AppMetrics(final Context context) {
-        this.appId = context.getPackageName();
+        this.appId = nonNull(context, "context").getPackageName();
         this.appVersion = MobileCore.getAppVersion();
         this.sdkVersion = MobileCore.getSdkVersion();
     }
