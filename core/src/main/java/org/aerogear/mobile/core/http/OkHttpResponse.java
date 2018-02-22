@@ -19,7 +19,7 @@ class OkHttpResponse implements HttpResponse {
     private boolean closed = false;
 
     public OkHttpResponse(final Call okHttpCall, AppExecutors appExecutors) {
-        appExecutors.networkThread().execute(()-> {
+        appExecutors.networkThread().execute(() -> {
             try {
                 response = okHttpCall.execute();
                 requestCompleteLatch.countDown();
@@ -90,7 +90,7 @@ class OkHttpResponse implements HttpResponse {
     public String stringBody() {
         if (response != null) {
             try {
-                 return response.body().string();
+                return response.body().string();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             } finally {

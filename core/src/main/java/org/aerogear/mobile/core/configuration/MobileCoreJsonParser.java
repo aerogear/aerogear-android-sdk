@@ -52,7 +52,7 @@ public class MobileCoreJsonParser {
         serviceConfigBuilder.setType(object.getString("type"));
         JSONObject config = object.getJSONObject("config");
         JSONArray namesArray = config.names();
-        if(namesArray!=null){
+        if (namesArray != null) {
             int namesSize = namesArray.length();
             for (int i = 0; i < namesSize; i++) {
                 String name = namesArray.getString(i);
@@ -68,7 +68,6 @@ public class MobileCoreJsonParser {
      * @param jsonStream a inputStream to for mobile-core.json.  Please note that this
      *                   should be managed by the calling core.  The parser will not close the resource
      *                   when it is finished.
-     *
      * @return A map of ServiceConfigs mapped by their name.
      * @throws IOException   if reading the stream fails
      * @throws JSONException if the json document is malformed

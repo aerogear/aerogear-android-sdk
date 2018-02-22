@@ -10,7 +10,7 @@ public interface HttpResponse {
 
     /**
      * Creates a callback to be called when the response is finished successfully.
-     *
+     * <p>
      * The response is delivered immediately if the request has already been finished.
      *
      * @param runnable a callback method
@@ -48,6 +48,7 @@ public interface HttpResponse {
 
     /**
      * Returns the request error if it failed
+     *
      * @return Exception request error or null
      */
     Exception getRequestError();

@@ -36,5 +36,4 @@ public class DeviceMetrics implements Metrics {
     }
 
 
-
 }
