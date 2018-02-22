@@ -128,8 +128,9 @@ public final class MobileCore {
 
     @SuppressWarnings("unchecked")
     public <T extends ServiceModule> T getInstance(final Class<T> serviceClass,
-                                                   ServiceConfiguration serviceConfiguration)
+                                                   final ServiceConfiguration serviceConfiguration)
         throws InitializationException {
+        nonNull(serviceClass, "serviceClass");
 
         if (services.containsKey(serviceClass)) {
             return (T) services.get(serviceClass);
@@ -138,15 +139,17 @@ public final class MobileCore {
         try {
             final ServiceModule serviceModule = serviceClass.newInstance();
 
-            if (serviceConfiguration == null) {
-                serviceConfiguration = getServiceConfiguration(serviceModule.type());
+            ServiceConfiguration serviceCfg = serviceConfiguration;
+
+            if (serviceCfg == null) {
+                serviceCfg = getServiceConfiguration(serviceModule.type());
             }
 
-            if(serviceConfiguration == null && serviceModule.requiresConfiguration()) {
+            if(serviceCfg == null && serviceModule.requiresConfiguration()) {
                 throw new ConfigurationNotFoundException(serviceModule.type() + " not found on " + this.configFileName);
             }
 
-            serviceModule.configure(this, serviceConfiguration);
+            serviceModule.configure(this, serviceCfg);
 
             services.put(serviceClass, serviceModule);
 
