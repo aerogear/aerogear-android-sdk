@@ -26,8 +26,6 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonEmpty;
 public class OIDCCredentials {
 
     private static final String TAG = "OIDCCredentials";
-    private static final String beginPublicKey = "-----BEGIN PUBLIC KEY-----";
-    private static final String endPublicKey = "-----END PUBLIC KEY-----";
 
     private final AuthState authState;
 
@@ -172,12 +170,13 @@ public class OIDCCredentials {
     }
 
     /**
-     * Renew the token
+     * Renew the token.
+     *
      * @return
-     * @throws IllegalStateException
+     * @throws UnsupportedOperationException
      */
     public boolean renew() throws AuthenticationException {
-        throw new IllegalStateException("Not yet implemented");
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     @Override
