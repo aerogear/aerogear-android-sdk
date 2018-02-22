@@ -1,20 +1,14 @@
 package org.aerogear.mobile.example.ui;
 
-import android.net.Uri;
-import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.aerogear.mobile.auth.AuthService;
 import org.aerogear.mobile.auth.Callback;
-import org.aerogear.mobile.auth.authenticator.AuthenticateOptions;
 import org.aerogear.mobile.auth.authenticator.OIDCAuthenticateOptions;
-import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
 import org.aerogear.mobile.auth.user.UserPrincipal;
 import org.aerogear.mobile.example.R;
-
-import java.security.Principal;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -45,14 +39,14 @@ public class AuthFragment extends BaseFragment {
     @OnClick(R.id.keycloak_login)
     public void doLogin() {
         Log.i(TAG, "Performing login");
-        AuthService authService = ((MainActivity)getActivity()).getAuthService();
+        AuthService authService = ((MainActivity) getActivity()).getAuthService();
         OIDCAuthenticateOptions authOptions = new OIDCAuthenticateOptions(this.getActivity(), LOGIN_RESULT_CODE);
         authService.login(authOptions, new Callback<UserPrincipal>() {
             @Override
             public void onSuccess(UserPrincipal models) {
                 //user logged in, continue on..
                 Log.i(TAG, "user logged in " + models.toString());
-                ((MainActivity)getActivity()).navigateToAuthDetailsView(models);
+                ((MainActivity) getActivity()).navigateToAuthDetailsView(models);
             }
 
             @Override

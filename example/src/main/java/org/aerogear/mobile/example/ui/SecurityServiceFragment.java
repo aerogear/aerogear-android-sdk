@@ -8,8 +8,8 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import org.aerogear.mobile.example.R;
-import org.aerogear.mobile.security.SecurityCheckType;
 import org.aerogear.mobile.security.SecurityCheckResult;
+import org.aerogear.mobile.security.SecurityCheckType;
 import org.aerogear.mobile.security.SecurityService;
 
 import butterknife.BindView;
