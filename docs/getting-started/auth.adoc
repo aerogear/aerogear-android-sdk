@@ -127,7 +127,7 @@ Callback authCallback = new Callback<UserPrincipal>() {
     public void onError(Throwable error) {
         // An error occurred during login.
     }
-}
+};
 
 authService.login(options, authCallback);
 ----
