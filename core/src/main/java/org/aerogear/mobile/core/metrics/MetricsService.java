@@ -1,5 +1,7 @@
 package org.aerogear.mobile.core.metrics;
 
+import android.support.annotation.NonNull;
+
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.ServiceModule;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
@@ -7,6 +9,8 @@ import org.aerogear.mobile.core.metrics.impl.AppMetrics;
 import org.aerogear.mobile.core.metrics.impl.DeviceMetrics;
 import org.aerogear.mobile.core.metrics.publisher.LoggerMetricsPublisher;
 import org.aerogear.mobile.core.metrics.publisher.NetworkMetricsPublisher;
+
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 public class MetricsService implements ServiceModule {
 
@@ -17,11 +21,8 @@ public class MetricsService implements ServiceModule {
         return publisher;
     }
 
-    public MetricsService setPublisher(MetricsPublisher publisher) {
-        if (publisher == null) {
-            throw new IllegalStateException("publisher should not be null");
-        }
-        this.publisher = publisher;
+    public MetricsService setPublisher(@NonNull final MetricsPublisher publisher) {
+        this.publisher = nonNull(publisher, "publisher");
         return this;
     }
 
@@ -31,13 +32,16 @@ public class MetricsService implements ServiceModule {
     }
 
     @Override
-    public void configure(MobileCore core, ServiceConfiguration serviceConfiguration) {
+    public void configure(@NonNull final MobileCore core, @NonNull final ServiceConfiguration serviceConfiguration) {
+        nonNull(core, "mobileCore");
+        nonNull(serviceConfiguration, "serviceConfiguration");
+
         defaultMetrics = new Metrics[]{
             new AppMetrics(core.getContext()),
             new DeviceMetrics(core.getContext())
         };
 
-        String metricsUrl = serviceConfiguration.getUrl();
+        final String metricsUrl = serviceConfiguration.getUrl();
         if (metricsUrl == null) {
             publisher = new LoggerMetricsPublisher(MobileCore.getLogger());
         } else {
@@ -67,7 +71,8 @@ public class MetricsService implements ServiceModule {
      *
      * @param metrics Metrics to send
      */
-    public MetricsService publish(Metrics... metrics) {
+    public MetricsService publish(final Metrics... metrics) {
+        nonNull(metrics, "metrics");
         if (publisher == null) {
             throw new IllegalStateException("Make sure you have called configure or get this instance from MobileCore.getInstance()");
         }

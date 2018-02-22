@@ -12,6 +12,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import static java.net.HttpURLConnection.HTTP_OK;
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 /**
  * Sends metrics data to the backend using the configuration in JSON config file
@@ -32,9 +33,9 @@ public class NetworkMetricsPublisher implements MetricsPublisher {
 
     @Override
     public void publish(final Metrics... metrics) {
+        nonNull(metrics, "metrics");
 
         try {
-
             final JSONObject json = new JSONObject();
 
             json.put("clientId", ClientIdGenerator.getOrCreateClientId(context));
@@ -64,7 +65,5 @@ public class NetworkMetricsPublisher implements MetricsPublisher {
         } catch (JSONException e) {
             MobileCore.getLogger().error(e.getMessage(), e);
         }
-
     }
-
 }

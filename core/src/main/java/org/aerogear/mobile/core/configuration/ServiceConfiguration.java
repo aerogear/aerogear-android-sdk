@@ -12,10 +12,10 @@ public final class ServiceConfiguration {
     private final String name;
     private final String type;
     private final String url;
-    private final HashMap<String, String> properties;
+    private final Map<String, String> properties;
 
     private ServiceConfiguration(final String name,
-                                 final HashMap<String, String> properties,
+                                 final Map<String, String> properties,
                                  final String type,
                                  final String url) {
         this.name = name;
@@ -27,7 +27,7 @@ public final class ServiceConfiguration {
     public static class Builder {
 
         protected String name;
-        protected HashMap<String, String> properties = new HashMap<>();
+        protected Map<String, String> properties = new HashMap<>();
         protected String type;
         protected String uri;
 

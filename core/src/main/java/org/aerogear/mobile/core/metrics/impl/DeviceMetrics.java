@@ -17,7 +17,6 @@ public class DeviceMetrics implements Metrics {
     private final String platformVersion;
 
     public DeviceMetrics(final Context context) {
-
         this.platform = "android";
         this.platformVersion = String.valueOf(Build.VERSION.SDK_INT);
     }
