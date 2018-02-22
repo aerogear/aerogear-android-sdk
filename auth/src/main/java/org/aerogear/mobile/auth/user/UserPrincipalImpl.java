@@ -157,21 +157,24 @@ public class UserPrincipalImpl implements UserPrincipal {
 
     @Override
     public String toString() {
-        String roleNames = "";
-        Iterator<UserRole> i = roles.iterator();
-        if (i.hasNext()) {
-            //first element
-            roleNames.concat("[").concat(i.next().getName());
-            while(i.hasNext()) {
-                roleNames.concat(", ").concat(i.next().getName());
+        final StringBuilder sb = new StringBuilder();
+        sb.append("[");
+
+        // TODO: use .stream().map(name -> name.getname())... when API 24
+        final Iterator<UserRole> iterator = roles.iterator();
+        if (iterator.hasNext()) {
+            sb.append(iterator.next().getName());
+
+            while (iterator.hasNext()) {
+                sb.append(", ").append(iterator.next().getName());
             }
         }
-        roleNames.concat("]");
+        sb.append("]");
 
         return "UserPrincipalImpl{" +
                 "username='" + username + '\'' +
                 ", email='" + email + '\'' +
-                ", roles=" + roleNames +
+                ", roles=" + sb.toString() +
                 '}';
     }
 

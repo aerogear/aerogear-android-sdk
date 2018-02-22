@@ -1,10 +1,8 @@
 package org.aerogear.mobile.auth.user;
 
-import org.aerogear.mobile.auth.user.RoleType;
-import org.aerogear.mobile.auth.user.UserRole;
-import org.aerogear.mobile.auth.user.UserPrincipalImpl;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -44,6 +42,12 @@ public class UserPrincipalImplTest {
     @Test
     public void testHasRealmRoleSucceeds(){
         assertEquals(userPrincipalImpl.hasRealmRole("rRole"), true);
+    }
+
+    @Test
+    public void testToStringImpl(){
+        Assert.assertTrue(userPrincipalImpl.toString().contains("cRole"));
+        Assert.assertTrue(userPrincipalImpl.toString().contains("rRole"));
     }
 
     @Test
