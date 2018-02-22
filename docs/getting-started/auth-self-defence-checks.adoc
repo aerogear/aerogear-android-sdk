@@ -1,0 +1,85 @@
+= Self Defence Checks
+
+As part of the Auth SDK module, there is a self defence check feature.  This feature offers multiple checks that can be used to analyse the secuirty of the device.
+
+== Prequisite's
+
+. Import and initialise the Auth SDK module - link:auth.adoc[AeroGear Services Auth SDK].
+
+== Usage
+
+The `SecurityService` can be retrieved using the `MobileCore#getInstance` method.
+
+[source, java]
+----
+SecurityService securityService = mobileCore.getInstance(SecurityService.class);
+----
+
+Any subsequent `MobileCore#getInstance` method will return the same instance of `SecurityService`.
+
+The `SecurityService#check` method can be used to run different secuirty checks.  It expects a `SecurityCheckType` paramater and returns `SecurityCheckResult`.
+
+[source, java]
+----
+SecurityCheckResult result = securityService.check(SecurityCheckType.<check_type>);
+----
+
+=== Detecting Root Access
+
+To detect if a device has been compromised (rooted/jailbreak) the `SecurityCheckType#IS_ROOTED` can be used.  This function uses the link:https://github.com/scottyab/rootbeer[Rootbeer] library to check if root access is present on the device.
+
+[source, java]
+----
+SecurityCheckResult result = securityService.check(SecurityCheckType.IS_ROOTED);
+if (result.passed()) {
+    // device is rooted
+}
+----
+
+=== Detecting if Lock Screen is Set
+
+To detect if a device has a lock screen set (with pin, fingerprint, pattern) the `SecurityCheckType#HAS_SCREENLOCK` function can be used.  This function uses Android's link:https://developer.android.com/reference/android/app/KeyguardManager.html[KeyguardManager] class. 
+
+[source, java]
+----
+SecurityCheckResult result = securityService.check(SecurityCheckType.HAS_SCREENLOCK);
+if (result.passed()) {
+    // device has screenlock
+}
+----
+
+=== Detecting if Debugger is Attached
+
+To detect if an Android debugger is attached to the app the `SecurityCheckType#IS_DEBUGGER` function can be used.  This function uses Android's link:https://developer.android.com/reference/android/os/Debug.html[Debug] class.
+
+[source, java]
+----
+SecurityCheckResult result = securityService.check(SecurityCheckType.IS_DEBUGGER);
+if (result.passed()) {
+    // debugger is attached to app
+}
+----
+
+=== Detecting Emulator Access
+
+To detect if the app is being run on an emulator the `SecurityCheckType#IS_EMULATOR` function can be used.  This function uses Android's link:https://developer.android.com/reference/android/os/Build.html[Build] class.
+
+[source, java]
+----
+SecurityCheckResult result = securityService.check(SecurityCheckType.IS_EMULATOR);
+if (result.passed()) {
+    // app is being run on an emulator
+}
+----
+
+=== Detecting Developer Mode Enabled
+
+To detect if Developer Mode has been enabled on the device the `SecurityCheckType#IS_DEVELOPER_MODE` function can be used.  This function uses Android's link:https://developer.android.com/reference/android/provider/Settings.html[Settings] class.
+
+[source, java]
+----
+SecurityCheckResult result = securityService.check(SecurityCheckType.IS_DEVELOPER_MODE);
+if (result.passed()) {
+    // developer mode has been enabled in the device
+}
+----
