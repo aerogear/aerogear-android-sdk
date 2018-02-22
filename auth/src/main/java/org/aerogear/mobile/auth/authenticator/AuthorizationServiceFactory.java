@@ -12,7 +12,6 @@ import net.openid.appauth.ResponseTypeValues;
 import net.openid.appauth.browser.BrowserBlacklist;
 import net.openid.appauth.browser.VersionedBrowserMatcher;
 
-import org.aerogear.mobile.auth.ConnectionBuilderForTesting;
 import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
 import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
 
@@ -86,10 +85,6 @@ public class AuthorizationServiceFactory {
         AppAuthConfiguration.Builder appAuthConfigurationBuilder = new AppAuthConfiguration.Builder()
             .setBrowserMatcher(new BrowserBlacklist(
                 VersionedBrowserMatcher.CHROME_CUSTOM_TAB));
-
-        if (authServiceConfiguration.isAllowSelfSignedCertificate()) {
-            appAuthConfigurationBuilder.setConnectionBuilder(new ConnectionBuilderForTesting());
-        }
 
         AppAuthConfiguration appAuthConfig = appAuthConfigurationBuilder.build();
 

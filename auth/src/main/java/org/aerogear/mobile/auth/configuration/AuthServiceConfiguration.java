@@ -15,11 +15,6 @@ public class AuthServiceConfiguration {
     private final Uri redirectUri;
 
     /**
-     * If self-signed certificate should be allowed.
-     */
-    private final boolean allowSelfSignedCertificate;
-
-    /**
      * Specify the minimum time between requests to get the JWKS (Json web key set) in minutes.
      * The default value is 1440 (1 day).
      */
@@ -32,7 +27,6 @@ public class AuthServiceConfiguration {
      */
     private AuthServiceConfiguration(final AuthConfigurationBuilder builder) {
         this.redirectUri = builder.redirectUri;
-        this.allowSelfSignedCertificate = builder.allowSelfSignedCert;
         this.minTimeBetweenJwksRequests = builder.minTimeBetweenJwksRequests;
     }
 
@@ -41,7 +35,6 @@ public class AuthServiceConfiguration {
      */
     public static class AuthConfigurationBuilder {
         private Uri redirectUri;
-        private boolean allowSelfSignedCert;
         private int minTimeBetweenJwksRequests = 24*60;
 
         public AuthConfigurationBuilder() {}
@@ -53,17 +46,6 @@ public class AuthServiceConfiguration {
          */
         public AuthConfigurationBuilder withRedirectUri(final String redirectUri) {
             this.redirectUri = Uri.parse(nonNull(redirectUri, "redirectUri"));
-            return this;
-        }
-
-        /**
-         * Specify if self sign certificate is allow.
-         * NOTE: this is not for production use and it should only be used for testing purpose.
-         * @param allowSelfSignedCert
-         * @return
-         */
-        public AuthConfigurationBuilder allowSelfSignedCertificate(final boolean allowSelfSignedCert) {
-            this.allowSelfSignedCert = allowSelfSignedCert;
             return this;
         }
 
@@ -82,13 +64,6 @@ public class AuthServiceConfiguration {
      */
     public Uri getRedirectUri() {
         return redirectUri;
-    }
-
-    /**
-     * @return If self signed certificate is allowed
-     */
-    public boolean isAllowSelfSignedCertificate() {
-        return allowSelfSignedCertificate;
     }
 
     /**

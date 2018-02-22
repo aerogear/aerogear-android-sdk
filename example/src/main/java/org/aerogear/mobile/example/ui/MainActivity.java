@@ -50,7 +50,6 @@ public class MainActivity extends BaseActivity
         authService = (AuthService) mobileCore.getInstance(AuthService.class);
         AuthServiceConfiguration authServiceConfiguration = new AuthServiceConfiguration.AuthConfigurationBuilder()
             .withRedirectUri("org.aerogear.mobile.example:/callback")
-            //.allowSelfSignedCertificate(true)
             .build();
         authService.init(getApplicationContext(), authServiceConfiguration);
 
