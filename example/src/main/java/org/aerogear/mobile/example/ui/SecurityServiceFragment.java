@@ -8,8 +8,8 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import org.aerogear.mobile.example.R;
-import org.aerogear.mobile.security.SecurityCheckType;
 import org.aerogear.mobile.security.SecurityCheckResult;
+import org.aerogear.mobile.security.SecurityCheckType;
 import org.aerogear.mobile.security.SecurityService;
 
 import butterknife.BindView;
@@ -168,7 +168,10 @@ public class SecurityServiceFragment extends BaseFragment {
      */
     public void detectDeveloperOptions() {
         totalTests++;
-        //TODO: add check
+        SecurityCheckResult result = securityService.check(SecurityCheckType.IS_DEVELOPER_MODE);
+        if (result.passed()) {
+            setDetected(developerOptions, R.string.developer_options_positive);
+        }
     }
 
     /**
