@@ -148,7 +148,7 @@ public void onActivityResult(int requestCode, int resultCode, Intent data) {
     if (requestCode == LOGIN_RESULT_CODE) {
         // The core will return the same instance of the auth service as before
         AuthService authService = mobileCore.getInstance(AuthService.class);
-        authService.handleAuthResponse(data);
+        authService.handleAuthResult(data);
     }
 }
 ----
