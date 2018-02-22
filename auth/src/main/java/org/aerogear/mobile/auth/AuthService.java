@@ -21,6 +21,7 @@ import org.jose4j.jwk.JsonWebKeySet;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
 
 import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
@@ -45,104 +46,68 @@ public class AuthService implements ServiceModule {
     private MobileCore mobileCore;
 
     /**
-     * Variable holdind current status of the service. Used to check if the service is ready to be
-     * used.
+     * Enumeration of all the steps that must be executed to make this service ready
      */
-    private final ReadynessStatus status = new ReadynessStatus();
+    private enum STEP {
+        /**
+         * This steps is related to the 'configure' method
+         */
+        CONFIGURED("configure"),
+        /**
+         * This step is related to the 'initialize' method
+         */
+        INITIALIZED("initialize");
+
+        /**
+         * The mothod that must be invoked to perform the required step.
+         */
+        String methodName;
+
+        STEP(final String methodName) {
+            this.methodName = methodName;
+        }
+    };
 
     /**
-     * This class is used to hold the status of the service and, if required, throw and exception
-     * with appropriate message describing why the service is not ready yet.
+     * Stores the list of executed initialisation steps. When started, all steps must be executed.
      */
-    private static class ReadynessStatus {
-        /**
-         * Enumeration of all the steps that must be executed to make this service ready
-         */
-        private enum STEP {
-            /**
-             * This steps is related to the 'configure' method
-             */
-            CONFIGURED(1<<0, "configure"),
-            /**
-             * This step is related to the 'initialize' method
-             */
-            INITIALIZED(1<<1, "initialize");
+    private final EnumSet<STEP> initialisationStatus = EnumSet.noneOf(STEP.class);
 
-            /**
-             * We store here all the executed step. Each bit represent a different step.
-             */
-            byte bitValue;
-
-            /**
-             * The mothod that must be invoked to perform the required step.
-             */
-            String methodName;
-
-            STEP(final int val, final String methodName) {
-                this.bitValue = (byte)val;
-                this.methodName = methodName;
-            }
-        }
-
-        /**
-         * Current status. When started, all steps must be executed.
-         */
-        private byte initialisationStatus = 0;
-
-        /**
-         * Mark one step as executed.
-         * @param step executed step
-         */
-        public void updateStatus(final STEP step) {
-            initialisationStatus |= step.bitValue;
-        }
-
-        /**
-         * Checks if the provided step has been executed.
-         * @param step step to be checked
-         * @return true if it has been executed
-         */
-        public boolean checkState(final STEP step) {
-            return ((initialisationStatus & step.bitValue) > 0);
-        }
-
-        /**
-         * Invoked to check if the service is ready. If it is not ready, an IllegalStateException is
-         * thrown with an appropriate error message.
-         */
-        public void checkReadyness() {
-
-            if (initialisationStatus == (STEP.CONFIGURED.bitValue | STEP.INITIALIZED.bitValue)) {
-                // The service is ready
-                return;
-            }
-
-            List<String> methodsToBeInvoked = new ArrayList<>(2);
-
-            if ((initialisationStatus & STEP.CONFIGURED.bitValue) == 0) {
-                methodsToBeInvoked.add(STEP.CONFIGURED.methodName);
-            }
-
-            if ((initialisationStatus & STEP.INITIALIZED.bitValue) == 0) {
-                methodsToBeInvoked.add(STEP.INITIALIZED.methodName);
-            }
-
-            throw new IllegalStateException(
-                String.format("The AuthService has not been correctly initialised. Following methods needs to be called: %s",
-                    Arrays.toString(methodsToBeInvoked.toArray())));
-        }
-    }
     /**
      * Instantiates a new AuthService object
      */
     public AuthService() {}
 
     /**
+     * Throws an {@link IllegalStateException} if the required initialisation steps are not executed
+     * in the right order
+     */
+    private void failIfNotReady() {
+        if (initialisationStatus.containsAll(Arrays.asList(STEP.values()))) {
+            return;
+        }
+
+        List<String> methodsToBeInvoked = new ArrayList<>(2);
+
+        if (!initialisationStatus.contains(STEP.CONFIGURED)) {
+            methodsToBeInvoked.add(STEP.CONFIGURED.methodName);
+        }
+
+        if (!initialisationStatus.contains(STEP.INITIALIZED)) {
+            methodsToBeInvoked.add(STEP.INITIALIZED.methodName);
+        }
+
+        throw new IllegalStateException(
+            String.format("The AuthService has not been correctly initialised. Following methods needs to be called: %s",
+                Arrays.toString(methodsToBeInvoked.toArray())));
+    }
+
+    /**
      * Return the user that is currently logged and is still valid. Otherwise returns null
      * @return the current logged in. Could be null.
      */
     public UserPrincipal currentUser() {
-        status.checkReadyness();
+        failIfNotReady();
 
         UserPrincipal currentUser = null;
         JsonWebKeySet jwks = jwksManager.load(keycloakConfiguration);
@@ -171,7 +136,7 @@ public class AuthService implements ServiceModule {
      * @param callback the callback function that will be invoked with the user info
      */
     public void login(@NonNull final OIDCAuthenticateOptions authOptions, @NonNull final Callback<UserPrincipal> callback) {
-        status.checkReadyness();
+        failIfNotReady();
         oidcAuthenticatorImpl.authenticate(authOptions, callback);
     }
 
@@ -190,7 +155,7 @@ public class AuthService implements ServiceModule {
      * @param principal principal to be logged out
      */
     public void logout(@NonNull final UserPrincipal principal) {
-        status.checkReadyness();
+        failIfNotReady();
         this.oidcAuthenticatorImpl.logout(principal);
     }
 
@@ -207,7 +172,7 @@ public class AuthService implements ServiceModule {
         this.serviceConfiguration = nonNull(serviceConfiguration, "serviceConfiguration");
         this.keycloakConfiguration = new KeycloakConfiguration(serviceConfiguration);
 
-        status.updateStatus(ReadynessStatus.STEP.CONFIGURED);
+        initialisationStatus.add(STEP.CONFIGURED);
     }
 
     /**
@@ -215,7 +180,7 @@ public class AuthService implements ServiceModule {
      * @param context
      */
     public void init(final Context context, final AuthServiceConfiguration authServiceConfiguration) {
-        if (!status.checkState(ReadynessStatus.STEP.CONFIGURED)) {
+        if (!initialisationStatus.contains(STEP.CONFIGURED)) {
             throw new IllegalStateException("configure method must be called before the init method");
         }
 
@@ -224,7 +189,8 @@ public class AuthService implements ServiceModule {
         this.authServiceConfiguration = nonNull(authServiceConfiguration, "authServiceConfiguration");
         this.jwksManager = new JwksManager(this.appContext, this.mobileCore, this.authServiceConfiguration);
         this.oidcAuthenticatorImpl = new OIDCAuthenticatorImpl(this.serviceConfiguration, this.authServiceConfiguration, this.authStateManager, new AuthorizationServiceFactory(appContext), jwksManager);
-        status.updateStatus(ReadynessStatus.STEP.INITIALIZED);
+
+        initialisationStatus.add(STEP.INITIALIZED);
     }
 
     @Override
