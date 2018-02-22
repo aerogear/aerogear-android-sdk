@@ -71,6 +71,7 @@ public class OIDCCredentials {
         final String issuer = keycloakConfig.getIssuer();
         final String audience = keycloakConfig.getClientId();
         final JwksVerificationKeyResolver jwksKeyResolver = new JwksVerificationKeyResolver(jwks.getJsonWebKeys());
+
         // Validate and process the JWT.
         final JwtConsumer jwtConsumer = new JwtConsumerBuilder()
             .setRequireExpirationTime() // require the JWT to have an expiration time
@@ -86,7 +87,7 @@ public class OIDCCredentials {
 
         try {
             //  Validate the JWT and process it to the Claims
-            final JwtClaims jwtClaims = jwtConsumer.processToClaims(this.getAccessToken());
+            jwtConsumer.processToClaims(this.getAccessToken());
             return true;
         } catch (final InvalidJwtException e) {
             Log.e(TAG, "Invalid JWT provided", e);

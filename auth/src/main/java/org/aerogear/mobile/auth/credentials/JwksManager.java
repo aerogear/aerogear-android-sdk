@@ -1,6 +1,5 @@
 package org.aerogear.mobile.auth.credentials;
 
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
@@ -26,17 +25,15 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
  */
 public class JwksManager {
 
+    private static final Logger logger = MobileCore.getLogger();
     private static final int MILLISECONDS_PER_MINUTE = 60*1000;
-
     private static final String STORE_NAME = "org.aerogear.mobile.auth.JwksStore";
-
     private static final String ENTRY_SUFFIX_FOR_KEY_CONTENT = "jwks_content";
     private static final String ENTRY_SUFFIX_FOR_REQUEST_DATE = "requested_date";
 
     private final HttpServiceModule httpModule;
     private final AuthServiceConfiguration authServiceConfiguration;
     private final SharedPreferences sharedPrefs;
-    private static final Logger logger = MobileCore.getLogger();
 
     public JwksManager(@NonNull final Context context,
                        @NonNull final MobileCore mobileCore,

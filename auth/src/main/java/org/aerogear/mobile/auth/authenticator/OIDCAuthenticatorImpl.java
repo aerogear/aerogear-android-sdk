@@ -1,26 +1,15 @@
 package org.aerogear.mobile.auth.authenticator;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.Nullable;
 
-import net.openid.appauth.AppAuthConfiguration;
 import net.openid.appauth.AuthState;
 import net.openid.appauth.AuthorizationException;
-import net.openid.appauth.AuthorizationRequest;
 import net.openid.appauth.AuthorizationResponse;
 import net.openid.appauth.AuthorizationService;
-import net.openid.appauth.AuthorizationServiceConfiguration;
-import net.openid.appauth.ResponseTypeValues;
-import net.openid.appauth.TokenResponse;
-import net.openid.appauth.browser.BrowserBlacklist;
-import net.openid.appauth.browser.VersionedBrowserMatcher;
 
 import org.aerogear.mobile.auth.AuthStateManager;
-import org.aerogear.mobile.auth.AuthenticationException;
 import org.aerogear.mobile.auth.Callback;
-import org.aerogear.mobile.auth.ConnectionBuilderForTesting;
 import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
 import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
 import org.aerogear.mobile.auth.credentials.JwksManager;
@@ -120,33 +109,30 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
     }
 
     private void exchangeTokens(final AuthorizationResponse response) {
-        authService.performTokenRequest(response.createTokenExchangeRequest(), new AuthorizationService.TokenResponseCallback() {
-            @Override
-            public void onTokenRequestCompleted(@Nullable TokenResponse tokenResponse, @Nullable AuthorizationException exception) {
-                if (tokenResponse != null) {
-                    authState.update(tokenResponse, exception);
-                    OIDCCredentials oidcTokens = new OIDCCredentials(authState.jsonSerializeString());
-                    authStateManager.save(oidcTokens);
-                    try {
-                        UserIdentityParser parser = new UserIdentityParser(oidcTokens, keycloakConfiguration);
-                        UserPrincipalImpl user = parser.parseUser();
-                        jwksManager.fetchJwks(keycloakConfiguration, new Callback<JsonWebKeySet>() {
-                            @Override
-                            public void onSuccess(JsonWebKeySet models) {
-                                authCallback.onSuccess(user);
-                            }
+        authService.performTokenRequest(response.createTokenExchangeRequest(), (tokenResponse, exception) -> {
+            if (tokenResponse != null) {
+                authState.update(tokenResponse, exception);
+                OIDCCredentials oidcTokens = new OIDCCredentials(authState.jsonSerializeString());
+                authStateManager.save(oidcTokens);
+                try {
+                    UserIdentityParser parser = new UserIdentityParser(oidcTokens, keycloakConfiguration);
+                    UserPrincipalImpl user = parser.parseUser();
+                    jwksManager.fetchJwks(keycloakConfiguration, new Callback<JsonWebKeySet>() {
+                        @Override
+                        public void onSuccess(JsonWebKeySet models) {
+                            authCallback.onSuccess(user);
+                        }
 
-                            @Override
-                            public void onError(Throwable error) {
-                                authCallback.onError(error);
-                            }
-                        });
-                    } catch(Exception e) {
-                        authCallback.onError(e);
-                    }
-                } else {
-                    authCallback.onError(exception);
+                        @Override
+                        public void onError(Throwable error) {
+                            authCallback.onError(error);
+                        }
+                    });
+                } catch(Exception e) {
+                    authCallback.onError(e);
                 }
+            } else {
+                authCallback.onError(exception);
             }
         });
     }
@@ -177,12 +163,7 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
         request.get(logoutUrl.toString());
 
         // Creates and handles the response
-        new AppExecutors().networkThread().execute(new Runnable() {
-            @Override
-            public void run() {
-                request.execute();
-            }
-        });
+        new AppExecutors().networkThread().execute(() -> request.execute());
         //it doesn't matter if the logout request is successful or not, we should always delete the local tokens
         //the remote session should be timed out eventually
         authStateManager.save(null);

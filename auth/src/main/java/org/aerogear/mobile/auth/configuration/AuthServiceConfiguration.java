@@ -8,6 +8,7 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
  * This represents an authentication config provided by the developer.
  */
 public class AuthServiceConfiguration {
+
     /**
      * The redirect uri for the developers app.
      */
@@ -23,7 +24,6 @@ public class AuthServiceConfiguration {
      * The default value is 1440 (1 day).
      */
     private final int minTimeBetweenJwksRequests;
-
 
     /**
      * Builds a new AuthServiceConfiguration object.
@@ -67,7 +67,7 @@ public class AuthServiceConfiguration {
             return this;
         }
 
-        public AuthConfigurationBuilder withMinTimeBetweenJwksRequests(int minTimeBetweenJwksRequests) {
+        public AuthConfigurationBuilder withMinTimeBetweenJwksRequests(final int minTimeBetweenJwksRequests) {
             this.minTimeBetweenJwksRequests = minTimeBetweenJwksRequests;
             return this;
         }
@@ -97,6 +97,5 @@ public class AuthServiceConfiguration {
     public int getMinTimeBetweenJwksRequests() {
         return minTimeBetweenJwksRequests;
     }
-
 
 }
