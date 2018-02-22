@@ -14,7 +14,6 @@ import org.aerogear.mobile.core.http.OkHttpServiceModule;
 import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.logging.LoggerAdapter;
 import org.aerogear.mobile.core.metrics.MetricsService;
-import org.aerogear.mobile.core.metrics.MetricsPublisher;
 import org.json.JSONException;
 
 import java.io.IOException;
@@ -28,9 +27,9 @@ import java.util.Map;
 public final class MobileCore {
 
     private static final String TAG = "AEROGEAR/CORE";
+
     private static Logger logger = new LoggerAdapter();
     private static String appVersion;
-
 
     private final Context context;
     private final String configFileName;
@@ -45,6 +44,7 @@ public final class MobileCore {
      */
     private MobileCore(Context context, Options options)
         throws InitializationException, IllegalStateException {
+
         if (context == null) {
             throw new IllegalStateException("Context should not be null");
         }
@@ -148,7 +148,7 @@ public final class MobileCore {
                 serviceConfiguration = getServiceConfiguration(serviceModule.type());
             }
 
-            if(serviceConfiguration == null && serviceModule.requiresConfiguration()) {
+            if (serviceConfiguration == null && serviceModule.requiresConfiguration()) {
                 throw new ConfigurationNotFoundException(serviceModule.type() + " not found on " + this.configFileName);
             }
 
@@ -165,6 +165,7 @@ public final class MobileCore {
 
     /**
      * Get application context
+     *
      * @return Application context
      */
     public Context getContext() {
@@ -233,11 +234,6 @@ public final class MobileCore {
         private Logger logger = new LoggerAdapter();
 
         public Options() {
-        }
-
-        public Options(String configFileName, HttpServiceModule httpServiceModule) {
-            this.configFileName = configFileName;
-            this.httpServiceModule = httpServiceModule;
         }
 
         public Options setConfigFileName(@NonNull String configFileName) {
