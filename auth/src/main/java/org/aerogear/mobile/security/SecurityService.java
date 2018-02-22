@@ -1,11 +1,15 @@
 package org.aerogear.mobile.security;
 
+import android.support.annotation.NonNull;
+
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.ServiceModule;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.metrics.MetricsService;
 import org.aerogear.mobile.security.impl.SecurityCheckExecutorImpl;
 import org.aerogear.mobile.security.metrics.SecurityCheckResultMetric;
+
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 /**
  * Service for running security checks in an application.
@@ -53,8 +57,11 @@ public class SecurityService implements ServiceModule{
         return securityCheckType.getSecurityCheck().test(core.getContext());
     }
 
-    public SecurityCheckResult checkAndSendMetric(final SecurityCheckType securityCheckType, final MetricsService metricsService) {
-        SecurityCheckResult result = check(securityCheckType);
+    public SecurityCheckResult checkAndSendMetric(@NonNull final SecurityCheckType securityCheckType, @NonNull final MetricsService metricsService) {
+        nonNull(securityCheckType, "securityCheckType");
+        nonNull(metricsService, "metricsService");
+
+        final SecurityCheckResult result = check(securityCheckType);
         metricsService.publish(new SecurityCheckResultMetric(result));
         return result;
     }

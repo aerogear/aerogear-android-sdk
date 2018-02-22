@@ -1,6 +1,7 @@
 package org.aerogear.mobile.security.impl;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import org.aerogear.mobile.core.metrics.MetricsService;
 import org.aerogear.mobile.security.SecurityCheckType;
@@ -11,6 +12,8 @@ import org.aerogear.mobile.security.metrics.SecurityCheckResultMetric;
 
 import java.util.Collection;
 import java.util.HashSet;
+
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 /**
  * Implementation of {@link SecurityCheckExecutor}.
@@ -25,14 +28,14 @@ public class SecurityCheckExecutorImpl implements SecurityCheckExecutor {
 
     private MetricsService metricsService;
 
-    public SecurityCheckExecutorImpl(final Context context) {
+    public SecurityCheckExecutorImpl(@NonNull final Context context) {
         this.checks = new HashSet<>();
-        this.context = context;
+        this.context = nonNull(context, "context");
     }
 
     @Override
-    public SecurityCheckExecutor addCheck(final SecurityCheckType securityCheckType) {
-        return addCheck(securityCheckType.getSecurityCheck());
+    public SecurityCheckExecutor addCheck(@NonNull final SecurityCheckType securityCheckType) {
+        return addCheck(nonNull(securityCheckType, "securityCheckType").getSecurityCheck());
     }
 
     @Override
@@ -49,7 +52,7 @@ public class SecurityCheckExecutorImpl implements SecurityCheckExecutor {
 
     @Override
     public SecurityCheckResult[] execute() {
-        SecurityCheckResult[] results = getTestResults();
+        final SecurityCheckResult[] results = getTestResults();
         if (metricsService != null) {
             publishResultMetrics(results);
         }
@@ -61,8 +64,9 @@ public class SecurityCheckExecutorImpl implements SecurityCheckExecutor {
      *
      * @param results Array of results
      */
-    private void publishResultMetrics(final SecurityCheckResult[] results) {
-        for(SecurityCheckResult result : results) {
+    private void publishResultMetrics(@NonNull final SecurityCheckResult[] results) {
+        nonNull(results, "results");
+        for(final SecurityCheckResult result : results) {
             this.metricsService.publish(new SecurityCheckResultMetric(result));
         }
     }
@@ -73,9 +77,9 @@ public class SecurityCheckExecutorImpl implements SecurityCheckExecutor {
      * @return Array of results.
      */
     private SecurityCheckResult[] getTestResults() {
-        SecurityCheckResult[] results = new SecurityCheckResult[checks.size()];
+        final SecurityCheckResult[] results = new SecurityCheckResult[checks.size()];
         int i = 0;
-        for (SecurityCheck check : checks) {
+        for (final SecurityCheck check : checks) {
             results[i++] = check.test(context);
         }
         return results;
