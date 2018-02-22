@@ -17,3 +17,29 @@ android {
 
 }
 ----
+
+=== Supporting self-signed certificates
+
+For local development and testing purposes, you may need to use self-signed certificates for the backend mobile services. If this is the case, in order for the libraries and example app to work, you need to make sure the device/emulator trust the self-signed certificates.
+
+The easiest way to do it is to install the CA certificate to the device/emulator:
+
+1. Get the CA certificate. If you don't have it already, you can use this command to list the full certificate chain of the server:
++
+[source, bash]
+----
+openssl s_client -showcerts -servername <hostname> -connect <hostname>:<port>
+----
+
++
+The CA certificate is normally the last in the chain.
++
+Copy the content of the certificate and save it to a file. Make sure the extension of the file is `cer`.
+
+2. Distribute the CA certificate file to the device/emulator.
++
+To distribute it to a device, it's best to use a file sharing service, or sent it as an email attachment. Try open the file on device and follow the instructions to install the file.
++
+To distribute it to an emulator, you can simply drag the CA certificate file and drop it to the emulator to copy it. Then you should use the File explorer on the emulator to locate the file (usually it should be in `Downloads` directory) and then install the file.
+
+3. You also need to configure the app to trust the additional CAs by following the https://developer.android.com/training/articles/security-config.html[Android Network Security Configuration Guide]
