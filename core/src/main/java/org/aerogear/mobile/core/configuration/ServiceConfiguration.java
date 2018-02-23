@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This represents a parsed service configuration from JSON configuration.
+ * This represents a parsed singleThreadService configuration from JSON configuration.
  */
 public final class ServiceConfiguration {
 

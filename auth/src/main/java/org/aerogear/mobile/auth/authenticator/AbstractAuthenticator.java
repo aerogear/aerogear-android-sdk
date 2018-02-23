@@ -14,7 +14,7 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 public abstract class AbstractAuthenticator {
 
     /**
-     * Authentication service configuration.
+     * Authentication singleThreadService configuration.
      */
     private final ServiceConfiguration serviceConfig;
 
@@ -40,9 +40,9 @@ public abstract class AbstractAuthenticator {
     public abstract void logout(final UserPrincipal principal);
 
     /**
-     * Returns the authentication service configuration
+     * Returns the authentication singleThreadService configuration
      *
-     * @return the authentication service configuration
+     * @return the authentication singleThreadService configuration
      */
     protected ServiceConfiguration getServiceConfig() {
         return this.serviceConfig;

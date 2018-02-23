@@ -6,7 +6,6 @@ import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.ServiceModule;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.metrics.MetricsService;
-import org.aerogear.mobile.security.impl.SecurityCheckExecutorImpl;
 import org.aerogear.mobile.security.metrics.SecurityCheckResultMetric;
 
 import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
@@ -15,7 +14,7 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
  * Service for running security checks in an application.
  *
  * Checks can be run individually using {@link #check(SecurityCheckType)} , or can be chained
- * together using an {@link SecurityCheckExecutor} by using {@link #getCheckExecutor()}.
+ * together using an {@link SyncSecurityCheckExecutor} by using {@link #getCheckExecutor()}.
  */
 public class SecurityService implements ServiceModule{
     private final static String TYPE = "security";
@@ -39,12 +38,23 @@ public class SecurityService implements ServiceModule{
     public void destroy() {}
 
     /**
-     * Retrieve a {@link SecurityCheckExecutor} to run multiple {@link SecurityCheckType checks} chained.
+     * Retrieve a {@link SyncSecurityCheckExecutor} to run multiple {@link SecurityCheckType checks} chained.
      *
      * @return A new executor.
      */
-    public SecurityCheckExecutor getCheckExecutor() {
-        return new SecurityCheckExecutorImpl(core.getContext());
+    public SyncSecurityCheckExecutor getCheckExecutor() {
+        return SecurityCheckExecutor.Builder
+            .newSyncExecutor(core.getContext()).build();
+    }
+
+    /**
+     * Retrieve a {@link AsyncSecurityCheckExecutor} to asynchronously run multiple {@link SecurityCheckType checks} chained.
+     *
+     * @return A new async executor.
+     */
+    public AsyncSecurityCheckExecutor getAsyncCheckExecutor() {
+        return SecurityCheckExecutor.Builder
+            .newAsyncExecutor(core.getContext()).build();
     }
 
     /**

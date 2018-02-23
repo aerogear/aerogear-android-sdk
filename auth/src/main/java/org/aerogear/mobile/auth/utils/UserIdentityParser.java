@@ -27,7 +27,7 @@ public class UserIdentityParser {
     private static final String COMMA = ",";
 
     /**
-     * The parsed keycloak service configuration {@link KeycloakConfiguration}.
+     * The parsed keycloak singleThreadService configuration {@link KeycloakConfiguration}.
      * Should be initialised before using this parser.
      */
     private final KeycloakConfiguration keycloakConfiguration;

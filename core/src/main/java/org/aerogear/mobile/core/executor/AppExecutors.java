@@ -5,6 +5,7 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
@@ -23,6 +24,8 @@ public final class AppExecutors {
         }
     };
 
+    private static final ExecutorService serviceThreadExecutor = Executors.newSingleThreadExecutor();
+
     public AppExecutors() {
     }
 
@@ -35,5 +38,6 @@ public final class AppExecutors {
         return networkExecutor;
     }
 
+    public ExecutorService singleThreadService() { return serviceThreadExecutor; }
 
 }

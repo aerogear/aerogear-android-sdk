@@ -8,7 +8,7 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 import static org.aerogear.mobile.core.utils.SanityCheck.nonEmpty;
 
 /**
- * A class to represent the configuration options of the Keycloak service
+ * A class to represent the configuration options of the Keycloak singleThreadService
  */
 public class KeycloakConfiguration {
 
@@ -75,15 +75,15 @@ public class KeycloakConfiguration {
     }
 
     /**
-     * Get the URL string of the Keycloak service
-     * @return the URL of the Keycloak service
+     * Get the URL string of the Keycloak singleThreadService
+     * @return the URL of the Keycloak singleThreadService
      */
     public String getHostUrl() {
         return this.serverUrl;
     }
 
     /**
-     * Get the realm name of the Keycloak service
+     * Get the realm name of the Keycloak singleThreadService
      * @return the realm name
      */
     public String getRealmName() {
