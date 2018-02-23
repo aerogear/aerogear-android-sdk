@@ -53,7 +53,7 @@ public class MetricsServiceTest {
     @Test(expected = IllegalStateException.class)
     public void sendingDefaultMetricsWithoutConfigureService() {
         MetricsService metricsService = new MetricsService();
-        metricsService.sendDefaultMetrics();
+        metricsService.sendAppAndDeviceMetrics();
     }
 
     @Test(expected = IllegalStateException.class)

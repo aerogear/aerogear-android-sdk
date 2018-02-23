@@ -65,28 +65,31 @@ dependencies {
 
 === Using the SDK
 
-In an example Android Activity you can use the SDK as follows
+In an example you can use the SDK as follows
 
 [source, java]
 ----
 
-class MyActivity extends AppCompatActivity {
+public class MyApplication extends Application {
 
-    MobileCore core;
-    MetricsService metrics;
+    private MobileCore mobileCore;
+    private MetricsService metricsService;
 
-    void onCreate() {
+    @Override
+    public void onCreate() {
         super.onCreate();
 
-        core = MobileCore.init(this);
-        metrics = core.getService(MetricsService.class);
+        mobileCore = MobileCore.init(this);
+        metricsService = mobileCore.getInstance(MetricsService.class);
+
+        metricsService.sendAppAndDeviceMetrics();
     }
 
-    void onDestroy() {
-        super.onDestroy()
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
 
-        metrics = null;
-        core.destroy();
+        mobileCore.destroy();
     }
 
 }

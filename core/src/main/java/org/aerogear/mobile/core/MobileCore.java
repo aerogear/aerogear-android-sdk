@@ -78,16 +78,6 @@ public final class MobileCore {
         } else {
             this.httpLayer = options.httpServiceModule;
         }
-
-        sendDefaultMetrics();
-    }
-
-    private void sendDefaultMetrics() {
-        try {
-            getInstance(MetricsService.class).sendDefaultMetrics();
-        } catch (ConfigurationNotFoundException e) {
-            logger.debug(TAG, "Metrics not configured, not sending anything");
-        }
     }
 
     /**
@@ -145,7 +135,7 @@ public final class MobileCore {
                 serviceCfg = getServiceConfiguration(serviceModule.type());
             }
 
-            if(serviceCfg == null && serviceModule.requiresConfiguration()) {
+            if (serviceCfg == null && serviceModule.requiresConfiguration()) {
                 throw new ConfigurationNotFoundException(serviceModule.type() + " not found on " + this.configFileName);
             }
 
@@ -162,8 +152,10 @@ public final class MobileCore {
 
     /**
      * Get application context
+     *
      * @return Application context
      */
+
     public Context getContext() {
         return context;
     }
