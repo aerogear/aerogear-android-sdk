@@ -9,10 +9,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -32,15 +30,11 @@ public class SecurityCheckExecutorTest {
     MetricsService metricsService;
 
     SecurityCheck mockSecurityCheck;
-//    SyncSecurityCheckExecutor executor;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-
-  //      executor = new SyncSecurityCheckExecutor(context);
         mockSecurityCheck = new MockSecurityCheck();
-
         when(securityCheckType.getSecurityCheck()).thenReturn(mockSecurityCheck);
     }
 
@@ -95,35 +89,6 @@ public class SecurityCheckExecutorTest {
             .build().execute();
 
         results[0].get();
-
-        verify(metricsService, times(1)).publish(any());
-    }
-
-    @Test
-    public void testSendMetricsASyncCallback() throws Exception {
-        when(metricsService.publish(any())).thenReturn(null);
-
-        CountDownLatch cdl = new CountDownLatch(1);
-
-        SecurityCheckExecutor.Builder
-            .newAsyncExecutor(context)
-            .withSecurityCheck(securityCheckType)
-            .withMetricsService(metricsService)
-            .withExecutorService(Executors.newFixedThreadPool(1))
-            .build()
-            .execute(new Callback() {
-                @Override
-                public void onSecurityCheckExecuted(SecurityCheckResult result) {
-
-                }
-
-                @Override
-                public void onComplete() {
-                    cdl.countDown();
-                }
-            });
-
-        cdl.await(1000, TimeUnit.MILLISECONDS);
 
         verify(metricsService, times(1)).publish(any());
     }
