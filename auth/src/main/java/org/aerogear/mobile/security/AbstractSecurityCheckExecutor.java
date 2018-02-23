@@ -8,16 +8,17 @@ import android.support.annotation.Nullable;
 import org.aerogear.mobile.core.metrics.MetricsService;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * Base class for security check executors.
  */
-abstract class AbstractSecurityCheckExecutor {
+abstract class AbstractSecurityCheckExecutor<T extends AbstractSecurityCheckExecutor> {
 
     /**
      * Collection of checks to be executed.
      */
-    private final Collection<SecurityCheck> checks;
+    private final Collection<SecurityCheck> checks = new HashSet<>();
 
     /**
      * Context.
@@ -41,7 +42,7 @@ abstract class AbstractSecurityCheckExecutor {
                                          @Nullable final MetricsService metricService) {
         this.context = context;
         this.metricsService = metricService;
-        this.checks = checks;
+        this.checks.addAll(checks);
     }
 
     /**
@@ -58,5 +59,25 @@ abstract class AbstractSecurityCheckExecutor {
 
     protected MetricsService getMetricsService() {
         return metricsService;
+    }
+
+    /**
+     * Adds a new check to be executed
+     * @param check the new check to be executed
+     * @return this, so that adding checks can be chained
+     */
+    public T addCheck(SecurityCheck check) {
+        this.getChecks().add(check);
+        return (T) this;
+    }
+
+    /**
+     * Adds a new check to be executed
+     * @param checkType the type of the new check to be executed
+     * @return this, so that adding checks can be chained
+     */
+    public T addCheck(SecurityCheckType checkType) {
+        this.getChecks().add(checkType.getSecurityCheck());
+        return (T) this;
     }
 }

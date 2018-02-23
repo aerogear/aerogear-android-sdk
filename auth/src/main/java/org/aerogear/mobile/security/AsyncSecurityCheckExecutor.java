@@ -18,7 +18,7 @@ import java.util.concurrent.Future;
  * Executor used to asynchronously execute checks.
  * Checks are executed by using {@link AppExecutors#singleThreadService()} if no custom executor is configured.
  */
-public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor {
+public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<AsyncSecurityCheckExecutor> {
 
     private final static String TAG = "AsyncSecurityCheckExecutor";
 

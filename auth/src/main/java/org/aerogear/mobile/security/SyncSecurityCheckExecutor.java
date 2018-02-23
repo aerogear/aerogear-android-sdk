@@ -16,7 +16,7 @@ import java.util.HashSet;
 /**
  * Synchronously executes provided {@link SecurityCheck}s.
  */
-public class SyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor {
+public class SyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<SyncSecurityCheckExecutor> {
 
     public static class Builder extends SecurityCheckExecutor.Builder.AbstractBuilder<Builder, SyncSecurityCheckExecutor> {
         Builder(final Context ctx) {

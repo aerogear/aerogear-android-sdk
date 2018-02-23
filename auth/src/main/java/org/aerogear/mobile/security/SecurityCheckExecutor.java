@@ -7,10 +7,8 @@ import android.support.annotation.Nullable;
 
 import org.aerogear.mobile.core.metrics.MetricsService;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * Entry point for the SecurityCheckExecutor.
@@ -33,7 +31,7 @@ public class SecurityCheckExecutor {
          */
         static abstract class AbstractBuilder<T, K> {
             private final Context ctx;
-            private final List<SecurityCheck> checks = new ArrayList<>();
+            private final Collection<SecurityCheck> checks = new HashSet<>();
             private MetricsService metricsService;
 
             public AbstractBuilder(@NonNull final Context ctx) {
@@ -80,7 +78,7 @@ public class SecurityCheckExecutor {
                 return metricsService;
             }
 
-            protected List<SecurityCheck> getChecks() {
+            protected Collection<SecurityCheck> getChecks() {
                 return checks;
             }
 
