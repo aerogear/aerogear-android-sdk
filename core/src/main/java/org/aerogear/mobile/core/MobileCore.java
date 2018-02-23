@@ -234,11 +234,6 @@ public final class MobileCore {
         public Options() {
         }
 
-        public Options(@NonNull final String configFileName, @NonNull final HttpServiceModule httpServiceModule) {
-            this.configFileName = nonNull(configFileName, "configFileName");
-            this.httpServiceModule = nonNull(httpServiceModule, "httpServiceModule");
-        }
-
         public Options setConfigFileName(@NonNull final String configFileName) {
             this.configFileName = nonNull(configFileName, "configFileName");
             return this;
