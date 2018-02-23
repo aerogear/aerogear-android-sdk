@@ -3,9 +3,10 @@ package org.aerogear.mobile.security.impl;
 import android.content.Context;
 
 import org.aerogear.mobile.core.metrics.MetricsService;
+import org.aerogear.mobile.security.SecurityCheckExecutor;
+import org.aerogear.mobile.security.SyncSecurityCheckExecutor;
 import org.aerogear.mobile.security.SecurityCheckType;
 import org.aerogear.mobile.security.SecurityCheck;
-import org.aerogear.mobile.security.SecurityCheckExecutor;
 import org.aerogear.mobile.security.SecurityCheckResult;
 import org.aerogear.mobile.security.utils.MockSecurityCheck;
 import org.junit.Before;
@@ -31,13 +32,13 @@ public class SecurityCheckExecutorTest {
     MetricsService metricsService;
 
     SecurityCheck mockSecurityCheck;
-    SecurityCheckExecutor executor;
+//    SyncSecurityCheckExecutor executor;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
 
-        executor = new SecurityCheckExecutorImpl(context);
+  //      executor = new SyncSecurityCheckExecutor(context);
         mockSecurityCheck = new MockSecurityCheck();
 
         when(securityCheckType.getSecurityCheck()).thenReturn(mockSecurityCheck);
@@ -47,7 +48,11 @@ public class SecurityCheckExecutorTest {
     public void testSendMetrics() {
         when(metricsService.publish(any())).thenReturn(null);
 
-        executor.addCheck(securityCheckType).sendMetrics(metricsService).execute();
+        SecurityCheckExecutor.Builder
+            .newSyncExecutor(context)
+            .withSecurityCheck(securityCheckType)
+            .withMetricsService(metricsService)
+            .build().execute();
 
         verify(metricsService, times(1)).publish(any());
 
@@ -55,7 +60,12 @@ public class SecurityCheckExecutorTest {
 
     @Test
     public void testExecute() {
-        SecurityCheckResult[] results = executor.addCheck(securityCheckType).execute();
+
+        SecurityCheckResult[] results =  SecurityCheckExecutor.Builder
+            .newSyncExecutor(context)
+            .withSecurityCheck(securityCheckType)
+            .build().execute();
+
         assertEquals(1, results.length);
         assertEquals(true, results[0].passed());
     }
