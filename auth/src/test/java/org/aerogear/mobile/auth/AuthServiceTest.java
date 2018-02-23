@@ -78,7 +78,7 @@ public class AuthServiceTest {
         try {
             authService.login(null, null);
         } catch (IllegalArgumentException iae) {
-            // The service is ready: it must give an error because no callback has been provided
+            // The singleThreadService is ready: it must give an error because no callback has been provided
             Assert.assertEquals("Parameter 'callback' can't be null", iae.getMessage());
         }
     }

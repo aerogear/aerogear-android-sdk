@@ -16,7 +16,7 @@ import butterknife.BindView;
 
 
 /**
- * Fragment for show casing security service self-defence checks.
+ * Fragment for show casing security singleThreadService self-defence checks.
  */
 
 public class SecurityServiceFragment extends BaseFragment {

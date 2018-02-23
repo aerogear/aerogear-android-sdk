@@ -46,7 +46,7 @@ public class AuthService implements ServiceModule {
     private MobileCore mobileCore;
 
     /**
-     * Enumeration of all the steps that must be executed to make this service ready
+     * Enumeration of all the steps that must be executed to make this singleThreadService ready
      */
     private enum STEP {
         /**

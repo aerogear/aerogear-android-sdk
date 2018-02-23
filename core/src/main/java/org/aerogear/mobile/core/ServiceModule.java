@@ -4,31 +4,31 @@ import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 
 public interface ServiceModule {
     /**
-     * Type/name used in the mobile-service.json
+     * Type/name used in the mobile-singleThreadService.json
      *
-     * @return return the type/name used to identify the service config in the JSON file
+     * @return return the type/name used to identify the singleThreadService config in the JSON file
      */
     String type();
 
     /**
-     * A method how create/configure the service
+     * A method how create/configure the singleThreadService
      *
      * @param core MobileCore instance
-     * @param serviceConfiguration the configuration for the service
+     * @param serviceConfiguration the configuration for the singleThreadService
      */
     void configure(MobileCore core, ServiceConfiguration serviceConfiguration);
 
     /**
-     * Whether the service module requires its service configuration to be defined or if it can be
-     * null. If this is <code>true</code> then an exception will be thrown if service configuration
+     * Whether the singleThreadService module requires its singleThreadService configuration to be defined or if it can be
+     * null. If this is <code>true</code> then an exception will be thrown if singleThreadService configuration
      * cannot be found.
      *
-     * @return <code>true</code> if the service configuration should be defined.
+     * @return <code>true</code> if the singleThreadService configuration should be defined.
      */
     boolean requiresConfiguration();
 
     /**
-     * Called when service destroyed
+     * Called when singleThreadService destroyed
      */
     void destroy();
 

@@ -62,9 +62,9 @@ public class SecurityCheckExecutor {
             }
 
             /**
-             * Sets the metric service to be used.
+             * Sets the metric singleThreadService to be used.
              *
-             * @param metricsService the metric service to be used
+             * @param metricsService the metric singleThreadService to be used
              * @return this
              */
             public T withMetricsService(@Nullable final MetricsService metricsService) {

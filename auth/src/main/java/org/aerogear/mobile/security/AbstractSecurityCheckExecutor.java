@@ -25,7 +25,7 @@ abstract class AbstractSecurityCheckExecutor {
     private final Context context;
 
     /**
-     * Metric service to be used to publish metrics. Can be null.
+     * Metric singleThreadService to be used to publish metrics. Can be null.
      */
     private final MetricsService metricsService;
 
@@ -34,7 +34,7 @@ abstract class AbstractSecurityCheckExecutor {
      *
      * @param context the context
      * @param checks checks to be executed
-     * @param metricService service to be used to publish metrics. If null, no metrics get published.
+     * @param metricService singleThreadService to be used to publish metrics. If null, no metrics get published.
      */
     public AbstractSecurityCheckExecutor(@NonNull final Context context,
                                          @NonNull final Collection<SecurityCheck> checks,

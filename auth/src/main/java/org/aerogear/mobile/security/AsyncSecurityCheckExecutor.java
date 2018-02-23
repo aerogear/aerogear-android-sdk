@@ -16,7 +16,7 @@ import java.util.concurrent.Future;
 
 /**
  * Executor used to asynchronously execute checks.
- * Checks are executed by using {@link AppExecutors#service()} if no custom executor is configured.
+ * Checks are executed by using {@link AppExecutors#singleThreadService()} if no custom executor is configured.
  */
 public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor {
 
@@ -35,9 +35,9 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor {
         }
 
         /**
-         * Specify a custom execution service for this SecurityCheckExecutor.
+         * Specify a custom execution singleThreadService for this SecurityCheckExecutor.
          *
-         * @param executorService executor service to be used.
+         * @param executorService executor singleThreadService to be used.
          * @return this
          */
         public Builder withExecutorService(@Nullable final ExecutorService executorService) {
@@ -48,7 +48,7 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor {
         @Override
         public AsyncSecurityCheckExecutor build() {
             if (executorService == null) {
-                executorService = new AppExecutors().service();
+                executorService = new AppExecutors().singleThreadService();
             }
             return new AsyncSecurityCheckExecutor(getCtx(), executorService, getChecks(), getMetricsService());
         }

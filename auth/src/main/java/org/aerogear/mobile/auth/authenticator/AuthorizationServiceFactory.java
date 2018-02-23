@@ -67,7 +67,7 @@ public class AuthorizationServiceFactory {
     /**
      * Creates and initializes a new {@link AuthorizationService} ready to be used for authenticating with Keycloak.
      * @param keycloakConfiguration configuration to be used to access keycloak
-     * @param authServiceConfiguration the authentication service configuration
+     * @param authServiceConfiguration the authentication singleThreadService configuration
      * @return a wrapper object containing all the `openid` object used to handle the OIDC authentication
      */
     public ServiceWrapper createAuthorizationService(@NonNull final KeycloakConfiguration keycloakConfiguration,

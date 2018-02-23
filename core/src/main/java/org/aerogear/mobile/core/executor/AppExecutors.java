@@ -38,6 +38,6 @@ public final class AppExecutors {
         return networkExecutor;
     }
 
-    public ExecutorService service() { return serviceThreadExecutor; }
+    public ExecutorService singleThreadService() { return serviceThreadExecutor; }
 
 }
