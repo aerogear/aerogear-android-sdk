@@ -25,4 +25,13 @@ public enum SecurityCheckType {
     public SecurityCheck getSecurityCheck() {
         return check;
     }
+
+    /**
+     * Returns the name of this security check.
+     * The value is the same as {@link SecurityCheck#getName()}
+     * @return
+     */
+    public String getName() {
+        return getSecurityCheck().getName();
+    }
 }

@@ -11,6 +11,8 @@ import org.aerogear.mobile.core.metrics.MetricsService;
 import org.aerogear.mobile.security.metrics.SecurityCheckResultMetric;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
@@ -64,24 +66,26 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<As
 
     /**
      * Executes the checks asynchronously and returns an array of {@link Future}
-     * @return an array of {@link Future} representing executed checks
+     *
+     * Returns a {@link Map} containing the results of each executed test (a {@link Future}).
+     * The key of the map will be the output of {@link SecurityCheck#getName()}, while the value will be
+     * a {@link Future} with the result of the check.
+     *
+     * @return a {@link Map} containing the results of all the executed checks
      */
-    public Future<SecurityCheckResult>[] execute() {
+    public Map<String, Future<SecurityCheckResult>> execute() {
 
-        final Collection<SecurityCheck> checks = getChecks();
         final MetricsService metricsService = getMetricsService();
+        final Map<String, Future<SecurityCheckResult>> res = new HashMap<>();
 
-        final Future[] res = new Future[checks.size()];
-
-        int i = 0;
-        for (final SecurityCheck check : checks) {
-            res[i++] = (executorService.submit(() -> {
+        for (final SecurityCheck check : getChecks()) {
+            res.put(check.getName(), (executorService.submit(() -> {
                 final SecurityCheckResult result =  check.test(getContext());
                 if (metricsService != null) {
                     metricsService.publish(new SecurityCheckResultMetric(result));
                 }
                 return result;
-            }));
+            })));
         }
 
         return res;
