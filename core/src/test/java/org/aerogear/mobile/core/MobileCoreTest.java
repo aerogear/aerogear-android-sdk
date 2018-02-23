@@ -71,6 +71,11 @@ public class MobileCoreTest {
         MobileCore.init(null);
     }
 
+    @Test(expected = RuntimeException.class)
+    public void testInitWithNullOptions() throws Exception {
+        MobileCore.init(null, null);
+    }
+
     @Test
     public void testDefaultConfigFile() throws Exception {
         assertEquals(MobileCore.DEFAULT_CONFIG_FILE_NAME, core.getConfigFileName());
