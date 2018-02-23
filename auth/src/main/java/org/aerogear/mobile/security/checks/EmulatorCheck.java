@@ -7,7 +7,6 @@ import org.aerogear.mobile.security.SecurityCheck;
 import org.aerogear.mobile.security.SecurityCheckResult;
 import org.aerogear.mobile.security.impl.SecurityCheckResultImpl;
 
-
 /**
  * A check for whether the device the application is running on an emulator
  */
@@ -21,7 +20,7 @@ public class EmulatorCheck implements SecurityCheck {
      * @return <code>true</code> if the device is an emulator.
      */
     @Override
-    public SecurityCheckResult test(Context context) {
+    public SecurityCheckResult test(final Context context) {
         return new SecurityCheckResultImpl(NAME, isEmulator());
     }
 

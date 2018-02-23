@@ -9,18 +9,19 @@ import org.aerogear.mobile.security.impl.SecurityCheckResultImpl;
 
 
 /**
- * A check for whether the device the application is running on is in debugger mode.
+ * A check for whether a debugger is attached to the current application.
  */
 public class DebuggerCheck implements SecurityCheck {
     private static final String NAME = "detectDebugger";
 
     /**
-     * Check whether the device is in debug mode
+     * Check whether a debugger is attached to the current application.
+     *
      * @param context Context to be used by the check.
      * @return <code>true</code> if device is in debug mode
      */
     @Override
-    public SecurityCheckResult test(Context context) {
+    public SecurityCheckResult test(final Context context) {
         return new SecurityCheckResultImpl(NAME, Debug.isDebuggerConnected());
     }
 }
