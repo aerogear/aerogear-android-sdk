@@ -2,6 +2,7 @@ package org.aerogear.mobile.security;
 
 import android.content.Context;
 
+import org.aerogear.mobile.auth.Callback;
 import org.aerogear.mobile.core.metrics.MetricsService;
 import org.aerogear.mobile.security.SecurityCheckExecutor;
 import org.aerogear.mobile.security.SyncSecurityCheckExecutor;
@@ -14,8 +15,10 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -96,6 +99,35 @@ public class SecurityCheckExecutorTest {
             .build().execute();
 
         results[0].get();
+
+        verify(metricsService, times(1)).publish(any());
+    }
+
+    @Test
+    public void testSendMetricsASyncCallback() throws Exception {
+        when(metricsService.publish(any())).thenReturn(null);
+
+        CountDownLatch cdl = new CountDownLatch(1);
+
+        SecurityCheckExecutor.Builder
+            .newAsyncExecutor(context)
+            .withSecurityCheck(securityCheckType)
+            .withMetricsService(metricsService)
+            .build()
+            .execute(new Callback<SecurityCheckResult>() {
+                @Override
+                public void onSuccess(SecurityCheckResult models) {
+                    cdl.countDown();
+                }
+
+                @Override
+                public void onError(Throwable error) {
+                    error.printStackTrace();
+                    cdl.countDown();
+                }
+            });
+
+        cdl.await(1000, TimeUnit.MILLISECONDS);
 
         verify(metricsService, times(1)).publish(any());
 

@@ -2,6 +2,7 @@ package org.aerogear.mobile.security;
 
 import android.content.Context;
 
+import org.aerogear.mobile.auth.Callback;
 import org.aerogear.mobile.core.metrics.MetricsService;
 import org.aerogear.mobile.security.metrics.SecurityCheckResultMetric;
 
@@ -37,5 +38,27 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor {
         }
 
         return res;
+    }
+
+    public void execute(final Callback<SecurityCheckResult> callback) {
+
+        final Collection<SecurityCheck> checks = getChecks();
+        final MetricsService metricsService = getMetricsService();
+
+        final Future[] res = new Future[checks.size()];
+
+        int i = 0;
+        for (final SecurityCheck check : checks) {
+            res[i++] = (pool.submit(() -> {
+                final SecurityCheckResult result =  check.test(getContext());
+                if (metricsService != null) {
+                    metricsService.publish(new SecurityCheckResultMetric(result));
+                }
+
+                callback.onSuccess(result);
+
+                return result;
+            }));
+        }
     }
 }
