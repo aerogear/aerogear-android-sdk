@@ -37,8 +37,8 @@ abstract class AbstractSecurityCheckExecutor {
      * @param metricService service to be used to publish metrics. If null, no metrics get published.
      */
     public AbstractSecurityCheckExecutor(@NonNull final Context context,
-                                         @NonNull Collection<SecurityCheck> checks,
-                                         @Nullable MetricsService metricService) {
+                                         @NonNull final Collection<SecurityCheck> checks,
+                                         @Nullable final MetricsService metricService) {
         this.context = context;
         this.metricsService = metricService;
         this.checks = checks;

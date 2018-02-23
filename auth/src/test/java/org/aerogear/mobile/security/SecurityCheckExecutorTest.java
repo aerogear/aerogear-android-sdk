@@ -113,13 +113,8 @@ public class SecurityCheckExecutorTest {
             .build()
             .execute(new Callback() {
                 @Override
-                public void onSuccess(SecurityCheckResult models) {
+                public void onSecurityCheckExecuted(SecurityCheckResult result) {
 
-                }
-
-                @Override
-                public void onError(Throwable error) {
-                    error.printStackTrace();
                 }
 
                 @Override

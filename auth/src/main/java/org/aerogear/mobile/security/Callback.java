@@ -1,5 +1,6 @@
 package org.aerogear.mobile.security;
 
-public interface Callback extends org.aerogear.mobile.auth.Callback<SecurityCheckResult> {
+public interface Callback {
+    public void onSecurityCheckExecuted(SecurityCheckResult result);
     public void onComplete();
 }

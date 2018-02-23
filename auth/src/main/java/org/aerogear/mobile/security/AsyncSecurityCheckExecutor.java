@@ -89,6 +89,10 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor {
 
     /**
      * Executes the checks and post the result of each check to the passed in callback.
+     * The callback will be notified as soon as the result from one of the check is ready.
+     * The order of the result received is not guaranteed.
+     *
+     * When all the checks are executed {@link Callback#onComplete()} is called.
      *
      * @param callback callback that will receive the check results as they gets produced.
      */
@@ -107,7 +111,7 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor {
                     metricsService.publish(new SecurityCheckResultMetric(result));
                 }
 
-                callback.onSuccess(result);
+                callback.onSecurityCheckExecuted(result);
 
                 return result;
             }));
