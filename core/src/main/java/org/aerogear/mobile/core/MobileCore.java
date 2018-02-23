@@ -166,7 +166,7 @@ public final class MobileCore {
      * @param type Service type/name
      * @return the configuration for this singleThreadService from the JSON config file
      */
-    private ServiceConfiguration getServiceConfiguration(final String type) {
+    public ServiceConfiguration getServiceConfiguration(final String type) {
         return this.servicesConfig.get(type);
     }
 

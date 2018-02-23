@@ -136,6 +136,17 @@ public class MobileCoreTest {
         assertEquals(service1, service2);
     }
 
+    @Test
+    public void testGetServiceConfiguration() {
+        Application context = RuntimeEnvironment.application;
+
+        MobileCore core = MobileCore.init(context);
+        ServiceConfiguration serviceConfiguration = core.getServiceConfiguration("keycloak");
+
+        String s = "https://www.mocky.io/v2/5a6b59fb31000088191b8ac6";
+        assertEquals(s, serviceConfiguration.getUrl());
+    }
+
     // -- Helpers ---------------------------------------------------------------------------------
 
     public static final class DummyHttpServiceModule implements HttpServiceModule {
@@ -213,7 +224,9 @@ public class MobileCoreTest {
         }
 
         @Override
-        public boolean requiresConfiguration() { return true; }
+        public boolean requiresConfiguration() {
+            return true;
+        }
 
         @Override
         public void destroy() {
