@@ -48,6 +48,16 @@ public class SecurityService implements ServiceModule{
     }
 
     /**
+     * Retrieve a {@link AsyncSecurityCheckExecutor} to asynchronously run multiple {@link SecurityCheckType checks} chained.
+     *
+     * @return A new async executor.
+     */
+    public AsyncSecurityCheckExecutor getAsyncCheckExecutor() {
+        return SecurityCheckExecutor.Builder
+            .newAsyncExecutor(core.getContext()).build();
+    }
+
+    /**
      * Perform a single {@link SecurityCheckType} and get the {@link SecurityCheckResult result} for it.
      *
      * @param securityCheckType The check type to execute.
