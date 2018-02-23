@@ -62,8 +62,7 @@ public class MobileCoreTest {
         options.setConfigFileName("dummy-mobile-services.json");
 
         MobileCore core = MobileCore.init(context, options);
-        DummyHttpServiceModule service = (DummyHttpServiceModule)
-            core.getInstance(DummyHttpServiceModule.class);
+        DummyHttpServiceModule service = core.getInstance(DummyHttpServiceModule.class);
 
         assertEquals("http://dummy.net", service.getUrl());
     }
@@ -96,8 +95,7 @@ public class MobileCoreTest {
         Application context = RuntimeEnvironment.application;
 
         MobileCore core = MobileCore.init(context);
-        DummyHttpServiceModule service = (DummyHttpServiceModule)
-            core.getInstance(DummyHttpServiceModule.class);
+        DummyHttpServiceModule service = core.getInstance(DummyHttpServiceModule.class);
 
         assertNotNull(service);
     }
@@ -110,8 +108,7 @@ public class MobileCoreTest {
         options.setConfigFileName("dummy-mobile-services.json");
 
         MobileCore core = MobileCore.init(context, options);
-        DummyHttpServiceModule service = (DummyHttpServiceModule)
-            core.getInstance(DummyHttpServiceModule.class);
+        DummyHttpServiceModule service = core.getInstance(DummyHttpServiceModule.class);
 
         assertNotNull(service);
     }
@@ -125,11 +122,9 @@ public class MobileCoreTest {
 
         MobileCore core = MobileCore.init(context, options);
 
-        DummyHttpServiceModule service1 = (DummyHttpServiceModule)
-            core.getInstance(DummyHttpServiceModule.class);
+        DummyHttpServiceModule service1 = core.getInstance(DummyHttpServiceModule.class);
 
-        DummyHttpServiceModule service2 = (DummyHttpServiceModule)
-            core.getInstance(DummyHttpServiceModule.class);
+        DummyHttpServiceModule service2 = core.getInstance(DummyHttpServiceModule.class);
 
         assertNotNull(service1);
         assertNotNull(service2);
