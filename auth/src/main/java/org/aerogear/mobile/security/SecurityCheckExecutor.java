@@ -2,6 +2,8 @@ package org.aerogear.mobile.security;
 
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import org.aerogear.mobile.core.metrics.MetricsService;
 
@@ -10,34 +12,62 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * Entry point for the SecurityCheckExecutor.
+ * This class provides the builders.
+ */
 public class SecurityCheckExecutor {
-
     private SecurityCheckExecutor() {
 
     }
 
+    /**
+     * Entry point for SecurityCheckExecutor builders.
+     */
     public static class Builder {
 
-        private static abstract class AbstractBuilder<T, K> {
+        /**
+         * Base class for SecurityCheckExecutor builders
+         * @param <T> The type of this builder
+         * @param <K> The type of the built object
+         */
+        static abstract class AbstractBuilder<T, K> {
             private final Context ctx;
             private final List<SecurityCheck> checks = new ArrayList<>();
             private MetricsService metricsService;
 
-            public AbstractBuilder(final Context ctx) {
+            public AbstractBuilder(@NonNull final Context ctx) {
                 this.ctx = ctx;
             }
 
-            public T withSecurityCheck(final SecurityCheck check) {
+            /**
+             * Adds a new security check by providing a security check instance.
+             *
+             * @param check the check to be added
+             * @return this
+             */
+            public T withSecurityCheck(@NonNull final SecurityCheck check) {
                 checks.add(check);
                 return (T) this;
             }
 
-            public T withSecurityCheck(final SecurityCheckType checkType) {
+            /**
+             * Adds a new security check.
+             * @param checkType type of security check to be added
+             * @return this
+             */
+            public T withSecurityCheck(@NonNull final SecurityCheckType checkType) {
                 checks.add(checkType.getSecurityCheck());
                 return (T) this;
             }
 
-            public T withMetricsService(final MetricsService metricsService) {
+            /**
+             * Sets the metric service to be used.
+             *
+             * @param metricsService the metric service to be used
+             * @return this
+             */
+            public T withMetricsService(@Nullable final MetricsService metricsService) {
                 this.metricsService = metricsService;
                 return (T) this;
             }
@@ -54,61 +84,38 @@ public class SecurityCheckExecutor {
                 return checks;
             }
 
+            /**
+             * Builds the executor according to the passed in parameters.
+             *
+             * @return the executor instance
+             */
             public abstract K build();
         }
 
-        public class AsyncExecutorBuilder extends AbstractBuilder<AsyncExecutorBuilder, AsyncSecurityCheckExecutor> {
-
-            private ExecutorService executorService;
-            private final static int DEFAULT_THREAD_POOL_SIZE = 10;
-
-            AsyncExecutorBuilder(final Context ctx) {
-                super(ctx);
-            }
-
-            public AsyncExecutorBuilder withExecutorService(final ExecutorService executorService) {
-                this.executorService = executorService;
-                return this;
-            }
-
-            @Override
-            public AsyncSecurityCheckExecutor build() {
-                if (executorService == null) {
-                    executorService = Executors.newFixedThreadPool(DEFAULT_THREAD_POOL_SIZE);
-                }
-                return new AsyncSecurityCheckExecutor(getCtx(), executorService, getChecks(), getMetricsService());
-            }
+        private AsyncSecurityCheckExecutor.Builder newAsyncBuilder(@NonNull final Context ctx) {
+            return new AsyncSecurityCheckExecutor.Builder(ctx);
         }
 
-        public class SyncExecutorBuilder extends AbstractBuilder<SyncExecutorBuilder, SyncSecurityCheckExecutor>{
-            SyncExecutorBuilder(final Context ctx) {
-                super(ctx);
-            }
-
-            @Override
-            public SyncSecurityCheckExecutor build() {
-                return new SyncSecurityCheckExecutor(getCtx(), getChecks(), getMetricsService());
-            }
+        private SyncSecurityCheckExecutor.Builder newSyncBuilder(@NonNull final Context ctx) {
+            return new SyncSecurityCheckExecutor.Builder(ctx);
         }
 
-        private AsyncExecutorBuilder newAsyncBuilder(final Context ctx) {
-            return new AsyncExecutorBuilder(ctx);
-        }
-
-        private SyncExecutorBuilder newSyncBuilder(final Context ctx) {
-            return new SyncExecutorBuilder(ctx);
-        }
-
-        public static AsyncExecutorBuilder newAsyncExecutor(final Context ctx) {
-            SecurityCheckExecutor ex = new SecurityCheckExecutor();
+        /**
+         * Creates a new AsyncExecutor Builder
+         * @param ctx the context
+         * @return the AsyncExecutor builder
+         */
+        public static AsyncSecurityCheckExecutor.Builder newAsyncExecutor(@NonNull final Context ctx) {
             return new Builder().newAsyncBuilder(ctx);
         }
 
-        public static SyncExecutorBuilder newSyncExecutor(final Context ctx) {
+        /**
+         * Creates a new SyncExecutor Builder
+         * @param ctx the context
+         * @return the SyncExecutor builder
+         */
+        public static SyncSecurityCheckExecutor.Builder newSyncExecutor(@NonNull final Context ctx) {
             return new Builder().newSyncBuilder(ctx);
         }
     }
-
-
-
 }

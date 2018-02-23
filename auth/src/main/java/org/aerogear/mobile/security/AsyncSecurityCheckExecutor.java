@@ -1,6 +1,8 @@
 package org.aerogear.mobile.security;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import org.aerogear.mobile.auth.Callback;
 import org.aerogear.mobile.core.metrics.MetricsService;
@@ -8,17 +10,51 @@ import org.aerogear.mobile.security.metrics.SecurityCheckResultMetric;
 
 import java.util.Collection;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+/**
+ * Executor used to asynchronously execute checks.
+ */
 public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor {
 
     private final ExecutorService executorService;
 
-    AsyncSecurityCheckExecutor(final Context context, final ExecutorService executorService, final Collection<SecurityCheck> checks, final MetricsService metricsService) {
+    public static class Builder extends SecurityCheckExecutor.Builder.AbstractBuilder<Builder, AsyncSecurityCheckExecutor> {
+
+        private ExecutorService executorService;
+        private final static int DEFAULT_THREAD_POOL_SIZE = 10;
+
+        Builder(final Context ctx) {
+            super(ctx);
+        }
+
+        public Builder withExecutorService(final ExecutorService executorService) {
+            this.executorService = executorService;
+            return this;
+        }
+
+        @Override
+        public AsyncSecurityCheckExecutor build() {
+            if (executorService == null) {
+                executorService = Executors.newFixedThreadPool(DEFAULT_THREAD_POOL_SIZE);
+            }
+            return new AsyncSecurityCheckExecutor(getCtx(), executorService, getChecks(), getMetricsService());
+        }
+    }
+
+    AsyncSecurityCheckExecutor(@NonNull final Context context,
+                               @NonNull final ExecutorService executorService,
+                               @NonNull final Collection<SecurityCheck> checks,
+                               @Nullable final MetricsService metricsService) {
         super(context, checks, metricsService);
         this.executorService = executorService;
     }
 
+    /**
+     * Executes the checks asynchronously and returns an array of {@link Future}
+     * @return an array of {@link Future} representing executed checks
+     */
     public Future<SecurityCheckResult>[] execute() {
 
         final Collection<SecurityCheck> checks = getChecks();
@@ -40,7 +76,12 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor {
         return res;
     }
 
-    public void execute(final Callback<SecurityCheckResult> callback) {
+    /**
+     * Executes the checks and post the result of each check to the passed in callback.
+     *
+     * @param callback callback that will receive the check results as they gets produced.
+     */
+    public void execute(@NonNull final Callback<SecurityCheckResult> callback) {
 
         final Collection<SecurityCheck> checks = getChecks();
         final MetricsService metricsService = getMetricsService();
