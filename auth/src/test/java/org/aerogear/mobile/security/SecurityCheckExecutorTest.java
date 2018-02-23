@@ -1,4 +1,4 @@
-package org.aerogear.mobile.security.impl;
+package org.aerogear.mobile.security;
 
 import android.content.Context;
 
@@ -13,6 +13,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -45,7 +48,7 @@ public class SecurityCheckExecutorTest {
     }
 
     @Test
-    public void testSendMetrics() {
+    public void testSendMetricsSync() {
         when(metricsService.publish(any())).thenReturn(null);
 
         SecurityCheckExecutor.Builder
@@ -59,7 +62,7 @@ public class SecurityCheckExecutorTest {
     }
 
     @Test
-    public void testExecute() {
+    public void testExecuteSync() {
 
         SecurityCheckResult[] results =  SecurityCheckExecutor.Builder
             .newSyncExecutor(context)
@@ -68,5 +71,33 @@ public class SecurityCheckExecutorTest {
 
         assertEquals(1, results.length);
         assertEquals(true, results[0].passed());
+    }
+
+    @Test
+    public void testExecuteASync() throws Exception {
+
+        Future<SecurityCheckResult>[] results =  SecurityCheckExecutor.Builder
+            .newAsyncExecutor(context)
+            .withSecurityCheck(securityCheckType)
+            .build().execute();
+
+        assertEquals(1, results.length);
+        assertEquals(true, results[0].get().passed());
+    }
+
+    @Test
+    public void testSendMetricsASync() throws Exception {
+        when(metricsService.publish(any())).thenReturn(null);
+
+        Future<SecurityCheckResult>[] results = SecurityCheckExecutor.Builder
+            .newAsyncExecutor(context)
+            .withSecurityCheck(securityCheckType)
+            .withMetricsService(metricsService)
+            .build().execute();
+
+        results[0].get();
+
+        verify(metricsService, times(1)).publish(any());
+
     }
 }
