@@ -7,6 +7,8 @@ import org.aerogear.mobile.core.metrics.MetricsService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class SecurityCheckExecutor {
 
@@ -57,13 +59,24 @@ public class SecurityCheckExecutor {
 
         public class AsyncExecutorBuilder extends AbstractBuilder<AsyncExecutorBuilder, AsyncSecurityCheckExecutor> {
 
+            private ExecutorService executorService;
+            private final static int DEFAULT_THREAD_POOL_SIZE = 10;
+
             AsyncExecutorBuilder(final Context ctx) {
                 super(ctx);
             }
 
+            public AsyncExecutorBuilder withExecutorService(final ExecutorService executorService) {
+                this.executorService = executorService;
+                return this;
+            }
+
             @Override
             public AsyncSecurityCheckExecutor build() {
-                return new AsyncSecurityCheckExecutor(getCtx(), getChecks(), getMetricsService());
+                if (executorService == null) {
+                    executorService = Executors.newFixedThreadPool(DEFAULT_THREAD_POOL_SIZE);
+                }
+                return new AsyncSecurityCheckExecutor(getCtx(), executorService, getChecks(), getMetricsService());
             }
         }
 
