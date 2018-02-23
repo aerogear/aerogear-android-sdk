@@ -3,6 +3,7 @@ package org.aerogear.mobile.core;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
 import org.aerogear.android.core.BuildConfig;
 import org.aerogear.mobile.core.configuration.MobileCoreJsonParser;
@@ -199,6 +200,7 @@ public final class MobileCore {
         return logger;
     }
 
+    @VisibleForTesting()
     public String getConfigFileName() {
         return configFileName;
     }
