@@ -28,6 +28,8 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
  */
 public final class MobileCore {
 
+    public static final String DEFAULT_CONFIG_FILE_NAME = "mobile-services.json";
+
     private static final String TAG = "AEROGEAR/CORE";
     private static Logger logger = new LoggerAdapter();
     private static String appVersion;
@@ -221,8 +223,6 @@ public final class MobileCore {
 
     @SuppressWarnings({"UnusedReturnValue", "WeakerAccess"})
     public static final class Options {
-
-        public static final String DEFAULT_CONFIG_FILE_NAME = "mobile-services.json";
 
         private String configFileName = DEFAULT_CONFIG_FILE_NAME;
         // Don't have a default implementation because it should use configuration

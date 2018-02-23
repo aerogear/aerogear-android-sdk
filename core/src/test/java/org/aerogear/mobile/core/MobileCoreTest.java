@@ -73,7 +73,7 @@ public class MobileCoreTest {
 
     @Test
     public void testDefaultConfigFile() throws Exception {
-        assertEquals(MobileCore.Options.DEFAULT_CONFIG_FILE_NAME, core.getConfigFileName());
+        assertEquals(MobileCore.DEFAULT_CONFIG_FILE_NAME, core.getConfigFileName());
     }
 
     @Test
