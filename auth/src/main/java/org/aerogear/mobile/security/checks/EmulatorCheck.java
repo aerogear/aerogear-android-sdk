@@ -7,7 +7,6 @@ import org.aerogear.mobile.security.SecurityCheck;
 import org.aerogear.mobile.security.SecurityCheckResult;
 import org.aerogear.mobile.security.impl.SecurityCheckResultImpl;
 
-
 /**
  * A check for whether the device the application is running on an emulator
  */
@@ -22,7 +21,6 @@ public class EmulatorCheck implements SecurityCheck {
     public SecurityCheckResult test(final Context context) {
         return new SecurityCheckResultImpl(this, isEmulator());
     }
-
     /**
      * Checks if device is an emulator by looking at the following:
      * Fingerprint starts with 'generic' or 'unknown'

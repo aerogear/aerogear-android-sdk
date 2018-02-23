@@ -52,4 +52,10 @@ public class RootedCheckTest {
         SecurityCheckResult result = check.test(RuntimeEnvironment.application);
         assertFalse(result.passed());
     }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void nullContextTest() {
+        RootedCheck rootedCheck = new RootedCheck();
+        rootedCheck.test(null);
+    }
 }

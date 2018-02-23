@@ -9,7 +9,10 @@ import org.aerogear.mobile.security.impl.SecurityCheckResultImpl;
 
 
 /**
+<<<<<<< HEAD
 
+=======
+>>>>>>> Include tests
  * A check for whether a debugger is attached to the current application.
  */
 public class DebuggerCheck implements SecurityCheck {
