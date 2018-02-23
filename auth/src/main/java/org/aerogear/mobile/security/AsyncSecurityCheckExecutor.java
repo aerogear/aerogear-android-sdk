@@ -4,8 +4,9 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.aerogear.mobile.auth.Callback;
+import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.executor.AppExecutors;
+import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.metrics.MetricsService;
 import org.aerogear.mobile.security.metrics.SecurityCheckResultMetric;
 
@@ -19,12 +20,15 @@ import java.util.concurrent.Future;
  */
 public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor {
 
+    private final static String TAG = "AsyncSecurityCheckExecutor";
+
     private final ExecutorService executorService;
+    private final static Logger LOG = MobileCore.getLogger();
+
 
     public static class Builder extends SecurityCheckExecutor.Builder.AbstractBuilder<Builder, AsyncSecurityCheckExecutor> {
 
         private ExecutorService executorService;
-        private final static int DEFAULT_THREAD_POOL_SIZE = 10;
 
         Builder(final Context ctx) {
             super(ctx);
@@ -88,12 +92,12 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor {
      *
      * @param callback callback that will receive the check results as they gets produced.
      */
-    public void execute(@NonNull final Callback<SecurityCheckResult> callback) {
+    public void execute(@NonNull final Callback callback) {
 
         final Collection<SecurityCheck> checks = getChecks();
         final MetricsService metricsService = getMetricsService();
 
-        final Future[] res = new Future[checks.size()];
+        Future<SecurityCheckResult>[] res = new Future[checks.size()];
 
         int i = 0;
         for (final SecurityCheck check : checks) {
@@ -108,5 +112,20 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor {
                 return result;
             }));
         }
+
+        new Thread() {
+            @Override
+            public void run() {
+                for(Future<SecurityCheckResult> future : res) {
+                    try {
+                        future.get();
+                    } catch (Exception ie) {
+                        LOG.error(TAG, "Error while waiting for check to finish", ie);
+                    }
+                }
+
+                callback.onComplete();
+            }
+        }.start();
     }
 }

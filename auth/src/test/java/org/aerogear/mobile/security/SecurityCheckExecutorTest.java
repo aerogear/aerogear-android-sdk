@@ -2,13 +2,7 @@ package org.aerogear.mobile.security;
 
 import android.content.Context;
 
-import org.aerogear.mobile.auth.Callback;
 import org.aerogear.mobile.core.metrics.MetricsService;
-import org.aerogear.mobile.security.SecurityCheckExecutor;
-import org.aerogear.mobile.security.SyncSecurityCheckExecutor;
-import org.aerogear.mobile.security.SecurityCheckType;
-import org.aerogear.mobile.security.SecurityCheck;
-import org.aerogear.mobile.security.SecurityCheckResult;
 import org.aerogear.mobile.security.utils.MockSecurityCheck;
 import org.junit.Before;
 import org.junit.Test;
@@ -117,15 +111,19 @@ public class SecurityCheckExecutorTest {
             .withMetricsService(metricsService)
             .withExecutorService(Executors.newFixedThreadPool(1))
             .build()
-            .execute(new Callback<SecurityCheckResult>() {
+            .execute(new Callback() {
                 @Override
                 public void onSuccess(SecurityCheckResult models) {
-                    cdl.countDown();
+
                 }
 
                 @Override
                 public void onError(Throwable error) {
                     error.printStackTrace();
+                }
+
+                @Override
+                public void onComplete() {
                     cdl.countDown();
                 }
             });
@@ -133,6 +131,5 @@ public class SecurityCheckExecutorTest {
         cdl.await(1000, TimeUnit.MILLISECONDS);
 
         verify(metricsService, times(1)).publish(any());
-
     }
 }
