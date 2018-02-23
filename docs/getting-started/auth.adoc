@@ -91,7 +91,7 @@ no user authenticated. So it can be used to check whether to start the authentic
 // authService already initialized.
 UserPrincipal currentUser = authService.currentUser();
 
-if (currentUser) {
+if (currentUser != null) {
     // User is authenticated, get the users name
     String userName = currentUser.getName();
     // Get the users email address
