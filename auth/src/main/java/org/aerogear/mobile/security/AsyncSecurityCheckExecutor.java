@@ -5,16 +5,17 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.aerogear.mobile.auth.Callback;
+import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.metrics.MetricsService;
 import org.aerogear.mobile.security.metrics.SecurityCheckResultMetric;
 
 import java.util.Collection;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 /**
  * Executor used to asynchronously execute checks.
+ * Checks are executed by using {@link AppExecutors#service()} if no custom executor is configured.
  */
 public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor {
 
@@ -29,7 +30,13 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor {
             super(ctx);
         }
 
-        public Builder withExecutorService(final ExecutorService executorService) {
+        /**
+         * Specify a custom execution service for this SecurityCheckExecutor.
+         *
+         * @param executorService executor service to be used.
+         * @return this
+         */
+        public Builder withExecutorService(@Nullable final ExecutorService executorService) {
             this.executorService = executorService;
             return this;
         }
@@ -37,7 +44,7 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor {
         @Override
         public AsyncSecurityCheckExecutor build() {
             if (executorService == null) {
-                executorService = Executors.newFixedThreadPool(DEFAULT_THREAD_POOL_SIZE);
+                executorService = new AppExecutors().service();
             }
             return new AsyncSecurityCheckExecutor(getCtx(), executorService, getChecks(), getMetricsService());
         }

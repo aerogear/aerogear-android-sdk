@@ -77,11 +77,12 @@ public class SecurityCheckExecutorTest {
     }
 
     @Test
-    public void testExecuteASync() throws Exception {
+    public void testExecuteAsync() throws Exception {
 
         Future<SecurityCheckResult>[] results =  SecurityCheckExecutor.Builder
             .newAsyncExecutor(context)
             .withSecurityCheck(securityCheckType)
+            .withExecutorService(Executors.newFixedThreadPool(1))
             .build().execute();
 
         assertEquals(1, results.length);
@@ -89,13 +90,14 @@ public class SecurityCheckExecutorTest {
     }
 
     @Test
-    public void testSendMetricsASync() throws Exception {
+    public void testSendMetricsAsync() throws Exception {
         when(metricsService.publish(any())).thenReturn(null);
 
         Future<SecurityCheckResult>[] results = SecurityCheckExecutor.Builder
             .newAsyncExecutor(context)
             .withSecurityCheck(securityCheckType)
             .withMetricsService(metricsService)
+            .withExecutorService(Executors.newFixedThreadPool(1))
             .build().execute();
 
         results[0].get();
@@ -113,6 +115,7 @@ public class SecurityCheckExecutorTest {
             .newAsyncExecutor(context)
             .withSecurityCheck(securityCheckType)
             .withMetricsService(metricsService)
+            .withExecutorService(Executors.newFixedThreadPool(1))
             .build()
             .execute(new Callback<SecurityCheckResult>() {
                 @Override
