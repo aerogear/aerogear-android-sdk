@@ -24,8 +24,19 @@ public class EmulatorCheck implements SecurityCheck {
         return new SecurityCheckResultImpl(NAME, isEmulator());
     }
 
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
     /**
-     * Checks if device is an emulator
+     * Checks if device is an emulator by looking at the following:
+     * Fingerprint starts with 'generic' or 'unknown'
+     * The model contains 'google_sdk' or 'emulator' or 'android sdk built for x86'
+     * If the serial is equal to 'null'
+     * The manufacturer contains 'genymotion'
+     * If the brand and device start with 'generic'
+     *
      * @return <code>true</code> if device is an emulator
      */
     private boolean isEmulator(){
