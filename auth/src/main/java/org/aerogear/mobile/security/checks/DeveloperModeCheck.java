@@ -15,8 +15,6 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
  * Security check that detects if developer mode is enabled in the device.
  */
 public class DeveloperModeCheck implements SecurityCheck {
-    private static final String NAME = "detectDeveloperMode";
-
     /**
      * Check if developer mode has been enabled in the device.
      *
@@ -26,6 +24,6 @@ public class DeveloperModeCheck implements SecurityCheck {
     @Override
     public SecurityCheckResult test(@NonNull final Context context) {
         int devOptions = Settings.Secure.getInt(nonNull(context, "context").getContentResolver(), Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0);
-        return new SecurityCheckResultImpl(NAME, devOptions > 0);
+        return new SecurityCheckResultImpl(this, devOptions > 0);
     }
 }

@@ -33,10 +33,9 @@ public class DeveloperModeCheckTest {
         Settings.Global.putInt(mockContentResolver, Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 1);
         when(context.getContentResolver()).thenReturn(mockContentResolver);
 
-        SecurityCheckResult expected = new SecurityCheckResultImpl("detectDeveloperMode", true);
-
         DeveloperModeCheck developerModeCheck = new DeveloperModeCheck();
 
+        SecurityCheckResult expected = new SecurityCheckResultImpl(developerModeCheck, true);
         SecurityCheckResult actual = developerModeCheck.test(context);
 
         assertEquals(expected.getName(), actual.getName());
@@ -48,10 +47,9 @@ public class DeveloperModeCheckTest {
         Settings.Global.putInt(mockContentResolver, Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0);
         when(context.getContentResolver()).thenReturn(mockContentResolver);
 
-        SecurityCheckResult expected = new SecurityCheckResultImpl("detectDeveloperMode", false);
-
         DeveloperModeCheck developerModeCheck = new DeveloperModeCheck();
 
+        SecurityCheckResult expected = new SecurityCheckResultImpl(developerModeCheck, false);
         SecurityCheckResult actual = developerModeCheck.test(context);
 
         assertEquals(expected.getName(), actual.getName());
