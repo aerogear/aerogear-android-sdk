@@ -1,5 +1,6 @@
 package org.aerogear.mobile.security.impl;
 
+import org.aerogear.mobile.security.SecurityCheck;
 import org.aerogear.mobile.security.SecurityCheckResult;
 
 /**
@@ -11,8 +12,8 @@ public class SecurityCheckResultImpl implements SecurityCheckResult {
     private final String name;
     private final boolean passed;
 
-    public SecurityCheckResultImpl(final String name, final boolean passed) {
-        this.name = name;
+    public SecurityCheckResultImpl(SecurityCheck check, final boolean passed) {
+        this.name = check.getName();
         this.passed = passed;
     }
 

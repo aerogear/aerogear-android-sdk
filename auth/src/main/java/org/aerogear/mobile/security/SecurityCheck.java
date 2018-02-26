@@ -21,5 +21,7 @@ public interface SecurityCheck {
      * Gets the name of the check. It must be a unique string.
      * @return
      */
-    public String getName();
+    default public String getName() {
+        return this.getClass().getName();
+    }
 }
