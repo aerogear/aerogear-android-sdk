@@ -27,9 +27,4 @@ public class ScreenLockCheck implements SecurityCheck {
         }
         return new SecurityCheckResultImpl(this, keyguardManager.isKeyguardSecure());
     }
-
-    @Override
-    public String getName() {
-        return NAME;
-    }
 }

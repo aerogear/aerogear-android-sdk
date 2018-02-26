@@ -21,6 +21,7 @@ public class EmulatorCheck implements SecurityCheck {
     public SecurityCheckResult test(final Context context) {
         return new SecurityCheckResultImpl(this, isEmulator());
     }
+
     /**
      * Checks if device is an emulator by looking at the following:
      * Fingerprint starts with 'generic' or 'unknown'

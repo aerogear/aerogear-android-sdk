@@ -27,4 +27,5 @@ public class RootedCheck implements SecurityCheck {
    protected RootBeer getRootBeer(final Context ctx) {
         return new RootBeer(ctx);
    }
+
 }

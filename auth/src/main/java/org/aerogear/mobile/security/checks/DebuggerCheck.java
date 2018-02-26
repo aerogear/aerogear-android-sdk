@@ -27,9 +27,4 @@ public class DebuggerCheck implements SecurityCheck {
     public SecurityCheckResult test(final Context context) {
         return new SecurityCheckResultImpl(this, Debug.isDebuggerConnected());
     }
-
-    @Override
-    public String getName() {
-        return NAME;
-    }
 }
