@@ -21,12 +21,10 @@ public class RootedCheck implements SecurityCheck {
      */
     @Override
     public SecurityCheckResult test(final Context context) {
-        final RootBeer rootBeer = new RootBeer(context);
-        return new SecurityCheckResultImpl(this, rootBeer.isRooted());
+        return new SecurityCheckResultImpl(this, getRootBeer(context).isRooted());
     }
 
-    @VisibleForTesting
-    SecurityCheckResult test(final Context context, final RootBeer rootBeer) {
-        return new SecurityCheckResultImpl(this, rootBeer.isRooted());
-    }
+   protected RootBeer getRootBeer(final Context ctx) {
+        return new RootBeer(ctx);
+   }
 }

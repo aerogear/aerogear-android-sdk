@@ -1,5 +1,7 @@
 package org.aerogear.mobile.security.checks;
 
+import android.content.Context;
+
 import com.scottyab.rootbeer.RootBeer;
 
 
@@ -29,20 +31,25 @@ public class RootedCheckTest {
     @Before
     public void setup() throws IOException {
         MockitoAnnotations.initMocks(this);
-        check = new RootedCheck();
+        check = new RootedCheck() {
+            @Override
+            protected RootBeer getRootBeer(Context ctx) {
+                return rootBeer;
+            }
+        };
     }
 
     @Test
     public void testIsRooted() {
         when(rootBeer.isRooted()).thenReturn(true);
-        SecurityCheckResult result = check.test(RuntimeEnvironment.application, rootBeer);
+        SecurityCheckResult result = check.test(RuntimeEnvironment.application);
         assertTrue(result.passed());
     }
 
     @Test
     public void testNotRooted() {
         when(rootBeer.isRooted()).thenReturn(false);
-        SecurityCheckResult result = check.test(RuntimeEnvironment.application, rootBeer);
+        SecurityCheckResult result = check.test(RuntimeEnvironment.application);
         assertFalse(result.passed());
     }
 }
