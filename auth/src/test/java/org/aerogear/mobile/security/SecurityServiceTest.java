@@ -4,7 +4,7 @@ import android.content.Context;
 
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.metrics.MetricsService;
-import org.aerogear.mobile.security.utils.MockSecurityCheck;
+import org.aerogear.mobile.security.impl.SecurityCheckResultImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -30,6 +30,8 @@ public class SecurityServiceTest {
     SecurityCheckType securityCheckType;
 
     SecurityService securityService;
+
+    @Mock
     SecurityCheck securityCheck;
 
     @Before
@@ -37,7 +39,12 @@ public class SecurityServiceTest {
         MockitoAnnotations.initMocks(this);
 
         when(mobileCore.getContext()).thenReturn(context);
-        securityCheck = new MockSecurityCheck();
+
+        SecurityCheckResultImpl result = new SecurityCheckResultImpl(securityCheck, true);
+
+        when(securityCheck.test(any()))
+            .thenReturn(result);
+
         when(securityCheckType.getSecurityCheck()).thenReturn(securityCheck);
 
         securityService = new SecurityService();
