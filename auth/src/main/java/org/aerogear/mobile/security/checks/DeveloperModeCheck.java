@@ -2,10 +2,13 @@ package org.aerogear.mobile.security.checks;
 
 import android.content.Context;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 
 import org.aerogear.mobile.security.SecurityCheck;
 import org.aerogear.mobile.security.SecurityCheckResult;
 import org.aerogear.mobile.security.impl.SecurityCheckResultImpl;
+
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 
 /**
@@ -21,9 +24,8 @@ public class DeveloperModeCheck implements SecurityCheck {
      * @return <code>true</code> if the developer options have been enabled on the device.
      */
     @Override
-    public SecurityCheckResult test(final Context context) {
-        int devOptions = Settings.Secure.getInt(context.getContentResolver(), Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0);
-        boolean devOptionsEnabled = devOptions > 0 ? true : false;
-        return new SecurityCheckResultImpl(NAME, devOptionsEnabled);
+    public SecurityCheckResult test(@NonNull final Context context) {
+        int devOptions = Settings.Secure.getInt(nonNull(context, "context").getContentResolver(), Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0);
+        return new SecurityCheckResultImpl(NAME, devOptions > 0);
     }
 }
