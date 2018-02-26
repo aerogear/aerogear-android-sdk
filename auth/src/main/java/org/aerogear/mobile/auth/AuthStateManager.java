@@ -37,7 +37,7 @@ public class AuthStateManager {
     /**
      * Saves a token
      * @param authState token to be saved
-     * @throws IllegalStateException
+     * @throws IllegalStateException if the state can not be saved
      */
     public synchronized void save(final OIDCCredentials authState) {
         if (authState == null) {
@@ -52,7 +52,7 @@ public class AuthStateManager {
 
     /**
      * Deletes a token
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException  if the state can not be cleared
      */
     public synchronized void clear() {
         if (!prefs.edit().remove(KEY_STATE).commit()) {

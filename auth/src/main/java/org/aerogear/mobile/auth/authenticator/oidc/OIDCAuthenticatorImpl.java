@@ -57,6 +57,9 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
      *
      * @param serviceConfiguration {@link ServiceConfiguration}
      * @param authServiceConfiguration {@link AuthServiceConfiguration}
+     * @param authStateManager {@link AuthStateManager}
+     * @param authorizationServiceFactory {@link AuthorizationServiceFactory}
+     * @param jwksManager {@link JwksManager}
      */
     public OIDCAuthenticatorImpl(final ServiceConfiguration serviceConfiguration,
                                  final AuthServiceConfiguration authServiceConfiguration,

@@ -41,8 +41,8 @@ public class AuthServiceConfiguration {
 
         /**
          * Allow specify the value of the redirect uri
-         * @param redirectUri
-         * @return
+         * @param redirectUri a new redirectUri value
+         * @return the builder instance
          */
         public AuthConfigurationBuilder withRedirectUri(final String redirectUri) {
             this.redirectUri = Uri.parse(nonNull(redirectUri, "redirectUri"));

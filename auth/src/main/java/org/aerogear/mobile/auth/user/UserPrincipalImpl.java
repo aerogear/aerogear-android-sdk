@@ -42,6 +42,9 @@ public class UserPrincipalImpl implements UserPrincipal {
      * @param username the username of the authenticated user
      * @param email the email of the authenticated user
      * @param roles roles assigned to the user
+     * @param identityToken the identity token 
+     * @param accessToken the access token 
+     * 
      */
     protected UserPrincipalImpl(final String username,
                               final String email,
@@ -180,7 +183,7 @@ public class UserPrincipalImpl implements UserPrincipal {
 
     /**
      * Returns the identity token. It is used during logout.
-     * @return
+     * @return  the identity token
      */
     public String getIdentityToken() {
         return identityToken;
@@ -189,7 +192,7 @@ public class UserPrincipalImpl implements UserPrincipal {
     /**
      * Returns the access token for the current logged user.
      * This token can be added to HTTP requests as the "Authorization: Bearer" header.
-     * @return
+     * @return the access token 
      */
     @Override
     public String getAccessToken() {
