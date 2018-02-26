@@ -12,8 +12,6 @@ import org.aerogear.mobile.security.impl.SecurityCheckResultImpl;
  * A check for whether a debugger is attached to the current application.
  */
 public class DebuggerCheck implements SecurityCheck {
-    private static final String NAME = "detectDebugger";
-
     /**
      * Check whether a debugger is attached to the current application.
      *
@@ -22,11 +20,6 @@ public class DebuggerCheck implements SecurityCheck {
      */
     @Override
     public SecurityCheckResult test(final Context context) {
-        return new SecurityCheckResultImpl(NAME, Debug.isDebuggerConnected());
-    }
-
-    @Override
-    public String getName() {
-        return NAME;
+        return new SecurityCheckResultImpl(this, Debug.isDebuggerConnected());
     }
 }

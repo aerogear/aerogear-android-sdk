@@ -1,6 +1,7 @@
 package org.aerogear.mobile.security.checks;
 
 import android.content.Context;
+import android.support.annotation.VisibleForTesting;
 
 import com.scottyab.rootbeer.RootBeer;
 
@@ -21,6 +22,11 @@ public class RootedCheck implements SecurityCheck {
     @Override
     public SecurityCheckResult test(final Context context) {
         final RootBeer rootBeer = new RootBeer(context);
+        return new SecurityCheckResultImpl(this, rootBeer.isRooted());
+    }
+
+    @VisibleForTesting
+    SecurityCheckResult test(final Context context, final RootBeer rootBeer) {
         return new SecurityCheckResultImpl(this, rootBeer.isRooted());
     }
 }

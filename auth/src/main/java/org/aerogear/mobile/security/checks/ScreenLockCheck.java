@@ -12,8 +12,6 @@ import org.aerogear.mobile.security.impl.SecurityCheckResultImpl;
  * A check for whether the device the application is running on has a screen lock.
  */
 public class ScreenLockCheck implements SecurityCheck {
-    private static final String NAME = "detectScreenLock";
-
     /**
      * Check whether the device has a screen lock enabled (PIN, Password, etc).
      *
@@ -25,13 +23,8 @@ public class ScreenLockCheck implements SecurityCheck {
         final KeyguardManager keyguardManager = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
         // KeyguardManager#isDeviceSecure() was added in Android M.
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-            return new SecurityCheckResultImpl(NAME, keyguardManager.isDeviceSecure());
+            return new SecurityCheckResultImpl(this, keyguardManager.isDeviceSecure());
         }
-        return new SecurityCheckResultImpl(NAME, keyguardManager.isKeyguardSecure());
-    }
-
-    @Override
-    public String getName() {
-        return NAME;
+        return new SecurityCheckResultImpl(this, keyguardManager.isKeyguardSecure());
     }
 }

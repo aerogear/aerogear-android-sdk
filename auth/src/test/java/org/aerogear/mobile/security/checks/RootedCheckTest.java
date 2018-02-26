@@ -2,6 +2,7 @@ package org.aerogear.mobile.security.checks;
 
 import com.scottyab.rootbeer.RootBeer;
 
+
 import org.aerogear.mobile.security.SecurityCheckResult;
 import org.junit.Before;
 import org.junit.Test;
