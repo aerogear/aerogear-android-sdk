@@ -25,4 +25,9 @@ public class RootedCheck implements SecurityCheck {
         final RootBeer rootBeer = new RootBeer(context);
         return new SecurityCheckResultImpl(NAME, rootBeer.isRooted());
     }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
 }

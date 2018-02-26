@@ -16,4 +16,10 @@ public interface SecurityCheck {
      * @return {@link SecurityCheckResult Result} of the test
      */
     SecurityCheckResult test(Context context);
+
+    /**
+     * Gets the name of the check. It must be a unique string.
+     * @return
+     */
+    public String getName();
 }

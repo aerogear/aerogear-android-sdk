@@ -9,9 +9,11 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import static junit.framework.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -55,40 +57,45 @@ public class SecurityCheckExecutorTest {
     @Test
     public void testExecuteSync() {
 
-        SecurityCheckResult[] results =  SecurityCheckExecutor.Builder
+        Map<String, SecurityCheckResult> results =  SecurityCheckExecutor.Builder
             .newSyncExecutor(context)
             .withSecurityCheck(securityCheckType)
             .build().execute();
 
-        assertEquals(1, results.length);
-        assertEquals(true, results[0].passed());
+        assertEquals(1, results.size());
+        assertTrue(results.containsKey(mockSecurityCheck.getName()));
+        assertEquals(true, results.get(mockSecurityCheck.getName()).passed());
     }
 
     @Test
     public void testExecuteAsync() throws Exception {
 
-        Future<SecurityCheckResult>[] results =  SecurityCheckExecutor.Builder
+        Map<String, Future<SecurityCheckResult>> results = SecurityCheckExecutor.Builder
             .newAsyncExecutor(context)
             .withSecurityCheck(securityCheckType)
             .withExecutorService(Executors.newFixedThreadPool(1))
             .build().execute();
 
-        assertEquals(1, results.length);
-        assertEquals(true, results[0].get().passed());
+        assertEquals(1, results.size());
+        assertTrue(results.containsKey(mockSecurityCheck.getName()));
+        assertEquals(true, results.get(mockSecurityCheck.getName()).get().passed());
     }
 
     @Test
     public void testSendMetricsAsync() throws Exception {
         when(metricsService.publish(any())).thenReturn(null);
 
-        Future<SecurityCheckResult>[] results = SecurityCheckExecutor.Builder
+        Map<String, Future<SecurityCheckResult>> results = SecurityCheckExecutor.Builder
             .newAsyncExecutor(context)
             .withSecurityCheck(securityCheckType)
             .withMetricsService(metricsService)
             .withExecutorService(Executors.newFixedThreadPool(1))
-            .build().execute();
+            .build()
+            .execute();
 
-        results[0].get();
+        assertEquals(1, results.size());
+        assertTrue(results.containsKey(mockSecurityCheck.getName()));
+        results.get(mockSecurityCheck.getName()).get();
 
         verify(metricsService, times(1)).publish(any());
     }
