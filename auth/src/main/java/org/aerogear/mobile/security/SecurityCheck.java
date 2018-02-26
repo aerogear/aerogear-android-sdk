@@ -19,7 +19,11 @@ public interface SecurityCheck {
 
     /**
      * Gets the name of the check. It must be a unique string.
-     * @return
+     * The default implementation is to return the check class name.
+     *
+     * @return the name of the check.
      */
-    public String getName();
+    default public String getName() {
+        return this.getClass().getName();
+    }
 }

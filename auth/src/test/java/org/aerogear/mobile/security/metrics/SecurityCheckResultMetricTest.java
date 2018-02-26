@@ -1,10 +1,13 @@
 package org.aerogear.mobile.security.metrics;
 
+import org.aerogear.mobile.security.SecurityCheck;
 import org.aerogear.mobile.security.SecurityCheckResult;
 import org.aerogear.mobile.security.impl.SecurityCheckResultImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
 
 import static junit.framework.Assert.assertEquals;
@@ -13,18 +16,21 @@ import static junit.framework.Assert.assertEquals;
 public class SecurityCheckResultMetricTest {
 
     SecurityCheckResult result;
-    final static String RESULT_NAME = "exampleName";
     final static boolean RESULT_PASSED = true;
+
+    @Mock
+    private SecurityCheck securityCheck;
 
     @Before
     public void setup() {
-        result = new SecurityCheckResultImpl(RESULT_NAME, RESULT_PASSED);
+        MockitoAnnotations.initMocks(this);
+        result = new SecurityCheckResultImpl(securityCheck, RESULT_PASSED);
     }
 
     @Test
     public void testConversion() {
         SecurityCheckResultMetric metric = new SecurityCheckResultMetric(result);
-        assertEquals(RESULT_NAME, metric.identifier());
+        assertEquals(securityCheck.getName(), metric.identifier());
         assertEquals(String.valueOf(RESULT_PASSED), metric.data().get("passed"));
     }
 }
