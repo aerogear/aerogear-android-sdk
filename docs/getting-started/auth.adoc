@@ -115,7 +115,7 @@ AuthService authService = mobileCore.getInstance(AuthService.class);
 static int LOGIN_RESULT_CODE = 1;
 
 // Build the options object and start the authentication flow. Provide an activity to handle the auth response.
-OIDCAuthenticateOptions options = new OIDCAuthenticateOptions(myActivity, LOGIN_RESULT_CODE);
+DefaultAuthenticateOptions options = new DefaultAuthenticateOptions(myActivity, LOGIN_RESULT_CODE);
 
 Callback authCallback = new Callback<UserPrincipal>() {
     @Override
