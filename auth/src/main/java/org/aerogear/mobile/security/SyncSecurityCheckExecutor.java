@@ -48,38 +48,27 @@ public class SyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<Syn
      * @return a {@link Map} containing the results of all the executed checks
      */
     public Map<String, SecurityCheckResult> execute() {
-        final Map<String, SecurityCheckResult> results = getTestResults();
-        if (getMetricsService() != null) {
-            publishResultMetrics(results.values());
+        final Map<String, SecurityCheckResult> results = new HashMap<>();
+
+        for (SecurityCheck check : getChecks()) {
+            SecurityCheckResult result = check.test(getContext());
+            results.put(check.getName(), result);
+            publishResultMetrics(result);
         }
-        return getTestResults();
+
+        return results;
     }
 
     /**
      * Publish each {@link SecurityCheckResult result} provided as an {@link SecurityCheckResultMetric}.
      *
-     * @param results Collection of results
+     * @param result result to be published
      */
-    private void publishResultMetrics(@NonNull final Collection <SecurityCheckResult> results) {
-        for(SecurityCheckResult result : results) {
-            this.getMetricsService().publish(new SecurityCheckResultMetric(result));
+    private void publishResultMetrics(@NonNull SecurityCheckResult result) {
+        MetricsService metricsService = getMetricsService();
+
+        if (metricsService != null) {
+            metricsService.publish(new SecurityCheckResultMetric(result));
         }
-    }
-
-    /**
-     * Returns a {@link Map} containing the results of each executed test.
-     * The key of the map will be the output of {@link SecurityCheck#getName()}, while the value will be
-     * the result of the check.
-     *
-     * @return a {@link Map} containing the results of all the executed checks
-     */
-    private Map<String, SecurityCheckResult> getTestResults() {
-
-        final Map<String, SecurityCheckResult> results = new HashMap<>();
-
-        for (SecurityCheck check : getChecks()) {
-            results.put(check.getName(), check.test(getContext()));
-        }
-        return results;
     }
 }
