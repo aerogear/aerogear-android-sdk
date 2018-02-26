@@ -47,6 +47,9 @@ public class JwksManager {
      * Load the cached JWKS from the private storage of the app.
      * It will return null if there is no cached JWKS found.
      * It will trigger a request to fetch the JWKS in the background if there is no cached key found, or {@link AuthServiceConfiguration#getMinTimeBetweenJwksRequests()} is passed since the key set is requested last time.
+     * 
+     * @param keyCloakConfig the configuration to use to load the JWKS object
+     * 
      * @return the cached JWKS, or null if it doesn't exist
      */
     public JsonWebKeySet load(final KeycloakConfiguration keyCloakConfig) {

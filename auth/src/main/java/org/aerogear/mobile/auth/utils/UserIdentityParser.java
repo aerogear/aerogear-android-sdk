@@ -52,7 +52,7 @@ public class UserIdentityParser {
      * Parses the user's username from the user identity {@link #userIdentity}
      *
      * @return user's username
-     * @throws JSONException
+     * @throws JSONException if the USERNAME property is not in the userIdentity object
      */
     public String parseUsername() throws JSONException {
         String username = "Unknown Username";
@@ -69,7 +69,7 @@ public class UserIdentityParser {
      * Parses the user's email address from the user identity {@link #userIdentity}
      *
      * @return user's email address
-     * @throws JSONException
+     * @throws JSONException if the EMAIL property is not in the userIdentity object
      */
     public String parseEmail() throws JSONException {
         String emailAddress = "Unknown Email";
@@ -86,7 +86,7 @@ public class UserIdentityParser {
      * Parses the user's roles from the user identity {@link #userIdentity}
      *
      * @return user's roles
-     * @throws JSONException
+     * @throws JSONException if the REALM property is not in the userIdentity object
      */
     public Set<UserRole> parseRoles() throws JSONException {
         Set<UserRole> roles = new HashSet<>();
@@ -121,7 +121,7 @@ public class UserIdentityParser {
      * Parses the user's realm roles from the user identity {@link #userIdentity}
      *
      * @return user's realm roles
-     * @throws JSONException
+     * @throws JSONException if the REALM property is not in the userIdentity object
      */
     private Set<UserRole> parseRealmRoles() throws JSONException {
         Set<UserRole> realmRoles = new HashSet<>();
@@ -143,7 +143,7 @@ public class UserIdentityParser {
      * Parses the user's initial client roles from the user identity {@link #userIdentity}
      *
      * @return user's client roles
-     * @throws JSONException
+     * @throws JSONException if the CLIENT property is not in the userIdentity object or CLIENT does not have a ROLES property
      */
     private Set<UserRole> parseClientRoles() throws JSONException {
         Set<UserRole> clientRoles = new HashSet<>();
@@ -171,8 +171,7 @@ public class UserIdentityParser {
      * Gets the user's identity by decoding the user's access token {@link OIDCCredentials#getAccessToken()}
      *
      * @return user's identity
-     * @throws JSONException
-     * @throws AuthenticationException
+     * @throws AuthenticationException if the user access token could not be decoded.
      */
     private void decodeUserIdentity() throws AuthenticationException {
         String accessToken = ((OIDCCredentials) credential).getAccessToken();

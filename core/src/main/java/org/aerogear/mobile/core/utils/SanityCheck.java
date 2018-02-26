@@ -17,7 +17,7 @@ public final class SanityCheck {
      *
      * @param value current value
      * @param paramName parameter name
-     * @param <T>
+     * @param <T> the type parameter of the value under test
      * @return current value
      */
     public static <T> T nonNull(final T value, final String paramName) {
@@ -33,7 +33,7 @@ public final class SanityCheck {
      * @param value current value
      * @param customMessage message to be put inside the NullPointerException. Can be a pattern.
      * @param params parameters to be applied to the customMessage pattern
-     * @param <T>
+     * @param <T> the type parameter of the value under test
      * @return the current value
      */
     public static <T> T nonNull(final T value, final String customMessage, final Object ... params) {

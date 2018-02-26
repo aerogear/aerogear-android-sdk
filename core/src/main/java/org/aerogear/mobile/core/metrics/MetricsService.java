@@ -70,6 +70,7 @@ public class MetricsService implements ServiceModule {
      * Send metrics
      *
      * @param metrics Metrics to send
+     * @return this MetricsService instance
      */
     public MetricsService publish(final Metrics... metrics) {
         nonNull(metrics, "metrics");

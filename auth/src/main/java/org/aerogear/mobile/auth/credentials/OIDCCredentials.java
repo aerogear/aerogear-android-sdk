@@ -34,7 +34,7 @@ public class OIDCCredentials {
      * successful authentication with OpenID Connect.
      * @param serialisedCredential JSON string representation of the authState field produced by
      *                             {@link #deserialize(String)}.
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException if deserializing fails
      */
     public OIDCCredentials(final String serialisedCredential) {
         try {
@@ -62,8 +62,10 @@ public class OIDCCredentials {
 
     /**
      * Verify the token and its claims against the given Keycloak configuration
-     * @param keycloakConfig
-     * @return
+     * 
+     * @param jwks json web keys to verify
+     * @param keycloakConfig keycloak config containing certificate information for the jwks instance.
+     * @return true if the jwks value is valid, false otherwise
      */
     public boolean verifyClaims(final JsonWebKeySet jwks, final KeycloakConfiguration keycloakConfig) {
         final String issuer = keycloakConfig.getIssuer();
@@ -99,7 +101,7 @@ public class OIDCCredentials {
 
     /**
      * Returns whether this token is expired or not.
-     * @return <code>true</code> if expired.
+     * @return true if expired.
      */
     public boolean isExpired() {
         return authState.hasClientSecretExpired();
@@ -107,7 +109,7 @@ public class OIDCCredentials {
 
     /**
      * Check whether new access token is needed.
-     * @return <code>true</code> if access token is needed
+     * @return true if access token is needed
      */
     public boolean getNeedsRenewal() {
         return authState.getNeedsTokenRefresh();
@@ -131,7 +133,7 @@ public class OIDCCredentials {
     /**
      * Returns stringified JSON for the OIDCCredential.
      * @return Stringified JSON OIDCCredential
-     * @throws IllegalArgumentException
+     * @throws IllegalStateException if the auth state can not be serialized
      */
     public String serialize() {
         try {
@@ -139,7 +141,7 @@ public class OIDCCredentials {
                 .put("authState", this.authState.jsonSerializeString());
             return jsonCredential.toString();
         } catch(JSONException e) {
-            throw new IllegalArgumentException(e);
+            throw new IllegalStateException(e);
         }
     }
 
@@ -147,7 +149,7 @@ public class OIDCCredentials {
      * Return a new credential from the output of {@link #serialize()}
      * @param serializedCredential serialized credential from {@link #serialize()}
      * @return new credential
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException if the serailized credentials can not be deserialized
      */
     public static OIDCCredentials deserialize(final String serializedCredential) {
         nonEmpty(serializedCredential, "serializedCredential");
@@ -163,7 +165,7 @@ public class OIDCCredentials {
 
     /**
      * Check whether the user is authorized and not expired.
-     * @return <code>true</code> if user is authorized and token is not expired.
+     * @return true if user is authorized and token is not expired.
      */
     public boolean checkValidAuth() {
         return isAuthorized() && !getNeedsRenewal();
@@ -172,8 +174,9 @@ public class OIDCCredentials {
     /**
      * Renew the token.
      *
-     * @return
-     * @throws UnsupportedOperationException
+     * @return not Implemented
+     * @throws UnsupportedOperationException this operation is not implemented
+     * @throws AuthenticationException  this operation is not implemented
      */
     public boolean renew() throws AuthenticationException {
         throw new UnsupportedOperationException("Not yet implemented");

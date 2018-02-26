@@ -177,7 +177,8 @@ public class AuthService implements ServiceModule {
 
     /**
      * Initialize the module. This should be called before any other method when using the module.
-     * @param context
+     * @param context the current application context
+     * @param authServiceConfiguration the configuration of the auth service
      */
     public void init(final Context context, final AuthServiceConfiguration authServiceConfiguration) {
         if (!initialisationStatus.contains(STEP.CONFIGURED)) {
