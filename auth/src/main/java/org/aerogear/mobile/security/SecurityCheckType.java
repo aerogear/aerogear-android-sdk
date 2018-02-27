@@ -17,13 +17,13 @@ public enum SecurityCheckType {
      * Detect whether the device is rooted.
      * See {@link RootedCheck}
      *
-     * @return <code>true</code> if the device is rooted.
+     * @return <code>true</code> if the device is rooted
      */
     IS_ROOTED(new RootedCheck()),
 
     /**
      * Detect if developer mode is enabled in the device.
-     *  See {@link DeveloperModeCheck}
+     * See {@link DeveloperModeCheck}
      */
     IS_DEVELOPER_MODE(new DeveloperModeCheck()),
     /**
@@ -49,14 +49,14 @@ public enum SecurityCheckType {
     ALLOW_BACKUP_ENABLED(new AllowBackupFlagCheck());
 
     /**
-     * {@link SecurityCheck}.
+     * {@link SecurityCheck}
      */
     private SecurityCheck check;
 
     /**
      * Creates SecurityCheckType object.
      *
-     * @param check {@link SecurityCheck}.
+     * @param check {@link SecurityCheck}
      */
     SecurityCheckType(SecurityCheck check) {
         this.check = check;
@@ -65,7 +65,7 @@ public enum SecurityCheckType {
     /**
      * Gets the security check.
      *
-     * @return {@link SecurityCheck} instance.
+     * @return {@link SecurityCheck} instance
      */
     public SecurityCheck getSecurityCheck() {
         return check;
@@ -74,7 +74,7 @@ public enum SecurityCheckType {
     /**
      * Gets the name of the security check.
      *
-     * @return {@link String} {@link SecurityCheck#getName()}.
+     * @return {@link String} {@link SecurityCheck#getName()}
      */
     public String getName() {
         return getSecurityCheck().getName();

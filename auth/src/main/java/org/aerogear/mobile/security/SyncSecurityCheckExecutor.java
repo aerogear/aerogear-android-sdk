@@ -11,6 +11,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
 /**
  * Synchronously executes provided {@link SecurityCheck}s.
  */
@@ -27,7 +29,7 @@ public class SyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<Syn
         /**
          * Creates a new SyncSecurityCheckExecutor object.
          *
-         * @return {@link SyncSecurityCheckExecutor}.
+         * @return {@link SyncSecurityCheckExecutor}
          */
         @Override
         public SyncSecurityCheckExecutor build() {
@@ -38,10 +40,10 @@ public class SyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<Syn
     /**
      * Constructor for SyncSecurityCheckExecutor.
      *
-     * @param context the {@link Context} of the device.
-     * @param checks the {@link Collection<SecurityCheck>} of security checks to be tested.
-     * @param metricsService {@link MetricsService}.
-     * @throws IllegalArgumentException if context is null.
+     * @param context the {@link Context} of the device
+     * @param checks the {@link Collection<SecurityCheck>} of security checks to be tested
+     * @param metricsService {@link MetricsService}
+     * @throws IllegalArgumentException if {@param context} is null
      */
     SyncSecurityCheckExecutor(@NonNull final Context context,
                               @NonNull final Collection<SecurityCheck> checks,
@@ -57,7 +59,7 @@ public class SyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<Syn
      * The key of the map will be the output of {@link SecurityCheck#getName()}, while the value will be
      * the result of the check.
      *
-     * @return {@link Map<String, SecurityCheckResult>}.
+     * @return {@link Map<String, SecurityCheckResult>}
      */
     public Map<String, SecurityCheckResult> execute() {
         final Map<String, SecurityCheckResult> results = new HashMap<>();
@@ -75,12 +77,13 @@ public class SyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<Syn
      * Publish each result provided as an {@link SecurityCheckResultMetric}.
      *
      * @param result {@link SecurityCheckResult} to be published
+     * @throws IllegalArgumentException if {@param result} is null
      */
     private void publishResultMetrics(@NonNull SecurityCheckResult result) {
         MetricsService metricsService = getMetricsService();
 
         if (metricsService != null) {
-            metricsService.publish(new SecurityCheckResultMetric(result));
+            metricsService.publish(new SecurityCheckResultMetric(nonNull(result, "result")));
         }
     }
 }

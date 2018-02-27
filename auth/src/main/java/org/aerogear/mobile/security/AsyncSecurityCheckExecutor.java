@@ -33,7 +33,7 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<As
     private final static Logger LOG = MobileCore.getLogger();
 
     /**
-     * Custom {@link ExecutorService} for AsyncSecurityCheckExecutor.
+     * Custom {@link ExecutorService} for AsyncSecurityCheckExecutor. Can be null.
      */
     private final ExecutorService executorService;
 
@@ -44,15 +44,15 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<As
     public static class Builder extends SecurityCheckExecutor.Builder.AbstractBuilder<Builder, AsyncSecurityCheckExecutor> {
 
         /**
-         * Custom {@link ExecutorService} for AsyncSecurityCheckExecutor.
+         * Custom {@link ExecutorService} for AsyncSecurityCheckExecutor. Can be null.
          */
         private ExecutorService executorService;
 
         /**
          * Creates a Builder object.
          *
-         * @param ctx {@link Context} of the device.
-         * @throws IllegalArgumentException if context is null.
+         * @param ctx {@link Context} of the device
+         * @throws IllegalArgumentException if {@param ctx} is null
          */
         Builder(final Context ctx) {
             super(ctx);
@@ -61,8 +61,8 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<As
         /**
          * Specify a custom execution singleThreadService for this SecurityCheckExecutor.
          *
-         * @param executorService executor singleThreadService to be used.
-         * @return this.
+         * @param executorService {@link AppExecutors#singleThreadService()} to be used
+         * @return this
          */
         public Builder withExecutorService(@Nullable final ExecutorService executorService) {
             this.executorService = executorService;
@@ -71,8 +71,9 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<As
 
         /**
          * Creates a new AsyncSecurityCheckExecutor object.
+         * If no {@link ExecutorService} as been defined, a new {@link AppExecutors#singleThreadService()} is created.
          *
-         * @return {@link AsyncSecurityCheckExecutor}.
+         * @return {@link AsyncSecurityCheckExecutor}
          */
         @Override
         public AsyncSecurityCheckExecutor build() {
@@ -86,11 +87,11 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<As
     /**
      * Constructor for AsyncSecurityCheckExecutor.
      *
-     * @param context the {@link Context} of the device.
-     * @param executorService the custom {@link ExecutorService}.
-     * @param checks the {@link Collection<SecurityCheck>} of security checks to be tested.
-     * @param metricsService {@link MetricsService}.
-     * @throws IllegalArgumentException if context or executorService are null.
+     * @param context the {@link Context} of the device
+     * @param executorService the custom {@link ExecutorService}
+     * @param checks the {@link Collection<SecurityCheck>} of security checks to be tested
+     * @param metricsService {@link MetricsService}
+     * @throws IllegalArgumentException if {@param context} or {@param executorService} are null
      */
     AsyncSecurityCheckExecutor(@NonNull final Context context,
                                @NonNull final ExecutorService executorService,
@@ -107,7 +108,7 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<As
      * The key of the map will be the output of {@link SecurityCheck#getName()}, while the value will be
      * a {@link Future} with the result of the check.
      *
-     * @return {@link Map<String, Future<SecurityCheckResult>>}.
+     * @return {@link Map<String, Future<SecurityCheckResult>>}
      */
     public Map<String, Future<SecurityCheckResult>> execute() {
 

@@ -13,9 +13,9 @@ public class RootedCheck extends AbstractSecurityCheck {
     /**
      * Check whether the device is rooted or not.
      *
-     * @param context Context to be used by the check.
-     * @return <code>true</code> if the device is rooted.
-     * @throws IllegalArgumentException if context is null.
+     * @param context Context to be used by the check
+     * @return <code>true</code> if the device is rooted
+     * @throws IllegalArgumentException if {@param context} is null
      */
     @Override
     protected boolean execute(@NonNull Context context) {

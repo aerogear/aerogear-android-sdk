@@ -1,6 +1,7 @@
 package org.aerogear.mobile.security;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.ServiceModule;
@@ -16,13 +17,18 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
  * Checks can be run individually using {@link #check(SecurityCheckType)} , or can be chained
  * together using an {@link SyncSecurityCheckExecutor} by using {@link #getCheckExecutor()}
  */
-public class SecurityService implements ServiceModule{
+public class SecurityService implements ServiceModule {
     private final static String TYPE = "security";
 
+    /**
+     * {@link MobileCore}
+     */
     private MobileCore core;
 
     /**
-     * @return
+     * Gets the service type.
+     *
+     * @return {@link String}
      */
     @Override
     public String type() {
@@ -30,30 +36,35 @@ public class SecurityService implements ServiceModule{
     }
 
     /**
-     * @param core                 MobileCore instance
-     * @param serviceConfiguration the configuration for the singleThreadService
+     * Configures the security service.
+     *
+     * @param core                 {@link MobileCore} instance
+     * @param serviceConfiguration {@link ServiceConfiguration} for the security service
      */
     @Override
-    public void configure(final MobileCore core, final ServiceConfiguration serviceConfiguration) {
+    public void configure(@NonNull final MobileCore core, @Nullable final ServiceConfiguration serviceConfiguration) {
         this.core = core;
     }
 
     /**
-     * @return
+     * Checks if the service requires a service configuration.
+     * This service does not require a service configuration.
+     *
+     * @return <code>false</code>
      */
     @Override
     public boolean requiresConfiguration() { return false; }
 
     /**
-     *
+     * Invoked when security service needs to be destroyed.
      */
     @Override
     public void destroy() {}
 
     /**
-     * Retrieve a {@link SyncSecurityCheckExecutor} to run multiple {@link SecurityCheckType checks} chained.
+     * Retrieve a check executor that can synchronously  run multiple security checks chained.
      *
-     * @return A new executor
+     * @return {@link SyncSecurityCheckExecutor}
      */
     public SyncSecurityCheckExecutor getCheckExecutor() {
         return SecurityCheckExecutor.Builder
@@ -61,9 +72,9 @@ public class SecurityService implements ServiceModule{
     }
 
     /**
-     * Retrieve a {@link AsyncSecurityCheckExecutor} to asynchronously run multiple {@link SecurityCheckType checks} chained.
+     * Retrieve a check executor that can asynchronously run multiple security checks chained.
      *
-     * @return A new async executor
+     * @return {@link AsyncSecurityCheckExecutor}
      */
     public AsyncSecurityCheckExecutor getAsyncCheckExecutor() {
         return SecurityCheckExecutor.Builder
@@ -73,7 +84,7 @@ public class SecurityService implements ServiceModule{
     /**
      * Used with enumeration to perform a single {@link SecurityCheckType} and get the {@link SecurityCheckResult result} for it.
      *
-     * @param securityCheckType The type of check to execute
+     * @param securityCheckType The {@link SecurityCheckType} to execute
      * @return {@link SecurityCheckResult}
      * @throws IllegalArgumentException if securityCheckType is null
      */

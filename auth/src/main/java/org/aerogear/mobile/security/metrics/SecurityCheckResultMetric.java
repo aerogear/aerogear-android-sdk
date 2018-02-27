@@ -17,14 +17,21 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
  */
 public class SecurityCheckResultMetric implements Metrics {
 
+    /**
+     * The name of the check performed. Cannot be null.
+     */
     private final String identifier;
+
+    /**
+     * A {@link Map} that stores whether the check passed or not. Cannot be null.
+     */
     private final Map<String, String> data;
 
     /**
      * Creates a SecurityCheckResultMetric object.
      *
-     * @param result the {@link SecurityCheckResult} of the test executed.
-     * @throws IllegalArgumentException if result is null.
+     * @param result the {@link SecurityCheckResult} of the test executed
+     * @throws IllegalArgumentException if {@param result} is null
      */
     public SecurityCheckResultMetric(@NonNull final SecurityCheckResult result) {
         this.identifier = nonNull(result, "result").getName();
@@ -32,9 +39,9 @@ public class SecurityCheckResultMetric implements Metrics {
     }
 
     /**
-     * Gets the name of the check performed
+     * Gets the name of the check performed.
      *
-     * @return {@link String} identifier.
+     * @return {@link String} identifier
      */
     @Override
     public String identifier() {
@@ -44,7 +51,7 @@ public class SecurityCheckResultMetric implements Metrics {
     /**
      * Gets the data from the result which contains whether the check passed or not.
      *
-     * @return {@link Map<String, String>} data.
+     * @return {@link Map<String, String>} data
      */
     @Override
     public Map<String, String> data() {
@@ -54,8 +61,8 @@ public class SecurityCheckResultMetric implements Metrics {
     /**
      * Creates the data structure that stores whether or not the result passed or not.
      *
-     * @param result the {@link SecurityCheckResult} of the test executed.
-     * @return {@link Map<String, String>} data.
+     * @param result the {@link SecurityCheckResult} of the test executed
+     * @return {@link Map<String, String>} data
      */
     private Map<String, String> getDataFromResult(final SecurityCheckResult result) {
         final Map<String, String> data = new HashMap<>();
