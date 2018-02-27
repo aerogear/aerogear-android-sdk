@@ -12,11 +12,15 @@ import org.aerogear.mobile.security.checks.ScreenLockCheck;
  * Checks that can be performed.
  */
 public enum SecurityCheckType {
+
     /**
-     *  Detect whether the device is rooted.
-     *  See {@link RootedCheck}
+     * Detect whether the device is rooted.
+     * See {@link RootedCheck}
+     *
+     * @return <code>true</code> if the device is rooted.
      */
     IS_ROOTED(new RootedCheck()),
+
     /**
      * Detect if developer mode is enabled in the device.
      *  See {@link DeveloperModeCheck}
@@ -44,25 +48,33 @@ public enum SecurityCheckType {
      */
     ALLOW_BACKUP_ENABLED(new AllowBackupFlagCheck());
 
+    /**
+     * {@link SecurityCheck}.
+     */
     private SecurityCheck check;
 
+    /**
+     * Creates SecurityCheckType object.
+     *
+     * @param check {@link SecurityCheck}.
+     */
     SecurityCheckType(SecurityCheck check) {
         this.check = check;
     }
 
     /**
-     * Return the {@link SecurityCheck} implementation for this check.
+     * Gets the security check.
      *
-     * @return a SecurityCheck instance
+     * @return {@link SecurityCheck} instance.
      */
     public SecurityCheck getSecurityCheck() {
         return check;
     }
 
     /**
-     * Returns the name of this security check.
-     * The value is the same as {@link SecurityCheck#getName()}
-     * @return a String version of the name property.
+     * Gets the name of the security check.
+     *
+     * @return {@link String} {@link SecurityCheck#getName()}.
      */
     public String getName() {
         return getSecurityCheck().getName();

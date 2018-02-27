@@ -5,14 +5,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.aerogear.mobile.core.metrics.MetricsService;
-import org.aerogear.mobile.security.SecurityCheckType;
-import org.aerogear.mobile.security.SecurityCheck;
-import org.aerogear.mobile.security.SecurityCheckResult;
 import org.aerogear.mobile.security.metrics.SecurityCheckResultMetric;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -20,17 +16,33 @@ import java.util.Map;
  */
 public class SyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<SyncSecurityCheckExecutor> {
 
+    /**
+     * Builder class for constructing a SyncSecurityCheckExecutor object.
+     */
     public static class Builder extends SecurityCheckExecutor.Builder.AbstractBuilder<Builder, SyncSecurityCheckExecutor> {
         Builder(final Context ctx) {
             super(ctx);
         }
 
+        /**
+         * Creates a new SyncSecurityCheckExecutor object.
+         *
+         * @return {@link SyncSecurityCheckExecutor}.
+         */
         @Override
         public SyncSecurityCheckExecutor build() {
             return new SyncSecurityCheckExecutor(getCtx(), getChecks(), getMetricsService());
         }
     }
 
+    /**
+     * Constructor for SyncSecurityCheckExecutor.
+     *
+     * @param context the {@link Context} of the device.
+     * @param checks the {@link Collection<SecurityCheck>} of security checks to be tested.
+     * @param metricsService {@link MetricsService}.
+     * @throws IllegalArgumentException if context is null.
+     */
     SyncSecurityCheckExecutor(@NonNull final Context context,
                               @NonNull final Collection<SecurityCheck> checks,
                               @Nullable final MetricsService metricsService) {
@@ -45,7 +57,7 @@ public class SyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<Syn
      * The key of the map will be the output of {@link SecurityCheck#getName()}, while the value will be
      * the result of the check.
      *
-     * @return a {@link Map} containing the results of all the executed checks
+     * @return {@link Map<String, SecurityCheckResult>}.
      */
     public Map<String, SecurityCheckResult> execute() {
         final Map<String, SecurityCheckResult> results = new HashMap<>();
@@ -60,9 +72,9 @@ public class SyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<Syn
     }
 
     /**
-     * Publish each {@link SecurityCheckResult result} provided as an {@link SecurityCheckResultMetric}.
+     * Publish each result provided as an {@link SecurityCheckResultMetric}.
      *
-     * @param result result to be published
+     * @param result {@link SecurityCheckResult} to be published
      */
     private void publishResultMetrics(@NonNull SecurityCheckResult result) {
         MetricsService metricsService = getMetricsService();

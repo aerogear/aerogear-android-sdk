@@ -21,19 +21,32 @@ public class SecurityService implements ServiceModule{
 
     private MobileCore core;
 
+    /**
+     * @return
+     */
     @Override
     public String type() {
         return TYPE;
     }
 
+    /**
+     * @param core                 MobileCore instance
+     * @param serviceConfiguration the configuration for the singleThreadService
+     */
     @Override
     public void configure(final MobileCore core, final ServiceConfiguration serviceConfiguration) {
         this.core = core;
     }
 
+    /**
+     * @return
+     */
     @Override
     public boolean requiresConfiguration() { return false; }
 
+    /**
+     *
+     */
     @Override
     public void destroy() {}
 

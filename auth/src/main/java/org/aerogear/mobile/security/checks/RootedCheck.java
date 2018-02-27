@@ -15,10 +15,11 @@ public class RootedCheck extends AbstractSecurityCheck {
      *
      * @param context Context to be used by the check.
      * @return <code>true</code> if the device is rooted.
+     * @throws IllegalArgumentException if context is null.
      */
     @Override
     protected boolean execute(@NonNull Context context) {
-        return getRootBeer(context).isRooted();
+        return getRootBeer(nonNull(context, "context")).isRooted();
     }
 
     /**

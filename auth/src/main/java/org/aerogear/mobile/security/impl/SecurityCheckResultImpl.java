@@ -17,20 +17,32 @@ public class SecurityCheckResultImpl implements SecurityCheckResult {
     private final boolean passed;
 
     /**
-     * Builds a new Security Check result.
-     * @param check the check class that produced this result
-     * @param passed whether the check has been passed or not
+     * Builds a new Security Check Result object.
+     *
+     * @param check the check class that produced this result.
+     * @param passed whether the check has been passed or not.
+     * @throws IllegalArgumentException if check is null.
      */
     public SecurityCheckResultImpl(@NonNull SecurityCheck check, final boolean passed) {
         this.name = nonNull(check, "check").getName();
         this.passed = passed;
     }
 
+    /**
+     * Gets the name of the check.
+     *
+     * @return {@link String} name.
+     */
     @Override
     public String getName() {
         return name;
     }
 
+    /**
+     * Gets the check result.
+     *
+     * @return <code>true</code> if the check was successful.
+     */
     @Override
     public boolean passed() {
         return passed;
