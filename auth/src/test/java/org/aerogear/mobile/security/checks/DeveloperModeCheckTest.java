@@ -56,7 +56,7 @@ public class DeveloperModeCheckTest {
         assertEquals(expected.passed(), actual.passed());
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void nullContextTest() {
         DeveloperModeCheck developerModeCheck = new DeveloperModeCheck();
         developerModeCheck.test(null);

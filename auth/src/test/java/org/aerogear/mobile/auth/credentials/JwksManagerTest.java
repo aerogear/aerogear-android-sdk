@@ -36,46 +36,34 @@ import static org.mockito.Mockito.when;
 @RunWith(RobolectricTestRunner.class)
 public class JwksManagerTest {
 
-    @Mock
-    private Context ctx;
-
-    @Mock
-    private MobileCore mobileCore;
-
-    @Mock
-    private AuthServiceConfiguration authServiceConfiguration;
-
-    @Mock
-    private KeycloakConfiguration keycloakConfiguration;
-
-    @Mock
-    private HttpServiceModule httpServiceModule;
-
-    @Mock
-    private HttpRequest httpRequest;
-
-    @Mock
-    private HttpResponse httpResponse;
-
-    @Mock
-    private SharedPreferences sharedPrefs;
-
-    @Mock
-    private SharedPreferences.Editor sharedPrefEditor;
-
-    private JsonWebKeySet keySet;
-    private Throwable exception;
-
     // TEST KEY
     private static final String JWKS_CONTENT = "{\"keys\":[{\"kid\":\"adSoyXNAgQxV43eqHSiRZf6hN9ytvBNQyb2fFSdCTVM\",\"kty\":\"RSA\"," +
         "\"alg\":\"RS256\",\"use\":\"sig\",\"n\":\"kr1fDOUrTZc1MnpY9brGiA7Cz6X1nX77pmrUEgnMq2mxU7ibSW0CAk5e5a4wkmLGYf8Ey" +
         "vaFPHT1fMrFmDK03oN8Q2anh-3e894cXBXazHzzaJD-Lz1HfOOZFeInkAasxWSo8KN1-Kg-1Z7QyrPLhfcbIwfH2Stabx-3lfEMtPGws7tqWg93" +
         "piA8is1PwIV5_8k4CqLe7jNtUyYS4BKR07oBY6VVxXOKKQAQ3ToLN--sjfaXAjDuE1Go7iW9q7Yt6q9qu4JCX-k6IWu68y_H6cicLXwS1VXPMwF" +
         "jDOj7cQZB7A3t4q0F-6NVL-t7UjrAAK_7V3lPB-rDwHO92iwlZw\",\"e\":\"AQAB\"}]}";
-
     private static final String KEYALG = "RS256";
-
     private static final String KEYID = "adSoyXNAgQxV43eqHSiRZf6hN9ytvBNQyb2fFSdCTVM";
+    @Mock
+    private Context ctx;
+    @Mock
+    private MobileCore mobileCore;
+    @Mock
+    private AuthServiceConfiguration authServiceConfiguration;
+    @Mock
+    private KeycloakConfiguration keycloakConfiguration;
+    @Mock
+    private HttpServiceModule httpServiceModule;
+    @Mock
+    private HttpRequest httpRequest;
+    @Mock
+    private HttpResponse httpResponse;
+    @Mock
+    private SharedPreferences sharedPrefs;
+    @Mock
+    private SharedPreferences.Editor sharedPrefEditor;
+    private JsonWebKeySet keySet;
+    private Throwable exception;
 
     @Before
     public void setup() throws NoSuchFieldException, IllegalAccessException {
@@ -105,7 +93,7 @@ public class JwksManagerTest {
         when(httpResponse.getStatus()).thenReturn(200);
         when(httpResponse.stringBody()).thenReturn(JWKS_CONTENT);
 
-        when(authServiceConfiguration.getMinTimeBetweenJwksRequests()).thenReturn(24*60);
+        when(authServiceConfiguration.getMinTimeBetweenJwksRequests()).thenReturn(24 * 60);
 
         keySet = null;
         exception = null;
@@ -127,7 +115,7 @@ public class JwksManagerTest {
 
             @Override
             public void onError(Throwable error) {
-               exception = error;
+                exception = error;
                 lock.countDown();
             }
         });

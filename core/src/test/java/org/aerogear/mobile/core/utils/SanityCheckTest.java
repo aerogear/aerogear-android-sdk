@@ -16,7 +16,7 @@ public class SanityCheckTest {
         try {
             SanityCheck.nonNull(null, "test-param");
             Assert.fail("null value has not been detected");
-        } catch(IllegalArgumentException iae) {
+        } catch (IllegalArgumentException iae) {
             Assert.assertEquals("Parameter 'test-param' can't be null", iae.getMessage());
         }
     }
@@ -26,7 +26,7 @@ public class SanityCheckTest {
         try {
             SanityCheck.nonNull(null, "Test error message for %s param with custom %s string", "test-param", "custom-string");
             Assert.fail("null value has not been detected");
-        } catch(IllegalArgumentException iae) {
+        } catch (IllegalArgumentException iae) {
             Assert.assertEquals("Test error message for test-param param with custom custom-string string", iae.getMessage());
         }
     }
@@ -36,7 +36,7 @@ public class SanityCheckTest {
         try {
             SanityCheck.nonEmpty("     ", "empty-string");
             Assert.fail("empty value has not been detected");
-        } catch(IllegalArgumentException iae) {
+        } catch (IllegalArgumentException iae) {
             Assert.assertEquals("'empty-string' can't be empty or null", iae.getMessage());
         }
     }
@@ -51,7 +51,7 @@ public class SanityCheckTest {
         try {
             SanityCheck.nonEmpty("     ", "Parameter '%s' must be valorised and only spaces are not accepted", "testParam");
             Assert.fail("empty value has not been detected");
-        } catch(IllegalArgumentException iae) {
+        } catch (IllegalArgumentException iae) {
             Assert.assertEquals("Parameter 'testParam' must be valorised and only spaces are not accepted", iae.getMessage());
         }
     }

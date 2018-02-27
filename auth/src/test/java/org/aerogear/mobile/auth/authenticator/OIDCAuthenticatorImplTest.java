@@ -12,10 +12,10 @@ import net.openid.appauth.TokenRequest;
 import net.openid.appauth.TokenResponse;
 
 import org.aerogear.mobile.auth.AuthStateManager;
+import org.aerogear.mobile.auth.AuthenticationException;
 import org.aerogear.mobile.auth.Callback;
 import org.aerogear.mobile.auth.authenticator.oidc.OIDCAuthenticatorImpl;
 import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
-import org.aerogear.mobile.auth.AuthenticationException;
 import org.aerogear.mobile.auth.credentials.JwksManager;
 import org.aerogear.mobile.auth.credentials.OIDCCredentials;
 import org.aerogear.mobile.auth.user.UserPrincipal;
@@ -41,12 +41,6 @@ import static org.mockito.Mockito.when;
 public class OIDCAuthenticatorImplTest {
 
     private static final String EXTRA_RESPONSE = "net.openid.appauth.AuthorizationResponse";
-
-    @Mock
-    private ServiceConfiguration serviceConfig;
-
-    private String accessToken = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJhZFNveVhOQWdReFY0M2VxSFNpUlpmNmhOOXl0dkJOUXliMmZGU2RDVFZNIn0.eyJqdGkiOiJlMzkzOGU2Zi0zOGQzLTQ2MmYtYTg1OS04YjNiODA0N2NlNzkiLCJleHAiOjE5NDg2MzI2NDgsIm5iZiI6MCwiaWF0IjoxNTE2NjMyNjQ4LCJpc3MiOiJodHRwczovL2tleWNsb2FrLnNlY3VyaXR5LmZlZWRoZW5yeS5vcmcvYXV0aC9yZWFsbXMvc2VjdXJlLWFwcCIsImF1ZCI6ImNsaWVudC1hcHAiLCJzdWIiOiJiMTYxN2UzOC0zODczLTRhNDctOGE2Yy01YjgyMmFkYTI3NWUiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJjbGllbnQtYXBwIiwiYXV0aF90aW1lIjoxNTE2NjMyNjQ3LCJzZXNzaW9uX3N0YXRlIjoiYzI1NWYwYWMtODA5MS00YzkyLThmM2EtNDhmZmI4ODFhNzBiIiwiYWNyIjoiMSIsImFsbG93ZWQtb3JpZ2lucyI6WyIqIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJtb2JpbGUtdXNlciJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImNsaWVudC1hcHAiOnsicm9sZXMiOlsiaW9zLWFjY2VzcyJdfSwiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwibmFtZSI6IlVzZXIgMSIsInByZWZlcnJlZF91c2VybmFtZSI6InVzZXIxIiwiZ2l2ZW5fbmFtZSI6IlVzZXIiLCJmYW1pbHlfbmFtZSI6IjEiLCJlbWFpbCI6InVzZXIxQGZlZWRoZW5yeS5vcmcifQ.RvsLrOrLB3EFkZvYZM8-QXf6rRllCap-embNwa2V-NTMpcR7EKNMkKUQI9MbBlVSkTEBckZAK0DGSdo5CYuFoFH-xVWkzU0yQKBuFYAK1Etd50yQWwS1vHiThT95ZgeGGCB3ptafY5UCoqyg41kKqO5rb8iGyZ3ACp2xoEOE5S1rPAPszcQrbKBryOOk7H6MDZgqhZxxGUJkDVAT2v3jAd1aJ4K17qH6raabtDrAy_541vn6c0LS1ay0ooW4IVFzjFSH1-jMJvCYM6oku7brPonl2qHO8jMLrrhxylw2VXIAlregih6aNJ5c87729UtEJNTEFyqGI6GCunt2DQt7cw";
-
     private static final String OIDC_RESPONSE = "{\"request\":{\"configuration\":{\"authorizationEndpoint\":\"https:\\/\\/keycloak.security." +
         "feedhenry.org\\/auth\\/realms\\/secure-app\\/protocol\\/openid-connect\\/auth\",\"tokenEndpoint\":\"https:\\/\\/keycloak.security." +
         "feedhenry.org\\/auth\\/realms\\/secure-app\\/protocol\\/openid-connect\\/token\"},\"clientId\":\"client-app\",\"responseType\":\"code\"," +
@@ -57,8 +51,6 @@ public class OIDCAuthenticatorImplTest {
         "ndQeYBIg2UImGpYW1fO6HDOpSdrn2oOE3EGiyDeQtkWotx_F69-7vvgZJkUEgGZH4ITo9OAwK4hDtKRAOsTIvfOEb2cFxAk36iieAAtMipvdMTMaMFufH306xd-" +
         "pvAki0_Qz1B44rMyKGeni3kKYJKpag5JFrbxtu7nqZXlS5pAksXH92aBePYEM2LjpgH3a3ZC-CbR8AB-JJZBb_WdhuDd7TRjMI16d73EAT-qsSM_u4fpaNb6_x." +
         "Gqrn4dPmbfRtxWv1s4vNSg\",\"additional_parameters\":{}}";
-
-
     private static final String AUTH_STATE = "{\"refreshToken\":\"eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJhZFNveVhOQWdReFY0M2VxSFNpUl" +
         "pmNmhOOXl0dkJOUXliMmZGU2RDVFZNIn0.eyJqdGkiOiI1YWFjZDI3Mi1jYmU3LTQ0MTYtOWY3ZS04NmY3NTc4NWNjYjQiLCJleHAiOjE1MTkwNTA5ODQsIm5iZiI6MCwiaWF0I" +
         "joxNTE5MDQ5MTg0LCJpc3MiOiJodHRwczovL2tleWNsb2FrLnNlY3VyaXR5LmZlZWRoZW5yeS5vcmcvYXV0aC9yZWFsbXMvc2VjdXJlLWFwcCIsImF1ZCI6ImNsaWVudC1hcHAi" +
@@ -111,31 +103,24 @@ public class OIDCAuthenticatorImplTest {
         "GmHd6aOKkwKYpecB2T5Af7slAOUW987d0dIrutVe3rxiVfXvoolgU0QAKoI9zhmBIMXKFFJAF_cFrpwEPdq-acqf7mSVlcqBJbvG1ljBhwgx9n2rDENqSJXHyn4wgy71GrLUWQPJU" +
         "EIxU3IqYjQ_gKtlqgklGvmADo1ZAVxSv4w\",\"additionalParameters\":{\"refresh_expires_in\":\"1800\",\"not-before-policy\":\"1518687910\",\"ses" +
         "sion_state\":\"e12e3160-01b7-4813-b184-2a246368a641\"}}}";
-
-    private OIDCAuthenticatorImpl authenticator;
-
-    private OIDCCredentials credential;
-
-    private AuthServiceConfiguration authServiceConfiguration;
-
-    @Mock
-    private Activity activity;
-
-    @Mock
-    private Context context;
-
-    @Mock
-    private AuthStateManager authStateManager;
-
-    @Mock
-    private AuthorizationServiceFactory authorizationServiceFactory;
-
     @Mock
     AuthorizationServiceFactory.ServiceWrapper serviceWrapper;
-
     @Mock
     AuthorizationService authorizationService;
-
+    @Mock
+    private ServiceConfiguration serviceConfig;
+    private String accessToken = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJhZFNveVhOQWdReFY0M2VxSFNpUlpmNmhOOXl0dkJOUXliMmZGU2RDVFZNIn0.eyJqdGkiOiJlMzkzOGU2Zi0zOGQzLTQ2MmYtYTg1OS04YjNiODA0N2NlNzkiLCJleHAiOjE5NDg2MzI2NDgsIm5iZiI6MCwiaWF0IjoxNTE2NjMyNjQ4LCJpc3MiOiJodHRwczovL2tleWNsb2FrLnNlY3VyaXR5LmZlZWRoZW5yeS5vcmcvYXV0aC9yZWFsbXMvc2VjdXJlLWFwcCIsImF1ZCI6ImNsaWVudC1hcHAiLCJzdWIiOiJiMTYxN2UzOC0zODczLTRhNDctOGE2Yy01YjgyMmFkYTI3NWUiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJjbGllbnQtYXBwIiwiYXV0aF90aW1lIjoxNTE2NjMyNjQ3LCJzZXNzaW9uX3N0YXRlIjoiYzI1NWYwYWMtODA5MS00YzkyLThmM2EtNDhmZmI4ODFhNzBiIiwiYWNyIjoiMSIsImFsbG93ZWQtb3JpZ2lucyI6WyIqIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJtb2JpbGUtdXNlciJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImNsaWVudC1hcHAiOnsicm9sZXMiOlsiaW9zLWFjY2VzcyJdfSwiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwibmFtZSI6IlVzZXIgMSIsInByZWZlcnJlZF91c2VybmFtZSI6InVzZXIxIiwiZ2l2ZW5fbmFtZSI6IlVzZXIiLCJmYW1pbHlfbmFtZSI6IjEiLCJlbWFpbCI6InVzZXIxQGZlZWRoZW5yeS5vcmcifQ.RvsLrOrLB3EFkZvYZM8-QXf6rRllCap-embNwa2V-NTMpcR7EKNMkKUQI9MbBlVSkTEBckZAK0DGSdo5CYuFoFH-xVWkzU0yQKBuFYAK1Etd50yQWwS1vHiThT95ZgeGGCB3ptafY5UCoqyg41kKqO5rb8iGyZ3ACp2xoEOE5S1rPAPszcQrbKBryOOk7H6MDZgqhZxxGUJkDVAT2v3jAd1aJ4K17qH6raabtDrAy_541vn6c0LS1ay0ooW4IVFzjFSH1-jMJvCYM6oku7brPonl2qHO8jMLrrhxylw2VXIAlregih6aNJ5c87729UtEJNTEFyqGI6GCunt2DQt7cw";
+    private OIDCAuthenticatorImpl authenticator;
+    private OIDCCredentials credential;
+    private AuthServiceConfiguration authServiceConfiguration;
+    @Mock
+    private Activity activity;
+    @Mock
+    private Context context;
+    @Mock
+    private AuthStateManager authStateManager;
+    @Mock
+    private AuthorizationServiceFactory authorizationServiceFactory;
     @Mock
     private Intent intent;
 
@@ -164,15 +149,15 @@ public class OIDCAuthenticatorImplTest {
         when(authState.jsonSerializeString()).thenReturn(AUTH_STATE);
 
         doAnswer(invocation -> {
-            ((AuthorizationService.TokenResponseCallback)invocation.getArguments()[1]).onTokenRequestCompleted(tokenResponse, null);
+            ((AuthorizationService.TokenResponseCallback) invocation.getArguments()[1]).onTokenRequestCompleted(tokenResponse, null);
             return null;
         }).when(authorizationService).performTokenRequest(
-                any(TokenRequest.class),
-                any(AuthorizationService.TokenResponseCallback.class));
+            any(TokenRequest.class),
+            any(AuthorizationService.TokenResponseCallback.class));
 
         credential = new OIDCCredentials() {
             @Override
-            public String getAccessToken(){
+            public String getAccessToken() {
                 return accessToken;
             }
         };
@@ -180,13 +165,13 @@ public class OIDCAuthenticatorImplTest {
         authenticator = new OIDCAuthenticatorImpl(serviceConfig, authServiceConfiguration, authStateManager, authorizationServiceFactory, jwksManager);
 
         doAnswer(invocation -> {
-            ((Callback<JsonWebKeySet>)invocation.getArguments()[1]).onSuccess(null);
+            ((Callback<JsonWebKeySet>) invocation.getArguments()[1]).onSuccess(null);
             return null;
         }).when(jwksManager).fetchJwks(any(), any(Callback.class));
     }
 
     @Test
-    public void testAuthenticate() throws AuthenticationException, IOException, JSONException  {
+    public void testAuthenticate() throws AuthenticationException, IOException, JSONException {
         DefaultAuthenticateOptions opts = new DefaultAuthenticateOptions(activity, 0);
 
         authenticator.authenticate(opts, new Callback<UserPrincipal>() {

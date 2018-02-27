@@ -25,7 +25,36 @@ public class SecurityCheckExecutor {
     public static class Builder {
 
         /**
+         * Creates a new AsyncExecutor Builder
+         *
+         * @param ctx the context
+         * @return the AsyncExecutor builder
+         */
+        public static AsyncSecurityCheckExecutor.Builder newAsyncExecutor(@NonNull final Context ctx) {
+            return new Builder().newAsyncBuilder(ctx);
+        }
+
+        /**
+         * Creates a new SyncExecutor Builder
+         *
+         * @param ctx the context
+         * @return the SyncExecutor builder
+         */
+        public static SyncSecurityCheckExecutor.Builder newSyncExecutor(@NonNull final Context ctx) {
+            return new Builder().newSyncBuilder(ctx);
+        }
+
+        private AsyncSecurityCheckExecutor.Builder newAsyncBuilder(@NonNull final Context ctx) {
+            return new AsyncSecurityCheckExecutor.Builder(ctx);
+        }
+
+        private SyncSecurityCheckExecutor.Builder newSyncBuilder(@NonNull final Context ctx) {
+            return new SyncSecurityCheckExecutor.Builder(ctx);
+        }
+
+        /**
          * Base class for SecurityCheckExecutor builders
+         *
          * @param <T> The type of this builder
          * @param <K> The type of the built object
          */
@@ -51,6 +80,7 @@ public class SecurityCheckExecutor {
 
             /**
              * Adds a new security check.
+             *
              * @param checkType type of security check to be added
              * @return this
              */
@@ -88,32 +118,6 @@ public class SecurityCheckExecutor {
              * @return the executor instance
              */
             public abstract K build();
-        }
-
-        private AsyncSecurityCheckExecutor.Builder newAsyncBuilder(@NonNull final Context ctx) {
-            return new AsyncSecurityCheckExecutor.Builder(ctx);
-        }
-
-        private SyncSecurityCheckExecutor.Builder newSyncBuilder(@NonNull final Context ctx) {
-            return new SyncSecurityCheckExecutor.Builder(ctx);
-        }
-
-        /**
-         * Creates a new AsyncExecutor Builder
-         * @param ctx the context
-         * @return the AsyncExecutor builder
-         */
-        public static AsyncSecurityCheckExecutor.Builder newAsyncExecutor(@NonNull final Context ctx) {
-            return new Builder().newAsyncBuilder(ctx);
-        }
-
-        /**
-         * Creates a new SyncExecutor Builder
-         * @param ctx the context
-         * @return the SyncExecutor builder
-         */
-        public static SyncSecurityCheckExecutor.Builder newSyncExecutor(@NonNull final Context ctx) {
-            return new Builder().newSyncBuilder(ctx);
         }
     }
 }

@@ -24,10 +24,10 @@ public class ScreenLockCheck implements SecurityCheck {
      * @throws IllegalArgumentException if {@param context} is null
      */
     @Override
-    public SecurityCheckResult test(@NonNull final Context context){
+    public SecurityCheckResult test(@NonNull final Context context) {
         final KeyguardManager keyguardManager = (KeyguardManager) nonNull(context, "context").getSystemService(Context.KEYGUARD_SERVICE);
         // KeyguardManager#isDeviceSecure() was added in Android M.
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             return new SecurityCheckResultImpl(this, keyguardManager.isDeviceSecure());
         }
         return new SecurityCheckResultImpl(this, keyguardManager.isKeyguardSecure());

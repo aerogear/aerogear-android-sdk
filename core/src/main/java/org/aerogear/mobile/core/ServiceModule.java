@@ -13,7 +13,7 @@ public interface ServiceModule {
     /**
      * A method how create/configure the singleThreadService
      *
-     * @param core MobileCore instance
+     * @param core                 MobileCore instance
      * @param serviceConfiguration the configuration for the singleThreadService
      */
     void configure(MobileCore core, ServiceConfiguration serviceConfiguration);

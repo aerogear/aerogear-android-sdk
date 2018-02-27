@@ -18,7 +18,8 @@ public class SecurityCheckResultImpl implements SecurityCheckResult {
 
     /**
      * Builds a new Security Check result.
-     * @param check the check class that produced this result
+     *
+     * @param check  the check class that produced this result
      * @param passed whether the check has been passed or not
      */
     public SecurityCheckResultImpl(@NonNull SecurityCheck check, final boolean passed) {

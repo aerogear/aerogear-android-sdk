@@ -13,7 +13,6 @@ import org.aerogear.mobile.core.http.HttpServiceModule;
 import org.aerogear.mobile.core.http.OkHttpServiceModule;
 import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.logging.LoggerAdapter;
-import org.aerogear.mobile.core.metrics.MetricsService;
 import org.json.JSONException;
 
 import java.io.IOException;
@@ -99,6 +98,28 @@ public final class MobileCore {
      */
     public static MobileCore init(final Context context, final Options options) throws InitializationException {
         return new MobileCore(context, options);
+    }
+
+    public static Logger getLogger() {
+        return logger;
+    }
+
+    /**
+     * Get the version name of the SDK itself
+     *
+     * @return String SDK version
+     */
+    public static String getSdkVersion() {
+        return BuildConfig.VERSION_NAME;
+    }
+
+    /**
+     * Get the version of the user app
+     *
+     * @return String App version name
+     */
+    public static String getAppVersion() {
+        return appVersion;
     }
 
     /**
@@ -191,28 +212,6 @@ public final class MobileCore {
 
     public HttpServiceModule getHttpLayer() {
         return this.httpLayer;
-    }
-
-    public static Logger getLogger() {
-        return logger;
-    }
-
-    /**
-     * Get the version name of the SDK itself
-     *
-     * @return String SDK version
-     */
-    public static String getSdkVersion() {
-        return BuildConfig.VERSION_NAME;
-    }
-
-    /**
-     * Get the version of the user app
-     *
-     * @return String App version name
-     */
-    public static String getAppVersion() {
-        return appVersion;
     }
 
     public static final class Options {

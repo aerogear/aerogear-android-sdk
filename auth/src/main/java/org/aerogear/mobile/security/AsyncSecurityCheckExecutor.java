@@ -23,10 +23,44 @@ import java.util.concurrent.Future;
 public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<AsyncSecurityCheckExecutor> {
 
     private final static String TAG = "AsyncSecurityCheckExecutor";
-
-    private final ExecutorService executorService;
     private final static Logger LOG = MobileCore.getLogger();
+    private final ExecutorService executorService;
 
+
+    AsyncSecurityCheckExecutor(@NonNull final Context context,
+                               @NonNull final ExecutorService executorService,
+                               @NonNull final Collection<SecurityCheck> checks,
+                               @Nullable final MetricsService metricsService) {
+        super(context, checks, metricsService);
+        this.executorService = executorService;
+    }
+
+    /**
+     * Executes the checks asynchronously and returns an array of {@link Future}
+     * <p>
+     * Returns a {@link Map} containing the results of each executed test (a {@link Future}).
+     * The key of the map will be the output of {@link SecurityCheck#getName()}, while the value will be
+     * a {@link Future} with the result of the check.
+     *
+     * @return a {@link Map} containing the results of all the executed checks
+     */
+    public Map<String, Future<SecurityCheckResult>> execute() {
+
+        final MetricsService metricsService = getMetricsService();
+        final Map<String, Future<SecurityCheckResult>> res = new HashMap<>();
+
+        for (final SecurityCheck check : getChecks()) {
+            res.put(check.getName(), (executorService.submit(() -> {
+                final SecurityCheckResult result = check.test(getContext());
+                if (metricsService != null) {
+                    metricsService.publish(new SecurityCheckResultMetric(result));
+                }
+                return result;
+            })));
+        }
+
+        return res;
+    }
 
     public static class Builder extends SecurityCheckExecutor.Builder.AbstractBuilder<Builder, AsyncSecurityCheckExecutor> {
 
@@ -54,40 +88,5 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<As
             }
             return new AsyncSecurityCheckExecutor(getCtx(), executorService, getChecks(), getMetricsService());
         }
-    }
-
-    AsyncSecurityCheckExecutor(@NonNull final Context context,
-                               @NonNull final ExecutorService executorService,
-                               @NonNull final Collection<SecurityCheck> checks,
-                               @Nullable final MetricsService metricsService) {
-        super(context, checks, metricsService);
-        this.executorService = executorService;
-    }
-
-    /**
-     * Executes the checks asynchronously and returns an array of {@link Future}
-     *
-     * Returns a {@link Map} containing the results of each executed test (a {@link Future}).
-     * The key of the map will be the output of {@link SecurityCheck#getName()}, while the value will be
-     * a {@link Future} with the result of the check.
-     *
-     * @return a {@link Map} containing the results of all the executed checks
-     */
-    public Map<String, Future<SecurityCheckResult>> execute() {
-
-        final MetricsService metricsService = getMetricsService();
-        final Map<String, Future<SecurityCheckResult>> res = new HashMap<>();
-
-        for (final SecurityCheck check : getChecks()) {
-            res.put(check.getName(), (executorService.submit(() -> {
-                final SecurityCheckResult result =  check.test(getContext());
-                if (metricsService != null) {
-                    metricsService.publish(new SecurityCheckResultMetric(result));
-                }
-                return result;
-            })));
-        }
-
-        return res;
     }
 }

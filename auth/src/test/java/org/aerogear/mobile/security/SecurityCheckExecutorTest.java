@@ -13,13 +13,12 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import static junit.framework.Assert.assertEquals;
 
 public class SecurityCheckExecutorTest {
     @Mock
@@ -63,7 +62,7 @@ public class SecurityCheckExecutorTest {
     @Test
     public void testExecuteSync() {
 
-        Map<String, SecurityCheckResult> results =  SecurityCheckExecutor.Builder
+        Map<String, SecurityCheckResult> results = SecurityCheckExecutor.Builder
             .newSyncExecutor(context)
             .withSecurityCheck(securityCheckType)
             .build().execute();

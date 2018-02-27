@@ -18,22 +18,16 @@ import butterknife.OnClick;
 
 public class AuthDetailsFragment extends BaseFragment {
     private static final String TAG = "AuthDetailsFragment";
-
-    private UserPrincipal currentUser;
-
     @BindView(R.id.divider_realm)
     TextView dividerRealm;
-
     @BindView(R.id.user_name)
     TextView userName;
-
     @BindView(R.id.user_email)
     TextView userEmail;
-
     @BindView(R.id.realm_roles)
     ListView listViewRealmRoles;
-
     ArrayAdapter<UserRole> realmRoles;
+    private UserPrincipal currentUser;
 
     @Override
     int getLayoutResId() {
@@ -72,7 +66,7 @@ public class AuthDetailsFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Bundle args = getArguments();
-        if (args != null ) {
+        if (args != null) {
             currentUser = (UserPrincipal) args.getSerializable("currentUser");
             updateFields();
         }

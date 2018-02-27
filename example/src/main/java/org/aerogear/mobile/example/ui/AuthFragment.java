@@ -15,10 +15,8 @@ import butterknife.OnClick;
 
 public class AuthFragment extends BaseFragment {
 
-    private final static String TAG = "AuthFragment";
-
     public static final int LOGIN_RESULT_CODE = 1;
-
+    private final static String TAG = "AuthFragment";
     @BindView(R.id.keycloak_login)
     TextView keycloakLogin;
 
@@ -39,14 +37,14 @@ public class AuthFragment extends BaseFragment {
     @OnClick(R.id.keycloak_login)
     public void doLogin() {
         Log.i(TAG, "Performing login");
-        AuthService authService = ((MainActivity)getActivity()).getAuthService();
+        AuthService authService = ((MainActivity) getActivity()).getAuthService();
         DefaultAuthenticateOptions authOptions = new DefaultAuthenticateOptions(this.getActivity(), LOGIN_RESULT_CODE);
         authService.login(authOptions, new Callback<UserPrincipal>() {
             @Override
             public void onSuccess(UserPrincipal models) {
                 //user logged in, continue on..
                 Log.i(TAG, "user logged in " + models.toString());
-                ((MainActivity)getActivity()).navigateToAuthDetailsView(models);
+                ((MainActivity) getActivity()).navigateToAuthDetailsView(models);
             }
 
             @Override

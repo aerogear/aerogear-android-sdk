@@ -15,9 +15,8 @@ import static junit.framework.Assert.assertEquals;
 @RunWith(RobolectricTestRunner.class)
 public class SecurityCheckResultMetricTest {
 
-    SecurityCheckResult result;
     final static boolean RESULT_PASSED = true;
-
+    SecurityCheckResult result;
     @Mock
     private SecurityCheck securityCheck;
 

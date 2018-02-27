@@ -27,37 +27,8 @@ public class AuthorizationServiceFactory {
     private final Context appContext;
 
     /**
-     * Wrapper class for all the objects used to perform OIDC authentication through the usage of
-     * the `openid` library.
-     */
-    public static class ServiceWrapper {
-        private final AuthorizationService authorizationService;
-        private final AuthState authState;
-        private final AuthorizationRequest authorizationRequest;
-
-        private ServiceWrapper(final AuthorizationService authorizationService,
-                               final AuthState authState,
-                               final AuthorizationRequest authorizationRequest) {
-            this.authorizationService = authorizationService;
-            this.authState = authState;
-            this.authorizationRequest = authorizationRequest;
-        }
-
-        public AuthorizationRequest getAuthorizationRequest() {
-            return authorizationRequest;
-        }
-
-        public AuthorizationService getAuthorizationService() {
-            return authorizationService;
-        }
-
-        public AuthState getAuthState() {
-            return authState;
-        }
-    }
-
-    /**
      * Builds a new AuthorizationServiceFactory
+     *
      * @param appContext the application context
      */
     public AuthorizationServiceFactory(@NonNull final Context appContext) {
@@ -66,7 +37,8 @@ public class AuthorizationServiceFactory {
 
     /**
      * Creates and initializes a new {@link AuthorizationService} ready to be used for authenticating with Keycloak.
-     * @param keycloakConfiguration configuration to be used to access keycloak
+     *
+     * @param keycloakConfiguration    configuration to be used to access keycloak
      * @param authServiceConfiguration the authentication singleThreadService configuration
      * @return a wrapper object containing all the `openid` object used to handle the OIDC authentication
      */
@@ -97,5 +69,35 @@ public class AuthorizationServiceFactory {
         ).setScopes(SCOPE_OPENID).build();
 
         return new ServiceWrapper(authService, authState, authRequest);
+    }
+
+    /**
+     * Wrapper class for all the objects used to perform OIDC authentication through the usage of
+     * the `openid` library.
+     */
+    public static class ServiceWrapper {
+        private final AuthorizationService authorizationService;
+        private final AuthState authState;
+        private final AuthorizationRequest authorizationRequest;
+
+        private ServiceWrapper(final AuthorizationService authorizationService,
+                               final AuthState authState,
+                               final AuthorizationRequest authorizationRequest) {
+            this.authorizationService = authorizationService;
+            this.authState = authState;
+            this.authorizationRequest = authorizationRequest;
+        }
+
+        public AuthorizationRequest getAuthorizationRequest() {
+            return authorizationRequest;
+        }
+
+        public AuthorizationService getAuthorizationService() {
+            return authorizationService;
+        }
+
+        public AuthState getAuthState() {
+            return authState;
+        }
     }
 }
