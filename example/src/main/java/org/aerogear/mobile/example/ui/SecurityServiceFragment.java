@@ -89,7 +89,6 @@ public class SecurityServiceFragment extends BaseFragment {
         detectHookingFramework();
         detectBackupEnabled();
         detectDeviceEncryptionStatus();
-        detectLatestOS();
         detectDeveloperOptions();
 
         // get trust score
@@ -112,7 +111,10 @@ public class SecurityServiceFragment extends BaseFragment {
      */
     public void detectDeviceLock() {
         totalTests++;
-        //TODO: add check
+        SecurityCheckResult result = securityService.check(SecurityCheckType.SCREEN_LOCK_ENABLED);
+        if(!result.passed()){
+            setDetected(lockScreenSetup, R.string.device_lock_detected_negative);
+        }
     }
 
     /**
@@ -120,7 +122,10 @@ public class SecurityServiceFragment extends BaseFragment {
      */
     public void debuggerDetected() {
         totalTests++;
-        //TODO: add check
+        SecurityCheckResult result = securityService.check(SecurityCheckType.IS_DEBUGGER);
+        if(result.passed()){
+            setDetected(debuggerAccess, R.string.debugger_detected_positive);
+        }
     }
 
     /**
@@ -128,7 +133,10 @@ public class SecurityServiceFragment extends BaseFragment {
      */
     public void detectEmulator() {
         totalTests++;
-        //TODO: add check
+        SecurityCheckResult result = securityService.check(SecurityCheckType.IS_EMULATOR);
+        if(result.passed()){
+            setDetected(emulatorAccess, R.string.emulator_detected_positive);
+        }
     }
 
     /**
@@ -151,14 +159,6 @@ public class SecurityServiceFragment extends BaseFragment {
      * Function to check if the devices filesystem is encrypted
      */
     public void detectDeviceEncryptionStatus() {
-        totalTests++;
-        //TODO: add check
-    }
-
-    /**
-     * Function to check if the device is running the latest Android OS
-     */
-    public void detectLatestOS() {
         totalTests++;
         //TODO: add check
     }

@@ -11,10 +11,10 @@ import org.aerogear.mobile.security.metrics.SecurityCheckResultMetric;
 import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 /**
- * Service for running security checks in an application.
+ * Service for running security checks in an application
  *
  * Checks can be run individually using {@link #check(SecurityCheckType)} , or can be chained
- * together using an {@link SyncSecurityCheckExecutor} by using {@link #getCheckExecutor()}.
+ * together using an {@link SyncSecurityCheckExecutor} by using {@link #getCheckExecutor()}
  */
 public class SecurityService implements ServiceModule{
     private final static String TYPE = "security";
@@ -40,7 +40,7 @@ public class SecurityService implements ServiceModule{
     /**
      * Retrieve a {@link SyncSecurityCheckExecutor} to run multiple {@link SecurityCheckType checks} chained.
      *
-     * @return A new executor.
+     * @return A new executor
      */
     public SyncSecurityCheckExecutor getCheckExecutor() {
         return SecurityCheckExecutor.Builder
@@ -50,7 +50,7 @@ public class SecurityService implements ServiceModule{
     /**
      * Retrieve a {@link AsyncSecurityCheckExecutor} to asynchronously run multiple {@link SecurityCheckType checks} chained.
      *
-     * @return A new async executor.
+     * @return A new async executor
      */
     public AsyncSecurityCheckExecutor getAsyncCheckExecutor() {
         return SecurityCheckExecutor.Builder
@@ -60,18 +60,44 @@ public class SecurityService implements ServiceModule{
     /**
      * Perform a single {@link SecurityCheckType} and get the {@link SecurityCheckResult result} for it.
      *
-     * @param securityCheckType The check type to execute.
-     * @return The result of the security check from the check type provided.
+     * @param securityCheckType The type of check to execute
+     * @return {@link SecurityCheckResult}
+     * @throws IllegalArgumentException if {@param securityCheckType} is null
      */
-    public SecurityCheckResult check(final SecurityCheckType securityCheckType) {
-        return securityCheckType.getSecurityCheck().test(core.getContext());
+    public SecurityCheckResult check(@NonNull final SecurityCheckType securityCheckType) {
+        return (SecurityCheckResult) nonNull(securityCheckType, "securityCheckType").getSecurityCheck();
     }
 
-    public SecurityCheckResult checkAndSendMetric(@NonNull final SecurityCheckType securityCheckType, @NonNull final MetricsService metricsService) {
-        nonNull(securityCheckType, "securityCheckType");
-        nonNull(metricsService, "metricsService");
+    /**
+     * Perform a single {@link SecurityCheck} and get the {@link SecurityCheckResult result} for it.
+     *
+     * @param securityCheck The check to execute
+     * @return {@link SecurityCheckResult}
+     * @throws IllegalArgumentException if {@param securityCheck} is null
+     */
+    public SecurityCheckResult check(@NonNull final SecurityCheck securityCheck) {
+        return nonNull(securityCheck, "securityCheck").test(core.getContext());
+    }
 
-        final SecurityCheckResult result = check(securityCheckType);
+    /**
+     * Perform a single {@link SecurityCheckType} , get the {@link SecurityCheckResult result} and
+     * publish a {@link SecurityCheckResultMetric} based on the result.
+     *
+     * @param securityCheckType The type of check to execute
+     * @return {@link SecurityCheckResult}
+     */
+    public SecurityCheckResult checkAndSendMetric(final SecurityCheckType securityCheckType, final MetricsService metricsService) {
+        return checkAndSendMetric(securityCheckType.getSecurityCheck(), metricsService);
+    }
+
+    /**
+     * Perform a single {@link SecurityCheck} , and return a {@link SecurityCheckResult}.
+     *
+     * @param securityCheck The check to execute
+     * @return {@link SecurityCheckResult}
+     */
+    public SecurityCheckResult checkAndSendMetric(final SecurityCheck securityCheck, final MetricsService metricsService) {
+        SecurityCheckResult result = check(securityCheck);
         metricsService.publish(new SecurityCheckResultMetric(result));
         return result;
     }

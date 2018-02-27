@@ -1,7 +1,11 @@
 package org.aerogear.mobile.security;
 
+
 import org.aerogear.mobile.security.checks.DeveloperModeCheck;
+import org.aerogear.mobile.security.checks.DebuggerCheck;
+import org.aerogear.mobile.security.checks.EmulatorCheck;
 import org.aerogear.mobile.security.checks.RootedCheck;
+import org.aerogear.mobile.security.checks.ScreenLockCheck;
 
 /**
  * Checks that can be performed.
@@ -16,7 +20,23 @@ public enum SecurityCheckType {
      * Detect if developer mode is enabled in the device.
      *  See {@link DeveloperModeCheck}
      */
-    IS_DEVELOPER_MODE(new DeveloperModeCheck());
+    IS_DEVELOPER_MODE(new DeveloperModeCheck()),
+    /**
+     *  Detect if a device is in debug mode
+     *  See {@link DebuggerCheck}
+     */
+
+    IS_DEBUGGER(new DebuggerCheck()),
+    /**
+     *  Detect whether the device is emulated.
+     *  See {@link EmulatorCheck}
+     */
+    IS_EMULATOR(new EmulatorCheck()),
+    /**
+     *  Detect whether a screen lock is enabled (PIN, Password etc).
+     *  See {@link ScreenLockCheck}
+     */
+    SCREEN_LOCK_ENABLED(new ScreenLockCheck());
 
     private SecurityCheck check;
 
