@@ -51,4 +51,10 @@ public class ScreenLockCheckTest {
 
         field.set(null, newValue);
     }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void nullContextTest() {
+        ScreenLockCheck screenLockCheck = new ScreenLockCheck();
+        screenLockCheck.test(null);
+    }
 }

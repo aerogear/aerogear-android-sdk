@@ -2,6 +2,7 @@ package org.aerogear.mobile.security.checks;
 
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.NonNull;
 
 import org.aerogear.mobile.security.SecurityCheck;
 import org.aerogear.mobile.security.SecurityCheckResult;
@@ -18,7 +19,7 @@ public class EmulatorCheck implements SecurityCheck {
      * @return <code>true</code> if the device is an emulator.
      */
     @Override
-    public SecurityCheckResult test(final Context context) {
+    public SecurityCheckResult test(@NonNull final Context context) {
         return new SecurityCheckResultImpl(this, isEmulator());
     }
 

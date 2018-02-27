@@ -61,20 +61,23 @@ public class SecurityService implements ServiceModule{
      * Perform a single {@link SecurityCheckType} and get the {@link SecurityCheckResult result} for it.
      *
      * @param securityCheckType The type of check to execute.
-     * @return The result of the security check from the check type provided.
+     * @return {@link SecurityCheckResult}
+     * @throws IllegalArgumentException if {@param securityCheckType} is null
      */
-    public SecurityCheckResult check(final SecurityCheckType securityCheckType) {
-        return check(securityCheckType.getSecurityCheck());
+    public SecurityCheckResult check(@NonNull final SecurityCheckType securityCheckType) {
+        //return check(securityCheckType.getSecurityCheck());
+        return (SecurityCheckResult) nonNull(securityCheckType, "securityCheckType").getSecurityCheck();
     }
 
     /**
      * Perform a single {@link SecurityCheck} and get the {@link SecurityCheckResult result} for it.
      *
      * @param securityCheck The check to execute.
-     * @return The result of the security check from the check provided.
+     * @return {@link SecurityCheckResult}
+     * @throws IllegalArgumentException if {@param securityCheck} is null
      */
-    public SecurityCheckResult check(final SecurityCheck securityCheck) {
-        return securityCheck.test(core.getContext());
+    public SecurityCheckResult check(@NonNull final SecurityCheck securityCheck) {
+        return nonNull(securityCheck, "securityCheck").test(core.getContext());
     }
 
     /**
@@ -82,7 +85,7 @@ public class SecurityService implements ServiceModule{
      * publish a {@link SecurityCheckResultMetric} based on the result.
      *
      * @param securityCheckType The type of check to execute.
-     * @return The result of the security check from the check type provided.
+     * @return {@link SecurityCheckResult}
      */
     public SecurityCheckResult checkAndSendMetric(final SecurityCheckType securityCheckType, final MetricsService metricsService) {
         return checkAndSendMetric(securityCheckType.getSecurityCheck(), metricsService);
@@ -92,7 +95,7 @@ public class SecurityService implements ServiceModule{
      * Perform a single {@link SecurityCheck} , and return a {@link SecurityCheckResult}.
      *
      * @param securityCheck The check to execute.
-     * @return The result of the security check from the check provided.
+     * @return {@link SecurityCheckResult}
      */
     public SecurityCheckResult checkAndSendMetric(final SecurityCheck securityCheck, final MetricsService metricsService) {
         SecurityCheckResult result = check(securityCheck);

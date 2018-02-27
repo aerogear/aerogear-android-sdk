@@ -2,6 +2,7 @@ package org.aerogear.mobile.security.checks;
 
 import android.content.Context;
 import android.os.Debug;
+import android.support.annotation.NonNull;
 
 import org.aerogear.mobile.security.SecurityCheck;
 import org.aerogear.mobile.security.SecurityCheckResult;
@@ -23,8 +24,7 @@ public class DebuggerCheck implements SecurityCheck {
      * @return <code>true</code> if device is in debug mode
      */
     @Override
-
-    public SecurityCheckResult test(final Context context) {
+    public SecurityCheckResult test(@NonNull final Context context) {
         return new SecurityCheckResultImpl(this, Debug.isDebuggerConnected());
     }
 }
