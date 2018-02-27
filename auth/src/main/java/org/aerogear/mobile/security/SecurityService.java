@@ -62,7 +62,7 @@ public class SecurityService implements ServiceModule{
      *
      * @param securityCheckType The type of check to execute
      * @return {@link SecurityCheckResult}
-     * @throws IllegalArgumentException if {@param securityCheckType} is null
+     * @throws IllegalArgumentException if securityCheckType is null
      */
     public SecurityCheckResult check(@NonNull final SecurityCheckType securityCheckType) {
         return check(nonNull(securityCheckType, "securityCheckType").getSecurityCheck());
@@ -73,7 +73,7 @@ public class SecurityService implements ServiceModule{
      *
      * @param securityCheck The check to execute
      * @return {@link SecurityCheckResult}
-     * @throws IllegalArgumentException if {@param securityCheck} is null
+     * @throws IllegalArgumentException if securityCheck is null
      */
     public SecurityCheckResult check(@NonNull final SecurityCheck securityCheck) {
         return nonNull(securityCheck, "securityCheck").test(core.getContext());
@@ -84,6 +84,7 @@ public class SecurityService implements ServiceModule{
      * publish a {@link SecurityCheckResultMetric} based on the result.
      *
      * @param securityCheckType The type of check to execute
+     * @param metricsService The metrics service to use
      * @return {@link SecurityCheckResult}
      */
     public SecurityCheckResult checkAndSendMetric(final SecurityCheckType securityCheckType, final MetricsService metricsService) {
@@ -94,6 +95,7 @@ public class SecurityService implements ServiceModule{
      * Perform a single {@link SecurityCheck} , and return a {@link SecurityCheckResult}.
      *
      * @param securityCheck The check to execute
+     * @param metricsService The metrics service to use
      * @return {@link SecurityCheckResult}
      */
     public SecurityCheckResult checkAndSendMetric(final SecurityCheck securityCheck, final MetricsService metricsService) {

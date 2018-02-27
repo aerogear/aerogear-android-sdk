@@ -18,7 +18,7 @@ public abstract class AbstractSecurityCheck implements SecurityCheck {
      *
      * @param context Context to be used by the check
      * @return {@link SecurityCheckResult} embedding the result of {@link #execute(Context)}
-     * @throws IllegalArgumentException if {@param context} is null
+     * @throws IllegalArgumentException if context is null
      */
     @Override
     public final SecurityCheckResult test(@NonNull final Context context) {
