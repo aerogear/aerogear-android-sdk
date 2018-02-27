@@ -5,12 +5,12 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import org.aerogear.mobile.auth.authenticator.AuthorizationServiceFactory;
+import org.aerogear.mobile.auth.authenticator.DefaultAuthenticateOptions;
+import org.aerogear.mobile.auth.authenticator.oidc.OIDCAuthenticatorImpl;
 import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
 import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
-import org.aerogear.mobile.auth.authenticator.DefaultAuthenticateOptions;
 import org.aerogear.mobile.auth.credentials.JwksManager;
 import org.aerogear.mobile.auth.credentials.OIDCCredentials;
-import org.aerogear.mobile.auth.authenticator.oidc.OIDCAuthenticatorImpl;
 import org.aerogear.mobile.auth.user.UserPrincipal;
 import org.aerogear.mobile.auth.utils.UserIdentityParser;
 import org.aerogear.mobile.core.MobileCore;
@@ -31,52 +31,27 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
  */
 public class AuthService implements ServiceModule {
 
-    private ServiceConfiguration serviceConfiguration;
-    private KeycloakConfiguration keycloakConfiguration;
-    private AuthServiceConfiguration authServiceConfiguration;
-
-    private AuthStateManager authStateManager;
-
-    private OIDCAuthenticatorImpl oidcAuthenticatorImpl;
-
-    private Context appContext;
-    private Logger logger;
-    private JwksManager jwksManager;
-
-    private MobileCore mobileCore;
-
-    /**
-     * Enumeration of all the steps that must be executed to make this singleThreadService ready
-     */
-    private enum STEP {
-        /**
-         * This steps is related to the 'configure' method
-         */
-        CONFIGURED("configure"),
-        /**
-         * This step is related to the 'initialize' method
-         */
-        INITIALIZED("initialize");
-
-        /**
-         * The mothod that must be invoked to perform the required step.
-         */
-        String methodName;
-
-        STEP(final String methodName) {
-            this.methodName = methodName;
-        }
-    };
-
     /**
      * Stores the list of executed initialisation steps. When started, all steps must be executed.
      */
     private final EnumSet<STEP> initialisationStatus = EnumSet.noneOf(STEP.class);
+    private ServiceConfiguration serviceConfiguration;
+    private KeycloakConfiguration keycloakConfiguration;
+    private AuthServiceConfiguration authServiceConfiguration;
+    private AuthStateManager authStateManager;
+    private OIDCAuthenticatorImpl oidcAuthenticatorImpl;
+    private Context appContext;
+    private Logger logger;
+    private JwksManager jwksManager;
+    private MobileCore mobileCore;
+
+    ;
 
     /**
      * Instantiates a new AuthService object
      */
-    public AuthService() {}
+    public AuthService() {
+    }
 
     /**
      * Throws an {@link IllegalStateException} if the required initialisation steps are not executed
@@ -104,6 +79,7 @@ public class AuthService implements ServiceModule {
 
     /**
      * Return the user that is currently logged and is still valid. Otherwise returns null
+     *
      * @return the current logged in. Could be null.
      */
     public UserPrincipal currentUser() {
@@ -133,7 +109,7 @@ public class AuthService implements ServiceModule {
      * The login will be asynchronous.
      *
      * @param authOptions the authentication options
-     * @param callback the callback function that will be invoked with the user info
+     * @param callback    the callback function that will be invoked with the user info
      */
     public void login(@NonNull final DefaultAuthenticateOptions authOptions, @NonNull final Callback<UserPrincipal> callback) {
         failIfNotReady();
@@ -142,6 +118,7 @@ public class AuthService implements ServiceModule {
 
     /**
      * This function should be called in the start activity's "onActivityResult" method to allow the SDK to process the response from the authentication server.
+     *
      * @param data The intent data that is passed to "onActivityResult"
      */
     public void handleAuthResult(@NonNull final Intent data) {
@@ -158,7 +135,6 @@ public class AuthService implements ServiceModule {
         failIfNotReady();
         this.oidcAuthenticatorImpl.logout(principal);
     }
-
 
     @Override
     public String type() {
@@ -177,7 +153,8 @@ public class AuthService implements ServiceModule {
 
     /**
      * Initialize the module. This should be called before any other method when using the module.
-     * @param context the current application context
+     *
+     * @param context                  the current application context
      * @param authServiceConfiguration the configuration of the auth service
      */
     public void init(final Context context, final AuthServiceConfiguration authServiceConfiguration) {
@@ -195,10 +172,35 @@ public class AuthService implements ServiceModule {
     }
 
     @Override
-    public boolean requiresConfiguration() { return true; }
+    public boolean requiresConfiguration() {
+        return true;
+    }
 
     @Override
     public void destroy() {
 
+    }
+
+    /**
+     * Enumeration of all the steps that must be executed to make this singleThreadService ready
+     */
+    private enum STEP {
+        /**
+         * This steps is related to the 'configure' method
+         */
+        CONFIGURED("configure"),
+        /**
+         * This step is related to the 'initialize' method
+         */
+        INITIALIZED("initialize");
+
+        /**
+         * The mothod that must be invoked to perform the required step.
+         */
+        String methodName;
+
+        STEP(final String methodName) {
+            this.methodName = methodName;
+        }
     }
 }

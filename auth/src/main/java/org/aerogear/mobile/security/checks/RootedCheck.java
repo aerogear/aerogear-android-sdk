@@ -29,10 +29,11 @@ public class RootedCheck implements SecurityCheck {
 
     /**
      * This method allows us to perform unit testing on the Rooted Check
+     *
      * @param context Context to be used
      */
     protected RootBeer getRootBeer(final Context context) {
         return new RootBeer(context);
-   }
+    }
 
 }

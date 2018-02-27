@@ -4,8 +4,8 @@ import android.net.Uri;
 
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 import static org.aerogear.mobile.core.utils.SanityCheck.nonEmpty;
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 /**
  * A class to represent the configuration options of the Keycloak singleThreadService
@@ -29,6 +29,7 @@ public class KeycloakConfiguration {
 
     /**
      * Create a new instance of the Keycloak configuration from the given instance of ServiceConfiguration.
+     *
      * @param configuration the ServiceConfiguration instance for Keycloak
      */
     public KeycloakConfiguration(final ServiceConfiguration configuration) {
@@ -42,6 +43,7 @@ public class KeycloakConfiguration {
 
     /**
      * Get the URI for the Keycloak authentication endpoint
+     *
      * @return the authentication endpoint URI
      */
     public Uri getAuthenticationEndpoint() {
@@ -50,14 +52,16 @@ public class KeycloakConfiguration {
 
     /**
      * Get the URI for the token exchange endpoint
+     *
      * @return the token exchange endpoint URI
      */
     public Uri getTokenEndpoint() {
-        return Uri.parse( this.baseUrl + "/token");
+        return Uri.parse(this.baseUrl + "/token");
     }
 
     /**
      * Get the client id
+     *
      * @return the client id
      */
     public String getClientId() {
@@ -66,8 +70,9 @@ public class KeycloakConfiguration {
 
     /**
      * Get the logout URL string
+     *
      * @param identityToken the identity token
-     * @param redirectUri the redirect uri
+     * @param redirectUri   the redirect uri
      * @return the full logout URL string
      */
     public String getLogoutUrl(final String identityToken, final String redirectUri) {
@@ -76,6 +81,7 @@ public class KeycloakConfiguration {
 
     /**
      * Get the URL string of the Keycloak singleThreadService
+     *
      * @return the URL of the Keycloak singleThreadService
      */
     public String getHostUrl() {
@@ -84,6 +90,7 @@ public class KeycloakConfiguration {
 
     /**
      * Get the realm name of the Keycloak singleThreadService
+     *
      * @return the realm name
      */
     public String getRealmName() {
@@ -92,6 +99,7 @@ public class KeycloakConfiguration {
 
     /**
      * Returns the URL where keys can be retrieved.
+     *
      * @return the URL where keys can be retrieved.
      */
     public String getJwksUrl() {
@@ -100,6 +108,7 @@ public class KeycloakConfiguration {
 
     /**
      * Returns the JWT Issuer
+     *
      * @return the JWT Issuer
      */
     public String getIssuer() {

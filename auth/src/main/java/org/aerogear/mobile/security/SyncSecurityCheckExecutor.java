@@ -5,31 +5,16 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.aerogear.mobile.core.metrics.MetricsService;
-import org.aerogear.mobile.security.SecurityCheckType;
-import org.aerogear.mobile.security.SecurityCheck;
-import org.aerogear.mobile.security.SecurityCheckResult;
 import org.aerogear.mobile.security.metrics.SecurityCheckResultMetric;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 /**
  * Synchronously executes provided {@link SecurityCheck}s.
  */
 public class SyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<SyncSecurityCheckExecutor> {
-
-    public static class Builder extends SecurityCheckExecutor.Builder.AbstractBuilder<Builder, SyncSecurityCheckExecutor> {
-        Builder(final Context ctx) {
-            super(ctx);
-        }
-
-        @Override
-        public SyncSecurityCheckExecutor build() {
-            return new SyncSecurityCheckExecutor(getCtx(), getChecks(), getMetricsService());
-        }
-    }
 
     SyncSecurityCheckExecutor(@NonNull final Context context,
                               @NonNull final Collection<SecurityCheck> checks,
@@ -40,7 +25,7 @@ public class SyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<Syn
     /**
      * Executes the provided checks and returns the results.
      * Blocks until all checks are executed.
-     *
+     * <p>
      * Returns a {@link Map} containing the results of each executed test.
      * The key of the map will be the output of {@link SecurityCheck#getName()}, while the value will be
      * the result of the check.
@@ -69,6 +54,17 @@ public class SyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<Syn
 
         if (metricsService != null) {
             metricsService.publish(new SecurityCheckResultMetric(result));
+        }
+    }
+
+    public static class Builder extends SecurityCheckExecutor.Builder.AbstractBuilder<Builder, SyncSecurityCheckExecutor> {
+        Builder(final Context ctx) {
+            super(ctx);
+        }
+
+        @Override
+        public SyncSecurityCheckExecutor build() {
+            return new SyncSecurityCheckExecutor(getCtx(), getChecks(), getMetricsService());
         }
     }
 }

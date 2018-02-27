@@ -29,8 +29,8 @@ public class UserRole implements Serializable {
     /**
      * Creates a new UserRole object.
      *
-     * @param name role name.
-     * @param type role type.
+     * @param name      role name.
+     * @param type      role type.
      * @param namespace role name space/client ID.
      */
     public UserRole(final String name, final RoleType type, final String namespace) {
@@ -86,7 +86,7 @@ public class UserRole implements Serializable {
     }
 
     /**
-     *  Generates hashcode value from the UserRole name {@link #name} and type {@link #type}
+     * Generates hashcode value from the UserRole name {@link #name} and type {@link #type}
      *
      * @return hashcode value.
      */

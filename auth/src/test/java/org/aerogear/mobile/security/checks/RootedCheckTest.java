@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.scottyab.rootbeer.RootBeer;
 
-
 import org.aerogear.mobile.security.SecurityCheckResult;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,7 +52,7 @@ public class RootedCheckTest {
         assertFalse(result.passed());
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void nullContextTest() {
         RootedCheck rootedCheck = new RootedCheck();
         rootedCheck.test(null);

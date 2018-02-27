@@ -33,8 +33,8 @@ abstract class AbstractSecurityCheckExecutor<T extends AbstractSecurityCheckExec
     /**
      * Constructor.
      *
-     * @param context the context
-     * @param checks checks to be executed
+     * @param context       the context
+     * @param checks        checks to be executed
      * @param metricService singleThreadService to be used to publish metrics. If null, no metrics get published.
      */
     public AbstractSecurityCheckExecutor(@NonNull final Context context,
@@ -47,6 +47,7 @@ abstract class AbstractSecurityCheckExecutor<T extends AbstractSecurityCheckExec
 
     /**
      * Gets all the checks to be executed.
+     *
      * @return all the checks to be executed
      */
     protected Collection<SecurityCheck> getChecks() {
@@ -63,6 +64,7 @@ abstract class AbstractSecurityCheckExecutor<T extends AbstractSecurityCheckExec
 
     /**
      * Adds a new check to be executed
+     *
      * @param check the new check to be executed
      * @return this, so that adding checks can be chained
      */
@@ -73,6 +75,7 @@ abstract class AbstractSecurityCheckExecutor<T extends AbstractSecurityCheckExec
 
     /**
      * Adds a new check to be executed
+     *
      * @param checkType the type of the new check to be executed
      * @return this, so that adding checks can be chained
      */

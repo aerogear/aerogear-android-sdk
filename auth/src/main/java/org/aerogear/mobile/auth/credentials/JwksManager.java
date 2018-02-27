@@ -26,7 +26,7 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 public class JwksManager {
 
     private static final Logger logger = MobileCore.getLogger();
-    private static final int MILLISECONDS_PER_MINUTE = 60*1000;
+    private static final int MILLISECONDS_PER_MINUTE = 60 * 1000;
     private static final String STORE_NAME = "org.aerogear.mobile.auth.JwksStore";
     private static final String ENTRY_SUFFIX_FOR_KEY_CONTENT = "jwks_content";
     private static final String ENTRY_SUFFIX_FOR_REQUEST_DATE = "requested_date";
@@ -47,9 +47,8 @@ public class JwksManager {
      * Load the cached JWKS from the private storage of the app.
      * It will return null if there is no cached JWKS found.
      * It will trigger a request to fetch the JWKS in the background if there is no cached key found, or {@link AuthServiceConfiguration#getMinTimeBetweenJwksRequests()} is passed since the key set is requested last time.
-     * 
+     *
      * @param keyCloakConfig the configuration to use to load the JWKS object
-     * 
      * @return the cached JWKS, or null if it doesn't exist
      */
     public JsonWebKeySet load(final KeycloakConfiguration keyCloakConfig) {
@@ -75,8 +74,9 @@ public class JwksManager {
      * The request will be trigger if:
      * 1. forceFetch is set to true, or
      * 2. {@link AuthServiceConfiguration#getMinTimeBetweenJwksRequests()} is passed since the key set is requested last time.
+     *
      * @param keycloakConfiguration the configuration of the keycloak server
-     * @param forceFetch if set to true, the request will be trigger immediately.
+     * @param forceFetch            if set to true, the request will be trigger immediately.
      * @return whether the keys has been fetched or not.
      */
     public boolean fetchJwksIfNeeded(final KeycloakConfiguration keycloakConfiguration, final boolean forceFetch) {
@@ -90,8 +90,9 @@ public class JwksManager {
 
     /**
      * Call the remote endpoint to load the JWKS and save it locally.
+     *
      * @param keycloakConfiguration the configuration of the keycloak server
-     * @param callback the callback function to be invoked when the request is completed. Can be null.
+     * @param callback              the callback function to be invoked when the request is completed. Can be null.
      */
     public void fetchJwks(@NonNull final KeycloakConfiguration keycloakConfiguration, @Nullable final Callback<JsonWebKeySet> callback) {
         String jwksUrl = nonNull(keycloakConfiguration, "keycloakConfiguration").getJwksUrl();
@@ -130,6 +131,7 @@ public class JwksManager {
 
     /**
      * Check when the JWKS was requested last time and determine if a request should be sent again.
+     *
      * @param keyCloakConfig the configuration of the Keycloak server
      * @return true if the request should be triggered
      */
@@ -148,7 +150,8 @@ public class JwksManager {
 
     /**
      * Save the JWKS content for the given name space locally using SharedPreferences.
-     * @param namespace the namespace associated with the JWKS
+     *
+     * @param namespace   the namespace associated with the JWKS
      * @param jwksContent the content of the JWKS
      */
     private void persistJwksContent(final String namespace, final String jwksContent) {
@@ -165,6 +168,7 @@ public class JwksManager {
 
     /**
      * Build the entry name for the JWKS content
+     *
      * @param namespace the namespace associated with the JWKS
      * @return the full entry name
      */
@@ -174,6 +178,7 @@ public class JwksManager {
 
     /**
      * Build the entry name for the last requested date for the JWKS content
+     *
      * @param namespace the namespace associated with the JWKS
      * @return the full entry name
      */

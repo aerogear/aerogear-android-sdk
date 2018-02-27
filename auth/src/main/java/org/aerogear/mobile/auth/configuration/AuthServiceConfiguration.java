@@ -31,16 +31,32 @@ public class AuthServiceConfiguration {
     }
 
     /**
+     * @return the redirect uri for the developers app.
+     */
+    public Uri getRedirectUri() {
+        return redirectUri;
+    }
+
+    /**
+     * @return The minimum time between Json web key set requests. In minutes. Default value is 1440 (1 day).
+     */
+    public int getMinTimeBetweenJwksRequests() {
+        return minTimeBetweenJwksRequests;
+    }
+
+    /**
      * Builds and returns an AuthServiceConfiguration object.
      */
     public static class AuthConfigurationBuilder {
         private Uri redirectUri;
-        private int minTimeBetweenJwksRequests = 24*60;
+        private int minTimeBetweenJwksRequests = 24 * 60;
 
-        public AuthConfigurationBuilder() {}
+        public AuthConfigurationBuilder() {
+        }
 
         /**
          * Allow specify the value of the redirect uri
+         *
          * @param redirectUri a new redirectUri value
          * @return the builder instance
          */
@@ -57,20 +73,6 @@ public class AuthServiceConfiguration {
         public AuthServiceConfiguration build() {
             return new AuthServiceConfiguration(this);
         }
-    }
-
-    /**
-     * @return the redirect uri for the developers app.
-     */
-    public Uri getRedirectUri() {
-        return redirectUri;
-    }
-
-    /**
-     * @return The minimum time between Json web key set requests. In minutes. Default value is 1440 (1 day).
-     */
-    public int getMinTimeBetweenJwksRequests() {
-        return minTimeBetweenJwksRequests;
     }
 
 }

@@ -47,7 +47,7 @@ public class OkHttpRequest implements HttpRequest {
         Request.Builder postRequestBuilder = requestBuilderWithUrl(url).post(requestBody);
         addHeaders(postRequestBuilder);
 
-        Request postRequest= postRequestBuilder.build();
+        Request postRequest = postRequestBuilder.build();
         call = client.newCall(postRequest);
     }
 
@@ -57,7 +57,7 @@ public class OkHttpRequest implements HttpRequest {
         Request.Builder postRequestBuilder = requestBuilderWithUrl(url).put(requestBody);
         addHeaders(postRequestBuilder);
 
-        Request postRequest= postRequestBuilder.build();
+        Request postRequest = postRequestBuilder.build();
         call = client.newCall(postRequest);
     }
 

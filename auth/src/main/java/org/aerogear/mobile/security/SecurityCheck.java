@@ -4,7 +4,7 @@ import android.content.Context;
 
 /**
  * Interface for a single check to be executed.
- *
+ * <p>
  * An example of a check would be detecting whether the device an application is running on is
  * rooted.
  */

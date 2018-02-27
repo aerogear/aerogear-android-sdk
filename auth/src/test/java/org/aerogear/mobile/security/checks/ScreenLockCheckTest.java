@@ -1,7 +1,5 @@
 package org.aerogear.mobile.security.checks;
 
-import android.app.KeyguardManager;
-import android.content.Context;
 import android.os.Build;
 
 import org.aerogear.mobile.security.SecurityCheckResult;
@@ -52,7 +50,7 @@ public class ScreenLockCheckTest {
         field.set(null, newValue);
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void nullContextTest() {
         ScreenLockCheck screenLockCheck = new ScreenLockCheck();
         screenLockCheck.test(null);

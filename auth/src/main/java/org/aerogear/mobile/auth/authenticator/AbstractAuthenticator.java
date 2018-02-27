@@ -28,7 +28,7 @@ public abstract class AbstractAuthenticator {
      * This method must be overridden with the custom authentication for the given credential.
      *
      * @param authOptions the options for the authenticate action
-     * @param callback the callback function to be invoked
+     * @param callback    the callback function to be invoked
      */
     public abstract void authenticate(final AuthenticateOptions authOptions, final Callback<UserPrincipal> callback);
 

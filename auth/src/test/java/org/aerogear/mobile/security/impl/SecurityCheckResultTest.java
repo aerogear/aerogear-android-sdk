@@ -13,9 +13,8 @@ import static junit.framework.Assert.assertTrue;
 
 public class SecurityCheckResultTest {
 
-    SecurityCheckResult result;
     static final boolean RESULT_PASSED = true;
-
+    SecurityCheckResult result;
     @Mock
     private SecurityCheck securityCheck;
 

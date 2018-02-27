@@ -33,7 +33,7 @@ public class EmulatorCheck implements SecurityCheck {
      *
      * @return <code>true</code> if device is an emulator
      */
-    private boolean isEmulator(){
+    private boolean isEmulator() {
         return Build.FINGERPRINT.startsWith("generic")
             || Build.FINGERPRINT.startsWith("unknown")
             || Build.MODEL.contains("google_sdk")

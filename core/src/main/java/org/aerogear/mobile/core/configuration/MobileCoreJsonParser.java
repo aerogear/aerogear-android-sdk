@@ -27,6 +27,19 @@ public class MobileCoreJsonParser {
         parseMobileCoreArray(jsonDocument.getJSONArray("services"));
     }
 
+    /**
+     * @param jsonStream a inputStream to for mobile-core.json.  Please note that this
+     *                   should be managed by the calling core.  The parser will not close the resource
+     *                   when it is finished.
+     * @return A map of ServiceConfigs mapped by their name.
+     * @throws IOException   if reading the stream fails
+     * @throws JSONException if the json document is malformed
+     */
+    public static Map<String, ServiceConfiguration> parse(final InputStream jsonStream) throws IOException, JSONException {
+        MobileCoreJsonParser parser = new MobileCoreJsonParser(jsonStream);
+        return parser.values;
+    }
+
     private String readJsonStream(final InputStream jsonStream) throws IOException {
         nonNull(jsonStream, "jsonStream");
         final StringBuilder builder = new StringBuilder();
@@ -57,7 +70,7 @@ public class MobileCoreJsonParser {
 
         final JSONObject config = jsonObject.getJSONObject("config");
         final JSONArray namesArray = config.names();
-        if(namesArray!=null){
+        if (namesArray != null) {
             int namesSize = namesArray.length();
             for (int i = 0; i < namesSize; i++) {
                 final String name = namesArray.getString(i);
@@ -66,19 +79,5 @@ public class MobileCoreJsonParser {
         }
         final ServiceConfiguration serviceConfig = serviceConfigBuilder.build();
         values.put(serviceConfig.getName(), serviceConfig);
-    }
-
-    /**
-     * @param jsonStream a inputStream to for mobile-core.json.  Please note that this
-     *                   should be managed by the calling core.  The parser will not close the resource
-     *                   when it is finished.
-     *
-     * @return A map of ServiceConfigs mapped by their name.
-     * @throws IOException   if reading the stream fails
-     * @throws JSONException if the json document is malformed
-     */
-    public static Map<String, ServiceConfiguration> parse(final InputStream jsonStream) throws IOException, JSONException {
-        MobileCoreJsonParser parser = new MobileCoreJsonParser(jsonStream);
-        return parser.values;
     }
 }

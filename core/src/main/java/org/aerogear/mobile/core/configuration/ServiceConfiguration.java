@@ -24,6 +24,30 @@ public final class ServiceConfiguration {
         this.url = url;
     }
 
+    public static Builder newConfiguration() {
+        return new Builder();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Map<String, String> getProperties() {
+        return Collections.unmodifiableMap(properties);
+    }
+
+    public String getProperty(String name) {
+        return properties.get(name);
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
     public static class Builder {
 
         protected String name;
@@ -55,29 +79,5 @@ public final class ServiceConfiguration {
         public ServiceConfiguration build() {
             return new ServiceConfiguration(this.name, this.properties, this.type, this.uri);
         }
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Map<String, String> getProperties() {
-        return Collections.unmodifiableMap(properties);
-    }
-
-    public String getProperty(String name) {
-        return properties.get(name);
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public static Builder newConfiguration() {
-        return new Builder();
     }
 }

@@ -112,7 +112,7 @@ public class SecurityServiceFragment extends BaseFragment {
     public void detectDeviceLock() {
         totalTests++;
         SecurityCheckResult result = securityService.check(SecurityCheckType.SCREEN_LOCK_ENABLED);
-        if(!result.passed()){
+        if (!result.passed()) {
             setDetected(lockScreenSetup, R.string.device_lock_detected_negative);
         }
     }
@@ -123,7 +123,7 @@ public class SecurityServiceFragment extends BaseFragment {
     public void debuggerDetected() {
         totalTests++;
         SecurityCheckResult result = securityService.check(SecurityCheckType.IS_DEBUGGER);
-        if(result.passed()){
+        if (result.passed()) {
             setDetected(debuggerAccess, R.string.debugger_detected_positive);
         }
     }
@@ -134,7 +134,7 @@ public class SecurityServiceFragment extends BaseFragment {
     public void detectEmulator() {
         totalTests++;
         SecurityCheckResult result = securityService.check(SecurityCheckType.IS_EMULATOR);
-        if(result.passed()){
+        if (result.passed()) {
             setDetected(emulatorAccess, R.string.emulator_detected_positive);
         }
     }
