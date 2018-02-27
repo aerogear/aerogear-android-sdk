@@ -1,0 +1,47 @@
+= AeroGear Services Security SDK
+
+Self-defence checks to detect a possible compromised runtime environment that can expose a mobile application to more vectors of attack that can lead to data leaks.
+
+An application running in a rooted Android device, for instance, does not have the guarantee that data saved to it's private storage is not accessible by attackers in ways that the application developer did not expect.
+
+This module offers:
+
+1. A suite of self-defence checks to detect a compromised enviroment.
+1. Integration with the AeroGear Services Metrics SDK to report self-defence checks data.
+1. Interfaces to access the results of self-defence checks and take appropriate action in application code.
+
+
+== Usage
+
+=== Running Self-defence checks
+
+In order to run any of the self-defence checks, you must obtain a reference to the `SecurityService` singleton:
+
+[source,java]
+----
+import org.aerogear.mobile.security.SecurityService;
+//...
+SecurityService securityService = mobileCore.getInstance(SecurityService.class);
+----
+
+After that the security checks can be run by calling the `check` method with the implementation of a security check.
+
+The `SecurityCheckType` class contains references to the implementations supplied by this module and also defines the interface for implementing new checks.
+
+[source,java]
+----
+import org.aerogear.mobile.security.SecurityCheckResult;
+import org.aerogear.mobile.security.SecurityCheckType;
+//...
+SecurityCheckResult result = securityService.check(SecurityCheckType.IS_ROOTED);
+result.passed() // boolean
+result.name() // string
+----
+
+The `result` object can then be used to warn the user and optionally block running of the application on potentially compromised devices.
+
+See the link:../../auth/src/main/java/org/aerogear/mobile/security/SecurityCheckType.java[SecurityCheckType] class for the list of available implementations.
+
+=== Reporting Self-defence checks results
+
+In order to report the results of Self-defence utilize the link:./metrics[Metrics] service in conjunction with the Security service.
