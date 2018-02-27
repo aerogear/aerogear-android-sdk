@@ -17,7 +17,6 @@ public enum SecurityCheckType {
      */
     IS_ROOTED(new RootedCheck()),
     /**
-<<<<<<< HEAD
      * Detect if developer mode is enabled in the device.
      *  See {@link DeveloperModeCheck}
      */
@@ -30,10 +29,12 @@ public enum SecurityCheckType {
     IS_DEBUGGER(new DebuggerCheck()),
     /**
      *  Detect whether the device is emulated.
+     *  See {@link EmulatorCheck}
      */
     IS_EMULATOR(new EmulatorCheck()),
     /**
      *  Detect whether a screen lock is enabled (PIN, Password etc).
+     *  See {@link ScreenLockCheck}
      */
     SCREEN_LOCK_ENABLED(new ScreenLockCheck());
 

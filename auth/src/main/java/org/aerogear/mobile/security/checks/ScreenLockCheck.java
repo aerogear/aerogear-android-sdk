@@ -21,6 +21,7 @@ public class ScreenLockCheck implements SecurityCheck {
      *
      * @param context Context to be used by the check.
      * @return <code>true</code> if the device has a screen lock enabled.
+     * @throws IllegalArgumentException if {@param context} is null
      */
     @Override
     public SecurityCheckResult test(@NonNull final Context context){
