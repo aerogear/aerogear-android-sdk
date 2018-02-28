@@ -11,17 +11,7 @@ import org.aerogear.mobile.security.impl.SecurityCheckResultImpl;
 /**
  * A check for whether the device the application is running on an emulator
  */
-public class EmulatorCheck implements SecurityCheck {
-    /**
-     * Check whether the device is an emulator.
-     *
-     * @param context Context to be used by the check.
-     * @return <code>true</code> if the device is an emulator.
-     */
-    @Override
-    public SecurityCheckResult test(@NonNull final Context context) {
-        return new SecurityCheckResultImpl(this, isEmulator());
-    }
+public class EmulatorCheck extends AbstractSecurityCheck {
 
     /**
      * Checks if device is an emulator by looking at the following:
@@ -33,7 +23,8 @@ public class EmulatorCheck implements SecurityCheck {
      *
      * @return <code>true</code> if device is an emulator
      */
-    private boolean isEmulator(){
+    @Override
+    protected boolean execute(@NonNull Context context) {
         return Build.FINGERPRINT.startsWith("generic")
             || Build.FINGERPRINT.startsWith("unknown")
             || Build.MODEL.contains("google_sdk")
@@ -44,4 +35,5 @@ public class EmulatorCheck implements SecurityCheck {
             || (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic"))
             || "google_sdk".equals(Build.PRODUCT);
     }
+
 }

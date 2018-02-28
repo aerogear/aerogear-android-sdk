@@ -14,17 +14,17 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 /**
  * A check for whether the device the application is running on is rooted.
  */
-public class RootedCheck implements SecurityCheck {
+public class RootedCheck extends AbstractSecurityCheck {
+
     /**
      * Check whether the device is rooted or not.
      *
      * @param context Context to be used by the check.
      * @return <code>true</code> if the device is rooted.
-     * @throws IllegalArgumentException if {@param context} is null
      */
     @Override
-    public SecurityCheckResult test(@NonNull final Context context) {
-        return new SecurityCheckResultImpl(this, getRootBeer(nonNull(context, "context")).isRooted());
+    protected boolean execute(@NonNull Context context) {
+        return getRootBeer(context).isRooted();
     }
 
     /**
@@ -34,5 +34,4 @@ public class RootedCheck implements SecurityCheck {
     protected RootBeer getRootBeer(final Context context) {
         return new RootBeer(context);
    }
-
 }
