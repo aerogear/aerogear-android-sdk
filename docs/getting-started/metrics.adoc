@@ -13,8 +13,7 @@ $ mobile get clientconfig <app id> --namespace=<project> -o json
 ```
 
 The result should include a `metrics` section inside the `services` array.
-If no such configuration is provided then the Metrics module will not send any data over the network but will still log the data to the console
-and you can view them in Logcat or another remote logging solution. Once you initialize the core SDK some default metrics will be collected and sent.
+If no such configuration is provided then the Metrics module will not send any data over the network but will still log the data to the console and you can view them in Logcat or another remote logging solution. Once you initialize the core SDK some default metrics will be collected and sent.
 
 == Provided metrics
 
@@ -33,43 +32,6 @@ The Client ID will be generated and stored on the device when the App is started
 - *Platform*: Hardcoded to `android`
 - *Platform Version*: The API level of the device
 
-== Extending Metrics
+=== Extending metrics
 
-User Apps and other SDK Modules can send their own metrics at any time.
-To do that you need an instance of the `MetricsService` and call it's `publish` method.
-This method accepts any number of objects that implement that `Metrics` interface.
-
-=== Implementing the Metrics Interface
-
-There are only two methods to implement:
-
-- *identifier*: Used to categorize your data. The basic structure is this:
-
-```
-{
-    "<identifier>": {
-        "<metric value>": <metric data>
-    },
-    "<another identifier>": {
-        ...
-    }
-}
-```
-
-- *data*: Must return a Map from String to String. This will be transformed to JSON and added under your identifier in the Metrics payload.
-
-=== Sending Metrics data to the Backend
-
-First retrieve an instance of the `MetricsService` from Mobile Core:
-
-```
-MetricsService metrics = core.getInstance(MetricsService.class);
-```
-
-Then use it's publish method:
-
-```
-metrics.publish(new MyMetrics());
-```
-
-where `MyMetrics` is a class implementing the `Metrics` interface. This will immediately send a request to the Metrics backend.
+See link:./metrics-development.adoc[Extending Metrics Guide] 
