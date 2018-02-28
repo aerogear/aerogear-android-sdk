@@ -42,6 +42,10 @@ The `result` object can then be used to warn the user and optionally block runni
 
 See the link:../../auth/src/main/java/org/aerogear/mobile/security/SecurityCheckType.java[SecurityCheckType] class for the list of available implementations.
 
+An example can be found in the link:../../example/src/main/java/org/aerogear/mobile/example/ui/SecurityServiceFragment.java[SecurityServiceFragment] class in the example application.
+
 === Reporting Self-defence checks results
 
 In order to report the results of Self-defence utilize the link:./metrics[Metrics] service in conjunction with the Security service.
+
+// TODO: metrics example
