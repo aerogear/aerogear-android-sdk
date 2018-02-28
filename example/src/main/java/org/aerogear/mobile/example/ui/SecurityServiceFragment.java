@@ -7,10 +7,15 @@ import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import org.aerogear.mobile.core.metrics.MetricsService;
 import org.aerogear.mobile.example.R;
-import org.aerogear.mobile.security.SecurityCheckResult;
+import org.aerogear.mobile.security.SyncSecurityCheckExecutor;
 import org.aerogear.mobile.security.SecurityCheckType;
+import org.aerogear.mobile.security.SecurityCheckResult;
 import org.aerogear.mobile.security.SecurityService;
+
+import java.text.MessageFormat;
+import java.util.Map;
 
 import butterknife.BindView;
 
@@ -81,15 +86,25 @@ public class SecurityServiceFragment extends BaseFragment {
      * Executes all test and calls setTrustScore() to calculate an average score
      */
     public void runTests() {
+        SyncSecurityCheckExecutor executor = (new SyncSecurityCheckExecutor.Builder(this.getContext()))
+            .withSecurityCheck(SecurityCheckType.IS_ROOTED)
+            .withSecurityCheck(SecurityCheckType.SCREEN_LOCK_ENABLED)
+            .withSecurityCheck(SecurityCheckType.IS_EMULATOR)
+            .withSecurityCheck(SecurityCheckType.IS_DEBUGGER)
+            .withSecurityCheck(SecurityCheckType.IS_DEVELOPER_MODE)
+            .withMetricsService(activity.mobileCore.getInstance(MetricsService.class))
+            .build();
+        Map<String, SecurityCheckResult> results = executor.execute();
+
         // perform detections
-        detectRoot();
-        detectDeviceLock();
-        detectEmulator();
-        debuggerDetected();
-        detectHookingFramework();
-        detectBackupEnabled();
-        detectDeviceEncryptionStatus();
-        detectDeveloperOptions();
+        detectRoot(results);
+        detectDeviceLock(results);
+        debuggerDetected(results);
+        detectEmulator(results);
+        detectHookingFramework(results);
+        detectBackupEnabled(results);
+        detectDeviceEncryptionStatus(results);
+        detectDeveloperOptions(results);
 
         // get trust score
         setTrustScore();
@@ -98,10 +113,10 @@ public class SecurityServiceFragment extends BaseFragment {
     /**
      * Detect if the device is rooted.
      */
-    public void detectRoot() {
+    public void detectRoot(Map<String, SecurityCheckResult> results) {
         totalTests++;
-        SecurityCheckResult result = securityService.check(SecurityCheckType.IS_ROOTED);
-        if (result.passed()) {
+        SecurityCheckResult result = results.get(SecurityCheckType.IS_ROOTED.getName());
+        if (result != null && result.passed()) {
             setDetected(rootAccess, R.string.root_detected_positive);
         }
     }
@@ -109,10 +124,10 @@ public class SecurityServiceFragment extends BaseFragment {
     /**
      * Detect if the device has a lock screen setup (pin, password etc).
      */
-    public void detectDeviceLock() {
+    public void detectDeviceLock(Map<String, SecurityCheckResult> results) {
         totalTests++;
-        SecurityCheckResult result = securityService.check(SecurityCheckType.SCREEN_LOCK_ENABLED);
-        if(!result.passed()){
+        SecurityCheckResult result = results.get(SecurityCheckType.SCREEN_LOCK_ENABLED.getName());
+        if (result != null && result.passed()) {
             setDetected(lockScreenSetup, R.string.device_lock_detected_negative);
         }
     }
@@ -120,10 +135,10 @@ public class SecurityServiceFragment extends BaseFragment {
     /**
      * Detect if a debugger is attached to the application.
      */
-    public void debuggerDetected() {
+    public void debuggerDetected(Map<String, SecurityCheckResult> results) {
         totalTests++;
-        SecurityCheckResult result = securityService.check(SecurityCheckType.IS_DEBUGGER);
-        if(result.passed()){
+        SecurityCheckResult result = results.get(SecurityCheckType.IS_DEBUGGER.getName());
+        if (result != null && result.passed()) {
             setDetected(debuggerAccess, R.string.debugger_detected_positive);
         }
     }
@@ -131,10 +146,10 @@ public class SecurityServiceFragment extends BaseFragment {
     /**
      * Detect if the application is being run in an emulator.
      */
-    public void detectEmulator() {
+    public void detectEmulator(Map<String, SecurityCheckResult> results) {
         totalTests++;
-        SecurityCheckResult result = securityService.check(SecurityCheckType.IS_EMULATOR);
-        if(result.passed()){
+        SecurityCheckResult result = results.get(SecurityCheckType.IS_EMULATOR.getName());
+        if (result != null && result.passed()) {
             setDetected(emulatorAccess, R.string.emulator_detected_positive);
         }
     }
@@ -142,7 +157,7 @@ public class SecurityServiceFragment extends BaseFragment {
     /**
      * Detect if a hooking framework application is installed on the device
      */
-    public void detectHookingFramework() {
+    public void detectHookingFramework(Map<String, SecurityCheckResult> results) {
         totalTests++;
         //TODO: add check
     }
@@ -150,7 +165,7 @@ public class SecurityServiceFragment extends BaseFragment {
     /**
      * Function to check if the backup flag is enabled in the application manifest file
      */
-    public void detectBackupEnabled() {
+    public void detectBackupEnabled(Map<String, SecurityCheckResult> results) {
         totalTests++;
         //TODO: add check
     }
@@ -158,7 +173,7 @@ public class SecurityServiceFragment extends BaseFragment {
     /**
      * Function to check if the devices filesystem is encrypted
      */
-    public void detectDeviceEncryptionStatus() {
+    public void detectDeviceEncryptionStatus(Map<String, SecurityCheckResult> results) {
         totalTests++;
         //TODO: add check
     }
@@ -166,10 +181,10 @@ public class SecurityServiceFragment extends BaseFragment {
     /**
      * Detect if the developer options mode is enabled on the device
      */
-    public void detectDeveloperOptions() {
+    public void detectDeveloperOptions(Map<String, SecurityCheckResult> results) {
         totalTests++;
-        SecurityCheckResult result = securityService.check(SecurityCheckType.IS_DEVELOPER_MODE);
-        if (result.passed()) {
+        SecurityCheckResult result = results.get(SecurityCheckType.IS_DEVELOPER_MODE.getName());
+        if (result != null && result.passed()) {
             setDetected(developerOptions, R.string.developer_options_positive);
         }
     }
@@ -192,8 +207,8 @@ public class SecurityServiceFragment extends BaseFragment {
     public void setTrustScore() {
         int score = 100 - Math.round(((totalTestFailures / totalTests) * 100));
         trustScore.setProgress(score);
-        trustScoreText.setText(score + "%");
-        trustScoreHeader.setText(getText(R.string.trust_score_header_title) + "\n(" + Math.round(totalTests) + " Tests)");
+        trustScoreText.setText(MessageFormat.format("{0}%", score));
+        trustScoreHeader.setText(MessageFormat.format("{0}\n({1} Tests)", getText(R.string.trust_score_header_title), Math.round(totalTests)));
 
         // change the score percentage colour depending on the trust score
         if (trustScore.getProgress() == 100) {
