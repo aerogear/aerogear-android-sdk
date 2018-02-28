@@ -165,3 +165,9 @@ Map<String, SecurityCheckResult> results = securityService.getCheckExecutor().ad
 // adding self defence checks and executing these checks asynchronously
 Map<String, Future<SecurityCheckResult> results = securityService.getAsyncCheckExecutor().addCheck(new customSecurityCheck()).addCheck(SecurityCheckType.<check_type>).addCheck(SecurityCheckType.<check_type>).execute();
 ----
+
+=== Reporting Self-defence checks results via the Metrics service
+
+In order to report the results of Self-defence utilize the link:./metrics[Metrics] service in conjunction with the Security service.
+
+// TODO: metrics example
