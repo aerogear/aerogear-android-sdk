@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import org.gradle.internal.logging.events.OutputEvent
+import org.gradle.internal.logging.events.OutputEventListener
+import org.gradle.internal.logging.LoggingOutputInternal
 
 apply plugin: 'maven'
 apply plugin: 'signing'
@@ -126,5 +129,23 @@ afterEvaluate { project ->
 
         jarSourceTask.dependsOn variant.javaCompile
         artifacts.add('archives', jarSourceTask)
+    }
+}
+
+tasks.withType(Javadoc) {
+    def warnings = []
+    doFirst {
+        gradle.services.get(LoggingOutputInternal).addOutputEventListener(new OutputEventListener() {
+            void onOutput(OutputEvent event) {
+                if (event.toString() =~ "warning") {
+                    warnings << "Javadoc warning: ${event.toString()}"
+                }
+            }
+        })
+    }
+    doLast {
+        if (warnings.size()> 0) {
+            throw new GradleException(warnings.join('\n'));
+        }
     }
 }

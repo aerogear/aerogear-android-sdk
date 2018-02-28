@@ -30,6 +30,7 @@ public class RootedCheck extends AbstractSecurityCheck {
     /**
      * This method allows us to perform unit testing on the Rooted Check
      * @param context Context to be used
+     * @return a RootBeer instance
      */
     protected RootBeer getRootBeer(final Context context) {
         return new RootBeer(context);
