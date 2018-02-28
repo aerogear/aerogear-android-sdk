@@ -1,6 +1,6 @@
 = Self Defence Checks
 
-As part of the Auth SDK module, there is a self defence check feature.  This feature offers multiple checks that can be used to analyse the secuirty of the device.
+As part of the Auth SDK module, there is a self defence check feature.  This feature offers multiple security checks that can be used to analyse the secuirty of the device.  This can be useful for apps to detect vulnerablities and react accordingly.  For example, if the app detects *X* then do *Y*, where *X* could be no lock screen is set and *Y* is show a system prompt to setup the lock screen.
 
 == Prequisite's
 
@@ -8,30 +8,84 @@ As part of the Auth SDK module, there is a self defence check feature.  This fea
 
 == Usage
 
-To begin using the self defence checks in your app, you'll need to retrieve an instance of `SecurityService`. The `SecurityService` can be retrieved using the `MobileCore#getInstance` method.
+To begin using self defence checks in your app, you'll need to retrieve an instance of link:javadoc[`SecurityService`]. The `SecurityService` can be retrieved using the link:javadoc[`MobileCore#getInstance`] method.
 
 [source, java]
 ----
 SecurityService securityService = MobileCore.getInstance(SecurityService.class);
 ----
 
-Any subsequent `MobileCore#getInstance` method will return the same instance of `SecurityService`.
+Any subsequent `MobileCore#getInstance` method will return the same instance of `SecurityService`. +
+There are two ways to implement self defence checks: <<Provided Self Defence Checks>> and <<Custom Self Defence Checks>>.
 
-=== Invoking a Single Self Defence Check
-The `SecurityService#check` method can be used to run a single secuirty check.  It expects a `SecurityCheckType` paramater and returns `SecurityCheckResult`.
+=== Provided Self Defence Checks
+
+These are self defence checks provided by the SDK in link:javadoc[`SecurityCheckType`].
+
+==== link:javadoc[IS_ROOTED]
+
+To detect if a device has been rooted (jailbreak) the `SecurityCheckType#IS_ROOTED` function can be used.  This function uses the link:https://github.com/scottyab/rootbeer[Rootbeer] library to check if root access is present on the device.
+
+==== link:javadoc[IS_DEVELOPER_MODE]
+
+To detect if Developer Mode has been enabled on the device the `SecurityCheckType#IS_DEVELOPER_MODE` function can be used.  This function uses Android's link:https://developer.android.com/reference/android/provider/Settings.html[Settings] class.
+
+==== link:javadoc[IS_DEBUGGER]
+
+To detect if an Android debugger is attached to the app the `SecurityCheckType#IS_DEBUGGER` function can be used.  This function uses Android's link:https://developer.android.com/reference/android/os/Debug.html[Debug] class.
+
+==== link:javadoc[IS_EMULATOR]
+
+To detect if the app is being run on an emulator the `SecurityCheckType#IS_EMULATOR` function can be used.  This function uses Android's link:https://developer.android.com/reference/android/os/Build.html[Build] class.
+
+==== link:javadoc[SCREEN_LOCK_ENABLED]
+
+To detect if a device has a lock screen set (with pin, fingerprint, pattern) the `SecurityCheckType#HAS_SCREENLOCK` function can be used.  This function uses Android's link:https://developer.android.com/reference/android/app/KeyguardManager.html[KeyguardManager] class.
+
+=== Custom Self Defence Checks
+
+These are self defence checks that you can define to be used by the SDK. Custom self defence checks must extend the link:javadoc[`AbstractSecurityCheck`] interface.
 
 [source, java]
 ----
-SecurityCheckResult result = securityService.check(SecurityCheckType.<check_type>);
+class CustomSecurityCheck extends AbstractSecurityCheck {
+    /**
+     * Custom security check.
+     *
+     * @param context Context to be used by the check.
+     * @return <code>true</code> or <code>false</code>
+     */
+    @Override
+    protected boolean execute(@NonNull final Context context) {
+        // implement security check in customSecurityCheck()
+        boolean result = customSecurityCheck();
+        return result;
+    }
+}
 ----
 
-See all available `SecurityCheckType` link:auth-self-defence-javadoc.adoc[here].
+=== Invoking a Single Self Defence Check
+The `SecurityService#check` method can be used to run a single self defence check.  It expects either `SecurityCheckType` (see <<Provided Self Defence Checks
+>>)  or `SecurityCheck` (see <<Custom Self Defence Checks
+>>) as a paramater and returns link:javadoc[`SecurityCheckResult`].
+
+[source, java]
+----
+// a provided self defence check
+SecurityCheckResult result = securityService.check(SecurityCheckType.<check_type>);
+
+// using the custom self defence check defined previously
+SecurityCheck customSecurityCheck = new CustomSecurityCheck();
+SecurityCheckResult result = securityService.check(customSecurityCheck);
+----
 
 === Invoking Multiple Self Defence Checks
 
+To invoke multiple self defence checks a security check executor must be used.  There are two types of security check executors: link:javadoc[`SyncSecurityCheckExecutor`], where self defence checks are executd synchronously, and link:javadoc[`AsyncSecurityCheckExecutor`], where self defence checks are executd asynchronously.
+
 ==== Synchronously
 
-To run multiple self defence checks _synchronously_, you'll first need to invoke the `SecurityService#getCheckExecutor` method.  This methods returns `SyncSecurityCheckExecutor` where checks can be added (chained) to the executor and executed synchronously.
+To run multiple self defence checks _synchronously_, you'll first need to invoke the link:javadoc[`SecurityService#getCheckExecutor`] method.  This methods returns link:javadoc[`SyncSecurityCheckExecutor`] where checks can be added (chained) to the executor and executed synchronously.
 
 
 [source, java]
@@ -39,110 +93,65 @@ To run multiple self defence checks _synchronously_, you'll first need to invoke
 SyncSecurityCheckExecutor syncCheckExecutor = securityService.getCheckExecutor();
 ----
 
-===== Custom Self Defence Checks
-
-To add custom self defence checks to the `syncCheckExecutor`, the `SyncSecurityCheckExecutor#addCheck` method must be used.  This method expects `SecurityCheck` as a parameter and returns `SyncSecurityCheckExecutor`.  
-
-[source, java]
-----
-class customSecurityCheck implements SecurityCheck {
-    /**
-     * Custom security check.
-     *
-     * @param context Context to be used by the check.
-     * @return <code>true</code> or <code>false</code>
-     */
-    @Override
-    public SecurityCheckResult test(final Context context) {
-        // implement security check in customSecurityCheck()
-        boolean result = customSecurityCheck();
-        return new SecurityCheckResultImpl(this, result);
-    }
-}
-
-// add custom self defence check to the syncCheckExecutor
-syncCheckExecutor.addCheck(new customSecurityCheck());
-----
-
-===== Provided Self Defence Checks
-
-To add self defence checks available in the SDK, you must invoke the `SyncSecurityCheckExecutor#addCheck` method.  This method expects  `SecurityCheckType` as a parameter and returns `SyncSecurityCheckExecutor`.
-
-
-[source, java]
-----
-// add two provided self defence checks to the syncCheckExecutor
-syncCheckExecutor.addCheck(SecurityCheckType.<check_type>).addCheck(SecurityCheckType.<check_type>);
-----
-
-To run all the security self defence checks that have been added to the `syncCheckExecutor` the `SyncSecurityCheckExecutor#execute` method must be invoked.  This method returns a `Map` where the key is of type `String` and the value is of type `SecurityCheckResult`.
-
-[source, java]
-----
-Map<String, SecurityCheckResult> results = syncCheckExecutor.execute();
-----
-
-The `SyncSecurityCheckExecutor` allows for multiple checks to be chained so the above can be refactored to:
-[source, java]
-----
-Map<String, SecurityCheckResult> results = securityService.getCheckExecutor().addCheck(new customSecurityCheck()).addCheck(SecurityCheckType.<check_type>).addCheck(SecurityCheckType.<check_type>).execute();
-----
-
 ==== Asynchronously
 
-To run multiple self defence checks _asynchronously_, you’ll first need to invoke the `SecurityService#getAsyncCheckExecutor` method. This methods returns `AsyncSecurityCheckExecutor` where checks can be added (chained) to the executor and executed asynchronously.
+To run multiple self defence checks _asynchronously_, you’ll first need to invoke the link:javadoc[`SecurityService#getAsyncCheckExecutor`] method. This methods returns link:javadoc[`AsyncSecurityCheckExecutor`] where checks can be added (chained) to the executor and executed asynchronously.
 
 [source, java]
 ----
 AsyncSecurityCheckExecutor asyncCheckExecutor = securityService.getAsyncCheckExecutor();
 ----
 
-===== Custom Self Defence Checks
+==== Adding Checks to Self Defence Check Executors
 
-To add custom self defence checks to the `asyncCheckExecutor`, the `AsyncSecurityCheckExecutor#addCheck` method must be used. This method expects `SecurityCheck` as a parameter and returns `AsyncSecurityCheckExecutor`.
+Both the link:javadoc[`SyncSecurityCheckExecutor`] and link:javadoc[`AsyncSecurityCheckExecutor`] have an `addCheck` method.  This method expects either link:javadoc[`SecurityCheckType`]  or link:javadoc[`SecurityCheck`] as a paramater. +
+
+If you are invoking the `addCheck` method on a link:javadoc[`SyncSecurityCheckExecutor`] then it will return link:javadoc[`SyncSecurityCheckExecutor`]. +
+
+If you are invoking the `addCheck` method on an link:javadoc[`AsyncSecurityCheckExecutor`] then it will return link:javadoc[`AsyncSecurityCheckExecutor`].
 
 [source, java]
 ----
-class customSecurityCheck implements SecurityCheck {
-    /**
-     * Custom security check.
-     *
-     * @param context Context to be used by the check.
-     * @return <code>true</code> or <code>false</code>
-     */
-    @Override
-    public SecurityCheckResult test(final Context context) {
-        // implement security check in customSecurityCheck()
-        boolean result = customSecurityCheck();
-        return new SecurityCheckResultImpl(this, result);
-    }
-}
+// adding self defence checks to a SyncSecurityCheckExecutor
 
-// add custom self defence check to the asyncCheckExecutor
+// add two provided self defence checks to the syncCheckExecutor
+syncCheckExecutor.addCheck(SecurityCheckType.<check_type>).addCheck(SecurityCheckType.<check_type>);
+// add the CustomSecurityCheck to the syncCheckExecutor
+syncCheckExecutor.addCheck(new customSecurityCheck());
+
+
+// adding self defence checks to a AsyncSecurityCheckExecutor
+
+// add two provided self defence checks to the asyncCheckExecutor
+asyncCheckExecutor.addCheck(SecurityCheckType.<check_type>).addCheck(SecurityCheckType.<check_type>);
+// add the CustomSecurityCheck to the asyncCheckExecutor
 asyncCheckExecutor.addCheck(new customSecurityCheck());
 ----
 
-==== Provided Self Defence Checks
+==== Executing Self Defence Checks on Executors
 
+Both link:javadoc[`SyncSecurityCheckExecutor`] and link:javadoc[`AsyncSecurityCheckExecutor`] have an `execute` method that executes all self defence checks that have been added. +
 
-To add self defence checks available in the SDK, you must invoke the `AsyncSecurityCheckExecutor#addCheck` method.  This method expects  `SecurityCheckType` as a parameter and returns `AsyncSecurityCheckExecutor`.
+The `execute` method for link:javadoc[`SyncSecurityCheckExecutor`] returns a `Map` where the key is the name of the self defence check being tested (`String`) and the value is  link:javadoc[`SecurityCheckResult`]. +
 
-
-[source, java]
-----
-// add two provided self defence checks to the asyncCheckExecutor
-asyncCheckExecutor.addCheck(SecurityCheckType.<check_type>).addCheck(SecurityCheckType.<check_type>);
-----
-
-To run all the security self defence checks that have been added to the `asyncCheckExecutor` the `AsyncSecurityCheckExecutor#execute` method must be invoked.  This method returns a `Map` where the key is of type `String` and the value is of type ` Future<SecurityCheckResult>`.
+The `execute` method for link:javadoc[`AsyncSecurityCheckExecutor`] returns a `Map` where the key is the name of the self defence check being tested (`String`) and the value is an array of type `Future` with link:javadoc[`SecurityCheckResult`].
 
 [source, java]
 ----
+// execute self defence checks on the syncCheckExecutor
+Map<String, SecurityCheckResult> results = syncCheckExecutor.execute();
+
+// execute self defence checks on the asyncCheckExecutor
 Map<String, Future<SecurityCheckResult>> results = asyncCheckExecutor.execute();
 ----
 
-The `AsyncSecurityCheckExecutor` allows for multiple checks to be chained so the above can be refactored to:
+Both link:javadoc[`SyncSecurityCheckExecutor`] and link:javadoc[`AsyncSecurityCheckExecutor`] allow for multiple checks to be chained so the above examples can be refactored to:
+
 [source, java]
 ----
+// adding self defence checks and executing these checks synchronously
+Map<String, SecurityCheckResult> results = securityService.getCheckExecutor().addCheck(new customSecurityCheck()).addCheck(SecurityCheckType.<check_type>).addCheck(SecurityCheckType.<check_type>).execute();
+
+// adding self defence checks and executing these checks asynchronously
 Map<String, Future<SecurityCheckResult> results = securityService.getAsyncCheckExecutor().addCheck(new customSecurityCheck()).addCheck(SecurityCheckType.<check_type>).addCheck(SecurityCheckType.<check_type>).execute();
 ----
