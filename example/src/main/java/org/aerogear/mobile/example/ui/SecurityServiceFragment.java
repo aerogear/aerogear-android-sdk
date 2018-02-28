@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import org.aerogear.mobile.core.metrics.MetricsService;
 import org.aerogear.mobile.example.R;
+import org.aerogear.mobile.security.SecurityCheckExecutor;
 import org.aerogear.mobile.security.SyncSecurityCheckExecutor;
 import org.aerogear.mobile.security.SecurityCheckType;
 import org.aerogear.mobile.security.SecurityCheckResult;
@@ -86,7 +87,8 @@ public class SecurityServiceFragment extends BaseFragment {
      * Executes all test and calls setTrustScore() to calculate an average score
      */
     public void runTests() {
-        SyncSecurityCheckExecutor executor = (new SyncSecurityCheckExecutor.Builder(this.getContext()))
+
+        SyncSecurityCheckExecutor executor = SecurityCheckExecutor.Builder.newSyncExecutor(this.getContext())
             .withSecurityCheck(SecurityCheckType.IS_ROOTED)
             .withSecurityCheck(SecurityCheckType.SCREEN_LOCK_ENABLED)
             .withSecurityCheck(SecurityCheckType.IS_EMULATOR)
