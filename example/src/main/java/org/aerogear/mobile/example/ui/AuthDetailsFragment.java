@@ -1,14 +1,18 @@
 package org.aerogear.mobile.example.ui;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import org.aerogear.mobile.auth.AuthService;
+import org.aerogear.mobile.auth.Callback;
 import org.aerogear.mobile.auth.user.UserPrincipal;
 import org.aerogear.mobile.auth.user.UserRole;
 import org.aerogear.mobile.example.R;
@@ -33,6 +37,8 @@ public class AuthDetailsFragment extends BaseFragment {
     @BindView(R.id.realm_roles)
     ListView listViewRealmRoles;
 
+    ProgressDialog logoutProgressDialog;
+
     ArrayAdapter<UserRole> realmRoles;
 
     @Override
@@ -49,12 +55,65 @@ public class AuthDetailsFragment extends BaseFragment {
     public void onLogout() {
         if (currentUser != null) {
             AuthService authService = ((MainActivity) this.activity).getAuthService();
-            authService.logout(currentUser);
+            // show a spinner dialog to show that a logout is in progress
+            showLogoutProgress();
+            authService.logout(currentUser, new Callback<UserPrincipal>() {
+                @Override
+                public void onSuccess() {
+                    hideLogoutDialog();
+                    // User Logged Out Successfully
+                    Log.i(TAG, "User Successfully Logged Out");
+                    showMessage("Logout Successful");
+                    navigateToLogin();
+                }
+
+                @Override
+                public void onError(Throwable error) {
+                    hideLogoutDialog();
+                    // User Not Logged Out Successfully
+                    Log.e(TAG, "Logout Failed: " + error.getLocalizedMessage());
+                    showMessage("Logout Failed");
+                }
+            });
         }
+
+    }
+
+    /**
+     * Navigate to the auth fragment.
+     */
+    private void navigateToLogin() {
         this.activity.getSupportFragmentManager()
             .beginTransaction()
             .replace(R.id.content, new AuthFragment())
             .commit();
+    }
+
+    /**
+     * Show a snackbar message to show
+     *
+     * @param message the message to show in the snackbar
+     */
+    private void showMessage(final String message) {
+        Snackbar.make(this.activity.findViewById(R.id.content), message, Snackbar.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Show the logout progress dialog.
+     */
+    private void showLogoutProgress() {
+        this.logoutProgressDialog = new ProgressDialog(getActivity());
+        logoutProgressDialog.setTitle("Logout");
+        logoutProgressDialog.setMessage("Trying to connect to the server...");
+        logoutProgressDialog.setCancelable(false);
+        logoutProgressDialog.show();
+    }
+
+    /**
+     * Hide the logout progress dialog.
+     */
+    private void hideLogoutDialog() {
+        logoutProgressDialog.cancel();
     }
 
     public void updateFields() {

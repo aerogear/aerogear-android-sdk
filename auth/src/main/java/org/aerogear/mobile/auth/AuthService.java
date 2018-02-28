@@ -153,10 +153,11 @@ public class AuthService implements ServiceModule {
      * The logout will be asynchronous.
      *
      * @param principal principal to be logged out
+     * @param callback the callback function to be invoked
      */
-    public void logout(@NonNull final UserPrincipal principal) {
+    public void logout(@NonNull final UserPrincipal principal, @NonNull final Callback<UserPrincipal> callback) {
         failIfNotReady();
-        this.oidcAuthenticatorImpl.logout(principal);
+        this.oidcAuthenticatorImpl.logout(principal, callback);
     }
 
 
