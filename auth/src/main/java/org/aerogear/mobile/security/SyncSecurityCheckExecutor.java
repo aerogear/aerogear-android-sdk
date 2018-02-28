@@ -21,7 +21,7 @@ import java.util.Map;
 public class SyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<SyncSecurityCheckExecutor> {
 
     public static class Builder extends SecurityCheckExecutor.Builder.AbstractBuilder<Builder, SyncSecurityCheckExecutor> {
-        public Builder(final Context ctx) {
+        Builder(final Context ctx) {
             super(ctx);
         }
 
