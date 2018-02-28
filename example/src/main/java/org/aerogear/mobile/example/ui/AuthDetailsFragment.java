@@ -90,7 +90,7 @@ public class AuthDetailsFragment extends BaseFragment {
     }
 
     /**
-     * Show a snackbar message to show
+     * Show a snackbar message
      *
      * @param message the message to show in the snackbar
      */
