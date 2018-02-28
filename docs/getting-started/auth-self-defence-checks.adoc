@@ -184,7 +184,7 @@ Metrics information containing the results of the checks run via an Executor wil
 [source, java]
 ----
 MetricsService metricsService = mobileCore.getInstance(MetricsService.class);
-SyncSecurityCheckExecutor syncCheckExecutor = (new SyncSecurityCheckExecutor.Builder(this.getContext()))
+SyncSecurityCheckExecutor syncCheckExecutor = SecurityCheckExecutor.Builder.newSyncExecutor(this.getContext())
     .withSecurityCheck(SecurityCheckType.IS_ROOTED)
     // other checks...
     .withMetricsService(metricsService)
