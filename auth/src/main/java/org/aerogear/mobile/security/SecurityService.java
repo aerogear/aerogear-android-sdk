@@ -65,7 +65,7 @@ public class SecurityService implements ServiceModule{
      * @throws IllegalArgumentException if {@param securityCheckType} is null
      */
     public SecurityCheckResult check(@NonNull final SecurityCheckType securityCheckType) {
-        return check(nonNull(securityCheckType, "securityCheckType").getSecurityCheck());
+        return nonNull(securityCheckType, "securityCheckType").getSecurityCheck().test(core.getContext()git );
     }
 
     /**
