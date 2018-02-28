@@ -32,7 +32,7 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<As
 
         private ExecutorService executorService;
 
-        Builder(final Context ctx) {
+        public Builder(final Context ctx) {
             super(ctx);
         }
 
