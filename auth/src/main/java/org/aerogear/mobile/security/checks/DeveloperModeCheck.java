@@ -13,9 +13,9 @@ public class DeveloperModeCheck extends AbstractSecurityCheck {
     /**
      * Check if developer mode has been enabled in the device.
      *
-     * @param context Context to be used by the check
+     * @param context {@link Context} to be used by the check
      * @return <code>true</code> if the developer options have been enabled on the device
-     * @throws IllegalArgumentException if {@param context} is null
+     * @throws IllegalArgumentException if context is null
      */
     @Override
     protected boolean execute(@NonNull Context context) {

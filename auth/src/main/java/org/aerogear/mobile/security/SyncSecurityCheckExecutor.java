@@ -22,6 +22,13 @@ public class SyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<Syn
      * Builder class for constructing a SyncSecurityCheckExecutor object.
      */
     public static class Builder extends SecurityCheckExecutor.Builder.AbstractBuilder<Builder, SyncSecurityCheckExecutor> {
+
+        /**
+         * Creates a Builder object.
+         *
+         * @param ctx {@link Context} to be used by security checks
+         * @throws IllegalArgumentException if ctx is null
+         */
         Builder(final Context ctx) {
             super(ctx);
         }
@@ -40,10 +47,10 @@ public class SyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<Syn
     /**
      * Constructor for SyncSecurityCheckExecutor.
      *
-     * @param context the {@link Context} of the device
-     * @param checks the {@link Collection<SecurityCheck>} of security checks to be tested
-     * @param metricsService {@link MetricsService}
-     * @throws IllegalArgumentException if {@param context} is null
+     * @param context the {@link Context} to be used by security checks
+     * @param checks the {@link Collection} of security checks to be tested
+     * @param metricsService {@link MetricsService}. Can be null
+     * @throws IllegalArgumentException if context is null
      */
     SyncSecurityCheckExecutor(@NonNull final Context context,
                               @NonNull final Collection<SecurityCheck> checks,
@@ -57,9 +64,9 @@ public class SyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<Syn
      *
      * Returns a {@link Map} containing the results of each executed test.
      * The key of the map will be the output of {@link SecurityCheck#getName()}, while the value will be
-     * the result of the check.
+     * the {@link SecurityCheckResult} of the check.
      *
-     * @return {@link Map<String, SecurityCheckResult>}
+     * @return {@link Map}
      */
     public Map<String, SecurityCheckResult> execute() {
         final Map<String, SecurityCheckResult> results = new HashMap<>();
@@ -77,7 +84,7 @@ public class SyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<Syn
      * Publish each result provided as an {@link SecurityCheckResultMetric}.
      *
      * @param result {@link SecurityCheckResult} to be published
-     * @throws IllegalArgumentException if {@param result} is null
+     * @throws IllegalArgumentException if result is null
      */
     private void publishResultMetrics(@NonNull SecurityCheckResult result) {
         MetricsService metricsService = getMetricsService();

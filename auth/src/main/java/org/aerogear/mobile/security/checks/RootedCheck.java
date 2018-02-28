@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 
 import com.scottyab.rootbeer.RootBeer;
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
 /**
  * A check for whether the device the application is running on is rooted.
  */
@@ -13,9 +15,9 @@ public class RootedCheck extends AbstractSecurityCheck {
     /**
      * Check whether the device is rooted or not.
      *
-     * @param context Context to be used by the check
+     * @param context {@link Context} to be used by the check
      * @return <code>true</code> if the device is rooted
-     * @throws IllegalArgumentException if {@param context} is null
+     * @throws IllegalArgumentException if context is null
      */
     @Override
     protected boolean execute(@NonNull Context context) {
@@ -24,8 +26,9 @@ public class RootedCheck extends AbstractSecurityCheck {
 
     /**
      * This method allows us to perform unit testing on the Rooted Check
+     *
      * @param context Context to be used
-     * @return a RootBeer instance
+     * @return {@link RootBeer}
      */
     protected RootBeer getRootBeer(final Context context) {
         return new RootBeer(context);

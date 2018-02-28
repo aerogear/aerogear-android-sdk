@@ -18,11 +18,9 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
  * together using an {@link SyncSecurityCheckExecutor} by using {@link #getCheckExecutor()}
  */
 public class SecurityService implements ServiceModule {
+
     private final static String TYPE = "security";
 
-    /**
-     * {@link MobileCore}
-     */
     private MobileCore core;
 
     /**
@@ -39,11 +37,11 @@ public class SecurityService implements ServiceModule {
      * Configures the security service.
      *
      * @param core                 {@link MobileCore} instance
-     * @param serviceConfiguration {@link ServiceConfiguration} for the security service
+     * @param serviceConfiguration {@link ServiceConfiguration} for the security service. Can be null
      */
     @Override
     public void configure(@NonNull final MobileCore core, @Nullable final ServiceConfiguration serviceConfiguration) {
-        this.core = core;
+        this.core = nonNull(core, "core");
     }
 
     /**
@@ -62,7 +60,7 @@ public class SecurityService implements ServiceModule {
     public void destroy() {}
 
     /**
-     * Retrieve a check executor that can synchronously  run multiple security checks chained.
+     * Retrieve a check executor that can synchronously run multiple security checks.
      *
      * @return {@link SyncSecurityCheckExecutor}
      */
@@ -72,7 +70,7 @@ public class SecurityService implements ServiceModule {
     }
 
     /**
-     * Retrieve a check executor that can asynchronously run multiple security checks chained.
+     * Retrieve a check executor that can asynchronously run multiple security checks.
      *
      * @return {@link AsyncSecurityCheckExecutor}
      */
@@ -95,7 +93,7 @@ public class SecurityService implements ServiceModule {
     /**
      * Used with a custom check to perform a single {@link SecurityCheck} and get the {@link SecurityCheckResult result} for it.
      *
-     * @param securityCheck The check to execute
+     * @param securityCheck The {@link SecurityCheck} to execute
      * @return {@link SecurityCheckResult}
      * @throws IllegalArgumentException if securityCheck is null
      */
@@ -107,8 +105,8 @@ public class SecurityService implements ServiceModule {
      * Perform a single {@link SecurityCheckType} , get the {@link SecurityCheckResult result} and
      * publish a {@link SecurityCheckResultMetric} based on the result.
      *
-     * @param securityCheckType The type of check to execute
-     * @param metricsService The metrics service to use
+     * @param securityCheckType The {@link SecurityCheckType} to execute
+     * @param metricsService {@link MetricsService}
      * @return {@link SecurityCheckResult}
      */
     public SecurityCheckResult checkAndSendMetric(final SecurityCheckType securityCheckType, final MetricsService metricsService) {
@@ -116,10 +114,10 @@ public class SecurityService implements ServiceModule {
     }
 
     /**
-     * Perform a single {@link SecurityCheck} , and return a {@link SecurityCheckResult}.
+     * Perform a single {@link SecurityCheck} and return a {@link SecurityCheckResult}.
      *
-     * @param securityCheck The check to execute
-     * @param metricsService The metrics service to use
+     * @param securityCheck The {@link SecurityCheck} to execute
+     * @param metricsService {@link MetricsService}
      * @return {@link SecurityCheckResult}
      */
     public SecurityCheckResult checkAndSendMetric(final SecurityCheck securityCheck, final MetricsService metricsService) {

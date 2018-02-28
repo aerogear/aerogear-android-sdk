@@ -13,14 +13,7 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
  */
 public class SecurityCheckResultImpl implements SecurityCheckResult {
 
-    /**
-     * The name of the check. Cannot be null.
-     */
     private final String name;
-
-    /**
-     * The check result. Cannot be null.
-     */
     private final boolean passed;
 
     /**
@@ -28,17 +21,17 @@ public class SecurityCheckResultImpl implements SecurityCheckResult {
      *
      * @param check the check class that produced this result
      * @param passed whether the check has been passed or not
-     * @throws IllegalArgumentException if {@param check} and {@param passed} is null
+     * @throws IllegalArgumentException if check is null
      */
-    public SecurityCheckResultImpl(@NonNull SecurityCheck check, @NonNull final boolean passed) {
+    public SecurityCheckResultImpl(@NonNull SecurityCheck check, final boolean passed) {
         this.name = nonNull(check, "check").getName();
-        this.passed = nonNull(passed, "passed");
+        this.passed = passed;
     }
 
     /**
      * Gets the name of the check.
      *
-     * @return {@link String} name
+     * @return {@link String} name of check
      */
     @Override
     public String getName() {

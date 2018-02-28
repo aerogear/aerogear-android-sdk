@@ -16,8 +16,6 @@ public enum SecurityCheckType {
     /**
      * Detect whether the device is rooted.
      * See {@link RootedCheck}
-     *
-     * @return <code>true</code> if the device is rooted
      */
     IS_ROOTED(new RootedCheck()),
 
@@ -26,17 +24,19 @@ public enum SecurityCheckType {
      * See {@link DeveloperModeCheck}
      */
     IS_DEVELOPER_MODE(new DeveloperModeCheck()),
+
     /**
      *  Detect if a device is in debug mode
      *  See {@link DebuggerCheck}
      */
-
     IS_DEBUGGER(new DebuggerCheck()),
+
     /**
      *  Detect whether the device is emulated.
      *  See {@link EmulatorCheck}
      */
     IS_EMULATOR(new EmulatorCheck()),
+
     /**
      *  Detect whether a screen lock is enabled (PIN, Password etc).
      *  See {@link ScreenLockCheck}
@@ -48,9 +48,6 @@ public enum SecurityCheckType {
      */
     ALLOW_BACKUP_ENABLED(new AllowBackupFlagCheck());
 
-    /**
-     * {@link SecurityCheck}
-     */
     private SecurityCheck check;
 
     /**

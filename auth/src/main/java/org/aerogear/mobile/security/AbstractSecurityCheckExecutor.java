@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.metrics.MetricsService;
 
 import java.util.Collection;
@@ -17,28 +18,17 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
  */
 abstract class AbstractSecurityCheckExecutor<T extends AbstractSecurityCheckExecutor> {
 
-    /**
-     * Collection of checks to be executed. Cannot be null.
-     */
     private final Collection<SecurityCheck> checks = new HashSet<>();
-
-    /**
-     * Context for the device. Cannot be null.
-     */
     private final Context context;
-
-    /**
-     * Metric singleThreadService to be used to publish metrics. Can be null.
-     */
     private final MetricsService metricsService;
 
     /**
      * Creates AbstractSecurityCheckExecutor object.
      *
-     * @param context the context
-     * @param checks checks to be executed
-     * @param metricService singleThreadService to be used to publish metrics. If null, no metrics get published
-     * @throws IllegalArgumentException if {@param context} or {@param checks} are null
+     * @param context {@link Context} to be used by the security checks
+     * @param checks  {@link Collection} of {@link SecurityCheck} to be executed
+     * @param metricService {@link MetricsService}, which should be a {@link AppExecutors#singleThreadService()}, to be used to publish metrics. If null, no metrics get published
+     * @throws IllegalArgumentException if context or checks are null
      */
     public AbstractSecurityCheckExecutor(@NonNull final Context context,
                                          @NonNull final Collection<SecurityCheck> checks,
@@ -51,7 +41,7 @@ abstract class AbstractSecurityCheckExecutor<T extends AbstractSecurityCheckExec
     /**
      * Gets all the checks to be executed.
      *
-     * @return {@link Collection<SecurityCheck>}
+     * @return {@link Collection} of {@link SecurityCheck}
      */
     protected Collection<SecurityCheck> getChecks() {
         return checks;

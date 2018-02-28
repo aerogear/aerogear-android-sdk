@@ -32,29 +32,19 @@ public class SecurityCheckExecutor {
          * @param <K> The type of the built object
          */
         static abstract class AbstractBuilder<T, K> {
-            /**
-             * {@link Context} of the device. Cannot be null.
-             */
+
             private final Context ctx;
-
-            /**
-             * the {@link Collection<SecurityCheck>} of security checks to be tested. Can be null.
-             */
             private final Collection<SecurityCheck> checks = new HashSet<>();
-
-            /**
-             * {@link MetricsService}. Can be null.
-             */
             private MetricsService metricsService;
 
             /**
              * Creates AbstractBuilder object.
              *
-             * @param ctx {@link Context} of the device
-             * @throws IllegalArgumentException if {@param ctx} is null
+             * @param ctx {@link Context} to be used by the security checks
+             * @throws IllegalArgumentException if ctx is null
              */
             public AbstractBuilder(@NonNull final Context ctx) {
-                this.ctx = nonNull(ctx, "context");
+                this.ctx = nonNull(ctx, "context").getApplicationContext();
             }
 
             /**
@@ -62,7 +52,7 @@ public class SecurityCheckExecutor {
              *
              * @param check the {@link SecurityCheck} to be added
              * @return {@link T} this
-             * @throws IllegalArgumentException if {@param check} is null
+             * @throws IllegalArgumentException if check is null
              */
             public T withSecurityCheck(@NonNull final SecurityCheck check) {
                 checks.add(nonNull(check, "check"));
@@ -70,11 +60,11 @@ public class SecurityCheckExecutor {
             }
 
             /**
-             * Adds a new security check.
+             * Adds a new security check by providing a {@link SecurityCheckType}
              *
              * @param checkType {@link SecurityCheckType} to be added
              * @return {@link T} this
-             * @throws IllegalArgumentException if {@param checkType} is null
+             * @throws IllegalArgumentException if checkType is null
              */
             public T withSecurityCheck(@NonNull final SecurityCheckType checkType) {
                 checks.add(nonNull(checkType, "checkType").getSecurityCheck());
@@ -85,7 +75,7 @@ public class SecurityCheckExecutor {
              * Sets the metric service to be used.
              * The metric service should be a {@link AppExecutors#singleThreadService()}.
              *
-             * @param metricsService the {@link MetricsService} {@link AppExecutors#singleThreadService()} to be used
+             * @param metricsService the {@link MetricsService} {@link AppExecutors#singleThreadService()} to be used. Can be null
              * @return this
              */
             public T withMetricsService(@Nullable final MetricsService metricsService) {
@@ -114,7 +104,7 @@ public class SecurityCheckExecutor {
             /**
              * Gets all the checks that are to be tested.
              *
-             * @return {@link Collection<SecurityCheck>}
+             * @return {@link Collection}
              */
             protected Collection<SecurityCheck> getChecks() {
                 return checks;
@@ -131,9 +121,9 @@ public class SecurityCheckExecutor {
         /**
          * Creates a Builder for AsyncSecurityCheckExecutor.
          *
-         * @param ctx {@link Context} for the device.
-         * @return {@link AsyncSecurityCheckExecutor.Builder}.
-         * @throws IllegalArgumentException if {@param ctx} is null.
+         * @param ctx {@link Context} to be used by the security checks
+         * @return {@link AsyncSecurityCheckExecutor.Builder}
+         * @throws IllegalArgumentException if ctx is null
          */
         private AsyncSecurityCheckExecutor.Builder newAsyncBuilder(@NonNull final Context ctx) {
             return new AsyncSecurityCheckExecutor.Builder(ctx);
@@ -142,9 +132,9 @@ public class SecurityCheckExecutor {
         /**
          * Creates a Builder for SyncSecurityCheckExecutor.
          *
-         * @param ctx {@link Context} for the device.
-         * @return {@link SyncSecurityCheckExecutor.Builder}.
-         * @throws IllegalArgumentException if {@param ctx} is null.
+         * @param ctx {@link Context} to be used by the security checks
+         * @return {@link SyncSecurityCheckExecutor.Builder}
+         * @throws IllegalArgumentException if ctx is null
          */
         private SyncSecurityCheckExecutor.Builder newSyncBuilder(@NonNull final Context ctx) {
             return new SyncSecurityCheckExecutor.Builder(ctx);
@@ -153,9 +143,9 @@ public class SecurityCheckExecutor {
         /**
          * Creates a new AsyncSecurityCheckExecutor Builder.
          *
-         * @param ctx {@link Context} for the device.
-         * @return {@link AsyncSecurityCheckExecutor.Builder}.
-         * @throws IllegalArgumentException if {@param ctx} is null.
+         * @param ctx {@link Context} to be used by the security checks
+         * @return {@link AsyncSecurityCheckExecutor.Builder}
+         * @throws IllegalArgumentException if ctx is null
          */
         public static AsyncSecurityCheckExecutor.Builder newAsyncExecutor(@NonNull final Context ctx) {
             return new Builder().newAsyncBuilder(ctx);
@@ -164,9 +154,9 @@ public class SecurityCheckExecutor {
         /**
          * Creates a new SyncSecurityCheckExecutor Builder.
          *
-         * @param ctx {@link Context} for the device.
-         * @return {@link SyncSecurityCheckExecutor.Builder}.
-         * @throws IllegalArgumentException if {@param ctx} is null.
+         * @param ctx {@link Context} to be used by the security checks
+         * @return {@link SyncSecurityCheckExecutor.Builder}
+         * @throws IllegalArgumentException if ctx is null
          */
         public static SyncSecurityCheckExecutor.Builder newSyncExecutor(@NonNull final Context ctx) {
             return new Builder().newSyncBuilder(ctx);

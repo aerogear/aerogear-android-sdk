@@ -12,7 +12,7 @@ public class DebuggerCheck extends AbstractSecurityCheck {
     /**
      * Check whether a debugger is attached to the current application.
      *
-     * @param context Context to be used by the check.
+     * @param context {@link Context} to be used by the check.
      * @return <code>true</code> if device is in debug mode
      */
     @Override

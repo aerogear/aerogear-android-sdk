@@ -13,8 +13,9 @@ public class ScreenLockCheck extends AbstractSecurityCheck {
     /**
      * Check whether the device has a screen lock enabled (PIN, Password, etc).
      *
-     * @param context Context to be used by the check.
-     * @return <code>true</code> if the device has a screen lock enabled.
+     * @param context {@link Context} to be used by the check
+     * @return <code>true</code> if the device has a screen lock enabled
+     * @throws IllegalArgumentException if context is null
      */
     @Override
     protected boolean execute(@NonNull Context context) {
