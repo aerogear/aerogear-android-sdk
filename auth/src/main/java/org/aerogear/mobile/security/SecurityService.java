@@ -58,18 +58,18 @@ public class SecurityService implements ServiceModule{
     }
 
     /**
-     * Perform a single {@link SecurityCheckType} and get the {@link SecurityCheckResult result} for it.
+     * Used with enumeration to perform a single {@link SecurityCheckType} and get the {@link SecurityCheckResult result} for it.
      *
      * @param securityCheckType The type of check to execute
      * @return {@link SecurityCheckResult}
      * @throws IllegalArgumentException if {@param securityCheckType} is null
      */
     public SecurityCheckResult check(@NonNull final SecurityCheckType securityCheckType) {
-        return nonNull(securityCheckType, "securityCheckType").getSecurityCheck().test(core.getContext());
+        return check(nonNull(securityCheckType, "securityCheckType").getSecurityCheck());
     }
 
     /**
-     * Perform a single {@link SecurityCheck} and get the {@link SecurityCheckResult result} for it.
+     * Used with a custom check to perform a single {@link SecurityCheck} and get the {@link SecurityCheckResult result} for it.
      *
      * @param securityCheck The check to execute
      * @return {@link SecurityCheckResult}
