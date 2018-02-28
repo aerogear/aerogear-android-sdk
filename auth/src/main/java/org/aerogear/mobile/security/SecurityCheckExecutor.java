@@ -51,7 +51,7 @@ public class SecurityCheckExecutor {
              * Adds a new security check by providing a security check instance.
              *
              * @param check the {@link SecurityCheck} to be added
-             * @return {@link T} this
+             * @return this
              * @throws IllegalArgumentException if check is null
              */
             public T withSecurityCheck(@NonNull final SecurityCheck check) {
@@ -63,7 +63,7 @@ public class SecurityCheckExecutor {
              * Adds a new security check by providing a {@link SecurityCheckType}
              *
              * @param checkType {@link SecurityCheckType} to be added
-             * @return {@link T} this
+             * @return this
              * @throws IllegalArgumentException if checkType is null
              */
             public T withSecurityCheck(@NonNull final SecurityCheckType checkType) {

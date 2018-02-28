@@ -58,7 +58,8 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<As
 
         /**
          * Creates a new AsyncSecurityCheckExecutor object.
-         * If no {@link ExecutorService} has been defined, a new {@link AppExecutors#singleThreadService()} is created.
+         *
+         * If no {@link ExecutorService} has been defined, defaults to {@link AppExecutors#singleThreadService()}.
          *
          * @return {@link AsyncSecurityCheckExecutor}
          */
@@ -93,7 +94,7 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<As
      *
      * Returns a {@link Map} containing the results of each executed test (a {@link Future}).
      * The key of the map will be the output of {@link SecurityCheck#getName()}, while the value will be
-     * an array of {@link Future} with the {@link SecurityCheckResult} of the check.
+     * a {@link Map} of {@link Future} with the {@link SecurityCheckResult} of the check.
      *
      * @return {@link Map}
      */

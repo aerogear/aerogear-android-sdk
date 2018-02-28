@@ -13,8 +13,12 @@ import java.util.HashSet;
 
 import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
+
 /**
+ *
  * Base class for security check executors.
+ *
+ * @param <T> the real executor type to be returned to chain the adding of checks to be executed
  */
 abstract class AbstractSecurityCheckExecutor<T extends AbstractSecurityCheckExecutor> {
 
@@ -69,7 +73,7 @@ abstract class AbstractSecurityCheckExecutor<T extends AbstractSecurityCheckExec
      * Adds a new check to be executed.
      *
      * @param check the new {@link SecurityCheck} to be executed
-     * @return {@link T} this, so that adding checks can be chained
+     * @return this, so that adding checks can be chained
      */
     public T addCheck(SecurityCheck check) {
         this.getChecks().add(check);
@@ -80,7 +84,7 @@ abstract class AbstractSecurityCheckExecutor<T extends AbstractSecurityCheckExec
      * Adds a new check to be executed.
      *
      * @param checkType the {@link SecurityCheckType} of the new check to be executed
-     * @return {@link T} this, so that adding checks can be chained
+     * @return this, so that adding checks can be chained
      */
     public T addCheck(SecurityCheckType checkType) {
         this.getChecks().add(checkType.getSecurityCheck());
