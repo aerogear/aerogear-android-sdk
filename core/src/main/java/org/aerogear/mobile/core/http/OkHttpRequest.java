@@ -23,6 +23,7 @@ public class OkHttpRequest implements HttpRequest {
 
     public OkHttpRequest(final OkHttpClient client, final AppExecutors executors) {
         this.client = client;
+        client.setConnectTimeout(60, TimeUnit.SECONDS)
         this.appExecutors = executors;
         this.headers.put(CONTENT_TYPE_HEADER, JSON_MIME_TYPE);
     }
