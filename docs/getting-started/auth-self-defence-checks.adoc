@@ -1,6 +1,6 @@
 = Self Defence Checks
 
-As part of the Auth SDK module, there is a self defence check feature.  This feature offers multiple security checks that can be used to analyse the secuirty of the device.  This can be useful for apps to detect vulnerablities and react accordingly.  For example, if the app detects *X* then do *Y*, where *X* could be no lock screen is set and *Y* is show a system prompt to setup the lock screen.
+As part of the Auth SDK module, there is a self defence check feature.  This feature offers multiple security checks that can be used to analyse the secuirty of the device.  This can be useful for apps to detect vulnerablities and react accordingly.  For example, if the app detects security issue *X* then do *Y*, where *X* could be no lock screen is set and *Y* is show a system prompt to setup the lock screen.
 
 == Prequisite's
 
