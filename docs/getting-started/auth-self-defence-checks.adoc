@@ -170,4 +170,26 @@ Map<String, Future<SecurityCheckResult> results = securityService.getAsyncCheckE
 
 In order to report the results of Self-defence utilize the link:./metrics[Metrics] service in conjunction with the Security service.
 
-// TODO: metrics example
+Individual checks can be reported via the `checkAndSendMetric()` method:
+
+[source, java]
+----
+MetricsService metricsService = mobileCore.getInstance(MetricsService.class);
+SecurityService securityService = activity.mobileCore.getInstance(SecurityService.class);
+SecurityCheckResult result = securityService.checkAndSendMetric(SecurityCheckType.IS_ROOTED, metricsService);
+----
+
+Metrics information containing the results of the checks run via an Executor will be automatically sent if the Executor is supplied an instance of the `MetricsService`:
+
+[source, java]
+----
+MetricsService metricsService = mobileCore.getInstance(MetricsService.class);
+SyncSecurityCheckExecutor syncCheckExecutor = (new SyncSecurityCheckExecutor.Builder(this.getContext()))
+    .withSecurityCheck(SecurityCheckType.IS_ROOTED)
+    // other checks...
+    .withMetricsService(metricsService)
+    .build();
+
+// The returned results have already been queued for reporting via the Metrics Service
+Map<String, SecurityCheckResult>  results = executor.execute();
+----
