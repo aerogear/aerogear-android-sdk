@@ -2,10 +2,6 @@
 
 As part of the Auth SDK module, there is a self defence check feature.  This feature offers multiple security checks that can be used to analyse the secuirty of the device.  This can be useful for apps to detect vulnerablities and react accordingly.  For example, if the app detects security issue *X* then do *Y*, where *X* could be no lock screen is set and *Y* is show a system prompt to setup the lock screen.
 
-Self-defence checks to detect a possible compromised runtime environment that can expose a mobile application to more vectors of attack that can lead to data leaks.
-
-An application running in a rooted Android device, for instance, does not have the guarantee that data saved to it's private storage is not accessible by attackers in ways that the application developer did not expect.
-
 This module offers:
 
 1. A suite of self-defence checks to detect a compromised enviroment.
