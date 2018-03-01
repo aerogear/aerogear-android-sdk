@@ -27,10 +27,6 @@ public class OkHttpServiceModule implements HttpServiceModule {
         this(client, new ServiceConfiguration.Builder().build());
     }
 
-    public OkHttpServiceModule(final ServiceConfiguration serviceConfiguration) {
-        this(new OkHttpClient.Builder().build(), serviceConfiguration);
-    }
-
     public OkHttpServiceModule(final OkHttpClient client, final ServiceConfiguration serviceConfiguration) {
         this.client = client;
         this.serviceConfiguration = serviceConfiguration;

@@ -21,6 +21,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
 
 import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
@@ -68,7 +71,11 @@ public final class MobileCore {
 
         // -- Setting default http layer
         if (options.httpServiceModule == null) {
-            final OkHttpServiceModule httpServiceModule = new OkHttpServiceModule();
+            OkHttpClient.Builder builder = new OkHttpClient.Builder();
+            builder.connectTimeout(10, TimeUnit.SECONDS)
+                .writeTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS);
+            final OkHttpServiceModule httpServiceModule = new OkHttpServiceModule(builder.build());
 
             ServiceConfiguration configuration = this.servicesConfig.get(httpServiceModule.type());
             if (configuration == null) {
