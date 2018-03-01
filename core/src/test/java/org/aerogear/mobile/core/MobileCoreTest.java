@@ -253,6 +253,9 @@ public class MobileCoreTest {
                         }
 
                         @Override
+                        public HttpResponse onError(Runnable runnable) { return this; }
+
+                        @Override
                         public int getStatus() {
                             return HTTP_OK;
                         }

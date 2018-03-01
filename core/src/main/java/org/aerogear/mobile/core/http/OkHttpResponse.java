@@ -15,6 +15,7 @@ class OkHttpResponse implements HttpResponse {
     private final CountDownLatch requestCompleteLatch = new CountDownLatch(1);
     private Response response;
     private Runnable completionHandler;
+    private Runnable errorHandler;
     private Exception requestError;
     private boolean closed = false;
 
@@ -23,12 +24,16 @@ class OkHttpResponse implements HttpResponse {
             try {
                 response = okHttpCall.execute();
                 requestCompleteLatch.countDown();
-                if (completionHandler != null) {
+
+                if (!response.isSuccessful()) {
+                    throw new IOException("Request failed with status code " + response.code());
+                } else {
                     runCompletionHandler();
                 }
             } catch (IOException e) {
                 requestError = e;
                 requestCompleteLatch.countDown();
+                runErrorHandler();
             }
         });
     }
@@ -46,11 +51,27 @@ class OkHttpResponse implements HttpResponse {
         }
     }
 
+    private synchronized void runErrorHandler() {
+        if (errorHandler != null) {
+            errorHandler.run();
+            errorHandler = null;
+        }
+    }
+
     @Override
     public HttpResponse onComplete(Runnable completionHandler) {
         this.completionHandler = completionHandler;
-        if (response != null) {
+        if (response != null && response.isSuccessful()) {
             runCompletionHandler();
+        }
+        return this;
+    }
+
+    @Override
+    public HttpResponse onError(Runnable errorHandler) {
+        this.errorHandler = errorHandler;
+        if (response != null && !response.isSuccessful()) {
+            runErrorHandler();
         }
         return this;
     }
@@ -66,8 +87,10 @@ class OkHttpResponse implements HttpResponse {
             requestCompleteLatch.await(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
             //If a completion Handler was set before this wait then we need to make sure that
             // gets called before we free these resources.
-            if (completionHandler != null) {
+            if (completionHandler != null && requestError == null) {
                 runCompletionHandler();
+            } else {
+                runErrorHandler();
             }
         } catch (InterruptedException interruptedException) {
             /*If we have an error the work of the thread is already done and the thread was exiting

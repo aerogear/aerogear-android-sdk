@@ -19,6 +19,17 @@ public interface HttpResponse {
     HttpResponse onComplete(Runnable runnable);
 
     /**
+     * Creates a callback to be called when the request has failed.
+     *
+     * This will be triggered when the request could not be sent or no response can be
+     * received.
+     *
+     * @param runnable a callback method
+     * @return the instance of the HttpResponse for API chaining
+     */
+    HttpResponse onError(Runnable runnable);
+
+    /**
      * Returns the HTTP status code of the response.
      *
      * @return the status code.

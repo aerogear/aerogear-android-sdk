@@ -2,6 +2,8 @@ package org.aerogear.mobile.core.http;
 
 import android.support.test.filters.SmallTest;
 
+import junit.framework.Assert;
+
 import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpResponse;
 import org.aerogear.mobile.core.http.HttpServiceModule;
@@ -39,6 +41,28 @@ public class OkHttpServiceModuleTest {
             "     \"title\": \"Test Title\"\n" +
             " }    \n" +
             "}", response.stringBody()));
+
+        response.waitForCompletionAndClose();
+    }
+
+    @Test
+    public void testCompleteHandlerNotCalledInErrorCase() {
+        HttpServiceModule module = new OkHttpServiceModule();
+
+        HttpRequest request = module.newRequest();
+        request.get("http://does.not.exist.com");
+
+        final HttpResponse response = request.execute();
+        assertNotNull(response);
+
+        response.onComplete(() -> {
+            // The complete handler must not be called here
+            Assert.fail("The complete handler must not be called here");
+        });
+
+        response.onError(() -> {
+            assertNotNull(response.getRequestError());
+        });
 
         response.waitForCompletionAndClose();
     }

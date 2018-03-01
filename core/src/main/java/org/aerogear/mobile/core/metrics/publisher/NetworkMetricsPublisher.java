@@ -54,12 +54,10 @@ public class NetworkMetricsPublisher implements MetricsPublisher {
 
             final HttpResponse httpResponse = httpRequest.execute();
             httpResponse.onComplete(() -> {
-                if (httpResponse.getStatus() == HTTP_OK) {
-                    MobileCore.getLogger().debug("Metrics sent: " + json.toString());
-                } else {
-                    MobileCore.getLogger().error(httpResponse.getRequestError().getMessage(),
-                        httpResponse.getRequestError());
-                }
+                MobileCore.getLogger().debug("Metrics sent: " + json.toString());
+            }).onError(() -> {
+                MobileCore.getLogger().error("Metrics request error",
+                    httpResponse.getRequestError());
             });
 
         } catch (JSONException e) {
