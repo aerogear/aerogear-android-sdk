@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import org.aerogear.mobile.core.metrics.Metrics;
 import org.aerogear.mobile.security.SecurityCheckResult;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,18 +18,29 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
  */
 public class SecurityCheckResultMetric implements Metrics {
 
-    private final String identifier;
+    private final String identifier = "security";
     private final Map<String, String> data;
 
     /**
      * Creates a SecurityCheckResultMetric object.
      *
-     * @param result the {@link SecurityCheckResult} of the test executed
+     * @param results the list of {@link SecurityCheckResult} of the tests executed
      * @throws IllegalArgumentException if result is null
+     *
      */
-    public SecurityCheckResultMetric(@NonNull final SecurityCheckResult result) {
-        this.identifier = nonNull(result, "result").getName();
-        this.data = getDataFromResult(result);
+    public SecurityCheckResultMetric(@NonNull final Iterable<SecurityCheckResult> results) {
+        this.data = getDataFromResult(results.iterator().next());
+    }
+
+    /**
+     * Creates a SecurityCheckResultMetric object.
+     *
+     * @param results the list of {@link SecurityCheckResult} of the tests executed
+     * @throws IllegalArgumentException if result is null
+     *
+     */
+    public SecurityCheckResultMetric(@NonNull final SecurityCheckResult... results) {
+        this.data = getDataFromResult(results[0]);
     }
 
     /**
