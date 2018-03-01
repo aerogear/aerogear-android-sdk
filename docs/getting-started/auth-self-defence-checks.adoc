@@ -140,7 +140,7 @@ Both link:javadoc[`SyncSecurityCheckExecutor`] and link:javadoc[`AsyncSecurityCh
 
 The `execute` method for link:javadoc[`SyncSecurityCheckExecutor`] returns a `Map` where the key is the name of the self defence check being tested (`String`) and the value is  link:javadoc[`SecurityCheckResult`]. +
 
-The `execute` method for link:javadoc[`AsyncSecurityCheckExecutor`] returns a `Map` where the key is the name of the self defence check being tested (`String`) and the value is an array of type `Future` with link:javadoc[`SecurityCheckResult`].
+The `execute` method for link:javadoc[`AsyncSecurityCheckExecutor`] returns a `Map` where the key is the name of the self defence check being tested (`String`) and the value is a `Map` of type `Future` with link:javadoc[`SecurityCheckResult`].
 
 [source, java]
 ----
