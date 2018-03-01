@@ -190,7 +190,7 @@ if (isModerator) {
 === Logging out
 
 To logout, invoke the `AuthService#logout` method. This accepts the `UserPrincipal` that was
-provided by `AuthService#handleAuthResponse`.
+provided by `AuthService#handleAuthResponse` and has a callback to determine if the logout to the Keycloak or OpenID Connect server was successful.
 
 [source,java]
 ----
@@ -198,8 +198,21 @@ provided by `AuthService#handleAuthResponse`.
 AuthService authService = mobileCore.getInstance(AuthService.class);
 UserPrincipal currentUser = authService.currentUser();
 
-authService.logout(currentUser);
+authService.logout(currentUser, new Callback<UserPrincipal>() {
+    @Override
+    public void onSuccess() {
+        // User Logged Out Successfully and Local Auth Tokens were Deleted
+    }
+
+    @Override
+    public void onError(Throwable error) {
+        // An error occurred during logout
+    }
+});
 ----
+
+By default, the local tokens obtained during authentication are only deleted when the logout succeeded against the authentication server.
+You can use the `AuthService#deleteTokens` function to delete the local authentication tokens as part of a failed logout, or for other use cases.
 
 *Note:* To perform backchannel or federated logouts, you must enable the Backchannel Logout option for the federated identity provider. More information is available in the Keycloak documentation under  http://www.keycloak.org/docs/latest/server_admin/index.html#openid-connect-v1-0-identity-providers[OIDC Identity Providers].
 
