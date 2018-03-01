@@ -162,30 +162,27 @@ Map<String, SecurityCheckResult> results = securityService.getCheckExecutor().ad
 Map<String, Future<SecurityCheckResult> results = securityService.getAsyncCheckExecutor().addCheck(new customSecurityCheck()).addCheck(SecurityCheckType.<check_type>).addCheck(SecurityCheckType.<check_type>).execute();
 ----
 
-=== Reporting Self-defence checks results via the Metrics service
+=== Reporting Self Defence Checks Results Via the Metrics Service
 
-In order to report the results of Self-defence utilize the link:./metrics[Metrics] service in conjunction with the Security service.
+In order to report the results of Self Defence utilize the link:./metrics[Metrics] service in conjunction with the link:javadoc[SecurityService].
 
-Individual checks can be reported via the `checkAndSendMetric()` method:
+Individual checks can be reported via the `checkAndSendMetric` method:
 
 [source, java]
 ----
 MetricsService metricsService = mobileCore.getInstance(MetricsService.class);
 SecurityService securityService = activity.mobileCore.getInstance(SecurityService.class);
-SecurityCheckResult result = securityService.checkAndSendMetric(SecurityCheckType.IS_ROOTED, metricsService);
+SecurityCheckResult result = securityService.checkAndSendMetric(SecurityCheckType.<check_type>, metricsService);
 ----
 
-Metrics information containing the results of the checks run via an Executor will be automatically sent if the Executor is supplied an instance of the `MetricsService`:
+Reporting the results for multiple checks can be done via an `Executor` that is passed a reference to the `MetricsService`:
 
 [source, java]
 ----
 MetricsService metricsService = mobileCore.getInstance(MetricsService.class);
-SyncSecurityCheckExecutor syncCheckExecutor = SecurityCheckExecutor.Builder.newSyncExecutor(this.getContext())
-    .withSecurityCheck(SecurityCheckType.IS_ROOTED)
+Map<String, SecurityCheckResult> results = SecurityCheckExecutor.Builder.newSyncExecutor(this.getContext())
+    .withSecurityCheck(SecurityCheckType.<check_type>)
     // other checks...
     .withMetricsService(metricsService)
-    .build();
-
-// The returned results have already been queued for reporting via the Metrics Service
-Map<String, SecurityCheckResult>  results = executor.execute();
+    .build().execute();
 ----
