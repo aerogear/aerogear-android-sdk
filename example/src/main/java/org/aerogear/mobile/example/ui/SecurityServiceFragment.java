@@ -178,7 +178,10 @@ public class SecurityServiceFragment extends BaseFragment {
      */
     public void detectDeviceEncryptionStatus(Map<String, SecurityCheckResult> results) {
         totalTests++;
-        //TODO: add check
+        SecurityCheckResult result = securityService.check(SecurityCheckType.HAS_ENCRYPTION_ENABLED);
+        if (result.passed()){
+            setDetected(deviceEncrypted, R.string.device_encrypted_positive);
+        }
     }
 
     /**
