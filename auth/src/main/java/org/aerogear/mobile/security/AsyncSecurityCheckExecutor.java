@@ -23,23 +23,31 @@ import java.util.concurrent.Future;
 public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<AsyncSecurityCheckExecutor> {
 
     private final static String TAG = "AsyncSecurityCheckExecutor";
-
-    private final ExecutorService executorService;
     private final static Logger LOG = MobileCore.getLogger();
 
+    private final ExecutorService executorService;
 
+
+    /**
+     * Builder class for constructing an AsyncSecurityCheckExecutor object.
+     */
     public static class Builder extends SecurityCheckExecutor.Builder.AbstractBuilder<Builder, AsyncSecurityCheckExecutor> {
 
         private ExecutorService executorService;
 
+        /**
+         * Creates a Builder object.
+         *
+         * @param ctx {@link Context} to be used by security checks
+         */
         Builder(final Context ctx) {
             super(ctx);
         }
 
         /**
-         * Specify a custom execution singleThreadService for this SecurityCheckExecutor.
+         * A custom {@link ExecutorService} for this SecurityCheckExecutor.
          *
-         * @param executorService executor singleThreadService to be used.
+         * @param executorService the {@link ExecutorService} to be used. Defaults to {@link AppExecutors#singleThreadService()} if null
          * @return this
          */
         public Builder withExecutorService(@Nullable final ExecutorService executorService) {
@@ -47,6 +55,13 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<As
             return this;
         }
 
+        /**
+         * Creates a new AsyncSecurityCheckExecutor object.
+         *
+         * If no {@link ExecutorService} has been defined, defaults to {@link AppExecutors#singleThreadService()}.
+         *
+         * @return {@link AsyncSecurityCheckExecutor}
+         */
         @Override
         public AsyncSecurityCheckExecutor build() {
             if (executorService == null) {
@@ -56,6 +71,14 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<As
         }
     }
 
+    /**
+     * Constructor for AsyncSecurityCheckExecutor.
+     *
+     * @param context the {@link Context} to be used by security checks
+     * @param executorService the custom {@link ExecutorService}
+     * @param checks the {@link Collection<SecurityCheck>} of security checks to be tested
+     * @param metricsService {@link MetricsService}. Can be null
+     */
     AsyncSecurityCheckExecutor(@NonNull final Context context,
                                @NonNull final ExecutorService executorService,
                                @NonNull final Collection<SecurityCheck> checks,
@@ -65,13 +88,13 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<As
     }
 
     /**
-     * Executes the checks asynchronously and returns an array of {@link Future}
+     * Executes the checks asynchronously.
      *
      * Returns a {@link Map} containing the results of each executed test (a {@link Future}).
      * The key of the map will be the output of {@link SecurityCheck#getName()}, while the value will be
-     * a {@link Future} with the result of the check.
+     * a {@link Map} of {@link Future} with the {@link SecurityCheckResult} of the check.
      *
-     * @return a {@link Map} containing the results of all the executed checks
+     * @return {@link Map}
      */
     public Map<String, Future<SecurityCheckResult>> execute() {
 

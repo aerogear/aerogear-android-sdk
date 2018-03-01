@@ -13,8 +13,8 @@ public class RootedCheck extends AbstractSecurityCheck {
     /**
      * Check whether the device is rooted or not.
      *
-     * @param context Context to be used by the check.
-     * @return <code>true</code> if the device is rooted.
+     * @param context {@link Context} to be used by the check
+     * @return <code>true</code> if the device is rooted
      */
     @Override
     protected boolean execute(@NonNull Context context) {
@@ -23,8 +23,9 @@ public class RootedCheck extends AbstractSecurityCheck {
 
     /**
      * This method allows us to perform unit testing on the Rooted Check
+     *
      * @param context Context to be used
-     * @return a RootBeer instance
+     * @return {@link RootBeer}
      */
     protected RootBeer getRootBeer(final Context context) {
         return new RootBeer(context);
