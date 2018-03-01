@@ -4,11 +4,6 @@ import android.content.Context;
 import android.os.Debug;
 import android.support.annotation.NonNull;
 
-import org.aerogear.mobile.security.SecurityCheck;
-import org.aerogear.mobile.security.SecurityCheckResult;
-import org.aerogear.mobile.security.impl.SecurityCheckResultImpl;
-
-
 /**
  * A check for whether a debugger is attached to the current application.
  */

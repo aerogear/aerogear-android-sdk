@@ -5,12 +5,6 @@ import android.support.annotation.NonNull;
 
 import com.scottyab.rootbeer.RootBeer;
 
-import org.aerogear.mobile.security.SecurityCheck;
-import org.aerogear.mobile.security.SecurityCheckResult;
-import org.aerogear.mobile.security.impl.SecurityCheckResultImpl;
-
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
-
 /**
  * A check for whether the device the application is running on is rooted.
  */

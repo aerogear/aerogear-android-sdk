@@ -167,7 +167,10 @@ public class SecurityServiceFragment extends BaseFragment {
      */
     public void detectBackupEnabled(Map<String, SecurityCheckResult> results) {
         totalTests++;
-        //TODO: add check
+        SecurityCheckResult result = securityService.check(SecurityCheckType.ALLOW_BACKUP_ENABLED);
+        if(result.passed()) {
+            setDetected(allowBackup, R.string.allow_backup_detected_positive);
+        }
     }
 
     /**

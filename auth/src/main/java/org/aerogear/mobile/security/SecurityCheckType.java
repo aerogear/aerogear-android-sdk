@@ -1,6 +1,7 @@
 package org.aerogear.mobile.security;
 
 
+import org.aerogear.mobile.security.checks.AllowBackupFlagCheck;
 import org.aerogear.mobile.security.checks.DeveloperModeCheck;
 import org.aerogear.mobile.security.checks.DebuggerCheck;
 import org.aerogear.mobile.security.checks.EmulatorCheck;
@@ -36,7 +37,12 @@ public enum SecurityCheckType {
      *  Detect whether a screen lock is enabled (PIN, Password etc).
      *  See {@link ScreenLockCheck}
      */
-    SCREEN_LOCK_ENABLED(new ScreenLockCheck());
+    SCREEN_LOCK_ENABLED(new ScreenLockCheck()),
+    /**
+     * Detect whether the allowBackup flag is enabled for the application.
+     * See {@link AllowBackupFlagCheck}
+     */
+    ALLOW_BACKUP_ENABLED(new AllowBackupFlagCheck());
 
     private SecurityCheck check;
 

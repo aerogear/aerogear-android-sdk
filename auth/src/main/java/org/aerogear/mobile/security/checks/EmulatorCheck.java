@@ -4,10 +4,6 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
 
-import org.aerogear.mobile.security.SecurityCheck;
-import org.aerogear.mobile.security.SecurityCheckResult;
-import org.aerogear.mobile.security.impl.SecurityCheckResultImpl;
-
 /**
  * A check for whether the device the application is running on an emulator
  */
