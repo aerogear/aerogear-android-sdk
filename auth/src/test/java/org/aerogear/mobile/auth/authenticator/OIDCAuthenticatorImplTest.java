@@ -16,9 +16,11 @@ import org.aerogear.mobile.auth.Callback;
 import org.aerogear.mobile.auth.authenticator.oidc.OIDCAuthenticatorImpl;
 import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
 import org.aerogear.mobile.auth.AuthenticationException;
+import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
 import org.aerogear.mobile.auth.credentials.JwksManager;
 import org.aerogear.mobile.auth.credentials.OIDCCredentials;
 import org.aerogear.mobile.auth.user.UserPrincipal;
+import org.aerogear.mobile.auth.user.UserPrincipalImpl;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.jose4j.jwk.JsonWebKeySet;
 import org.json.JSONException;
@@ -112,11 +114,25 @@ public class OIDCAuthenticatorImplTest {
         "EIxU3IqYjQ_gKtlqgklGvmADo1ZAVxSv4w\",\"additionalParameters\":{\"refresh_expires_in\":\"1800\",\"not-before-policy\":\"1518687910\",\"ses" +
         "sion_state\":\"e12e3160-01b7-4813-b184-2a246368a641\"}}}";
 
+    private String identityToken = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJhZFNveVhOQWdReFY0M2VxSFNpUlpmNmhOOXl0dkJOUXliMmZGU2RDVFZNIn0." +
+        "eyJqdGkiOiJjNWNjM2IyNC05NTcyLTRkODQtYjQ5Yi0yOTlmMWE4YTMxNzgiLCJleHAiOjE1MTk5MDI1NzgsIm5iZiI6MCwiaWF0IjoxNTE5OTAwNzc4LCJpc3MiOiJodHRwczovL2t" +
+        "leWNsb2FrLnNlY3VyaXR5LmZlZWRoZW5yeS5vcmcvYXV0aC9yZWFsbXMvc2VjdXJlLWFwcCIsImF1ZCI6ImNsaWVudC1hcHAiLCJzdWIiOiJiMTYxN2UzOC0zODczLTRhNDctOGE2Yy" +
+        "01YjgyMmFkYTI3NWUiLCJ0eXAiOiJJRCIsImF6cCI6ImNsaWVudC1hcHAiLCJhdXRoX3RpbWUiOjE1MTk5MDA3NzcsInNlc3Npb25fc3RhdGUiOiI2MThlNTRmNS1jMTJiLTQ5YTEtO" +
+        "DE2NC0zYWE4YTJiMTlkYTYiLCJhY3IiOiIxIiwibmFtZSI6IlVzZXIgMSIsInByZWZlcnJlZF91c2VybmFtZSI6InVzZXIxIiwiZ2l2ZW5fbmFtZSI6IlVzZXIiLCJmYW1pbHlfbmFt" +
+        "ZSI6IjEiLCJlbWFpbCI6InVzZXIxQGZlZWRoZW5yeS5vcmcifQ.EqXejAOtuRWavFhNE3TBkMeShkquVJ7fKKoqkIC-A2gh2E1ZwFCQSc2cqv531zsPFEb89W1QKdAt8uJr-M0gm0YR8" +
+        "q8afvYGPO6pIBC3464tNjssklsHqvzEAUw8RE7I5dzzZ0C0o3jCYPIh9y8c8uCccCMknZtsQ7z05-jAa-AuniG7bukFASDz_fi0sYtiD3l15GYjMBgdGdSysPQuY7aSDdtW9zfHHMogE" +
+        "HvWOhY_EBFJmQKn-KrCEFEcNyY1gZ_z0zkH1wSFaJbJjRBC2UzBjo3-TIBVwbqRxNCN1IQy89KK-UIn0LslWxXHl_SSuwhyigj9Ha9uLWdkIZLhXA";
+
+    private String logoutURL = String.format("https://keycloak.security.feedhenry.org/auth/realms/secure-app/protocol/openid-connect/logout?id_token_" +
+        "hint=%s&redirect_uri=org.aerogear.mobile.example:/callback", identityToken);
+
     private OIDCAuthenticatorImpl authenticator;
 
     private OIDCCredentials credential;
 
     private AuthServiceConfiguration authServiceConfiguration;
+
+    private UserPrincipalImpl userPrincipalImpl;
 
     @Mock
     private Activity activity;
@@ -143,6 +159,9 @@ public class OIDCAuthenticatorImplTest {
     private AuthState authState;
 
     @Mock
+    private KeycloakConfiguration keycloakConfiguration;
+
+    @Mock
     private TokenResponse tokenResponse;
 
     @Mock
@@ -151,7 +170,9 @@ public class OIDCAuthenticatorImplTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        when(serviceConfig.getProperty(anyString())).thenReturn("dummyvalue");
+        when(serviceConfig.getProperty("auth-server-url")).thenReturn("https://keycloak-server.com/auth");
+        when(serviceConfig.getProperty("realm")).thenReturn("realmId");
+        when(serviceConfig.getProperty("resource")).thenReturn("clientId");
 
         when(serviceWrapper.getAuthorizationService()).thenReturn(authorizationService);
         when(serviceWrapper.getAuthState()).thenReturn(authState);
@@ -162,6 +183,8 @@ public class OIDCAuthenticatorImplTest {
         when(intent.hasExtra(EXTRA_RESPONSE)).thenReturn(true);
 
         when(authState.jsonSerializeString()).thenReturn(AUTH_STATE);
+
+        when(keycloakConfiguration.getLogoutUrl("test-identity-token", "some.redirect.uri:/callback")).thenReturn(logoutURL);
 
         doAnswer(invocation -> {
             ((AuthorizationService.TokenResponseCallback)invocation.getArguments()[1]).onTokenRequestCompleted(tokenResponse, null);
@@ -183,6 +206,12 @@ public class OIDCAuthenticatorImplTest {
             ((Callback<JsonWebKeySet>)invocation.getArguments()[1]).onSuccess(null);
             return null;
         }).when(jwksManager).fetchJwks(any(), any(Callback.class));
+
+        userPrincipalImpl = UserPrincipalImpl.
+            newUser()
+            .withUsername("test-user")
+            .withIdentityToken(identityToken)
+            .build();
     }
 
     @Test
@@ -203,6 +232,22 @@ public class OIDCAuthenticatorImplTest {
         });
 
         authenticator.handleAuthResult(intent);
+    }
+
+    @Test
+    public void testLogout() {
+        authenticator.logout(userPrincipalImpl, new Callback<UserPrincipal>() {
+            @Override
+            public void onSuccess(UserPrincipal userPrincipal) {
+                Assert.assertEquals(null, authStateManager.load());
+            }
+
+            @Override
+            public void onError(Throwable error) {
+                Assert.assertNotNull(authStateManager.load());
+                Assert.fail("Error received " + error);
+            }
+        });
     }
 
 }
