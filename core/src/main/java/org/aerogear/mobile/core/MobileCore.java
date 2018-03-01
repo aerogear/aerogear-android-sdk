@@ -21,6 +21,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
 
 import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
@@ -32,6 +35,9 @@ public final class MobileCore {
     public static final String DEFAULT_CONFIG_FILE_NAME = "mobile-services.json";
 
     private static final String TAG = "AEROGEAR/CORE";
+    private static final int DEFAULT_READ_TIMEOUT = 30;
+    private static final int DEFAULT_CONNECT_TIMEOUT = 10;
+    private static final int DEFAULT_WRITE_TIMEOUT = 10;
     private static Logger logger = new LoggerAdapter();
     private static String appVersion;
 
@@ -68,7 +74,11 @@ public final class MobileCore {
 
         // -- Setting default http layer
         if (options.httpServiceModule == null) {
-            final OkHttpServiceModule httpServiceModule = new OkHttpServiceModule();
+            OkHttpClient.Builder builder = new OkHttpClient.Builder();
+            builder.connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
+                .writeTimeout(DEFAULT_WRITE_TIMEOUT, TimeUnit.SECONDS)
+                .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS);
+            final OkHttpServiceModule httpServiceModule = new OkHttpServiceModule(builder.build());
 
             ServiceConfiguration configuration = this.servicesConfig.get(httpServiceModule.type());
             if (configuration == null) {
