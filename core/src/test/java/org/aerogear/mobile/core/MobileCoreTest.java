@@ -1,8 +1,10 @@
 package org.aerogear.mobile.core;
 
 import android.app.Application;
+import android.content.res.AssetManager;
 import android.support.test.filters.SmallTest;
 
+import org.aerogear.mobile.core.configuration.MobileCoreJsonParser;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.exception.ConfigurationNotFoundException;
 import org.aerogear.mobile.core.exception.InitializationException;
@@ -13,25 +15,47 @@ import org.aerogear.mobile.core.http.OkHttpServiceModule;
 import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.logging.LoggerAdapter;
 import org.aerogear.mobile.core.metrics.MetricsService;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 @RunWith(RobolectricTestRunner.class)
 @SmallTest
 public class MobileCoreTest {
 
-    @Test
-    public void testInit() {
+    private static final String DUMMY_MOBILE_SERVICES_JSON = "dummy-mobile-services.json";
+    private static final String EMPTY_MOBILE_SERVICES_JSON = "empty-mobile-services.json";
+
+    private MobileCore core;
+    private MobileCore dummyCore;
+
+    @Before
+    public void setUp() throws Exception {
         Application context = RuntimeEnvironment.application;
 
-        MobileCore core = MobileCore.init(context);
+        core = MobileCore.init(context);
 
+        MobileCore.Options options = new MobileCore.Options();
+        options.setConfigFileName(DUMMY_MOBILE_SERVICES_JSON);
+        dummyCore = MobileCore.init(context, options);
+    }
+
+    @Test
+    public void testInit() {
         // -- Http
         assertEquals(OkHttpServiceModule.class, core.getHttpLayer().getClass());
 
@@ -40,6 +64,21 @@ public class MobileCoreTest {
 
         // -- Metrics
         assertEquals(MetricsService.class, core.getInstance(MetricsService.class).getClass());
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testInitWithNullContext() throws Exception {
+        MobileCore.init(null);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testInitWithNullOptions() throws Exception {
+        MobileCore.init(null, null);
+    }
+
+    @Test
+    public void testDefaultConfigFile() throws Exception {
+        assertEquals(MobileCore.DEFAULT_CONFIG_FILE_NAME, core.getConfigFileName());
     }
 
     @Test
@@ -54,15 +93,9 @@ public class MobileCoreTest {
         assertEquals(DummyHttpServiceModule.class, core.getHttpLayer().getClass());
     }
 
-    @Test()
+    @Test
     public void testInitWithDifferentConfigFile() {
-        Application context = RuntimeEnvironment.application;
-
-        MobileCore.Options options = new MobileCore.Options();
-        options.setConfigFileName("dummy-mobile-services.json");
-
-        MobileCore core = MobileCore.init(context, options);
-        DummyHttpServiceModule service = core.getInstance(DummyHttpServiceModule.class);
+        DummyHttpServiceModule service = dummyCore.getInstance(DummyHttpServiceModule.class);
 
         assertEquals("http://dummy.net", service.getUrl());
     }
@@ -80,7 +113,7 @@ public class MobileCoreTest {
     }
 
     @Test(expected = InitializationException.class)
-    public void testInitWithWrongConfigFile() {
+    public void testInitWithNonExistentConfigFile() {
         Application context = RuntimeEnvironment.application;
 
         MobileCore.Options options = new MobileCore.Options();
@@ -89,42 +122,42 @@ public class MobileCoreTest {
         MobileCore.init(context, options);
     }
 
+    @Test
+    public void testConfigurationNotRequiredDoesNotThrowException() {
+        core.getInstance(DummyServiceModule.class);
+    }
 
     @Test(expected = ConfigurationNotFoundException.class)
-    public void testConfigurationNotFoundException() {
+    public void testUnregisteredServiceThrowsException() {
         Application context = RuntimeEnvironment.application;
 
-        MobileCore core = MobileCore.init(context);
-        DummyHttpServiceModule service = core.getInstance(DummyHttpServiceModule.class);
+        MobileCore.Options options = new MobileCore.Options();
+        options.setConfigFileName(EMPTY_MOBILE_SERVICES_JSON);
+        MobileCore emptyCore = MobileCore.init(context, options);
 
-        assertNotNull(service);
+        emptyCore.getInstance(DummyHttpServiceModule.class);
+    }
+
+    @Test
+    public void testInitDoesNotThrowIfMetricsNotRegistered() throws Exception {
+        Application context = RuntimeEnvironment.application;
+
+        MobileCore.Options options = new MobileCore.Options();
+        options.setConfigFileName(EMPTY_MOBILE_SERVICES_JSON);
+        MobileCore.init(context, options);
     }
 
     @Test
     public void testGetInstance() {
-        Application context = RuntimeEnvironment.application;
-
-        MobileCore.Options options = new MobileCore.Options();
-        options.setConfigFileName("dummy-mobile-services.json");
-
-        MobileCore core = MobileCore.init(context, options);
-        DummyHttpServiceModule service = core.getInstance(DummyHttpServiceModule.class);
+        DummyHttpServiceModule service = dummyCore.getInstance(DummyHttpServiceModule.class);
 
         assertNotNull(service);
     }
 
     @Test
     public void testGetCachedInstance() {
-        Application context = RuntimeEnvironment.application;
-
-        MobileCore.Options options = new MobileCore.Options();
-        options.setConfigFileName("dummy-mobile-services.json");
-
-        MobileCore core = MobileCore.init(context, options);
-
-        DummyHttpServiceModule service1 = core.getInstance(DummyHttpServiceModule.class);
-
-        DummyHttpServiceModule service2 = core.getInstance(DummyHttpServiceModule.class);
+        DummyHttpServiceModule service1 = dummyCore.getInstance(DummyHttpServiceModule.class);
+        DummyHttpServiceModule service2 = dummyCore.getInstance(DummyHttpServiceModule.class);
 
         assertNotNull(service1);
         assertNotNull(service2);
@@ -132,17 +165,56 @@ public class MobileCoreTest {
     }
 
     @Test
-    public void testGetServiceConfiguration() {
-        Application context = RuntimeEnvironment.application;
+    public void testAllServicesAreDestroyed() throws Exception {
+        DummyServiceModule service1 = dummyCore.getInstance(DummyServiceModule.class);
+        DummyServiceModule service2 = dummyCore.getInstance(DummyServiceModule.class);
 
-        MobileCore core = MobileCore.init(context);
+        Assert.assertFalse(service1.isDestroyed());
+        Assert.assertFalse(service2.isDestroyed());
+
+        dummyCore.destroy();
+
+        Assert.assertTrue(service1.isDestroyed());
+        Assert.assertTrue(service2.isDestroyed());
+    }
+
+    @Test
+    public void testGetServiceConfiguration() {
         ServiceConfiguration serviceConfiguration = core.getServiceConfiguration("keycloak");
 
-        String s = "https://www.mocky.io/v2/5a6b59fb31000088191b8ac6";
-        assertEquals(s, serviceConfiguration.getUrl());
+        String url = "https://www.mocky.io/v2/5a6b59fb31000088191b8ac6";
+        assertEquals(url, serviceConfiguration.getUrl());
     }
 
     // -- Helpers ---------------------------------------------------------------------------------
+
+    public static final class DummyServiceModule implements ServiceModule {
+
+        private boolean destroyed = false;
+
+        @Override
+        public String type() {
+            return "null";
+        }
+
+        @Override
+        public void configure(MobileCore core, ServiceConfiguration serviceConfiguration) {
+        }
+
+        @Override
+        public boolean requiresConfiguration() {
+            return false;
+        }
+
+        @Override
+        public void destroy() {
+            destroyed = true;
+        }
+
+        public boolean isDestroyed() {
+            return destroyed;
+        }
+    }
 
     public static final class DummyHttpServiceModule implements HttpServiceModule {
 

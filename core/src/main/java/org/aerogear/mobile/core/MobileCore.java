@@ -3,6 +3,7 @@ package org.aerogear.mobile.core;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
 import org.aerogear.android.core.BuildConfig;
 import org.aerogear.mobile.core.configuration.MobileCoreJsonParser;
@@ -27,6 +28,8 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
  * MobileCore is the entry point into AeroGear mobile services
  */
 public final class MobileCore {
+
+    public static final String DEFAULT_CONFIG_FILE_NAME = "mobile-services.json";
 
     private static final String TAG = "AEROGEAR/CORE";
     private static Logger logger = new LoggerAdapter();
@@ -197,6 +200,11 @@ public final class MobileCore {
         return logger;
     }
 
+    @VisibleForTesting()
+    public String getConfigFileName() {
+        return configFileName;
+    }
+
     /**
      * Get the version name of the SDK itself
      *
@@ -215,19 +223,15 @@ public final class MobileCore {
         return appVersion;
     }
 
+    @SuppressWarnings({"UnusedReturnValue", "WeakerAccess"})
     public static final class Options {
 
-        private String configFileName = "mobile-services.json";
+        private String configFileName = DEFAULT_CONFIG_FILE_NAME;
         // Don't have a default implementation because it should use configuration
         private HttpServiceModule httpServiceModule;
         private Logger logger = new LoggerAdapter();
 
         public Options() {
-        }
-
-        public Options(@NonNull final String configFileName, @NonNull final HttpServiceModule httpServiceModule) {
-            this.configFileName = nonNull(configFileName, "configFileName");
-            this.httpServiceModule = nonNull(httpServiceModule, "httpServiceModule");
         }
 
         public Options setConfigFileName(@NonNull final String configFileName) {
