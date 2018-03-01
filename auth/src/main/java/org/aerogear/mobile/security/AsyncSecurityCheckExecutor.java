@@ -45,7 +45,7 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<As
         }
 
         /**
-         * A custom {@link ExecutorService} singleThreadService for this SecurityCheckExecutor.
+         * A custom {@link ExecutorService} for this SecurityCheckExecutor.
          *
          * @param executorService the {@link ExecutorService} to be used. Defaults to {@link AppExecutors#singleThreadService()} if null
          * @return this

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.metrics.MetricsService;
 
 import java.util.Collection;
@@ -31,7 +30,7 @@ abstract class AbstractSecurityCheckExecutor<T extends AbstractSecurityCheckExec
      *
      * @param context {@link Context} to be used by the security checks
      * @param checks  {@link Collection} of {@link SecurityCheck} to be executed
-     * @param metricService {@link MetricsService} is a {@link AppExecutors#singleThreadService()}, to be used to publish metrics. If null, no metrics get published
+     * @param metricService {@link MetricsService} to be used to publish metrics. If null, no metrics get published
      * @throws IllegalArgumentException if context is null
      */
     public AbstractSecurityCheckExecutor(@NonNull final Context context,
