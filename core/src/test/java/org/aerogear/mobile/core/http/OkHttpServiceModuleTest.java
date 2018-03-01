@@ -4,14 +4,11 @@ import android.support.test.filters.SmallTest;
 
 import junit.framework.Assert;
 
-import org.aerogear.mobile.core.http.HttpRequest;
-import org.aerogear.mobile.core.http.HttpResponse;
-import org.aerogear.mobile.core.http.HttpServiceModule;
-import org.aerogear.mobile.core.http.OkHttpServiceModule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
+import static junit.framework.Assert.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -56,8 +53,7 @@ public class OkHttpServiceModuleTest {
         assertNotNull(response);
 
         response.onComplete(() -> {
-            // The complete handler must not be called here
-            Assert.fail("The complete handler must not be called here");
+            fail("The complete handler must not be called here");
         });
 
         response.onError(() -> {
@@ -66,5 +62,4 @@ public class OkHttpServiceModuleTest {
 
         response.waitForCompletionAndClose();
     }
-
 }

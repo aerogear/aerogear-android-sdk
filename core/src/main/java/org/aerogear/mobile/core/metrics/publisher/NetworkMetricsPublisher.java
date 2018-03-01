@@ -11,7 +11,6 @@ import org.aerogear.mobile.core.utils.ClientIdGenerator;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import static java.net.HttpURLConnection.HTTP_OK;
 import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 /**
