@@ -50,6 +50,7 @@ public enum SecurityCheckType {
     ALLOW_BACKUP_ENABLED(new AllowBackupFlagCheck()),
     /**
      * Detect whether a devices filesystem is encrypted.
+     * See {@link EncryptionCheck}
      */
     HAS_ENCRYPTION_ENABLED(new EncryptionCheck());
 
