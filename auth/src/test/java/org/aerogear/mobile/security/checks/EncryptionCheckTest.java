@@ -3,7 +3,6 @@ package org.aerogear.mobile.security.checks;
 import android.app.admin.DeviceAdminInfo;
 import android.app.admin.DevicePolicyManager;
 import android.content.Context;
-import android.test.mock.MockContentResolver;
 
 import org.aerogear.mobile.security.SecurityCheckResult;
 import org.junit.Before;
@@ -12,13 +11,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.robolectric.RuntimeEnvironment.application;
 
 @RunWith(RobolectricTestRunner.class)
 public class EncryptionCheckTest {
@@ -28,9 +24,6 @@ public class EncryptionCheckTest {
 
     @Mock
     DevicePolicyManager devicePolicyManager;
-
-    @Mock
-    DeviceAdminInfo deviceAdminInfo;
 
     EncryptionCheck check;
 
