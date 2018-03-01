@@ -199,4 +199,11 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
             throw new IllegalArgumentException("Could not parse logout url");
         }
     }
+
+    /**
+     * Delete the the current tokens/authentication state.
+     */
+    public void deleteTokens() {
+        authStateManager.clear();
+    }
 }

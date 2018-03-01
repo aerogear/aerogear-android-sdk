@@ -141,6 +141,14 @@ public class AuthService implements ServiceModule {
     }
 
     /**
+     * Delete the the current tokens/authentication state.
+     */
+    public void deleteTokens() {
+        failIfNotReady();
+        oidcAuthenticatorImpl.deleteTokens();
+    }
+
+    /**
      * This function should be called in the start activity's "onActivityResult" method to allow the SDK to process the response from the authentication server.
      * @param data The intent data that is passed to "onActivityResult"
      */
