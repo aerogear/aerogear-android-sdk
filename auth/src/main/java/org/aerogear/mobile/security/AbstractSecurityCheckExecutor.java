@@ -31,8 +31,8 @@ abstract class AbstractSecurityCheckExecutor<T extends AbstractSecurityCheckExec
      *
      * @param context {@link Context} to be used by the security checks
      * @param checks  {@link Collection} of {@link SecurityCheck} to be executed
-     * @param metricService {@link MetricsService}, which should be a {@link AppExecutors#singleThreadService()}, to be used to publish metrics. If null, no metrics get published
-     * @throws IllegalArgumentException if context or checks are null
+     * @param metricService {@link MetricsService} is a {@link AppExecutors#singleThreadService()}, to be used to publish metrics. If null, no metrics get published
+     * @throws IllegalArgumentException if context is null
      */
     public AbstractSecurityCheckExecutor(@NonNull final Context context,
                                          @NonNull final Collection<SecurityCheck> checks,

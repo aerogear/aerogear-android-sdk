@@ -123,7 +123,6 @@ public class SecurityCheckExecutor {
          *
          * @param ctx {@link Context} to be used by the security checks
          * @return {@link AsyncSecurityCheckExecutor.Builder}
-         * @throws IllegalArgumentException if ctx is null
          */
         private AsyncSecurityCheckExecutor.Builder newAsyncBuilder(@NonNull final Context ctx) {
             return new AsyncSecurityCheckExecutor.Builder(ctx);
@@ -134,7 +133,6 @@ public class SecurityCheckExecutor {
          *
          * @param ctx {@link Context} to be used by the security checks
          * @return {@link SyncSecurityCheckExecutor.Builder}
-         * @throws IllegalArgumentException if ctx is null
          */
         private SyncSecurityCheckExecutor.Builder newSyncBuilder(@NonNull final Context ctx) {
             return new SyncSecurityCheckExecutor.Builder(ctx);
@@ -145,7 +143,6 @@ public class SecurityCheckExecutor {
          *
          * @param ctx {@link Context} to be used by the security checks
          * @return {@link AsyncSecurityCheckExecutor.Builder}
-         * @throws IllegalArgumentException if ctx is null
          */
         public static AsyncSecurityCheckExecutor.Builder newAsyncExecutor(@NonNull final Context ctx) {
             return new Builder().newAsyncBuilder(ctx);
@@ -156,7 +153,6 @@ public class SecurityCheckExecutor {
          *
          * @param ctx {@link Context} to be used by the security checks
          * @return {@link SyncSecurityCheckExecutor.Builder}
-         * @throws IllegalArgumentException if ctx is null
          */
         public static SyncSecurityCheckExecutor.Builder newSyncExecutor(@NonNull final Context ctx) {
             return new Builder().newSyncBuilder(ctx);

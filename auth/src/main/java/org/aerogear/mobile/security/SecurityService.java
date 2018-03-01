@@ -12,10 +12,14 @@ import org.aerogear.mobile.security.metrics.SecurityCheckResultMetric;
 import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 /**
- * Service for running security checks in an application
+ * Service for running security checks in an application.
  *
- * Checks can be run individually using {@link #check(SecurityCheckType)} , or can be chained
- * together using an {@link SyncSecurityCheckExecutor} by using {@link #getCheckExecutor()}
+ * Security checks can be run individually using {@link #check(SecurityCheckType)}.
+ * Security checks can also be chained together to execute security checks synchronously or asynchronously.
+ * Invoking {@link #getCheckExecutor()} will return a {@link SyncSecurityCheckExecutor} where security checks
+ * can be executed synchronously.
+ * Invoking {@link #getAsyncCheckExecutor()} will return {@link AsyncSecurityCheckExecutor} where security checks
+ * can be executed asynchronously.
  */
 public class SecurityService implements ServiceModule {
 
@@ -119,10 +123,11 @@ public class SecurityService implements ServiceModule {
      * @param securityCheck The {@link SecurityCheck} to execute
      * @param metricsService {@link MetricsService}
      * @return {@link SecurityCheckResult}
+     * @throws IllegalArgumentException if metricsService is null
      */
-    public SecurityCheckResult checkAndSendMetric(final SecurityCheck securityCheck, final MetricsService metricsService) {
+    public SecurityCheckResult checkAndSendMetric(final SecurityCheck securityCheck, @NonNull final MetricsService metricsService) {
         SecurityCheckResult result = check(securityCheck);
-        metricsService.publish(new SecurityCheckResultMetric(result));
+        nonNull(metricsService, "metricsService").publish(new SecurityCheckResultMetric(result));
         return result;
     }
 }

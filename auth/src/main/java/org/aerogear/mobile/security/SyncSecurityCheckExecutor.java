@@ -50,7 +50,6 @@ public class SyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<Syn
      * @param context the {@link Context} to be used by security checks
      * @param checks the {@link Collection} of security checks to be tested
      * @param metricsService {@link MetricsService}. Can be null
-     * @throws IllegalArgumentException if context is null
      */
     SyncSecurityCheckExecutor(@NonNull final Context context,
                               @NonNull final Collection<SecurityCheck> checks,

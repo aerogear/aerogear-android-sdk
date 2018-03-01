@@ -39,16 +39,15 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<As
          * Creates a Builder object.
          *
          * @param ctx {@link Context} to be used by security checks
-         * @throws IllegalArgumentException if ctx is null
          */
         Builder(final Context ctx) {
             super(ctx);
         }
 
         /**
-         * Specify a custom execution singleThreadService for this SecurityCheckExecutor.
+         * A custom {@link ExecutorService} singleThreadService for this SecurityCheckExecutor.
          *
-         * @param executorService {@link AppExecutors#singleThreadService()} to be used. Can be null
+         * @param executorService the {@link ExecutorService} to be used. Defaults to {@link AppExecutors#singleThreadService()} if null
          * @return this
          */
         public Builder withExecutorService(@Nullable final ExecutorService executorService) {
@@ -79,7 +78,6 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<As
      * @param executorService the custom {@link ExecutorService}
      * @param checks the {@link Collection<SecurityCheck>} of security checks to be tested
      * @param metricsService {@link MetricsService}. Can be null
-     * @throws IllegalArgumentException if context or executorService are null
      */
     AsyncSecurityCheckExecutor(@NonNull final Context context,
                                @NonNull final ExecutorService executorService,
