@@ -11,7 +11,6 @@ import org.aerogear.mobile.core.utils.ClientIdGenerator;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import static java.net.HttpURLConnection.HTTP_OK;
 import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 /**
@@ -53,13 +52,11 @@ public class NetworkMetricsPublisher implements MetricsPublisher {
             MobileCore.getLogger().debug("Sending metrics");
 
             final HttpResponse httpResponse = httpRequest.execute();
-            httpResponse.onComplete(() -> {
-                if (httpResponse.getStatus() == HTTP_OK) {
-                    MobileCore.getLogger().debug("Metrics sent: " + json.toString());
-                } else {
-                    MobileCore.getLogger().error(httpResponse.getRequestError().getMessage(),
-                        httpResponse.getRequestError());
-                }
+            httpResponse.onSuccess(() -> {
+                MobileCore.getLogger().debug("Metrics sent: " + json.toString());
+            }).onError(() -> {
+                MobileCore.getLogger().error("Metrics request error",
+                    httpResponse.getError());
             });
 
         } catch (JSONException e) {

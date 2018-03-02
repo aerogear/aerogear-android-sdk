@@ -253,6 +253,12 @@ public class MobileCoreTest {
                         }
 
                         @Override
+                        public HttpResponse onError(Runnable runnable) { return this; }
+
+                        @Override
+                        public HttpResponse onSuccess(Runnable runnable) { return this; }
+
+                        @Override
                         public int getStatus() {
                             return HTTP_OK;
                         }
@@ -267,12 +273,7 @@ public class MobileCoreTest {
                         }
 
                         @Override
-                        public boolean requestFailed() {
-                            return false;
-                        }
-
-                        @Override
-                        public Exception getRequestError() {
+                        public Exception getError() {
                             return null;
                         }
                     };

@@ -9,7 +9,9 @@ package org.aerogear.mobile.core.http;
 public interface HttpResponse {
 
     /**
-     * Creates a callback to be called when the response is finished successfully.
+     * Creates a callback to be called when the response is finished (successful or unsuccessful).
+     * This will be called, even if success and error handlers are registered. onComplete will
+     * be called last.
      *
      * The response is delivered immediately if the request has already been finished.
      *
@@ -17,6 +19,27 @@ public interface HttpResponse {
      * @return the instance of the HttpResponse for API chaining
      */
     HttpResponse onComplete(Runnable runnable);
+
+    /**
+     * Creates a callback to be called when the request has failed.
+     *
+     * This will be triggered when the request could not be sent or no response can be
+     * received.
+     *
+     * @param runnable a callback method
+     * @return the instance of the HttpResponse for API chaining
+     */
+    HttpResponse onError(Runnable runnable);
+
+    /**
+     * Creates a callback to be called when the request has succeeded.
+     *
+     * This will be triggered when the request succeeded and received a non-error status code.
+     *
+     * @param runnable a callback method
+     * @return the instance of the HttpResponse for API chaining
+     */
+    HttpResponse onSuccess(Runnable runnable);
 
     /**
      * Returns the HTTP status code of the response.
@@ -39,16 +62,8 @@ public interface HttpResponse {
     String stringBody();
 
     /**
-     * Returns true if the requests failed. Use getStatus to identify
-     * the reason
-     *
-     * @return true if request failed
-     */
-    boolean requestFailed();
-
-    /**
      * Returns the request error if it failed
      * @return Exception request error or null
      */
-    Exception getRequestError();
+    Exception getError();
 }

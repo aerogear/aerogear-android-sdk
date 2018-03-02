@@ -15,7 +15,9 @@ class OkHttpResponse implements HttpResponse {
     private final CountDownLatch requestCompleteLatch = new CountDownLatch(1);
     private Response response;
     private Runnable completionHandler;
-    private Exception requestError;
+    private Runnable errorHandler;
+    private Runnable successHandler;
+    private Exception error;
     private boolean closed = false;
 
     public OkHttpResponse(final Call okHttpCall, AppExecutors appExecutors) {
@@ -23,12 +25,18 @@ class OkHttpResponse implements HttpResponse {
             try {
                 response = okHttpCall.execute();
                 requestCompleteLatch.countDown();
-                if (completionHandler != null) {
-                    runCompletionHandler();
+
+                if (!response.isSuccessful()) {
+                    throw new InvalidResponseException(response.code());
+                } else {
+                    runSuccessHandler();
                 }
-            } catch (IOException e) {
-                requestError = e;
+            } catch (IOException | InvalidResponseException e) {
+                error = e;
                 requestCompleteLatch.countDown();
+                runErrorHandler();
+            } finally {
+                runCompletionHandler();
             }
         });
     }
@@ -46,11 +54,43 @@ class OkHttpResponse implements HttpResponse {
         }
     }
 
+    private synchronized void runErrorHandler() {
+        if (errorHandler != null) {
+            errorHandler.run();
+            errorHandler = null;
+        }
+    }
+
+    private synchronized  void runSuccessHandler() {
+        if (successHandler != null) {
+            successHandler.run();
+            successHandler = null;
+        }
+    }
+
     @Override
     public HttpResponse onComplete(Runnable completionHandler) {
         this.completionHandler = completionHandler;
         if (response != null) {
             runCompletionHandler();
+        }
+        return this;
+    }
+
+    @Override
+    public HttpResponse onError(Runnable errorHandler) {
+        this.errorHandler = errorHandler;
+        if (response != null && !response.isSuccessful()) {
+            runErrorHandler();
+        }
+        return this;
+    }
+
+    @Override
+    public HttpResponse onSuccess(Runnable successHandler) {
+        this.successHandler = successHandler;
+        if (response != null && response.isSuccessful()) {
+            runSuccessHandler();
         }
         return this;
     }
@@ -64,25 +104,30 @@ class OkHttpResponse implements HttpResponse {
     public void waitForCompletionAndClose() {
         try {
             requestCompleteLatch.await(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
-            //If a completion Handler was set before this wait then we need to make sure that
-            // gets called before we free these resources.
-            if (completionHandler != null) {
-                runCompletionHandler();
+            //If a success Handler was set before this wait then we need to make
+            // sure that gets called before we free these resources.
+            if (error == null) {
+                runSuccessHandler();
+            } else {
+                runErrorHandler();
             }
         } catch (InterruptedException interruptedException) {
             /*If we have an error the work of the thread is already done and the thread was exiting
               anyway.  If we don't have en error then the thread may have exited improperly and
               the calling code should be able to inspect it.
             */
-            if (requestError != null) {
-                requestError = interruptedException;
+            if (error != null) {
+                error = interruptedException;
             }
         } finally {
             if (response != null && !closed) {
-
                 closed = true;
                 response.close();
             }
+
+            // Run the completion handler last so that even if an exception occurs
+            // the response will be closed
+            runCompletionHandler();
         }
     }
 
@@ -106,14 +151,7 @@ class OkHttpResponse implements HttpResponse {
     }
 
     @Override
-    public boolean requestFailed() {
-        return this.requestError != null;
+    public Exception getError() {
+        return this.error;
     }
-
-    @Override
-    public Exception getRequestError() {
-        return this.requestError;
-    }
-
-
 }
