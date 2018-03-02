@@ -84,17 +84,6 @@
                 android:textColor="@color/green" />
 
             <RadioButton
-                android:id="@+id/hookingDetected"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="10dp"
-                android:button="@drawable/ic_hooking"
-                android:buttonTint="@color/primary_dark"
-                android:padding="15dp"
-                android:text="@string/hooking_detected_negative"
-                android:textColor="@color/green" />
-
-            <RadioButton
                 android:id="@+id/lockScreenSetup"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -125,17 +114,6 @@
                 android:buttonTint="@color/primary_dark"
                 android:padding="15dp"
                 android:text="@string/device_encrypted_positive"
-                android:textColor="@color/green" />
-
-            <RadioButton
-                android:id="@+id/deviceOS"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="10dp"
-                android:button="@drawable/ic_device_os"
-                android:buttonTint="@color/primary_dark"
-                android:padding="15dp"
-                android:text="@string/device_os_latest_positive"
                 android:textColor="@color/green" />
 
             <RadioButton

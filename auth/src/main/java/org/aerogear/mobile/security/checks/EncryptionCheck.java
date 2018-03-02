@@ -16,7 +16,7 @@ public class EncryptionCheck extends AbstractSecurityCheck{
      * @return <code>true</code> if the encryption have been enabled on the device.
      */
     @Override
-    protected boolean execute(@NonNull Context context) {
+    protected boolean execute(@NonNull final Context context) {
         final DevicePolicyManager policyManager = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
         return policyManager != null && policyManager.getStorageEncryptionStatus() == DevicePolicyManager.ENCRYPTION_STATUS_ACTIVE;
     }

@@ -49,17 +49,11 @@ public class SecurityServiceFragment extends BaseFragment {
     @BindView(R.id.debuggerAccess)
     RadioButton debuggerAccess;
 
-    @BindView(R.id.hookingDetected)
-    RadioButton hookingDetected;
-
     @BindView(R.id.allowBackup)
     RadioButton allowBackup;
 
     @BindView(R.id.deviceEncrypted)
     RadioButton deviceEncrypted;
-
-    @BindView(R.id.deviceOS)
-    RadioButton deviceOS;
 
     @BindView(R.id.developerOptions)
     RadioButton developerOptions;
@@ -101,7 +95,6 @@ public class SecurityServiceFragment extends BaseFragment {
         detectDeviceLock(results);
         debuggerDetected(results);
         detectEmulator(results);
-        detectHookingFramework(results);
         detectBackupEnabled(results);
         detectDeviceEncryptionStatus(results);
         detectDeveloperOptions(results);
@@ -155,14 +148,6 @@ public class SecurityServiceFragment extends BaseFragment {
     }
 
     /**
-     * Detect if a hooking framework application is installed on the device
-     */
-    public void detectHookingFramework(Map<String, SecurityCheckResult> results) {
-        totalTests++;
-        //TODO: add check
-    }
-
-    /**
      * Function to check if the backup flag is enabled in the application manifest file
      */
     public void detectBackupEnabled(Map<String, SecurityCheckResult> results) {
@@ -179,8 +164,8 @@ public class SecurityServiceFragment extends BaseFragment {
     public void detectDeviceEncryptionStatus(Map<String, SecurityCheckResult> results) {
         totalTests++;
         SecurityCheckResult result = securityService.check(SecurityCheckType.HAS_ENCRYPTION_ENABLED);
-        if (result.passed()){
-            setDetected(deviceEncrypted, R.string.device_encrypted_positive);
+        if (!result.passed()) {
+            setDetected(deviceEncrypted, R.string.device_encrypted_negative);
         }
     }
 
