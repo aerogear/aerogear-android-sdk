@@ -25,13 +25,8 @@ class OkHttpResponse implements HttpResponse {
             try {
                 response = okHttpCall.execute();
                 requestCompleteLatch.countDown();
-
-                if (!response.isSuccessful()) {
-                    throw new InvalidResponseException(response.code());
-                } else {
-                    runSuccessHandler();
-                }
-            } catch (IOException | InvalidResponseException e) {
+                runSuccessHandler();
+            } catch (IOException e) {
                 error = e;
                 requestCompleteLatch.countDown();
                 runErrorHandler();
@@ -80,7 +75,8 @@ class OkHttpResponse implements HttpResponse {
     @Override
     public HttpResponse onError(Runnable errorHandler) {
         this.errorHandler = errorHandler;
-        if (response != null && !response.isSuccessful()) {
+        // An exception occurred during the request
+        if (error != null) {
             runErrorHandler();
         }
         return this;
@@ -89,7 +85,8 @@ class OkHttpResponse implements HttpResponse {
     @Override
     public HttpResponse onSuccess(Runnable successHandler) {
         this.successHandler = successHandler;
-        if (response != null && response.isSuccessful()) {
+        // If there is _any_ response the success handler should run
+        if (response != null) {
             runSuccessHandler();
         }
         return this;
