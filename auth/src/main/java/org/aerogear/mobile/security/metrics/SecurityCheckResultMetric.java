@@ -6,9 +6,11 @@ import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.metrics.Metrics;
 import org.aerogear.mobile.security.SecurityCheckResult;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -17,10 +19,13 @@ import java.util.Map;
  */
 public class SecurityCheckResultMetric implements Metrics {
 
-    private final String identifier = "security";
-    private final JSONObject data;
+    private final JSONArray data;
     private final Logger LOG = MobileCore.getLogger();
     private final String TAG = "SecurityCheckResultMetric";
+
+    public static final String IDENTIFIER = "security";
+    public static final String KEY_TYPE = "type";
+    public static final String KEY_VALUE = "passed";
 
     /**
      * Creates a SecurityCheckResultMetric object.
@@ -30,7 +35,7 @@ public class SecurityCheckResultMetric implements Metrics {
      *
      */
     public SecurityCheckResultMetric(@NonNull final Iterable<SecurityCheckResult> results) {
-        this.data = getDataFromResult(results.iterator().next());
+        this.data = getDataFromResult(results);
     }
 
     /**
@@ -41,7 +46,7 @@ public class SecurityCheckResultMetric implements Metrics {
      *
      */
     public SecurityCheckResultMetric(@NonNull final SecurityCheckResult... results) {
-        this.data = getDataFromResult(results[0]);
+        this.data = getDataFromResult(Arrays.asList(results));
     }
 
     /**
@@ -51,7 +56,7 @@ public class SecurityCheckResultMetric implements Metrics {
      */
     @Override
     public String identifier() {
-        return identifier;
+        return IDENTIFIER;
     }
 
     /**
@@ -61,7 +66,7 @@ public class SecurityCheckResultMetric implements Metrics {
      * the value is <code>true</code> if the check result passed
      */
     @Override
-    public JSONObject data() {
+    public JSONArray data() {
         // TODO: consider returning a deep clone
         return data;
     }
@@ -69,17 +74,24 @@ public class SecurityCheckResultMetric implements Metrics {
     /**
      * Creates the data structure that stores whether or not the result passed or not.
      *
-     * @param result the {@link SecurityCheckResult} of the test executed
+     * @param results the {@link SecurityCheckResult} iterable of the test executed
      * @return {@link Map} data
      */
-    private JSONObject getDataFromResult(final SecurityCheckResult result) {
-        final JSONObject data = new JSONObject();
+    private JSONArray getDataFromResult(final Iterable<SecurityCheckResult> results) {
+        final JSONArray data = new JSONArray();
+
         try {
-            data.put("passed", result.passed());
+            for (SecurityCheckResult result: results) {
+                final JSONObject resultJson = new JSONObject();
+                resultJson.put(KEY_TYPE, result.getName());
+                resultJson.put(KEY_VALUE, result.passed());
+                data.put(resultJson);
+            }
         } catch (JSONException e) {
             // should never happen since we're building from scratch
             LOG.error(TAG,"Error building JSON from Self Defence Check result", e);
         }
+
         return data;
     }
 }
