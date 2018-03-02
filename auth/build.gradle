@@ -23,7 +23,10 @@ android {
     }
 
     testOptions {
-        unitTests.includeAndroidResources = true
+        unitTests {
+            includeAndroidResources = true
+            returnDefaultValues = true
+        }
     }
 }
 

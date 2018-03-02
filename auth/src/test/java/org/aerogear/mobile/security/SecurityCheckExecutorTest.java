@@ -2,6 +2,7 @@ package org.aerogear.mobile.security;
 
 import android.content.Context;
 
+import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.metrics.MetricsService;
 import org.aerogear.mobile.security.impl.SecurityCheckResultImpl;
 import org.junit.Before;
@@ -10,8 +11,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
@@ -103,6 +106,9 @@ public class SecurityCheckExecutorTest {
         assertTrue(results.containsKey(mockSecurityCheck.getName()));
         results.get(mockSecurityCheck.getName()).get();
 
-        verify(metricsService, times(1)).publish(any());
+        ExecutorService executorService = (new AppExecutors()).networkThread();
+        executorService.submit(() -> verify(metricsService, times(1)).publish(any()));
+        executorService.awaitTermination(1, TimeUnit.SECONDS);
+        executorService.shutdown();
     }
 }
