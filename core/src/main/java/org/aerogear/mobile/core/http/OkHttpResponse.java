@@ -26,7 +26,7 @@ class OkHttpResponse implements HttpResponse {
                 response = okHttpCall.execute();
                 requestCompleteLatch.countDown();
                 runSuccessHandler();
-            } catch (IOException | InvalidResponseException e) {
+            } catch (IOException e) {
                 error = e;
                 requestCompleteLatch.countDown();
                 runErrorHandler();
