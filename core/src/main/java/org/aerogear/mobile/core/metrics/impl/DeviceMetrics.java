@@ -3,6 +3,7 @@ package org.aerogear.mobile.core.metrics.impl;
 import android.content.Context;
 import android.os.Build;
 
+import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.metrics.Metrics;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,12 +30,12 @@ public class DeviceMetrics implements Metrics {
 
     @Override
     public JSONObject data() {
-        JSONObject data = new JSONObject();
+        final JSONObject data = new JSONObject();
         try {
             data.put("platform", platform);
             data.put("platformVersion", platformVersion);
         } catch (JSONException e) {
-            e.printStackTrace();
+            MobileCore.getLogger().error("Error building JSON for Device Metrics", e);
         }
         return data;
     }

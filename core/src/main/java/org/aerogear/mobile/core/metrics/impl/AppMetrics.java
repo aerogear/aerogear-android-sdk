@@ -48,7 +48,7 @@ public class AppMetrics implements Metrics {
         } catch (JSONException e) {
             MobileCore.getLogger().error("Error building JSON for App Metrics", e);
         }
-        return null;
+        return data;
     }
 
 }
