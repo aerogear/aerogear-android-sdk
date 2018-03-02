@@ -42,7 +42,7 @@ public class NetworkMetricsPublisher implements MetricsPublisher {
 
             final JSONObject data = new JSONObject();
             for (final Metrics m : metrics) {
-                data.put(m.identifier(), new JSONObject(m.data()));
+                data.put(m.identifier(), m.data());
             }
 
             json.put("data", data);

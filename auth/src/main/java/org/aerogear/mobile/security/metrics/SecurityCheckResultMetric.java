@@ -2,15 +2,13 @@ package org.aerogear.mobile.security.metrics;
 
 import android.support.annotation.NonNull;
 
+import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.metrics.Metrics;
 import org.aerogear.mobile.security.SecurityCheckResult;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
-
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 /**
  * Metric representation of {@link SecurityCheckResult}. This is intended to be used with the
@@ -19,7 +17,7 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 public class SecurityCheckResultMetric implements Metrics {
 
     private final String identifier = "security";
-    private final Map<String, String> data;
+    private final JSONObject data;
 
     /**
      * Creates a SecurityCheckResultMetric object.
@@ -60,8 +58,9 @@ public class SecurityCheckResultMetric implements Metrics {
      * the value is <code>true</code> if the check result passed
      */
     @Override
-    public Map<String, String> data() {
-        return Collections.unmodifiableMap(data);
+    public JSONObject data() {
+        // TODO: consider returning a deep clone
+        return data;
     }
 
     /**
@@ -70,9 +69,14 @@ public class SecurityCheckResultMetric implements Metrics {
      * @param result the {@link SecurityCheckResult} of the test executed
      * @return {@link Map} data
      */
-    private Map<String, String> getDataFromResult(final SecurityCheckResult result) {
-        final Map<String, String> data = new HashMap<>();
-        data.put("passed", String.valueOf(result.passed()));
+    private JSONObject getDataFromResult(final SecurityCheckResult result) {
+        final JSONObject data = new JSONObject();
+        try {
+            data.put("passed", result.passed());
+        } catch (JSONException e) {
+            // should never happen since we're building from scratch
+            MobileCore.getLogger().error("Error building JSON from Self Defence Check result", e);
+        }
         return data;
     }
 }

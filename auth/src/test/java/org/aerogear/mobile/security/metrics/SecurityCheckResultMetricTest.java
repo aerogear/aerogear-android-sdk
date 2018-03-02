@@ -3,6 +3,7 @@ package org.aerogear.mobile.security.metrics;
 import org.aerogear.mobile.security.SecurityCheck;
 import org.aerogear.mobile.security.SecurityCheckResult;
 import org.aerogear.mobile.security.impl.SecurityCheckResultImpl;
+import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,9 +29,9 @@ public class SecurityCheckResultMetricTest {
     }
 
     @Test
-    public void testConversion() {
+    public void testConversion() throws JSONException {
         SecurityCheckResultMetric metric = new SecurityCheckResultMetric(result);
         assertEquals(securityCheck.getName(), metric.identifier());
-        assertEquals(String.valueOf(RESULT_PASSED), metric.data().get("passed"));
+        assertEquals(RESULT_PASSED, metric.data().getBoolean("passed"));
     }
 }

@@ -4,9 +4,10 @@ import android.content.Context;
 import android.os.Build;
 
 import org.aerogear.mobile.core.metrics.Metrics;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Collects device metrics
@@ -27,10 +28,14 @@ public class DeviceMetrics implements Metrics {
     }
 
     @Override
-    public Map<String, String> data() {
-        Map<String, String> data = new HashMap<>();
-        data.put("platform", platform);
-        data.put("platformVersion", platformVersion);
+    public JSONObject data() {
+        JSONObject data = new JSONObject();
+        try {
+            data.put("platform", platform);
+            data.put("platformVersion", platformVersion);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         return data;
     }
 

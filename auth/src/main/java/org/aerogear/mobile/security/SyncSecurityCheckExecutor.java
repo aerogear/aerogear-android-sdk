@@ -11,8 +11,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
-
 /**
  * Synchronously executes provided {@link SecurityCheck}s.
  */

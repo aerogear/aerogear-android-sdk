@@ -4,6 +4,8 @@ import android.content.Context;
 
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.metrics.Metrics;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,12 +38,17 @@ public class AppMetrics implements Metrics {
      * @return Map of app info
      */
     @Override
-    public Map<String, String> data() {
-        Map<String, String> data = new HashMap<>();
-        data.put("appId", appId);
-        data.put("appVersion", appVersion);
-        data.put("sdkVersion", sdkVersion);
-        return data;
+    public JSONObject data() {
+        JSONObject data = new JSONObject();
+        try {
+            data.put("appId", appId);
+            data.put("appVersion", appVersion);
+            data.put("sdkVersion", sdkVersion);
+            return data;
+        } catch (JSONException e) {
+            MobileCore.getLogger().error("Error building JSON for App Metrics", e);
+        }
+        return null;
     }
 
 }

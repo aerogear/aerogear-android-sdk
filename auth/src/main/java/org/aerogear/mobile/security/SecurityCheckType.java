@@ -2,8 +2,8 @@ package org.aerogear.mobile.security;
 
 
 import org.aerogear.mobile.security.checks.AllowBackupFlagCheck;
-import org.aerogear.mobile.security.checks.DeveloperModeCheck;
 import org.aerogear.mobile.security.checks.DebuggerCheck;
+import org.aerogear.mobile.security.checks.DeveloperModeCheck;
 import org.aerogear.mobile.security.checks.EmulatorCheck;
 import org.aerogear.mobile.security.checks.EncryptionCheck;
 import org.aerogear.mobile.security.checks.RootedCheck;

@@ -1,11 +1,11 @@
 package org.aerogear.mobile.core.metrics;
 
-import java.util.Map;
+import org.json.JSONObject;
 
 public interface Metrics {
 
     String identifier();
 
-    Map<String, String> data();
+    JSONObject data();
 
 }

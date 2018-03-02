@@ -4,8 +4,8 @@ import android.net.Uri;
 
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 import static org.aerogear.mobile.core.utils.SanityCheck.nonEmpty;
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 /**
  * A class to represent the configuration options of the Keycloak singleThreadService
