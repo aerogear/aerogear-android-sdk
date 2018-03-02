@@ -3,6 +3,7 @@ package org.aerogear.mobile.security.metrics;
 import android.support.annotation.NonNull;
 
 import org.aerogear.mobile.core.MobileCore;
+import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.metrics.Metrics;
 import org.aerogear.mobile.security.SecurityCheckResult;
 import org.json.JSONException;
@@ -18,6 +19,8 @@ public class SecurityCheckResultMetric implements Metrics {
 
     private final String identifier = "security";
     private final JSONObject data;
+    private final Logger LOG = MobileCore.getLogger();
+    private final String TAG = "SecurityCheckResultMetric";
 
     /**
      * Creates a SecurityCheckResultMetric object.
@@ -75,7 +78,7 @@ public class SecurityCheckResultMetric implements Metrics {
             data.put("passed", result.passed());
         } catch (JSONException e) {
             // should never happen since we're building from scratch
-            MobileCore.getLogger().error("Error building JSON from Self Defence Check result", e);
+            LOG.error(TAG,"Error building JSON from Self Defence Check result", e);
         }
         return data;
     }
