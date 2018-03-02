@@ -5,6 +5,7 @@ import org.aerogear.mobile.security.checks.AllowBackupFlagCheck;
 import org.aerogear.mobile.security.checks.DeveloperModeCheck;
 import org.aerogear.mobile.security.checks.DebuggerCheck;
 import org.aerogear.mobile.security.checks.EmulatorCheck;
+import org.aerogear.mobile.security.checks.EncryptionCheck;
 import org.aerogear.mobile.security.checks.RootedCheck;
 import org.aerogear.mobile.security.checks.ScreenLockCheck;
 
@@ -46,7 +47,13 @@ public enum SecurityCheckType {
      * Detect whether the allowBackup flag is enabled for the application.
      * See {@link AllowBackupFlagCheck}
      */
-    ALLOW_BACKUP_ENABLED(new AllowBackupFlagCheck());
+    ALLOW_BACKUP_ENABLED(new AllowBackupFlagCheck()),
+    /**
+     * Detect whether a devices filesystem is encrypted.
+     * See {@link EncryptionCheck}
+     */
+    HAS_ENCRYPTION_ENABLED(new EncryptionCheck());
+
 
     private SecurityCheck check;
 
