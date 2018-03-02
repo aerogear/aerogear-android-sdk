@@ -126,7 +126,7 @@ public class SecurityService implements ServiceModule {
      * @throws IllegalArgumentException if metricsService is null
      */
     public SecurityCheckResult checkAndSendMetric(final SecurityCheck securityCheck, @NonNull final MetricsService metricsService) {
-        SecurityCheckResult result = check(securityCheck);
+        final SecurityCheckResult result = check(securityCheck);
         nonNull(metricsService, "metricsService").publish(new SecurityCheckResultMetric(result));
         return result;
     }

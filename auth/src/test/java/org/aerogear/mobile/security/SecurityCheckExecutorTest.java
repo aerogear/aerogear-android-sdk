@@ -79,7 +79,7 @@ public class SecurityCheckExecutorTest {
     @Test
     public void testExecuteAsync() throws Exception {
 
-        Map<String, Future<SecurityCheckResult>> results = SecurityCheckExecutor.Builder
+        final Map<String, Future<SecurityCheckResult>> results = SecurityCheckExecutor.Builder
             .newAsyncExecutor(context)
             .withSecurityCheck(securityCheckType)
             .withExecutorService(Executors.newFixedThreadPool(1))
@@ -94,7 +94,7 @@ public class SecurityCheckExecutorTest {
     public void testSendMetricsAsync() throws Exception {
         when(metricsService.publish(any())).thenReturn(null);
 
-        Map<String, Future<SecurityCheckResult>> results = SecurityCheckExecutor.Builder
+        final Map<String, Future<SecurityCheckResult>> results = SecurityCheckExecutor.Builder
             .newAsyncExecutor(context)
             .withSecurityCheck(securityCheckType)
             .withMetricsService(metricsService)
