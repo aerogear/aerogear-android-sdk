@@ -13,7 +13,7 @@ import java.util.HashMap;
 /**
  * Collects device metrics
  */
-public class DeviceMetrics implements Metrics {
+public class DeviceMetrics implements Metrics<JSONObject> {
 
     private final String platform;
     private final String platformVersion;

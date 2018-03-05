@@ -17,7 +17,7 @@ import java.util.Map;
  * Metric representation of {@link SecurityCheckResult}. This is intended to be used with the
  * {@link org.aerogear.mobile.core.metrics.MetricsService}.
  */
-public class SecurityCheckResultMetric implements Metrics {
+public class SecurityCheckResultMetric implements Metrics<JSONArray> {
 
     private final JSONArray data;
     private final Logger LOG = MobileCore.getLogger();
@@ -62,8 +62,7 @@ public class SecurityCheckResultMetric implements Metrics {
     /**
      * Gets the data from the result which contains whether the check passed or not.
      *
-     * @return {@link Map} where the key is a {@link String} and
-     * the value is <code>true</code> if the check result passed
+     * @return {@link JSONArray} containing the results for self-defence checks
      */
     @Override
     public JSONArray data() {
@@ -75,7 +74,7 @@ public class SecurityCheckResultMetric implements Metrics {
      * Creates the data structure that stores whether or not the result passed or not.
      *
      * @param results the {@link SecurityCheckResult} iterable of the test executed
-     * @return {@link Map} data
+     * @return {@link JSONArray} data
      */
     private JSONArray getDataFromResult(final Iterable<SecurityCheckResult> results) {
         final JSONArray data = new JSONArray();

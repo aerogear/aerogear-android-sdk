@@ -62,7 +62,7 @@ public class MetricsServiceTest {
         metricsService.publish(new DummyMetrics());
     }
 
-    public static class DummyMetrics implements Metrics {
+    public static class DummyMetrics implements Metrics<Map<String, String>> {
 
         @Override
         public String identifier() {

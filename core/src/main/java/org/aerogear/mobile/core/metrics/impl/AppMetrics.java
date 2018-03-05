@@ -15,7 +15,7 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 /**
  * Collects app metrics
  */
-public class AppMetrics implements Metrics {
+public class AppMetrics implements Metrics<JSONObject> {
 
     private final String appId;
     private final String appVersion;
