@@ -173,15 +173,20 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
 
         final HttpResponse httpResponse = request.execute();
 
-        httpResponse.onComplete(() -> {
+        httpResponse.onSuccess(() -> {
             if (httpResponse.getStatus() == HTTP_OK || httpResponse.getStatus() == HTTP_MOVED_TEMP) {
                 // delete the local tokens when the session with the OIDC has been terminated
                 authStateManager.save(null);
                 logoutCallback.onSuccess();
             } else {
-                MobileCore.getLogger().error("Error Performing a Logout on the Remote OIDC Server: ", httpResponse.getRequestError());
-                logoutCallback.onError(httpResponse.getRequestError());
+                // Non HTTP 200 or 302 Status Code Returned
+                Exception error = httpResponse.getError() != null ? httpResponse.getError() : new Exception("Non HTTP 200 or 302 Status Code.");
+                MobileCore.getLogger().error("Error Performing a Logout on the Remote OIDC Server: ", error);
+                logoutCallback.onError(error);
             }
+        }).onError(() -> {
+            MobileCore.getLogger().error("Error Performing a Logout on the Remote OIDC Server: ", httpResponse.getError());
+            logoutCallback.onError(httpResponse.getError());
         });
     }
 
