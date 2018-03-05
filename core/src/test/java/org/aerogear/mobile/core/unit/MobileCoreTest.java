@@ -1,4 +1,4 @@
-package org.aerogear.mobile.core;
+package org.aerogear.mobile.core.unit;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.junit.Assert.assertEquals;
@@ -14,6 +14,8 @@ import org.robolectric.RuntimeEnvironment;
 import android.app.Application;
 import android.support.test.filters.SmallTest;
 
+import org.aerogear.mobile.core.MobileCore;
+import org.aerogear.mobile.core.ServiceModule;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.exception.ConfigurationNotFoundException;
 import org.aerogear.mobile.core.exception.InitializationException;

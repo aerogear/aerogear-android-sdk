@@ -1,4 +1,4 @@
-package org.aerogear.mobile.core.configuration;
+package org.aerogear.mobile.core.unit.configuration;
 
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.fail;
@@ -16,6 +16,9 @@ import org.robolectric.RuntimeEnvironment;
 
 import android.app.Application;
 import android.support.test.filters.SmallTest;
+
+import org.aerogear.mobile.core.configuration.MobileCoreJsonParser;
+import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 
 @RunWith(RobolectricTestRunner.class)
 @SmallTest
