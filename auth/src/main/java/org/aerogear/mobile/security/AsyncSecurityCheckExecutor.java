@@ -10,11 +10,15 @@ import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.metrics.MetricsService;
 import org.aerogear.mobile.security.metrics.SecurityCheckResultMetric;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Executor used to asynchronously execute checks.
@@ -94,19 +98,40 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<As
      * The key of the map will be the output of {@link SecurityCheck#getName()}, while the value will be
      * a {@link Map} of {@link Future} with the {@link SecurityCheckResult} of the check.
      *
+     * @param securityCheckExecutorListeners list of listeners that will receive events about checks execution
      * @return {@link Map}
      */
-    public Map<String, Future<SecurityCheckResult>> execute() {
+    public Map<String, Future<SecurityCheckResult>> execute(SecurityCheckExecutorListener... securityCheckExecutorListeners) {
 
-        final MetricsService metricsService = getMetricsService();
+        final List<SecurityCheckExecutorListener> listeners;
+        final Collection<SecurityCheck> checks = getChecks();
+
+        // Initializes listener list: the metric publisher will be added to passed in listeners
+        if (securityCheckExecutorListeners == null) {
+            listeners = new ArrayList<>(1);
+        } else {
+            listeners = new ArrayList(Arrays.asList(securityCheckExecutorListeners));
+        }
+
+        listeners.add(getMetricServicePublisher());
+
         final Map<String, Future<SecurityCheckResult>> res = new HashMap<>();
+        AtomicInteger count = new AtomicInteger(checks.size());
 
         for (final SecurityCheck check : getChecks()) {
             res.put(check.getName(), (executorService.submit(() -> {
                 final SecurityCheckResult result =  check.test(getContext());
-                if (metricsService != null) {
-                    metricsService.publish(new SecurityCheckResultMetric(result));
+
+                for (SecurityCheckExecutorListener listener : listeners) {
+                    listener.onExecuted(result);
                 }
+
+                if (count.decrementAndGet() == 0) {
+                    for (SecurityCheckExecutorListener listener : listeners) {
+                        listener.onFinished();
+                    }
+                }
+
                 return result;
             })));
         }
