@@ -13,7 +13,7 @@ import java.util.concurrent.Executors;
  */
 public final class AppExecutors {
 
-    private static final Executor networkExecutor = Executors.newSingleThreadExecutor();
+    private static final ExecutorService networkExecutor = Executors.newSingleThreadExecutor();
 
     private static final Executor mainThreadExecutor = new Executor() {
         private Handler mainThreadHandler = new Handler(Looper.getMainLooper());
@@ -34,7 +34,7 @@ public final class AppExecutors {
         return mainThreadExecutor;
     }
 
-    public Executor networkThread() {
+    public ExecutorService networkThread() {
         return networkExecutor;
     }
 

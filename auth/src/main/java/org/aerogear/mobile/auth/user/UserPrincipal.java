@@ -1,7 +1,6 @@
 package org.aerogear.mobile.auth.user;
 
 import java.io.Serializable;
-import java.security.Principal;
 import java.util.Set;
 
 /**

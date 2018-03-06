@@ -60,12 +60,25 @@ abstract class AbstractSecurityCheckExecutor<T extends AbstractSecurityCheckExec
     }
 
     /**
-     * Gets the metrics service.
+     * Gets the metric published. It never returns null: if no metric service is present, e NOOP publisher
+     * is returned.
      *
-     * @return {@link MetricsService}
+     * @return the metric service publisher
      */
-    protected MetricsService getMetricsService() {
-        return metricsService;
+    protected SecurityCheckExecutorListener getMetricServicePublisher() {
+        if (metricsService != null) {
+            return new SecurityCheckMetricPublisher(metricsService);
+        } else {
+            return new SecurityCheckExecutorListener() {
+                @Override
+                public void onExecuted(SecurityCheckResult result) {
+                }
+
+                @Override
+                public void onComplete() {
+                }
+            };
+        }
     }
 
     /**

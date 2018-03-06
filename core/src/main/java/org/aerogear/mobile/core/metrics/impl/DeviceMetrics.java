@@ -3,15 +3,17 @@ package org.aerogear.mobile.core.metrics.impl;
 import android.content.Context;
 import android.os.Build;
 
+import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.metrics.Metrics;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Collects device metrics
  */
-public class DeviceMetrics implements Metrics {
+public class DeviceMetrics implements Metrics<JSONObject> {
 
     private final String platform;
     private final String platformVersion;
@@ -27,10 +29,14 @@ public class DeviceMetrics implements Metrics {
     }
 
     @Override
-    public Map<String, String> data() {
-        Map<String, String> data = new HashMap<>();
-        data.put("platform", platform);
-        data.put("platformVersion", platformVersion);
+    public JSONObject data() {
+        final JSONObject data = new JSONObject();
+        try {
+            data.put("platform", platform);
+            data.put("platformVersion", platformVersion);
+        } catch (JSONException e) {
+            MobileCore.getLogger().error("Error building JSON for Device Metrics", e);
+        }
         return data;
     }
 

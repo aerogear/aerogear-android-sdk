@@ -5,13 +5,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.aerogear.mobile.core.metrics.MetricsService;
-import org.aerogear.mobile.security.metrics.SecurityCheckResultMetric;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 /**
  * Synchronously executes provided {@link SecurityCheck}s.
@@ -70,26 +67,17 @@ public class SyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<Syn
     public Map<String, SecurityCheckResult> execute() {
         final Map<String, SecurityCheckResult> results = new HashMap<>();
 
+        final SecurityCheckExecutorListener metricServicePublisher = getMetricServicePublisher();
+
         for (SecurityCheck check : getChecks()) {
             SecurityCheckResult result = check.test(getContext());
             results.put(check.getName(), result);
-            publishResultMetrics(result);
+
+            metricServicePublisher.onExecuted(result);
         }
+
+        metricServicePublisher.onComplete();
 
         return results;
-    }
-
-    /**
-     * Publish each result provided as an {@link SecurityCheckResultMetric}.
-     *
-     * @param result {@link SecurityCheckResult} to be published
-     * @throws IllegalArgumentException if result is null
-     */
-    private void publishResultMetrics(@NonNull SecurityCheckResult result) {
-        MetricsService metricsService = getMetricsService();
-
-        if (metricsService != null) {
-            metricsService.publish(new SecurityCheckResultMetric(nonNull(result, "result")));
-        }
     }
 }
