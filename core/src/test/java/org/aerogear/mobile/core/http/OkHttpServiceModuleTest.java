@@ -6,7 +6,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
+import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
+
+import okhttp3.HttpUrl;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
 
 import static junit.framework.Assert.fail;
 import static org.junit.Assert.assertEquals;
@@ -89,6 +94,44 @@ public class OkHttpServiceModuleTest {
 
         response.onError(() -> {
             assertNotNull(response.getError());
+        });
+
+        response.waitForCompletionAndClose();
+        assertEquals(latch.getCount(), 0);
+    }
+
+    @Test
+    public void testRedirectsShouldBeSuccessful() throws IOException {
+        MockWebServer server = new MockWebServer();
+        MockResponse redirectResponse = new MockResponse();
+
+        // Reply with a redirect
+        redirectResponse.setStatus("HTTP/1.1 302");
+        server.enqueue(redirectResponse);
+        server.start();
+
+        HttpUrl url = server.url("/mockRequest");
+        String urlString = url.toString();
+
+        HttpServiceModule module = new OkHttpServiceModule();
+
+        HttpRequest request = module.newRequest();
+        request.get(urlString);
+
+        final HttpResponse response = request.execute();
+        assertNotNull(response);
+
+        CountDownLatch latch = new CountDownLatch(2);
+        response.onComplete(() -> {
+            latch.countDown();
+        });
+
+        response.onSuccess(() -> {
+            latch.countDown();
+        });
+
+        response.onError(() -> {
+            fail("Redirects must not be errors");
         });
 
         response.waitForCompletionAndClose();
