@@ -103,22 +103,17 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<As
      */
     public Map<String, Future<SecurityCheckResult>> execute(SecurityCheckExecutorListener... securityCheckExecutorListeners) {
 
-        final List<SecurityCheckExecutorListener> listeners;
+        final List<SecurityCheckExecutorListener> listeners =
+            securityCheckExecutorListeners == null ? new ArrayList<>(1) : new ArrayList(Arrays.asList(securityCheckExecutorListeners));
         final Collection<SecurityCheck> checks = getChecks();
 
-        // Initializes listener list: the metric publisher will be added to passed in listeners
-        if (securityCheckExecutorListeners == null) {
-            listeners = new ArrayList<>(1);
-        } else {
-            listeners = new ArrayList(Arrays.asList(securityCheckExecutorListeners));
-        }
-
+        // Adds the metric publisher to the passed in listeners
         listeners.add(getMetricServicePublisher());
 
         final Map<String, Future<SecurityCheckResult>> res = new HashMap<>();
         final AtomicInteger count = new AtomicInteger(checks.size());
 
-        for (final SecurityCheck check : getChecks()) {
+        for (final SecurityCheck check : checks) {
             res.put(check.getName(), (executorService.submit(() -> {
                 final SecurityCheckResult result =  check.test(getContext());
 
