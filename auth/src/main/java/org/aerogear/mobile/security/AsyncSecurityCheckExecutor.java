@@ -8,7 +8,6 @@ import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.metrics.MetricsService;
-import org.aerogear.mobile.security.metrics.SecurityCheckResultMetric;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,9 +24,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Checks are executed by using {@link AppExecutors#singleThreadService()} if no custom executor is configured.
  */
 public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<AsyncSecurityCheckExecutor> {
-
-    private final static String TAG = "AsyncSecurityCheckExecutor";
-    private final static Logger LOG = MobileCore.getLogger();
 
     private final ExecutorService executorService;
 
@@ -117,7 +113,7 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<As
     private Map<String, Future<SecurityCheckResult>> execute(SecurityCheckExecutorListener... securityCheckExecutorListeners) {
 
         final List<SecurityCheckExecutorListener> listeners =
-            securityCheckExecutorListeners == null ? new ArrayList<>(1) : new ArrayList(Arrays.asList(securityCheckExecutorListeners));
+            securityCheckExecutorListeners == null ? new ArrayList<>(1) : new ArrayList<>(Arrays.asList(securityCheckExecutorListeners));
         final Collection<SecurityCheck> checks = getChecks();
 
         // Adds the metric publisher to the passed in listeners

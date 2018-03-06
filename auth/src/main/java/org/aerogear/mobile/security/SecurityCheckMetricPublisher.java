@@ -13,7 +13,7 @@ import java.util.List;
 class SecurityCheckMetricPublisher implements SecurityCheckExecutorListener {
 
     private final MetricsService metricsService;
-    private final List<SecurityCheckResultMetric> metrics = new ArrayList<>();
+    private final List<SecurityCheckResult> metricResults = new ArrayList<>();
 
     /**
      * Builds the object.
@@ -26,11 +26,11 @@ class SecurityCheckMetricPublisher implements SecurityCheckExecutorListener {
 
     @Override
     public synchronized void onExecuted(SecurityCheckResult result) {
-        metrics.add(new SecurityCheckResultMetric(result));
+        metricResults.add(result);
     }
 
     @Override
     public synchronized void onFinished() {
-        metricsService.publish(metrics.toArray(new SecurityCheckResultMetric[metrics.size()]));
+        metricsService.publish(new SecurityCheckResultMetric(metricResults));
     }
 }
