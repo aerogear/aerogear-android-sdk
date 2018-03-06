@@ -37,25 +37,33 @@ public class UserPrincipalImpl implements UserPrincipal {
     private final String accessToken;
 
     /**
+     * The refresh token.
+     */
+    private final String refreshToken;
+
+    /**
      * Builds a new UserPrincipalImpl object
      *
      * @param username the username of the authenticated user
      * @param email the email of the authenticated user
      * @param roles roles assigned to the user
-     * @param identityToken the identity token 
-     * @param accessToken the access token 
-     * 
+     * @param identityToken the identity token
+     * @param accessToken the access token
+     * @param refreshToken the refresh token
+     *
      */
     protected UserPrincipalImpl(final String username,
                               final String email,
                               final Set<UserRole> roles,
                               final String identityToken,
-                              final String accessToken) {
+                              final String accessToken,
+                              final String refreshToken) {
         this.username = nonEmpty(username, "username");
         this.email = email;
         this.roles = new HashSet(roles);
         this.identityToken = identityToken;
         this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
     }
 
     /**
@@ -67,6 +75,7 @@ public class UserPrincipalImpl implements UserPrincipal {
         protected Set<UserRole> roles = new HashSet();
         protected String idToken;
         protected String accessToken;
+        protected String refreshToken;
 
         protected Builder() {
         }
@@ -99,13 +108,19 @@ public class UserPrincipalImpl implements UserPrincipal {
             return this;
         }
 
+        public Builder withRefreshToken(final String refreshToken) {
+            this.refreshToken = refreshToken;
+            return this;
+        }
+
         public UserPrincipalImpl build() {
             return new UserPrincipalImpl(
                     this.username,
                     this.email,
                     this.roles,
                     this.idToken,
-                    this.accessToken);
+                    this.accessToken,
+                    this.refreshToken);
         }
     }
 
@@ -185,6 +200,7 @@ public class UserPrincipalImpl implements UserPrincipal {
      * Returns the identity token. It is used during logout.
      * @return  the identity token
      */
+    @Override
     public String getIdentityToken() {
         return identityToken;
     }
@@ -192,10 +208,19 @@ public class UserPrincipalImpl implements UserPrincipal {
     /**
      * Returns the access token for the current logged user.
      * This token can be added to HTTP requests as the "Authorization: Bearer" header.
-     * @return the access token 
+     * @return the access token
      */
     @Override
     public String getAccessToken() {
         return accessToken;
     }
+    /**
+     * Returns the refresh token.
+     * @return the refresh token
+     */
+    @Override
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
 }

@@ -111,6 +111,7 @@ public class UserIdentityParser {
                 .withRoles(parseRoles())
                 .withIdentityToken(credential.getIdentityToken())
                 .withAccessToken(credential.getAccessToken())
+                .withRefreshToken(credential.getRefreshToken())
                 .build();
         } catch (JSONException jsonEx) {
             throw new AuthenticationException(jsonEx);

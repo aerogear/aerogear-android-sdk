@@ -46,4 +46,16 @@ public interface UserPrincipal extends Serializable {
      * @return the access token.
      */
     String getAccessToken();
+
+    /**
+     * Returns the users identity token.
+     * @return the identity token.
+     */
+    String getIdentityToken();
+
+    /**
+     * Returns the users refresh token.
+     * @return the refresh token.
+     */
+    String getRefreshToken();
 }
