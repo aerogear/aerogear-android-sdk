@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
 import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
@@ -105,6 +104,8 @@ public class OkHttpServiceModuleTest {
     public void testRedirectsShouldBeSuccessful() throws IOException {
         MockWebServer server = new MockWebServer();
         MockResponse redirectResponse = new MockResponse();
+
+        // Reply with a redirect
         redirectResponse.setStatus("HTTP/1.1 302");
         server.enqueue(redirectResponse);
         server.start();
