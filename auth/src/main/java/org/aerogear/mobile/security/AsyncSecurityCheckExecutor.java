@@ -98,10 +98,23 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<As
      * The key of the map will be the output of {@link SecurityCheck#getName()}, while the value will be
      * a {@link Map} of {@link Future} with the {@link SecurityCheckResult} of the check.
      *
+     * @return {@link Map}
+     */
+    public Map<String, Future<SecurityCheckResult>> execute() {
+        return execute(new SecurityCheckExecutorListener[0]);
+    }
+
+    /**
+     * Executes the checks asynchronously.
+     *
+     * Returns a {@link Map} containing the results of each executed test (a {@link Future}).
+     * The key of the map will be the output of {@link SecurityCheck#getName()}, while the value will be
+     * a {@link Map} of {@link Future} with the {@link SecurityCheckResult} of the check.
+     *
      * @param securityCheckExecutorListeners list of listeners that will receive events about checks execution
      * @return {@link Map}
      */
-    public Map<String, Future<SecurityCheckResult>> execute(SecurityCheckExecutorListener... securityCheckExecutorListeners) {
+    private Map<String, Future<SecurityCheckResult>> execute(SecurityCheckExecutorListener... securityCheckExecutorListeners) {
 
         final List<SecurityCheckExecutorListener> listeners =
             securityCheckExecutorListeners == null ? new ArrayList<>(1) : new ArrayList(Arrays.asList(securityCheckExecutorListeners));
