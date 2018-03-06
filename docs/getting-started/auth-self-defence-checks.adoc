@@ -28,31 +28,33 @@ There are two ways to implement self defence checks: <<Provided Self Defence Che
 
 These are self defence checks provided by the SDK in link:javadoc[`SecurityCheckType`].
 
-==== link:javadoc[IS_ROOTED]
+// TODO: make check titles links to javadoc when javadoc location is available
+
+==== IS_ROOTED
 
 To detect if a device has been rooted (jailbreak) the `SecurityCheckType#IS_ROOTED` function can be used.  This function uses the link:https://github.com/scottyab/rootbeer[Rootbeer] library to check if root access is present on the device.
 
-==== link:javadoc[IS_DEVELOPER_MODE]
+==== IS_DEVELOPER_MODE
 
 To detect if Developer Mode has been enabled on the device the `SecurityCheckType#IS_DEVELOPER_MODE` function can be used.  This function uses Android's link:https://developer.android.com/reference/android/provider/Settings.html[Settings] class.
 
-==== link:javadoc[IS_DEBUGGER]
+==== IS_DEBUGGER
 
 To detect if an Android debugger is attached to the app the `SecurityCheckType#IS_DEBUGGER` function can be used.  This function uses Android's link:https://developer.android.com/reference/android/os/Debug.html[Debug] class.
 
-==== link:javadoc[IS_EMULATOR]
+==== IS_EMULATOR
 
 To detect if the app is being run on an emulator the `SecurityCheckType#IS_EMULATOR` function can be used.  This function uses Android's link:https://developer.android.com/reference/android/os/Build.html[Build] class.
 
-==== link:javadoc[SCREEN_LOCK_ENABLED]
+==== SCREEN_LOCK_ENABLED
 
 To detect if a device has a lock screen set (with pin, fingerprint, pattern) the `SecurityCheckType#HAS_SCREENLOCK` function can be used.  This function uses Android's link:https://developer.android.com/reference/android/app/KeyguardManager.html[KeyguardManager] class.
 
-==== link:javadoc[ALLOW_BACKUP_ENABLED]
+==== ALLOW_BACKUP_ENABLED
 
 To detect whether the allowBackup flag is enabled for the application the `SecurityCheckType#ALLOW_BACKUP_ENABLED` function can be used. The link:https://developer.android.com/guide/topics/manifest/application-element.html[allowBackup] flag determines whether to allow the application to participate in the backup and restore infrastructure.
 
-==== link:javadoc[HAS_ENCRYPTION_ENABLED]
+==== HAS_ENCRYPTION_ENABLED
 
 To detect whether the devices filesystem is encrypted the `SecurityCheckType#HAS_ENCRYPTION_ENABLED` function can be used. This function uses Android's link:https://developer.android.com/reference/android/app/admin/DevicePolicyManager.html[DevicePolicyManager] class.
 
