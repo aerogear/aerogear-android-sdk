@@ -98,6 +98,10 @@ if (currentUser != null) {
     String userEmail = currentUser.getEmail();
     // Get the access token of the authenticated user
     String accessToken = currentUser.getAccessToken();
+    // Get the identity token of the authenticated user
+    String identityToken = currentUser.getIdentityToken();
+    // Get the refresh token of the authenticated user
+    String refreshToken = currentUser.getRefreshToken();
 } else {
     // User is not authenticates, start authentication flow
 }
