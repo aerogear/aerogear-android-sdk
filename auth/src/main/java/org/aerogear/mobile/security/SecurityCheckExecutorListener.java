@@ -1,7 +1,5 @@
 package org.aerogear.mobile.security;
 
-import org.aerogear.mobile.security.SecurityCheckResult;
-
 /**
  * Listener for events about check execution.
  */
@@ -16,5 +14,5 @@ public interface SecurityCheckExecutorListener {
     /**
      * Called when all submitted checks has been executed.
      */
-    void onFinished();
+    void onComplete();
 }

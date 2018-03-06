@@ -4,9 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.executor.AppExecutors;
-import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.metrics.MetricsService;
 
 import java.util.ArrayList;
@@ -132,7 +130,7 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<As
                     listener.onExecuted(result);
 
                     if (remaining <= 0) {
-                        listener.onFinished();
+                        listener.onComplete();
                     }
                 }
 

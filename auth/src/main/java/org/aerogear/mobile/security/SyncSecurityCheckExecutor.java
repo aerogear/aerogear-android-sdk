@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.aerogear.mobile.core.metrics.MetricsService;
-import org.aerogear.mobile.security.metrics.SecurityCheckResultMetric;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -77,7 +76,7 @@ public class SyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<Syn
             metricServicePublisher.onExecuted(result);
         }
 
-        metricServicePublisher.onFinished();
+        metricServicePublisher.onComplete();
 
         return results;
     }

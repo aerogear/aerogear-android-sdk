@@ -75,7 +75,7 @@ abstract class AbstractSecurityCheckExecutor<T extends AbstractSecurityCheckExec
                 }
 
                 @Override
-                public void onFinished() {
+                public void onComplete() {
                 }
             };
         }
