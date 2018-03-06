@@ -236,7 +236,10 @@ public class OIDCAuthenticatorImplTest {
         authenticator.authenticate(opts, new Callback<UserPrincipal>() {
             @Override
             public void onSuccess(UserPrincipal userPrincipal) {
-                Assert.assertEquals("user1", userPrincipal.getName());
+                Assert.assertEquals("User 1", userPrincipal.getName());
+                Assert.assertEquals("user1", userPrincipal.getUsername());
+                Assert.assertEquals("User", userPrincipal.getFirstName());
+                Assert.assertEquals("1", userPrincipal.getLastName());
                 Assert.assertEquals("user1@feedhenry.org", userPrincipal.getEmail());
             }
 

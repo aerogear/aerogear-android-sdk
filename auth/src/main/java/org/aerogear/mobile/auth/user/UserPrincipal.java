@@ -32,7 +32,28 @@ public interface UserPrincipal extends Serializable {
      * 
      * @return the username
      */
+    String getUsername();
+
+    /**
+     * Returns the full name of the user. Both first and last name.
+     * 
+     * @return users full name
+     */
     String getName();
+
+    /**
+     * Returns the first name of the user.
+     * 
+     * @return users first name.
+     */
+    String getFirstName();
+
+    /**
+     * Returns the last name of the user.
+     * 
+     * @return users last name.
+     */
+    String getLastName();
 
     /**
      * Returns the email

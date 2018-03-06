@@ -17,6 +17,16 @@ public class UserPrincipalImpl implements UserPrincipal {
     private final String username;
 
     /**
+     * The first name of the principal.
+     */
+    private final String firstName;
+
+    /**
+     * The last name of the principal.
+     */
+    private final String lastName;
+
+    /**
      * The email associated with this user
      */
     private final String email;
@@ -45,6 +55,8 @@ public class UserPrincipalImpl implements UserPrincipal {
      * Builds a new UserPrincipalImpl object
      *
      * @param username the username of the authenticated user
+     * @param firstName the first name of the authenticated user
+     * @param lastName the last name of the authenticated user
      * @param email the email of the authenticated user
      * @param roles roles assigned to the user
      * @param identityToken the identity token
@@ -52,10 +64,13 @@ public class UserPrincipalImpl implements UserPrincipal {
      * @param refreshToken the refresh token
      *
      */
-    protected UserPrincipalImpl(final String username, final String email,
-                    final Set<UserRole> roles, final String identityToken, final String accessToken,
+    protected UserPrincipalImpl(final String username, final String firstName,
+                    final String lastName, final String email, final Set<UserRole> roles,
+                    final String identityToken, final String accessToken,
                     final String refreshToken) {
         this.username = nonEmpty(username, "username");
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
         this.roles = new HashSet(roles);
         this.identityToken = identityToken;
@@ -73,8 +88,20 @@ public class UserPrincipalImpl implements UserPrincipal {
         protected String idToken;
         protected String accessToken;
         protected String refreshToken;
+        protected String firstName;
+        protected String lastName;
 
         protected Builder() {}
+
+        public Builder withFirstName(final String firstName) {
+            this.firstName = firstName;
+            return this;
+        }
+
+        public Builder withLastName(final String lastName) {
+            this.lastName = lastName;
+            return this;
+        }
 
         public Builder withUsername(final String username) {
             this.username = nonEmpty(username, "username");
@@ -110,14 +137,14 @@ public class UserPrincipalImpl implements UserPrincipal {
         }
 
         public UserPrincipalImpl build() {
-            return new UserPrincipalImpl(this.username, this.email, this.roles, this.idToken,
-                            this.accessToken, this.refreshToken);
+            return new UserPrincipalImpl(this.username, this.firstName, this.lastName, this.email,
+                            this.roles, this.idToken, this.accessToken, this.refreshToken);
         }
     }
 
     /**
      * Checks if the user has the specified Client role.
-     * 
+     *
      * @param role role to be checked
      * @param clientId clientID related to role
      * @return <code>true</code> or <code>false</code>
@@ -131,7 +158,7 @@ public class UserPrincipalImpl implements UserPrincipal {
 
     /**
      * Checks if the user has the specified Realm role.
-     * 
+     *
      * @param role role to be checked
      * @return <code>true</code> or <code>false</code>
      */
@@ -143,8 +170,23 @@ public class UserPrincipalImpl implements UserPrincipal {
     }
 
     @Override
-    public String getName() {
+    public String getUsername() {
         return username;
+    }
+
+    @Override
+    public String getFirstName() {
+        return firstName;
+    }
+
+    @Override
+    public String getLastName() {
+        return lastName;
+    }
+
+    @Override
+    public String getName() {
+        return firstName + " " + lastName;
     }
 
     /**
@@ -182,13 +224,14 @@ public class UserPrincipalImpl implements UserPrincipal {
         }
         sb.append("]");
 
-        return "UserPrincipalImpl{" + "username='" + username + '\'' + ", email='" + email + '\''
+        return "UserPrincipalImpl{" + "username='" + username + '\'' + ", firstName=" + firstName
+                        + '\'' + ", lastName=" + lastName + '\'' + ", email='" + email + '\''
                         + ", roles=" + sb.toString() + '}';
     }
 
     /**
      * Returns the identity token. It is used during logout.
-     * 
+     *
      * @return the identity token
      */
     @Override
@@ -199,7 +242,7 @@ public class UserPrincipalImpl implements UserPrincipal {
     /**
      * Returns the access token for the current logged user. This token can be added to HTTP
      * requests as the "Authorization: Bearer" header.
-     * 
+     *
      * @return the access token
      */
     @Override
@@ -209,7 +252,7 @@ public class UserPrincipalImpl implements UserPrincipal {
 
     /**
      * Returns the refresh token.
-     * 
+     *
      * @return the refresh token
      */
     @Override
