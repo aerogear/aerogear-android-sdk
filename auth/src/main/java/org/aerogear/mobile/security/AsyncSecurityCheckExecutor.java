@@ -4,26 +4,24 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.executor.AppExecutors;
-import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.metrics.MetricsService;
-import org.aerogear.mobile.security.metrics.SecurityCheckResultMetric;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Executor used to asynchronously execute checks.
  * Checks are executed by using {@link AppExecutors#singleThreadService()} if no custom executor is configured.
  */
 public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<AsyncSecurityCheckExecutor> {
-
-    private final static String TAG = "AsyncSecurityCheckExecutor";
-    private final static Logger LOG = MobileCore.getLogger();
 
     private final ExecutorService executorService;
 
@@ -97,16 +95,45 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<As
      * @return {@link Map}
      */
     public Map<String, Future<SecurityCheckResult>> execute() {
+        return execute(new SecurityCheckExecutorListener[0]);
+    }
 
-        final MetricsService metricsService = getMetricsService();
+    /**
+     * Executes the checks asynchronously.
+     *
+     * Returns a {@link Map} containing the results of each executed test (a {@link Future}).
+     * The key of the map will be the output of {@link SecurityCheck#getName()}, while the value will be
+     * a {@link Map} of {@link Future} with the {@link SecurityCheckResult} of the check.
+     *
+     * @param securityCheckExecutorListeners list of listeners that will receive events about checks execution
+     * @return {@link Map}
+     */
+    private Map<String, Future<SecurityCheckResult>> execute(SecurityCheckExecutorListener... securityCheckExecutorListeners) {
+
+        final List<SecurityCheckExecutorListener> listeners =
+            securityCheckExecutorListeners == null ? new ArrayList<>(1) : new ArrayList<>(Arrays.asList(securityCheckExecutorListeners));
+        final Collection<SecurityCheck> checks = getChecks();
+
+        // Adds the metric publisher to the passed in listeners
+        listeners.add(getMetricServicePublisher());
+
         final Map<String, Future<SecurityCheckResult>> res = new HashMap<>();
+        final AtomicInteger count = new AtomicInteger(checks.size());
 
-        for (final SecurityCheck check : getChecks()) {
+        for (final SecurityCheck check : checks) {
             res.put(check.getName(), (executorService.submit(() -> {
                 final SecurityCheckResult result =  check.test(getContext());
-                if (metricsService != null) {
-                    metricsService.publish(new SecurityCheckResultMetric(result));
+
+                final int remaining = count.decrementAndGet();
+
+                for (SecurityCheckExecutorListener listener : listeners) {
+                    listener.onExecuted(result);
+
+                    if (remaining <= 0) {
+                        listener.onComplete();
+                    }
                 }
+
                 return result;
             })));
         }

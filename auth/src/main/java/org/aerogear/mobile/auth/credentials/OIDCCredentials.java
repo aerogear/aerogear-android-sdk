@@ -9,7 +9,6 @@ import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
 import org.jose4j.jwa.AlgorithmConstraints;
 import org.jose4j.jwk.JsonWebKeySet;
 import org.jose4j.jws.AlgorithmIdentifiers;
-import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.ErrorCodeValidator;
 import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.JwtConsumer;
@@ -62,7 +61,7 @@ public class OIDCCredentials {
 
     /**
      * Verify the token and its claims against the given Keycloak configuration
-     * 
+     *
      * @param jwks json web keys to verify
      * @param keycloakConfig keycloak config containing certificate information for the jwks instance.
      * @return true if the jwks value is valid, false otherwise

@@ -5,12 +5,12 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import org.aerogear.mobile.auth.authenticator.AuthorizationServiceFactory;
+import org.aerogear.mobile.auth.authenticator.DefaultAuthenticateOptions;
+import org.aerogear.mobile.auth.authenticator.oidc.OIDCAuthenticatorImpl;
 import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
 import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
-import org.aerogear.mobile.auth.authenticator.DefaultAuthenticateOptions;
 import org.aerogear.mobile.auth.credentials.JwksManager;
 import org.aerogear.mobile.auth.credentials.OIDCCredentials;
-import org.aerogear.mobile.auth.authenticator.oidc.OIDCAuthenticatorImpl;
 import org.aerogear.mobile.auth.user.UserPrincipal;
 import org.aerogear.mobile.auth.utils.UserIdentityParser;
 import org.aerogear.mobile.core.MobileCore;
@@ -40,7 +40,8 @@ public class AuthService implements ServiceModule {
     private OIDCAuthenticatorImpl oidcAuthenticatorImpl;
 
     private Context appContext;
-    private Logger logger;
+    private final Logger LOG = MobileCore.getLogger();
+    private final String TAG = "AuthService";
     private JwksManager jwksManager;
 
     private MobileCore mobileCore;
@@ -120,7 +121,7 @@ public class AuthService implements ServiceModule {
                     UserIdentityParser parser = new UserIdentityParser(currentCredentials, keycloakConfiguration);
                     currentUser = parser.parseUser();
                 } catch (AuthenticationException ae) {
-                    logger.error("Failed to parse user identity from credential", ae);
+                    LOG.error(TAG, "Failed to parse user identity from credential", ae);
                     currentUser = null;
                 }
             }
@@ -176,7 +177,6 @@ public class AuthService implements ServiceModule {
 
     @Override
     public void configure(final MobileCore core, final ServiceConfiguration serviceConfiguration) {
-        this.logger = MobileCore.getLogger();
         this.mobileCore = nonNull(core, "mobileCore");
         this.serviceConfiguration = nonNull(serviceConfiguration, "serviceConfiguration");
         this.keycloakConfiguration = new KeycloakConfiguration(serviceConfiguration);

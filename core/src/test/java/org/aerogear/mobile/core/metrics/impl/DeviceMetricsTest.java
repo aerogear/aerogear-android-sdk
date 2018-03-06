@@ -3,6 +3,8 @@ package org.aerogear.mobile.core.metrics.impl;
 import android.app.Application;
 import android.support.test.filters.SmallTest;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -26,14 +28,14 @@ public class DeviceMetricsTest {
     }
 
     @Test
-    public void testData() {
+    public void testData() throws JSONException {
         Application context = RuntimeEnvironment.application;
 
         DeviceMetrics deviceMetrics = new DeviceMetrics(context);
-        Map<String, String> result = deviceMetrics.data();
+        JSONObject result = deviceMetrics.data();
 
-        assertNotNull(result.get("platform"));
-        assertNotNull(result.get("platformVersion"));
+        assertNotNull(result.getString("platform"));
+        assertNotNull(result.getString("platformVersion"));
     }
 
 }

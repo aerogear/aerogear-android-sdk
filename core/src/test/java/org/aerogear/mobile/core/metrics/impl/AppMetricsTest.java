@@ -4,6 +4,8 @@ import android.app.Application;
 import android.support.test.filters.SmallTest;
 
 import org.aerogear.mobile.core.MobileCore;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,15 +35,15 @@ public class AppMetricsTest {
     }
 
     @Test
-    public void testData() {
+    public void testData() throws JSONException {
         Application context = RuntimeEnvironment.application;
 
         AppMetrics appMetrics = new AppMetrics(context);
-        Map<String, String> result = appMetrics.data();
+        JSONObject result = appMetrics.data();
 
-        assertNotNull(result.get("appId"));
-        assertNotNull(result.get("appVersion"));
-        assertNotNull(result.get("sdkVersion"));
+        assertNotNull(result.getString("appId"));
+        assertNotNull(result.getString("appVersion"));
+        assertNotNull(result.getString("sdkVersion"));
     }
 
 }
