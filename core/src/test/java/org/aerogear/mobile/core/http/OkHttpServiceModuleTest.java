@@ -6,9 +6,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
+import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
 
 import static junit.framework.Assert.fail;
 import static org.junit.Assert.assertEquals;
@@ -98,16 +102,20 @@ public class OkHttpServiceModuleTest {
     }
 
     @Test
-    public void testRedirectsShouldBeSuccessful() {
-        OkHttpClient client = new OkHttpClient.Builder()
-            .followRedirects(false)
-            .followSslRedirects(false)
-            .build();
+    public void testRedirectsShouldBeSuccessful() throws IOException {
+        MockWebServer server = new MockWebServer();
+        MockResponse redirectResponse = new MockResponse();
+        redirectResponse.setStatus("HTTP/1.1 302");
+        server.enqueue(redirectResponse);
+        server.start();
 
-        HttpServiceModule module = new OkHttpServiceModule(client);
+        HttpUrl url = server.url("/mockRequest");
+        String urlString = url.toString();
+
+        HttpServiceModule module = new OkHttpServiceModule();
 
         HttpRequest request = module.newRequest();
-        request.get("https://jigsaw.w3.org/HTTP/300/302.html");
+        request.get(urlString);
 
         final HttpResponse response = request.execute();
         assertNotNull(response);

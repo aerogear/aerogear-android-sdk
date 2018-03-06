@@ -39,7 +39,7 @@ android {
     }
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile) {use
     options.compilerArgs = ["-Xlint:unchecked"]
 }
 
@@ -52,6 +52,7 @@ dependencies {
     testImplementation "com.android.support.test:rules"
     testImplementation "com.android.support.test.espresso:espresso-core"
     testImplementation "org.robolectric:robolectric"
+    testImplementation 'com.squareup.okhttp3:mockwebserver'
 }
 
 apply from: "../gradle-mvn-push.gradle"
