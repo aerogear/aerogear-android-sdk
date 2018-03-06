@@ -48,6 +48,14 @@ To detect if the app is being run on an emulator the `SecurityCheckType#IS_EMULA
 
 To detect if a device has a lock screen set (with pin, fingerprint, pattern) the `SecurityCheckType#HAS_SCREENLOCK` function can be used.  This function uses Android's link:https://developer.android.com/reference/android/app/KeyguardManager.html[KeyguardManager] class.
 
+==== link:javadoc[ALLOW_BACKUP_ENABLED]
+
+To detect whether the allowBackup flag is enabled for the application the `SecurityCheckType#ALLOW_BACKUP_ENABLED` function can be used. The link:https://developer.android.com/guide/topics/manifest/application-element.html[allowBackup] flag determines whether to allow the application to participate in the backup and restore infrastructure.
+
+==== link:javadoc[HAS_ENCRYPTION_ENABLED]
+
+To detect whether the devices filesystem is encrypted the `SecurityCheckType#HAS_ENCRYPTION_ENABLED` function can be used. This function uses Android's link:https://developer.android.com/reference/android/app/admin/DevicePolicyManager.html[DevicePolicyManager] class.
+
 === Custom Self Defence Checks
 
 These are self defence checks that you can define to be used by the SDK. Custom self defence checks must extend the link:javadoc[`AbstractSecurityCheck`] interface.
