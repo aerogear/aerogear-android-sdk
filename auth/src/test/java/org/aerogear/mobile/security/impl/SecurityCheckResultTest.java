@@ -29,7 +29,7 @@ public class SecurityCheckResultTest {
 
     @Test
     public void testGetName() {
-        assertEquals(securityCheck.getName(), result.getName());
+        assertEquals(securityCheck.getType(), result.getType());
     }
 
     @Test

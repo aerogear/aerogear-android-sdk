@@ -30,7 +30,7 @@ public class SecurityCheckResultMetricTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        when(securityCheck.getName()).thenReturn(NAME);
+        when(securityCheck.getType()).thenReturn(NAME);
         okResult = new SecurityCheckResultImpl(securityCheck, true);
         failedResult = new SecurityCheckResultImpl(securityCheck, false);
     }

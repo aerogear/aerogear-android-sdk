@@ -72,7 +72,7 @@ public class SyncSecurityCheckExecutor
 
         for (SecurityCheck check : getChecks()) {
             SecurityCheckResult result = check.test(getContext());
-            results.put(check.getName(), result);
+            results.put(check.getType(), result);
 
             metricServicePublisher.onExecuted(result);
         }

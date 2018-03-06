@@ -23,7 +23,15 @@ public interface SecurityCheck {
      *
      * @return {@link String} name of the check
      */
-    default public String getName() {
+    String getDisplayName();
+
+    /**
+     * Gets the type of the check. It must be a unique string. The default implementation is to
+     * return the check class name.
+     *
+     * @return {@link String} name of the check
+     */
+    default String getType() {
         return this.getClass().getName();
     }
 }

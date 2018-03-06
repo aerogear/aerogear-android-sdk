@@ -13,8 +13,9 @@ import org.aerogear.mobile.security.SecurityCheckResult;
  */
 public class SecurityCheckResultImpl implements SecurityCheckResult {
 
-    private final String name;
+    private final String type;
     private final boolean passed;
+    private final String displayName;
 
     /**
      * Builds a new Security Check Result object.
@@ -24,18 +25,30 @@ public class SecurityCheckResultImpl implements SecurityCheckResult {
      * @throws IllegalArgumentException if check is null
      */
     public SecurityCheckResultImpl(@NonNull SecurityCheck check, final boolean passed) {
-        this.name = nonNull(check, "check").getName();
+        SecurityCheck nonNullCheck = nonNull(check, "check");
+        this.type = nonNullCheck.getType();
+        this.displayName = nonNullCheck.getDisplayName();
         this.passed = passed;
     }
 
     /**
-     * Gets the name of the check.
+     * Gets the type of the check.
      *
-     * @return {@link String} name of check
+     * @return {@link String} type of check
      */
     @Override
-    public String getName() {
-        return name;
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * Gets the Display Name of the check.
+     *
+     * @return {@link String} Display Name of check
+     */
+    @Override
+    public String getDisplayName() {
+        return displayName;
     }
 
     /**

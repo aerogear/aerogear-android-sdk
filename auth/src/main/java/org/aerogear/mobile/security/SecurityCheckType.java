@@ -72,9 +72,9 @@ public enum SecurityCheckType {
     /**
      * Gets the name of the security check.
      *
-     * @return {@link String} {@link SecurityCheck#getName()}
+     * @return {@link String} {@link SecurityCheck#getType()}
      */
     public String getName() {
-        return getSecurityCheck().getName();
+        return getSecurityCheck().getType();
     }
 }

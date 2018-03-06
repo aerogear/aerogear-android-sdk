@@ -19,4 +19,9 @@ public class DebuggerCheck extends AbstractSecurityCheck {
     protected boolean execute(@NonNull Context context) {
         return Debug.isDebuggerConnected();
     }
+
+    @Override
+    public String getDisplayName() {
+        return "Debugger Check";
+    }
 }
