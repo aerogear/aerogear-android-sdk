@@ -1,8 +1,6 @@
 package org.aerogear.mobile.core.configuration;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,7 +9,9 @@ import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * This class is responsible for consuming a reader and producing a tree of config values to be
@@ -50,14 +50,15 @@ public class MobileCoreJsonParser {
     private void parseConfigObject(final JSONObject jsonObject) throws JSONException, IOException {
         nonNull(jsonObject, "jsonObject");
 
-        final ServiceConfiguration.Builder serviceConfigBuilder = ServiceConfiguration.newConfiguration();
+        final ServiceConfiguration.Builder serviceConfigBuilder =
+                        ServiceConfiguration.newConfiguration();
         serviceConfigBuilder.setName(jsonObject.getString("name"));
         serviceConfigBuilder.setUrl(jsonObject.getString("url"));
         serviceConfigBuilder.setType(jsonObject.getString("type"));
 
         final JSONObject config = jsonObject.getJSONObject("config");
         final JSONArray namesArray = config.names();
-        if(namesArray!=null){
+        if (namesArray != null) {
             int namesSize = namesArray.length();
             for (int i = 0; i < namesSize; i++) {
                 final String name = namesArray.getString(i);
@@ -69,15 +70,16 @@ public class MobileCoreJsonParser {
     }
 
     /**
-     * @param jsonStream a inputStream to for mobile-core.json.  Please note that this
-     *                   should be managed by the calling core.  The parser will not close the resource
-     *                   when it is finished.
+     * @param jsonStream a inputStream to for mobile-core.json. Please note that this should be
+     *        managed by the calling core. The parser will not close the resource when it is
+     *        finished.
      *
      * @return A map of ServiceConfigs mapped by their name.
-     * @throws IOException   if reading the stream fails
+     * @throws IOException if reading the stream fails
      * @throws JSONException if the json document is malformed
      */
-    public static Map<String, ServiceConfiguration> parse(final InputStream jsonStream) throws IOException, JSONException {
+    public static Map<String, ServiceConfiguration> parse(final InputStream jsonStream)
+                    throws IOException, JSONException {
         MobileCoreJsonParser parser = new MobileCoreJsonParser(jsonStream);
         return parser.values;
     }

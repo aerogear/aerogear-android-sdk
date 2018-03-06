@@ -1,11 +1,7 @@
 package org.aerogear.mobile.auth.credentials;
 
-import android.util.Log;
+import static org.aerogear.mobile.core.utils.SanityCheck.nonEmpty;
 
-import net.openid.appauth.AuthState;
-
-import org.aerogear.mobile.auth.AuthenticationException;
-import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
 import org.jose4j.jwa.AlgorithmConstraints;
 import org.jose4j.jwk.JsonWebKeySet;
 import org.jose4j.jws.AlgorithmIdentifiers;
@@ -17,7 +13,12 @@ import org.jose4j.keys.resolvers.JwksVerificationKeyResolver;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import static org.aerogear.mobile.core.utils.SanityCheck.nonEmpty;
+import android.util.Log;
+
+import org.aerogear.mobile.auth.AuthenticationException;
+import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
+
+import net.openid.appauth.AuthState;
 
 /**
  * Credentials for OIDC based authentication
@@ -31,14 +32,15 @@ public class OIDCCredentials {
     /**
      * OpenID Connect credentials containing the identity, refresh and access tokens provided on a
      * successful authentication with OpenID Connect.
+     * 
      * @param serialisedCredential JSON string representation of the authState field produced by
-     *                             {@link #deserialize(String)}.
+     *        {@link #deserialize(String)}.
      * @throws IllegalArgumentException if deserializing fails
      */
     public OIDCCredentials(final String serialisedCredential) {
         try {
             this.authState = AuthState.jsonDeserialize(serialisedCredential);
-        } catch(JSONException e) {
+        } catch (JSONException e) {
             throw new IllegalArgumentException(e);
         }
     }
@@ -63,29 +65,52 @@ public class OIDCCredentials {
      * Verify the token and its claims against the given Keycloak configuration
      *
      * @param jwks json web keys to verify
-     * @param keycloakConfig keycloak config containing certificate information for the jwks instance.
+     * @param keycloakConfig keycloak config containing certificate information for the jwks
+     *        instance.
      * @return true if the jwks value is valid, false otherwise
      */
-    public boolean verifyClaims(final JsonWebKeySet jwks, final KeycloakConfiguration keycloakConfig) {
+    public boolean verifyClaims(final JsonWebKeySet jwks,
+                    final KeycloakConfiguration keycloakConfig) {
         final String issuer = keycloakConfig.getIssuer();
         final String audience = keycloakConfig.getClientId();
-        final JwksVerificationKeyResolver jwksKeyResolver = new JwksVerificationKeyResolver(jwks.getJsonWebKeys());
+        final JwksVerificationKeyResolver jwksKeyResolver =
+                        new JwksVerificationKeyResolver(jwks.getJsonWebKeys());
 
         // Validate and process the JWT.
-        final JwtConsumer jwtConsumer = new JwtConsumerBuilder()
-            .setRequireExpirationTime() // require the JWT to have an expiration time
-            .setAllowedClockSkewInSeconds(30) // allow some leeway in validating time based claims to account for clock skew
-            .setRequireSubject() // require the subject claim
-            .setExpectedIssuer(issuer) // whom the JWT needs to have been issued by
-            .setExpectedAudience(audience) // to whom the JWT is intended for
-            .setVerificationKeyResolver(jwksKeyResolver)
-            .setJwsAlgorithmConstraints( // only allow the expected signature algorithm(s) in the given context
-                new AlgorithmConstraints(AlgorithmConstraints.ConstraintType.WHITELIST, // which is only RS256 here
-                    AlgorithmIdentifiers.RSA_USING_SHA256))
-            .build(); // create the JwtConsumer instance
+        final JwtConsumer jwtConsumer = new JwtConsumerBuilder().setRequireExpirationTime() // require
+                                                                                            // the
+                                                                                            // JWT
+                                                                                            // to
+                                                                                            // have
+                                                                                            // an
+                                                                                            // expiration
+                                                                                            // time
+                        .setAllowedClockSkewInSeconds(30) // allow some leeway in validating time
+                                                          // based claims to account for clock skew
+                        .setRequireSubject() // require the subject claim
+                        .setExpectedIssuer(issuer) // whom the JWT needs to have been issued by
+                        .setExpectedAudience(audience) // to whom the JWT is intended for
+                        .setVerificationKeyResolver(jwksKeyResolver).setJwsAlgorithmConstraints( // only
+                                                                                                 // allow
+                                                                                                 // the
+                                                                                                 // expected
+                                                                                                 // signature
+                                                                                                 // algorithm(s)
+                                                                                                 // in
+                                                                                                 // the
+                                                                                                 // given
+                                                                                                 // context
+                                        new AlgorithmConstraints(
+                                                        AlgorithmConstraints.ConstraintType.WHITELIST, // which
+                                                                                                       // is
+                                                                                                       // only
+                                                                                                       // RS256
+                                                                                                       // here
+                                                        AlgorithmIdentifiers.RSA_USING_SHA256))
+                        .build(); // create the JwtConsumer instance
 
         try {
-            //  Validate the JWT and process it to the Claims
+            // Validate the JWT and process it to the Claims
             jwtConsumer.processToClaims(this.getAccessToken());
             return true;
         } catch (final InvalidJwtException e) {
@@ -100,6 +125,7 @@ public class OIDCCredentials {
 
     /**
      * Returns whether this token is expired or not.
+     * 
      * @return true if expired.
      */
     public boolean isExpired() {
@@ -108,6 +134,7 @@ public class OIDCCredentials {
 
     /**
      * Check whether new access token is needed.
+     * 
      * @return true if access token is needed
      */
     public boolean getNeedsRenewal() {
@@ -123,6 +150,7 @@ public class OIDCCredentials {
 
     /**
      * Check if the user is authenticated/authorized.
+     * 
      * @return <code>true</code> if the user is authenticated/authorized.
      */
     public boolean isAuthorized() {
@@ -131,21 +159,23 @@ public class OIDCCredentials {
 
     /**
      * Returns stringified JSON for the OIDCCredential.
+     * 
      * @return Stringified JSON OIDCCredential
      * @throws IllegalStateException if the auth state can not be serialized
      */
     public String serialize() {
         try {
-            final JSONObject jsonCredential = new JSONObject()
-                .put("authState", this.authState.jsonSerializeString());
+            final JSONObject jsonCredential =
+                            new JSONObject().put("authState", this.authState.jsonSerializeString());
             return jsonCredential.toString();
-        } catch(JSONException e) {
+        } catch (JSONException e) {
             throw new IllegalStateException(e);
         }
     }
 
     /**
      * Return a new credential from the output of {@link #serialize()}
+     * 
      * @param serializedCredential serialized credential from {@link #serialize()}
      * @return new credential
      * @throws IllegalArgumentException if the serailized credentials can not be deserialized
@@ -157,13 +187,14 @@ public class OIDCCredentials {
             final JSONObject jsonCredential = new JSONObject(serializedCredential);
             final String serializedAuthState = jsonCredential.getString("authState");
             return new OIDCCredentials(serializedAuthState);
-        } catch(JSONException e) {
+        } catch (JSONException e) {
             throw new IllegalArgumentException(e);
         }
     }
 
     /**
      * Check whether the user is authorized and not expired.
+     * 
      * @return true if user is authorized and token is not expired.
      */
     public boolean checkValidAuth() {
@@ -175,7 +206,7 @@ public class OIDCCredentials {
      *
      * @return not Implemented
      * @throws UnsupportedOperationException this operation is not implemented
-     * @throws AuthenticationException  this operation is not implemented
+     * @throws AuthenticationException this operation is not implemented
      */
     public boolean renew() throws AuthenticationException {
         throw new UnsupportedOperationException("Not yet implemented");
@@ -183,8 +214,10 @@ public class OIDCCredentials {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
 
         OIDCCredentials that = (OIDCCredentials) o;
 
@@ -192,7 +225,10 @@ public class OIDCCredentials {
             return true;
         }
 
-        return authState != null ? authState.jsonSerializeString().equals(that.authState.jsonSerializeString()) : that.authState == null;
+        return authState != null
+                        ? authState.jsonSerializeString()
+                                        .equals(that.authState.jsonSerializeString())
+                        : that.authState == null;
     }
 
     @Override

@@ -1,14 +1,15 @@
 package org.aerogear.mobile.security.checks;
 
-import android.test.mock.MockContext;
+import static junit.framework.Assert.assertFalse;
 
-import org.aerogear.mobile.security.SecurityCheckResult;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
-import static junit.framework.Assert.assertFalse;
+import android.test.mock.MockContext;
+
+import org.aerogear.mobile.security.SecurityCheckResult;
 
 @RunWith(RobolectricTestRunner.class)
 public class EmulatorCheckTest {

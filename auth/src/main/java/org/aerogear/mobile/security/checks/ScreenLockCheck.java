@@ -18,10 +18,11 @@ public class ScreenLockCheck extends AbstractSecurityCheck {
      */
     @Override
     protected boolean execute(@NonNull Context context) {
-        final KeyguardManager keyguardManager = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
+        final KeyguardManager keyguardManager =
+                        (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
 
         // KeyguardManager#isDeviceSecure() was added in Android M.
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             return keyguardManager.isDeviceSecure();
         }
         return keyguardManager.isKeyguardSecure();

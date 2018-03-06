@@ -1,5 +1,14 @@
 package org.aerogear.mobile.auth;
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.List;
+
+import org.jose4j.jwk.JsonWebKeySet;
+
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -17,14 +26,6 @@ import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.ServiceModule;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.logging.Logger;
-import org.jose4j.jwk.JsonWebKeySet;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.List;
-
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 /**
  * Entry point for authenticating users.
@@ -98,13 +99,14 @@ public class AuthService implements ServiceModule {
             methodsToBeInvoked.add(STEP.INITIALIZED.methodName);
         }
 
-        throw new IllegalStateException(
-            String.format("The AuthService has not been correctly initialised. Following methods needs to be called: %s",
-                Arrays.toString(methodsToBeInvoked.toArray())));
+        throw new IllegalStateException(String.format(
+                        "The AuthService has not been correctly initialised. Following methods needs to be called: %s",
+                        Arrays.toString(methodsToBeInvoked.toArray())));
     }
 
     /**
      * Return the user that is currently logged and is still valid. Otherwise returns null
+     * 
      * @return the current logged in. Could be null.
      */
     public UserPrincipal currentUser() {
@@ -115,10 +117,11 @@ public class AuthService implements ServiceModule {
         if (jwks != null) {
             OIDCCredentials currentCredentials = this.authStateManager.load();
             if (!currentCredentials.isExpired()
-                && currentCredentials.verifyClaims(jwks, keycloakConfiguration)
-                && currentCredentials.isAuthorized()) {
+                            && currentCredentials.verifyClaims(jwks, keycloakConfiguration)
+                            && currentCredentials.isAuthorized()) {
                 try {
-                    UserIdentityParser parser = new UserIdentityParser(currentCredentials, keycloakConfiguration);
+                    UserIdentityParser parser = new UserIdentityParser(currentCredentials,
+                                    keycloakConfiguration);
                     currentUser = parser.parseUser();
                 } catch (AuthenticationException ae) {
                     LOG.error(TAG, "Failed to parse user identity from credential", ae);
@@ -130,13 +133,14 @@ public class AuthService implements ServiceModule {
     }
 
     /**
-     * Log in the user with the given authentication options. At the moment, only OIDC protocol is supported.
-     * The login will be asynchronous.
+     * Log in the user with the given authentication options. At the moment, only OIDC protocol is
+     * supported. The login will be asynchronous.
      *
      * @param authOptions the authentication options
      * @param callback the callback function that will be invoked with the user info
      */
-    public void login(@NonNull final DefaultAuthenticateOptions authOptions, @NonNull final Callback<UserPrincipal> callback) {
+    public void login(@NonNull final DefaultAuthenticateOptions authOptions,
+                    @NonNull final Callback<UserPrincipal> callback) {
         failIfNotReady();
         oidcAuthenticatorImpl.authenticate(authOptions, callback);
     }
@@ -150,7 +154,9 @@ public class AuthService implements ServiceModule {
     }
 
     /**
-     * This function should be called in the start activity's "onActivityResult" method to allow the SDK to process the response from the authentication server.
+     * This function should be called in the start activity's "onActivityResult" method to allow the
+     * SDK to process the response from the authentication server.
+     * 
      * @param data The intent data that is passed to "onActivityResult"
      */
     public void handleAuthResult(@NonNull final Intent data) {
@@ -158,13 +164,13 @@ public class AuthService implements ServiceModule {
     }
 
     /**
-     * Log out the given principal.
-     * The logout will be asynchronous.
+     * Log out the given principal. The logout will be asynchronous.
      *
      * @param principal principal to be logged out
      * @param callback the callback function to be invoked
      */
-    public void logout(@NonNull final UserPrincipal principal, @NonNull final Callback<UserPrincipal> callback) {
+    public void logout(@NonNull final UserPrincipal principal,
+                    @NonNull final Callback<UserPrincipal> callback) {
         failIfNotReady();
         this.oidcAuthenticatorImpl.logout(principal, callback);
     }
@@ -186,25 +192,34 @@ public class AuthService implements ServiceModule {
 
     /**
      * Initialize the module. This should be called before any other method when using the module.
+     * 
      * @param context the current application context
      * @param authServiceConfiguration the configuration of the auth service
      */
-    public void init(final Context context, final AuthServiceConfiguration authServiceConfiguration) {
+    public void init(final Context context,
+                    final AuthServiceConfiguration authServiceConfiguration) {
         if (!initialisationStatus.contains(STEP.CONFIGURED)) {
-            throw new IllegalStateException("configure method must be called before the init method");
+            throw new IllegalStateException(
+                            "configure method must be called before the init method");
         }
 
         this.appContext = nonNull(context, "context");
         this.authStateManager = AuthStateManager.getInstance(context);
-        this.authServiceConfiguration = nonNull(authServiceConfiguration, "authServiceConfiguration");
-        this.jwksManager = new JwksManager(this.appContext, this.mobileCore, this.authServiceConfiguration);
-        this.oidcAuthenticatorImpl = new OIDCAuthenticatorImpl(this.serviceConfiguration, this.authServiceConfiguration, this.authStateManager, new AuthorizationServiceFactory(appContext), jwksManager);
+        this.authServiceConfiguration =
+                        nonNull(authServiceConfiguration, "authServiceConfiguration");
+        this.jwksManager = new JwksManager(this.appContext, this.mobileCore,
+                        this.authServiceConfiguration);
+        this.oidcAuthenticatorImpl = new OIDCAuthenticatorImpl(this.serviceConfiguration,
+                        this.authServiceConfiguration, this.authStateManager,
+                        new AuthorizationServiceFactory(appContext), jwksManager);
 
         initialisationStatus.add(STEP.INITIALIZED);
     }
 
     @Override
-    public boolean requiresConfiguration() { return true; }
+    public boolean requiresConfiguration() {
+        return true;
+    }
 
     @Override
     public void destroy() {

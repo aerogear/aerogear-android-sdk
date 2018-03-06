@@ -1,12 +1,5 @@
 package org.aerogear.mobile.security;
 
-import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import org.aerogear.mobile.core.executor.AppExecutors;
-import org.aerogear.mobile.core.metrics.MetricsService;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -17,11 +10,19 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import org.aerogear.mobile.core.executor.AppExecutors;
+import org.aerogear.mobile.core.metrics.MetricsService;
+
 /**
- * Executor used to asynchronously execute checks.
- * Checks are executed by using {@link AppExecutors#singleThreadService()} if no custom executor is configured.
+ * Executor used to asynchronously execute checks. Checks are executed by using
+ * {@link AppExecutors#singleThreadService()} if no custom executor is configured.
  */
-public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<AsyncSecurityCheckExecutor> {
+public class AsyncSecurityCheckExecutor
+                extends AbstractSecurityCheckExecutor<AsyncSecurityCheckExecutor> {
 
     private final ExecutorService executorService;
 
@@ -29,7 +30,8 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<As
     /**
      * Builder class for constructing an AsyncSecurityCheckExecutor object.
      */
-    public static class Builder extends SecurityCheckExecutor.Builder.AbstractBuilder<Builder, AsyncSecurityCheckExecutor> {
+    public static class Builder extends
+                    SecurityCheckExecutor.Builder.AbstractBuilder<Builder, AsyncSecurityCheckExecutor> {
 
         private ExecutorService executorService;
 
@@ -45,7 +47,8 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<As
         /**
          * A custom {@link ExecutorService} for this SecurityCheckExecutor.
          *
-         * @param executorService the {@link ExecutorService} to be used. Defaults to {@link AppExecutors#singleThreadService()} if null
+         * @param executorService the {@link ExecutorService} to be used. Defaults to
+         *        {@link AppExecutors#singleThreadService()} if null
          * @return this
          */
         public Builder withExecutorService(@Nullable final ExecutorService executorService) {
@@ -56,7 +59,8 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<As
         /**
          * Creates a new AsyncSecurityCheckExecutor object.
          *
-         * If no {@link ExecutorService} has been defined, defaults to {@link AppExecutors#singleThreadService()}.
+         * If no {@link ExecutorService} has been defined, defaults to
+         * {@link AppExecutors#singleThreadService()}.
          *
          * @return {@link AsyncSecurityCheckExecutor}
          */
@@ -65,7 +69,8 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<As
             if (executorService == null) {
                 executorService = new AppExecutors().singleThreadService();
             }
-            return new AsyncSecurityCheckExecutor(getCtx(), executorService, getChecks(), getMetricsService());
+            return new AsyncSecurityCheckExecutor(getCtx(), executorService, getChecks(),
+                            getMetricsService());
         }
     }
 
@@ -78,9 +83,9 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<As
      * @param metricsService {@link MetricsService}. Can be null
      */
     AsyncSecurityCheckExecutor(@NonNull final Context context,
-                               @NonNull final ExecutorService executorService,
-                               @NonNull final Collection<SecurityCheck> checks,
-                               @Nullable final MetricsService metricsService) {
+                    @NonNull final ExecutorService executorService,
+                    @NonNull final Collection<SecurityCheck> checks,
+                    @Nullable final MetricsService metricsService) {
         super(context, checks, metricsService);
         this.executorService = executorService;
     }
@@ -88,8 +93,8 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<As
     /**
      * Executes the checks asynchronously.
      *
-     * Returns a {@link Map} containing the results of each executed test (a {@link Future}).
-     * The key of the map will be the output of {@link SecurityCheck#getName()}, while the value will be
+     * Returns a {@link Map} containing the results of each executed test (a {@link Future}). The
+     * key of the map will be the output of {@link SecurityCheck#getName()}, while the value will be
      * a {@link Map} of {@link Future} with the {@link SecurityCheckResult} of the check.
      *
      * @return {@link Map}
@@ -101,17 +106,20 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<As
     /**
      * Executes the checks asynchronously.
      *
-     * Returns a {@link Map} containing the results of each executed test (a {@link Future}).
-     * The key of the map will be the output of {@link SecurityCheck#getName()}, while the value will be
+     * Returns a {@link Map} containing the results of each executed test (a {@link Future}). The
+     * key of the map will be the output of {@link SecurityCheck#getName()}, while the value will be
      * a {@link Map} of {@link Future} with the {@link SecurityCheckResult} of the check.
      *
-     * @param securityCheckExecutorListeners list of listeners that will receive events about checks execution
+     * @param securityCheckExecutorListeners list of listeners that will receive events about checks
+     *        execution
      * @return {@link Map}
      */
-    private Map<String, Future<SecurityCheckResult>> execute(SecurityCheckExecutorListener... securityCheckExecutorListeners) {
+    private Map<String, Future<SecurityCheckResult>> execute(
+                    SecurityCheckExecutorListener... securityCheckExecutorListeners) {
 
-        final List<SecurityCheckExecutorListener> listeners =
-            securityCheckExecutorListeners == null ? new ArrayList<>(1) : new ArrayList<>(Arrays.asList(securityCheckExecutorListeners));
+        final List<SecurityCheckExecutorListener> listeners = securityCheckExecutorListeners == null
+                        ? new ArrayList<>(1)
+                        : new ArrayList<>(Arrays.asList(securityCheckExecutorListeners));
         final Collection<SecurityCheck> checks = getChecks();
 
         // Adds the metric publisher to the passed in listeners
@@ -122,7 +130,7 @@ public class AsyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<As
 
         for (final SecurityCheck check : checks) {
             res.put(check.getName(), (executorService.submit(() -> {
-                final SecurityCheckResult result =  check.test(getContext());
+                final SecurityCheckResult result = check.test(getContext());
 
                 final int remaining = count.decrementAndGet();
 

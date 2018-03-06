@@ -1,11 +1,11 @@
 package org.aerogear.mobile.auth.configuration;
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonEmpty;
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
 import android.net.Uri;
 
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
-
-import static org.aerogear.mobile.core.utils.SanityCheck.nonEmpty;
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 /**
  * A class to represent the configuration options of the Keycloak singleThreadService
@@ -28,7 +28,9 @@ public class KeycloakConfiguration {
     private final String baseUrl;
 
     /**
-     * Create a new instance of the Keycloak configuration from the given instance of ServiceConfiguration.
+     * Create a new instance of the Keycloak configuration from the given instance of
+     * ServiceConfiguration.
+     * 
      * @param configuration the ServiceConfiguration instance for Keycloak
      */
     public KeycloakConfiguration(final ServiceConfiguration configuration) {
@@ -42,6 +44,7 @@ public class KeycloakConfiguration {
 
     /**
      * Get the URI for the Keycloak authentication endpoint
+     * 
      * @return the authentication endpoint URI
      */
     public Uri getAuthenticationEndpoint() {
@@ -50,14 +53,16 @@ public class KeycloakConfiguration {
 
     /**
      * Get the URI for the token exchange endpoint
+     * 
      * @return the token exchange endpoint URI
      */
     public Uri getTokenEndpoint() {
-        return Uri.parse( this.baseUrl + "/token");
+        return Uri.parse(this.baseUrl + "/token");
     }
 
     /**
      * Get the client id
+     * 
      * @return the client id
      */
     public String getClientId() {
@@ -66,16 +71,19 @@ public class KeycloakConfiguration {
 
     /**
      * Get the logout URL string
+     * 
      * @param identityToken the identity token
      * @param redirectUri the redirect uri
      * @return the full logout URL string
      */
     public String getLogoutUrl(final String identityToken, final String redirectUri) {
-        return String.format(LOGOUT_URL_TEMPLATE, this.baseUrl, TOKEN_HINT_FRAGMENT, identityToken, REDIRECT_FRAGMENT, redirectUri);
+        return String.format(LOGOUT_URL_TEMPLATE, this.baseUrl, TOKEN_HINT_FRAGMENT, identityToken,
+                        REDIRECT_FRAGMENT, redirectUri);
     }
 
     /**
      * Get the URL string of the Keycloak singleThreadService
+     * 
      * @return the URL of the Keycloak singleThreadService
      */
     public String getHostUrl() {
@@ -84,6 +92,7 @@ public class KeycloakConfiguration {
 
     /**
      * Get the realm name of the Keycloak singleThreadService
+     * 
      * @return the realm name
      */
     public String getRealmName() {
@@ -92,6 +101,7 @@ public class KeycloakConfiguration {
 
     /**
      * Returns the URL where keys can be retrieved.
+     * 
      * @return the URL where keys can be retrieved.
      */
     public String getJwksUrl() {
@@ -100,6 +110,7 @@ public class KeycloakConfiguration {
 
     /**
      * Returns the JWT Issuer
+     * 
      * @return the JWT Issuer
      */
     public String getIssuer() {

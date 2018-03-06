@@ -1,10 +1,10 @@
 package org.aerogear.mobile.core.metrics.publisher;
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
 import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.metrics.Metrics;
 import org.aerogear.mobile.core.metrics.MetricsPublisher;
-
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 /**
  * All metrics data will be logged only

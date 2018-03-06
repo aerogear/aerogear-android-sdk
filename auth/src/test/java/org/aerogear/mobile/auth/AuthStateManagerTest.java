@@ -1,17 +1,5 @@
 package org.aerogear.mobile.auth;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-
-import org.aerogear.mobile.auth.credentials.OIDCCredentials;
-import org.json.JSONException;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.lang.reflect.Field;
-
 import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -19,6 +7,19 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.lang.reflect.Field;
+
+import org.json.JSONException;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+
+import org.aerogear.mobile.auth.credentials.OIDCCredentials;
 
 public class AuthStateManagerTest {
     @Mock
@@ -36,7 +37,8 @@ public class AuthStateManagerTest {
     public void setup() throws NoSuchFieldException, IllegalAccessException {
         MockitoAnnotations.initMocks(this);
 
-        when(mockContext.getSharedPreferences(anyString(), anyInt())).thenReturn(mockSharedPreferences);
+        when(mockContext.getSharedPreferences(anyString(), anyInt()))
+                        .thenReturn(mockSharedPreferences);
         when(mockSharedPreferences.edit()).thenReturn(mockSharedPreferencesEditor);
 
         // Reset the singleton for each test
@@ -57,7 +59,8 @@ public class AuthStateManagerTest {
 
     @Test
     public void testSaveNull() throws JSONException {
-        when(mockSharedPreferencesEditor.remove(anyString())).thenReturn(mockSharedPreferencesEditor);
+        when(mockSharedPreferencesEditor.remove(anyString()))
+                        .thenReturn(mockSharedPreferencesEditor);
         when(mockSharedPreferencesEditor.commit()).thenReturn(true);
 
         authStateManager.save(null);
@@ -68,7 +71,8 @@ public class AuthStateManagerTest {
     @Test
     public void testSaveWithState() throws JSONException {
         when(mockOIDCCredentials.serialize()).thenReturn("TEST");
-        when(mockSharedPreferencesEditor.putString(anyString(), anyString())).thenReturn(mockSharedPreferencesEditor);
+        when(mockSharedPreferencesEditor.putString(anyString(), anyString()))
+                        .thenReturn(mockSharedPreferencesEditor);
         when(mockSharedPreferencesEditor.commit()).thenReturn(true);
 
         authStateManager.save(mockOIDCCredentials);

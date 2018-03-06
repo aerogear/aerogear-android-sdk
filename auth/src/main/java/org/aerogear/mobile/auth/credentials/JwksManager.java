@@ -1,5 +1,12 @@
 package org.aerogear.mobile.auth.credentials;
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
+import java.util.Date;
+
+import org.jose4j.jwk.JsonWebKeySet;
+import org.jose4j.lang.JoseException;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
@@ -13,12 +20,6 @@ import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpResponse;
 import org.aerogear.mobile.core.http.HttpServiceModule;
 import org.aerogear.mobile.core.logging.Logger;
-import org.jose4j.jwk.JsonWebKeySet;
-import org.jose4j.lang.JoseException;
-
-import java.util.Date;
-
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 /**
  * A class that is responsible for manage the Json Web Key Set(JWKS).
@@ -26,7 +27,7 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 public class JwksManager {
 
     private static final Logger logger = MobileCore.getLogger();
-    private static final int MILLISECONDS_PER_MINUTE = 60*1000;
+    private static final int MILLISECONDS_PER_MINUTE = 60 * 1000;
     private static final String STORE_NAME = "org.aerogear.mobile.auth.JwksStore";
     private static final String ENTRY_SUFFIX_FOR_KEY_CONTENT = "jwks_content";
     private static final String ENTRY_SUFFIX_FOR_REQUEST_DATE = "requested_date";
@@ -35,18 +36,20 @@ public class JwksManager {
     private final AuthServiceConfiguration authServiceConfiguration;
     private final SharedPreferences sharedPrefs;
 
-    public JwksManager(@NonNull final Context context,
-                       @NonNull final MobileCore mobileCore,
-                       @NonNull final AuthServiceConfiguration authServiceConfiguration) {
+    public JwksManager(@NonNull final Context context, @NonNull final MobileCore mobileCore,
+                    @NonNull final AuthServiceConfiguration authServiceConfiguration) {
         this.httpModule = nonNull(mobileCore, "mobileCore").getHttpLayer();
-        this.authServiceConfiguration = nonNull(authServiceConfiguration, "authServiceConfiguration");
-        this.sharedPrefs = nonNull(context, "context").getSharedPreferences(STORE_NAME, Context.MODE_PRIVATE);
+        this.authServiceConfiguration =
+                        nonNull(authServiceConfiguration, "authServiceConfiguration");
+        this.sharedPrefs = nonNull(context, "context").getSharedPreferences(STORE_NAME,
+                        Context.MODE_PRIVATE);
     }
 
     /**
-     * Load the cached JWKS from the private storage of the app.
-     * It will return null if there is no cached JWKS found.
-     * It will trigger a request to fetch the JWKS in the background if there is no cached key found, or {@link AuthServiceConfiguration#getMinTimeBetweenJwksRequests()} is passed since the key set is requested last time.
+     * Load the cached JWKS from the private storage of the app. It will return null if there is no
+     * cached JWKS found. It will trigger a request to fetch the JWKS in the background if there is
+     * no cached key found, or {@link AuthServiceConfiguration#getMinTimeBetweenJwksRequests()} is
+     * passed since the key set is requested last time.
      * 
      * @param keyCloakConfig the configuration to use to load the JWKS object
      * 
@@ -71,15 +74,17 @@ public class JwksManager {
     }
 
     /**
-     * Fetch the JWKS from the server if necessary and save them locally.
-     * The request will be trigger if:
-     * 1. forceFetch is set to true, or
-     * 2. {@link AuthServiceConfiguration#getMinTimeBetweenJwksRequests()} is passed since the key set is requested last time.
+     * Fetch the JWKS from the server if necessary and save them locally. The request will be
+     * trigger if: 1. forceFetch is set to true, or 2.
+     * {@link AuthServiceConfiguration#getMinTimeBetweenJwksRequests()} is passed since the key set
+     * is requested last time.
+     * 
      * @param keycloakConfiguration the configuration of the keycloak server
      * @param forceFetch if set to true, the request will be trigger immediately.
      * @return whether the keys has been fetched or not.
      */
-    public boolean fetchJwksIfNeeded(final KeycloakConfiguration keycloakConfiguration, final boolean forceFetch) {
+    public boolean fetchJwksIfNeeded(final KeycloakConfiguration keycloakConfiguration,
+                    final boolean forceFetch) {
         if (forceFetch || shouldRequestJwks(keycloakConfiguration)) {
             fetchJwks(keycloakConfiguration, null);
             return true;
@@ -90,10 +95,13 @@ public class JwksManager {
 
     /**
      * Call the remote endpoint to load the JWKS and save it locally.
+     * 
      * @param keycloakConfiguration the configuration of the keycloak server
-     * @param callback the callback function to be invoked when the request is completed. Can be null.
+     * @param callback the callback function to be invoked when the request is completed. Can be
+     *        null.
      */
-    public void fetchJwks(@NonNull final KeycloakConfiguration keycloakConfiguration, @Nullable final Callback<JsonWebKeySet> callback) {
+    public void fetchJwks(@NonNull final KeycloakConfiguration keycloakConfiguration,
+                    @Nullable final Callback<JsonWebKeySet> callback) {
         String jwksUrl = nonNull(keycloakConfiguration, "keycloakConfiguration").getJwksUrl();
         HttpRequest getRequest = httpModule.newRequest();
         getRequest.get(jwksUrl);
@@ -101,7 +109,7 @@ public class JwksManager {
         response.onComplete(() -> {
             JsonWebKeySet jwks = null;
             JwksException error = null;
-            //this is invoked on a background thread.
+            // this is invoked on a background thread.
             if (response.getStatus() == 200) {
                 String jwksContent = response.stringBody();
                 try {
@@ -115,7 +123,8 @@ public class JwksManager {
                     persistJwksContent(keycloakConfiguration.getRealmName(), jwksContent);
                 }
             } else {
-                logger.warning("failed to fetch JWKS from server. url = " + jwksUrl + " statusCode = " + response.getStatus());
+                logger.warning("failed to fetch JWKS from server. url = " + jwksUrl
+                                + " statusCode = " + response.getStatus());
                 error = new JwksException("failed to fetch JWKS from server");
             }
             if (callback != null) {
@@ -130,6 +139,7 @@ public class JwksManager {
 
     /**
      * Check when the JWKS was requested last time and determine if a request should be sent again.
+     * 
      * @param keyCloakConfig the configuration of the Keycloak server
      * @return true if the request should be triggered
      */
@@ -140,7 +150,8 @@ public class JwksManager {
         long lastRequestDate = this.sharedPrefs.getLong(requestedDateEntryName, 0);
         long currentTime = System.currentTimeMillis();
         long duration = currentTime - lastRequestDate;
-        if (duration < this.authServiceConfiguration.getMinTimeBetweenJwksRequests() * MILLISECONDS_PER_MINUTE) {
+        if (duration < this.authServiceConfiguration.getMinTimeBetweenJwksRequests()
+                        * MILLISECONDS_PER_MINUTE) {
             shouldRequest = false;
         }
         return shouldRequest;
@@ -148,6 +159,7 @@ public class JwksManager {
 
     /**
      * Save the JWKS content for the given name space locally using SharedPreferences.
+     * 
      * @param namespace the namespace associated with the JWKS
      * @param jwksContent the content of the JWKS
      */
@@ -156,7 +168,7 @@ public class JwksManager {
             long timeFetched = new Date().getTime();
             SharedPreferences.Editor editor = this.sharedPrefs.edit();
             editor.putString(buildEntryNameForKeyContent(namespace), jwksContent)
-                .putLong(buildEntryNameForQuestedDate(namespace), timeFetched);
+                            .putLong(buildEntryNameForQuestedDate(namespace), timeFetched);
             if (!editor.commit()) {
                 logger.warning("failed to persist JWKS content");
             }
@@ -165,6 +177,7 @@ public class JwksManager {
 
     /**
      * Build the entry name for the JWKS content
+     * 
      * @param namespace the namespace associated with the JWKS
      * @return the full entry name
      */
@@ -174,6 +187,7 @@ public class JwksManager {
 
     /**
      * Build the entry name for the last requested date for the JWKS content
+     * 
      * @param namespace the namespace associated with the JWKS
      * @return the full entry name
      */

@@ -1,17 +1,15 @@
 package org.aerogear.mobile.auth.credentials;
 
-import android.content.Context;
-import android.content.SharedPreferences;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
-import junit.framework.Assert;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
-import org.aerogear.mobile.auth.Callback;
-import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
-import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
-import org.aerogear.mobile.core.MobileCore;
-import org.aerogear.mobile.core.http.HttpRequest;
-import org.aerogear.mobile.core.http.HttpResponse;
-import org.aerogear.mobile.core.http.HttpServiceModule;
 import org.jose4j.jwk.JsonWebKey;
 import org.jose4j.jwk.JsonWebKeySet;
 import org.junit.Before;
@@ -23,15 +21,18 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.robolectric.RobolectricTestRunner;
 
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import android.content.Context;
+import android.content.SharedPreferences;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import org.aerogear.mobile.auth.Callback;
+import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
+import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
+import org.aerogear.mobile.core.MobileCore;
+import org.aerogear.mobile.core.http.HttpRequest;
+import org.aerogear.mobile.core.http.HttpResponse;
+import org.aerogear.mobile.core.http.HttpServiceModule;
+
+import junit.framework.Assert;
 
 @RunWith(RobolectricTestRunner.class)
 public class JwksManagerTest {
@@ -67,11 +68,12 @@ public class JwksManagerTest {
     private Throwable exception;
 
     // TEST KEY
-    private static final String JWKS_CONTENT = "{\"keys\":[{\"kid\":\"adSoyXNAgQxV43eqHSiRZf6hN9ytvBNQyb2fFSdCTVM\",\"kty\":\"RSA\"," +
-        "\"alg\":\"RS256\",\"use\":\"sig\",\"n\":\"kr1fDOUrTZc1MnpY9brGiA7Cz6X1nX77pmrUEgnMq2mxU7ibSW0CAk5e5a4wkmLGYf8Ey" +
-        "vaFPHT1fMrFmDK03oN8Q2anh-3e894cXBXazHzzaJD-Lz1HfOOZFeInkAasxWSo8KN1-Kg-1Z7QyrPLhfcbIwfH2Stabx-3lfEMtPGws7tqWg93" +
-        "piA8is1PwIV5_8k4CqLe7jNtUyYS4BKR07oBY6VVxXOKKQAQ3ToLN--sjfaXAjDuE1Go7iW9q7Yt6q9qu4JCX-k6IWu68y_H6cicLXwS1VXPMwF" +
-        "jDOj7cQZB7A3t4q0F-6NVL-t7UjrAAK_7V3lPB-rDwHO92iwlZw\",\"e\":\"AQAB\"}]}";
+    private static final String JWKS_CONTENT =
+                    "{\"keys\":[{\"kid\":\"adSoyXNAgQxV43eqHSiRZf6hN9ytvBNQyb2fFSdCTVM\",\"kty\":\"RSA\","
+                                    + "\"alg\":\"RS256\",\"use\":\"sig\",\"n\":\"kr1fDOUrTZc1MnpY9brGiA7Cz6X1nX77pmrUEgnMq2mxU7ibSW0CAk5e5a4wkmLGYf8Ey"
+                                    + "vaFPHT1fMrFmDK03oN8Q2anh-3e894cXBXazHzzaJD-Lz1HfOOZFeInkAasxWSo8KN1-Kg-1Z7QyrPLhfcbIwfH2Stabx-3lfEMtPGws7tqWg93"
+                                    + "piA8is1PwIV5_8k4CqLe7jNtUyYS4BKR07oBY6VVxXOKKQAQ3ToLN--sjfaXAjDuE1Go7iW9q7Yt6q9qu4JCX-k6IWu68y_H6cicLXwS1VXPMwF"
+                                    + "jDOj7cQZB7A3t4q0F-6NVL-t7UjrAAK_7V3lPB-rDwHO92iwlZw\",\"e\":\"AQAB\"}]}";
 
     private static final String KEYALG = "RS256";
 
@@ -94,18 +96,17 @@ public class JwksManagerTest {
 
         when(httpRequest.execute()).thenReturn(httpResponse);
 
-        when(httpResponse.onComplete(any(Runnable.class)))
-            .thenAnswer(new Answer<Object>() {
-                @Override
-                public Object answer(InvocationOnMock invocation) throws Throwable {
-                    ((Runnable) invocation.getArguments()[0]).run();
-                    return null;
-                }
-            });
+        when(httpResponse.onComplete(any(Runnable.class))).thenAnswer(new Answer<Object>() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                ((Runnable) invocation.getArguments()[0]).run();
+                return null;
+            }
+        });
         when(httpResponse.getStatus()).thenReturn(200);
         when(httpResponse.stringBody()).thenReturn(JWKS_CONTENT);
 
-        when(authServiceConfiguration.getMinTimeBetweenJwksRequests()).thenReturn(24*60);
+        when(authServiceConfiguration.getMinTimeBetweenJwksRequests()).thenReturn(24 * 60);
 
         keySet = null;
         exception = null;
@@ -127,7 +128,7 @@ public class JwksManagerTest {
 
             @Override
             public void onError(Throwable error) {
-               exception = error;
+                exception = error;
                 lock.countDown();
             }
         });
@@ -148,7 +149,8 @@ public class JwksManagerTest {
     public void testFetchJwksIfNeeded() throws InterruptedException {
         JwksManager jwksManager = new JwksManager(ctx, mobileCore, authServiceConfiguration);
 
-        when(sharedPrefs.getLong(anyString(), anyLong())).thenReturn(0L, System.currentTimeMillis());
+        when(sharedPrefs.getLong(anyString(), anyLong())).thenReturn(0L,
+                        System.currentTimeMillis());
 
         boolean fetched = jwksManager.fetchJwksIfNeeded(keycloakConfiguration, false);
 

@@ -18,7 +18,8 @@ public class DeveloperModeCheck extends AbstractSecurityCheck {
      */
     @Override
     protected boolean execute(@NonNull Context context) {
-        int devOptions = Settings.Secure.getInt(context.getContentResolver(), Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0);
+        int devOptions = Settings.Secure.getInt(context.getContentResolver(),
+                        Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0);
         return devOptions > 0;
     }
 }

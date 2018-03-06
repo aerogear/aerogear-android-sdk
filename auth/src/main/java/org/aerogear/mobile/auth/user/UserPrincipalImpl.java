@@ -1,10 +1,10 @@
 package org.aerogear.mobile.auth.user;
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonEmpty;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
-import static org.aerogear.mobile.core.utils.SanityCheck.nonEmpty;
 
 /**
  * This class represent an authenticated user
@@ -52,12 +52,9 @@ public class UserPrincipalImpl implements UserPrincipal {
      * @param refreshToken the refresh token
      *
      */
-    protected UserPrincipalImpl(final String username,
-                              final String email,
-                              final Set<UserRole> roles,
-                              final String identityToken,
-                              final String accessToken,
-                              final String refreshToken) {
+    protected UserPrincipalImpl(final String username, final String email,
+                    final Set<UserRole> roles, final String identityToken, final String accessToken,
+                    final String refreshToken) {
         this.username = nonEmpty(username, "username");
         this.email = email;
         this.roles = new HashSet(roles);
@@ -77,8 +74,7 @@ public class UserPrincipalImpl implements UserPrincipal {
         protected String accessToken;
         protected String refreshToken;
 
-        protected Builder() {
-        }
+        protected Builder() {}
 
         public Builder withUsername(final String username) {
             this.username = nonEmpty(username, "username");
@@ -114,18 +110,14 @@ public class UserPrincipalImpl implements UserPrincipal {
         }
 
         public UserPrincipalImpl build() {
-            return new UserPrincipalImpl(
-                    this.username,
-                    this.email,
-                    this.roles,
-                    this.idToken,
-                    this.accessToken,
-                    this.refreshToken);
+            return new UserPrincipalImpl(this.username, this.email, this.roles, this.idToken,
+                            this.accessToken, this.refreshToken);
         }
     }
 
     /**
      * Checks if the user has the specified Client role.
+     * 
      * @param role role to be checked
      * @param clientId clientID related to role
      * @return <code>true</code> or <code>false</code>
@@ -139,11 +131,12 @@ public class UserPrincipalImpl implements UserPrincipal {
 
     /**
      * Checks if the user has the specified Realm role.
+     * 
      * @param role role to be checked
      * @return <code>true</code> or <code>false</code>
      */
     @Override
-    public boolean hasRealmRole(final String role){
+    public boolean hasRealmRole(final String role) {
         nonEmpty(role, "role");
 
         return roles.contains(new UserRole(role, RoleType.REALM, null));
@@ -161,7 +154,7 @@ public class UserPrincipalImpl implements UserPrincipal {
      */
     @Override
     public Set<UserRole> getRoles() {
-       return roles;
+        return roles;
     }
 
     @Override
@@ -189,16 +182,14 @@ public class UserPrincipalImpl implements UserPrincipal {
         }
         sb.append("]");
 
-        return "UserPrincipalImpl{" +
-                "username='" + username + '\'' +
-                ", email='" + email + '\'' +
-                ", roles=" + sb.toString() +
-                '}';
+        return "UserPrincipalImpl{" + "username='" + username + '\'' + ", email='" + email + '\''
+                        + ", roles=" + sb.toString() + '}';
     }
 
     /**
      * Returns the identity token. It is used during logout.
-     * @return  the identity token
+     * 
+     * @return the identity token
      */
     @Override
     public String getIdentityToken() {
@@ -206,16 +197,19 @@ public class UserPrincipalImpl implements UserPrincipal {
     }
 
     /**
-     * Returns the access token for the current logged user.
-     * This token can be added to HTTP requests as the "Authorization: Bearer" header.
+     * Returns the access token for the current logged user. This token can be added to HTTP
+     * requests as the "Authorization: Bearer" header.
+     * 
      * @return the access token
      */
     @Override
     public String getAccessToken() {
         return accessToken;
     }
+
     /**
      * Returns the refresh token.
+     * 
      * @return the refresh token
      */
     @Override

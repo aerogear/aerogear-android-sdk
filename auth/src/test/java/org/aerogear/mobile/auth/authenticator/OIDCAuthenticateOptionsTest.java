@@ -1,7 +1,5 @@
 package org.aerogear.mobile.auth.authenticator;
 
-import android.app.Activity;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,6 +7,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
+
+import android.app.Activity;
 
 @RunWith(RobolectricTestRunner.class)
 public class OIDCAuthenticateOptionsTest {

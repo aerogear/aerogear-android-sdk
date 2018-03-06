@@ -1,14 +1,15 @@
 package org.aerogear.mobile.security.impl;
 
-import org.aerogear.mobile.security.SecurityCheck;
-import org.aerogear.mobile.security.SecurityCheckResult;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
+import org.aerogear.mobile.security.SecurityCheck;
+import org.aerogear.mobile.security.SecurityCheckResult;
 
 
 public class SecurityCheckResultTest {

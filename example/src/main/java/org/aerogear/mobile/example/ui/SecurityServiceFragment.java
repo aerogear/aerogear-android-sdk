@@ -1,5 +1,8 @@
 package org.aerogear.mobile.example.ui;
 
+import java.text.MessageFormat;
+import java.util.Map;
+
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -10,12 +13,9 @@ import android.widget.TextView;
 import org.aerogear.mobile.core.metrics.MetricsService;
 import org.aerogear.mobile.example.R;
 import org.aerogear.mobile.security.SecurityCheckExecutor;
-import org.aerogear.mobile.security.SecurityCheckType;
 import org.aerogear.mobile.security.SecurityCheckResult;
+import org.aerogear.mobile.security.SecurityCheckType;
 import org.aerogear.mobile.security.SecurityService;
-
-import java.text.MessageFormat;
-import java.util.Map;
 
 import butterknife.BindView;
 
@@ -81,14 +81,15 @@ public class SecurityServiceFragment extends BaseFragment {
      */
     public void runTests() {
 
-        Map<String, SecurityCheckResult> results = SecurityCheckExecutor.Builder.newSyncExecutor(this.getContext())
-            .withSecurityCheck(SecurityCheckType.IS_ROOTED)
-            .withSecurityCheck(SecurityCheckType.SCREEN_LOCK_ENABLED)
-            .withSecurityCheck(SecurityCheckType.IS_EMULATOR)
-            .withSecurityCheck(SecurityCheckType.IS_DEBUGGER)
-            .withSecurityCheck(SecurityCheckType.IS_DEVELOPER_MODE)
-            .withMetricsService(activity.mobileCore.getInstance(MetricsService.class))
-            .build().execute();
+        Map<String, SecurityCheckResult> results = SecurityCheckExecutor.Builder
+                        .newSyncExecutor(this.getContext())
+                        .withSecurityCheck(SecurityCheckType.IS_ROOTED)
+                        .withSecurityCheck(SecurityCheckType.SCREEN_LOCK_ENABLED)
+                        .withSecurityCheck(SecurityCheckType.IS_EMULATOR)
+                        .withSecurityCheck(SecurityCheckType.IS_DEBUGGER)
+                        .withSecurityCheck(SecurityCheckType.IS_DEVELOPER_MODE)
+                        .withMetricsService(activity.mobileCore.getInstance(MetricsService.class))
+                        .build().execute();
 
         // perform detections
         detectRoot(results);
@@ -153,7 +154,7 @@ public class SecurityServiceFragment extends BaseFragment {
     public void detectBackupEnabled(Map<String, SecurityCheckResult> results) {
         totalTests++;
         SecurityCheckResult result = securityService.check(SecurityCheckType.ALLOW_BACKUP_ENABLED);
-        if(result.passed()) {
+        if (result.passed()) {
             setDetected(allowBackup, R.string.allow_backup_detected_positive);
         }
     }
@@ -163,7 +164,8 @@ public class SecurityServiceFragment extends BaseFragment {
      */
     public void detectDeviceEncryptionStatus(Map<String, SecurityCheckResult> results) {
         totalTests++;
-        SecurityCheckResult result = securityService.check(SecurityCheckType.HAS_ENCRYPTION_ENABLED);
+        SecurityCheckResult result =
+                        securityService.check(SecurityCheckType.HAS_ENCRYPTION_ENABLED);
         if (!result.passed()) {
             setDetected(deviceEncrypted, R.string.device_encrypted_negative);
         }
@@ -183,7 +185,7 @@ public class SecurityServiceFragment extends BaseFragment {
     /**
      * Function to allow updates to the radio buttons UI
      *
-     * @param uiElement    - the UI element to update
+     * @param uiElement - the UI element to update
      * @param textResource - the text resource to set the updates text for
      */
     public void setDetected(RadioButton uiElement, int textResource) {
@@ -199,7 +201,8 @@ public class SecurityServiceFragment extends BaseFragment {
         int score = 100 - Math.round(((totalTestFailures / totalTests) * 100));
         trustScore.setProgress(score);
         trustScoreText.setText(MessageFormat.format("{0}%", score));
-        trustScoreHeader.setText(MessageFormat.format("{0}\n({1} Tests)", getText(R.string.trust_score_header_title), Math.round(totalTests)));
+        trustScoreHeader.setText(MessageFormat.format("{0}\n({1} Tests)",
+                        getText(R.string.trust_score_header_title), Math.round(totalTests)));
 
         // change the score percentage colour depending on the trust score
         if (trustScore.getProgress() == 100) {

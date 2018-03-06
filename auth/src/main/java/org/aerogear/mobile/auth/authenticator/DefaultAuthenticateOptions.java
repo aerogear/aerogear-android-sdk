@@ -1,9 +1,9 @@
 package org.aerogear.mobile.auth.authenticator;
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
 import android.app.Activity;
 import android.support.annotation.NonNull;
-
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 public class DefaultAuthenticateOptions implements AuthenticateOptions {
 

@@ -7,6 +7,7 @@ public interface SecurityCheckExecutorListener {
 
     /**
      * Called after each check is executed
+     * 
      * @param result the result of the check
      */
     void onExecuted(SecurityCheckResult result);

@@ -1,11 +1,11 @@
 package org.aerogear.mobile.auth;
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 
 import org.aerogear.mobile.auth.credentials.OIDCCredentials;
-
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 /**
  * Saves, retrieves and delete a token.
@@ -19,11 +19,13 @@ public class AuthStateManager {
     private final SharedPreferences prefs;
 
     private AuthStateManager(final Context context) {
-        this.prefs = nonNull(context, "context").getSharedPreferences(STORE_NAME, Context.MODE_PRIVATE);
+        this.prefs = nonNull(context, "context").getSharedPreferences(STORE_NAME,
+                        Context.MODE_PRIVATE);
     }
 
     /**
      * Reads credentials from storage.
+     * 
      * @return OIDCCredentials
      */
     public OIDCCredentials load() {
@@ -36,6 +38,7 @@ public class AuthStateManager {
 
     /**
      * Saves a token
+     * 
      * @param authState token to be saved
      * @throws IllegalStateException if the state can not be saved
      */
@@ -44,7 +47,7 @@ public class AuthStateManager {
             clear();
         } else {
             SharedPreferences.Editor e = prefs.edit().putString(KEY_STATE, authState.serialize());
-            if(!e.commit()) {
+            if (!e.commit()) {
                 throw new IllegalStateException("Failed to update state from shared preferences");
             }
         }
@@ -52,7 +55,8 @@ public class AuthStateManager {
 
     /**
      * Deletes a token
-     * @throws IllegalArgumentException  if the state can not be cleared
+     * 
+     * @throws IllegalArgumentException if the state can not be cleared
      */
     public synchronized void clear() {
         if (!prefs.edit().remove(KEY_STATE).commit()) {
@@ -69,7 +73,8 @@ public class AuthStateManager {
 
     public static AuthStateManager getInstance() {
         if (instance == null) {
-            throw new IllegalStateException("Context has not previously been provided. Cannot initialize without Context.");
+            throw new IllegalStateException(
+                            "Context has not previously been provided. Cannot initialize without Context.");
         }
         return instance;
     }

@@ -1,5 +1,10 @@
 package org.aerogear.mobile.core.metrics.publisher;
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.Context;
 
 import org.aerogear.mobile.core.MobileCore;
@@ -8,10 +13,6 @@ import org.aerogear.mobile.core.http.HttpResponse;
 import org.aerogear.mobile.core.metrics.Metrics;
 import org.aerogear.mobile.core.metrics.MetricsPublisher;
 import org.aerogear.mobile.core.utils.ClientIdGenerator;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 /**
  * Sends metrics data to the backend using the configuration in JSON config file
@@ -22,9 +23,8 @@ public class NetworkMetricsPublisher implements MetricsPublisher {
     private final HttpRequest httpRequest;
     private final String url;
 
-    public NetworkMetricsPublisher(final Context context,
-                                   final HttpRequest httpRequest,
-                                   final String url) {
+    public NetworkMetricsPublisher(final Context context, final HttpRequest httpRequest,
+                    final String url) {
         this.context = context;
         this.httpRequest = httpRequest;
         this.url = url;
@@ -55,8 +55,7 @@ public class NetworkMetricsPublisher implements MetricsPublisher {
             httpResponse.onSuccess(() -> {
                 MobileCore.getLogger().debug("Metrics sent: " + json.toString());
             }).onError(() -> {
-                MobileCore.getLogger().error("Metrics request error",
-                    httpResponse.getError());
+                MobileCore.getLogger().error("Metrics request error", httpResponse.getError());
             });
 
         } catch (JSONException e) {

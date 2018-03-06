@@ -18,8 +18,8 @@ public interface SecurityCheck {
     SecurityCheckResult test(Context context);
 
     /**
-     * Gets the name of the check. It must be a unique string.
-     * The default implementation is to return the check class name.
+     * Gets the name of the check. It must be a unique string. The default implementation is to
+     * return the check class name.
      *
      * @return {@link String} name of the check
      */

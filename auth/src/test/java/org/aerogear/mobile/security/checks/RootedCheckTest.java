@@ -1,11 +1,11 @@
 package org.aerogear.mobile.security.checks;
 
-import android.content.Context;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
-import com.scottyab.rootbeer.RootBeer;
+import java.io.IOException;
 
-
-import org.aerogear.mobile.security.SecurityCheckResult;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,11 +14,11 @@ import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
-import java.io.IOException;
+import com.scottyab.rootbeer.RootBeer;
 
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
-import static org.mockito.Mockito.when;
+import android.content.Context;
+
+import org.aerogear.mobile.security.SecurityCheckResult;
 
 @RunWith(RobolectricTestRunner.class)
 public class RootedCheckTest {
@@ -53,7 +53,7 @@ public class RootedCheckTest {
         assertFalse(result.passed());
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void nullContextTest() {
         RootedCheck rootedCheck = new RootedCheck();
         rootedCheck.test(null);

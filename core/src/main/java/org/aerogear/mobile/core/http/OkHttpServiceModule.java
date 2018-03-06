@@ -27,7 +27,8 @@ public class OkHttpServiceModule implements HttpServiceModule {
         this(client, new ServiceConfiguration.Builder().build());
     }
 
-    public OkHttpServiceModule(final OkHttpClient client, final ServiceConfiguration serviceConfiguration) {
+    public OkHttpServiceModule(final OkHttpClient client,
+                    final ServiceConfiguration serviceConfiguration) {
         this.client = client;
         this.serviceConfiguration = serviceConfiguration;
     }
@@ -43,11 +44,12 @@ public class OkHttpServiceModule implements HttpServiceModule {
     }
 
     @Override
-    public boolean requiresConfiguration() { return true; }
+    public boolean requiresConfiguration() {
+        return true;
+    }
 
     @Override
-    public void destroy() {
-    }
+    public void destroy() {}
 
     @Override
     public HttpRequest newRequest() {

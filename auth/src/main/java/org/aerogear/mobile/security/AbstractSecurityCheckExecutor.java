@@ -1,16 +1,16 @@
 package org.aerogear.mobile.security;
 
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
+import java.util.Collection;
+import java.util.HashSet;
+
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.aerogear.mobile.core.metrics.MetricsService;
-
-import java.util.Collection;
-import java.util.HashSet;
-
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 
 /**
@@ -29,13 +29,14 @@ abstract class AbstractSecurityCheckExecutor<T extends AbstractSecurityCheckExec
      * Creates AbstractSecurityCheckExecutor object.
      *
      * @param context {@link Context} to be used by the security checks
-     * @param checks  {@link Collection} of {@link SecurityCheck} to be executed
-     * @param metricService {@link MetricsService} to be used to publish metrics. If null, no metrics get published
+     * @param checks {@link Collection} of {@link SecurityCheck} to be executed
+     * @param metricService {@link MetricsService} to be used to publish metrics. If null, no
+     *        metrics get published
      * @throws IllegalArgumentException if context is null
      */
     public AbstractSecurityCheckExecutor(@NonNull final Context context,
-                                         @NonNull final Collection<SecurityCheck> checks,
-                                         @Nullable final MetricsService metricService) {
+                    @NonNull final Collection<SecurityCheck> checks,
+                    @Nullable final MetricsService metricService) {
         this.context = nonNull(context, "context");
         this.checks.addAll(checks);
         this.metricsService = metricService;
@@ -60,8 +61,8 @@ abstract class AbstractSecurityCheckExecutor<T extends AbstractSecurityCheckExec
     }
 
     /**
-     * Gets the metric published. It never returns null: if no metric service is present, e NOOP publisher
-     * is returned.
+     * Gets the metric published. It never returns null: if no metric service is present, e NOOP
+     * publisher is returned.
      *
      * @return the metric service publisher
      */
@@ -71,12 +72,10 @@ abstract class AbstractSecurityCheckExecutor<T extends AbstractSecurityCheckExec
         } else {
             return new SecurityCheckExecutorListener() {
                 @Override
-                public void onExecuted(SecurityCheckResult result) {
-                }
+                public void onExecuted(SecurityCheckResult result) {}
 
                 @Override
-                public void onComplete() {
-                }
+                public void onComplete() {}
             };
         }
     }
