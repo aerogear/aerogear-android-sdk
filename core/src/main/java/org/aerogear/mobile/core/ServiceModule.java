@@ -19,9 +19,9 @@ public interface ServiceModule {
     void configure(MobileCore core, ServiceConfiguration serviceConfiguration);
 
     /**
-     * Whether the singleThreadService module requires its singleThreadService configuration to be defined or if it can be
-     * null. If this is <code>true</code> then an exception will be thrown if singleThreadService configuration
-     * cannot be found.
+     * Whether the singleThreadService module requires its singleThreadService configuration to be
+     * defined or if it can be null. If this is <code>true</code> then an exception will be thrown
+     * if singleThreadService configuration cannot be found.
      *
      * @return <code>true</code> if the singleThreadService configuration should be defined.
      */

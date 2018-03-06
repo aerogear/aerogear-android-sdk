@@ -1,9 +1,9 @@
 package org.aerogear.mobile.core.http;
 
-import org.aerogear.mobile.core.executor.AppExecutors;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.aerogear.mobile.core.executor.AppExecutors;
 
 import okhttp3.Call;
 import okhttp3.MediaType;
@@ -43,21 +43,23 @@ public class OkHttpRequest implements HttpRequest {
 
     @Override
     public void post(final String url, final byte[] body) {
-        RequestBody requestBody = RequestBody.create(MediaType.parse(headers.get(CONTENT_TYPE_HEADER)), body);
+        RequestBody requestBody =
+                        RequestBody.create(MediaType.parse(headers.get(CONTENT_TYPE_HEADER)), body);
         Request.Builder postRequestBuilder = requestBuilderWithUrl(url).post(requestBody);
         addHeaders(postRequestBuilder);
 
-        Request postRequest= postRequestBuilder.build();
+        Request postRequest = postRequestBuilder.build();
         call = client.newCall(postRequest);
     }
 
     @Override
     public void put(final String url, final byte[] body) {
-        RequestBody requestBody = RequestBody.create(MediaType.parse(headers.get(CONTENT_TYPE_HEADER)), body);
+        RequestBody requestBody =
+                        RequestBody.create(MediaType.parse(headers.get(CONTENT_TYPE_HEADER)), body);
         Request.Builder postRequestBuilder = requestBuilderWithUrl(url).put(requestBody);
         addHeaders(postRequestBuilder);
 
-        Request postRequest= postRequestBuilder.build();
+        Request postRequest = postRequestBuilder.build();
         call = client.newCall(postRequest);
     }
 

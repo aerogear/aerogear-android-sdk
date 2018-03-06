@@ -1,10 +1,10 @@
 package org.aerogear.mobile.core.http;
 
-import org.aerogear.mobile.core.executor.AppExecutors;
-
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+
+import org.aerogear.mobile.core.executor.AppExecutors;
 
 import okhttp3.Call;
 import okhttp3.Response;
@@ -21,7 +21,7 @@ class OkHttpResponse implements HttpResponse {
     private boolean closed = false;
 
     public OkHttpResponse(final Call okHttpCall, AppExecutors appExecutors) {
-        appExecutors.networkThread().execute(()-> {
+        appExecutors.networkThread().execute(() -> {
             try {
                 response = okHttpCall.execute();
                 requestCompleteLatch.countDown();
@@ -37,10 +37,9 @@ class OkHttpResponse implements HttpResponse {
     }
 
     /**
-     * We have multiple checks to make sure that the completion handler is run.
-     * This means that this method may be called from multiple threads, using
-     * a synchronized and a null check makes sure that completion handler
-     * is only called once and then cleared.
+     * We have multiple checks to make sure that the completion handler is run. This means that this
+     * method may be called from multiple threads, using a synchronized and a null check makes sure
+     * that completion handler is only called once and then cleared.
      */
     private synchronized void runCompletionHandler() {
         if (completionHandler != null) {
@@ -56,7 +55,7 @@ class OkHttpResponse implements HttpResponse {
         }
     }
 
-    private synchronized  void runSuccessHandler() {
+    private synchronized void runSuccessHandler() {
         if (successHandler != null) {
             successHandler.run();
             successHandler = null;
@@ -101,7 +100,7 @@ class OkHttpResponse implements HttpResponse {
     public void waitForCompletionAndClose() {
         try {
             requestCompleteLatch.await(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
-            //If a success Handler was set before this wait then we need to make
+            // If a success Handler was set before this wait then we need to make
             // sure that gets called before we free these resources.
             if (error == null) {
                 runSuccessHandler();
@@ -109,10 +108,11 @@ class OkHttpResponse implements HttpResponse {
                 runErrorHandler();
             }
         } catch (InterruptedException interruptedException) {
-            /*If we have an error the work of the thread is already done and the thread was exiting
-              anyway.  If we don't have en error then the thread may have exited improperly and
-              the calling code should be able to inspect it.
-            */
+            /*
+             * If we have an error the work of the thread is already done and the thread was exiting
+             * anyway. If we don't have en error then the thread may have exited improperly and the
+             * calling code should be able to inspect it.
+             */
             if (error != null) {
                 error = interruptedException;
             }
@@ -132,13 +132,13 @@ class OkHttpResponse implements HttpResponse {
     public String stringBody() {
         if (response != null) {
             try {
-                 return response.body().string();
+                return response.body().string();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             } finally {
                 /**
-                 * OKHttp body.string closes the request so we need to track this
-                 * because you can't close a request twice.
+                 * OKHttp body.string closes the request so we need to track this because you can't
+                 * close a request twice.
                  */
                 closed = true;
             }

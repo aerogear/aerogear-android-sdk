@@ -1,10 +1,10 @@
 package org.aerogear.mobile.auth.user;
 
-import java.io.Serializable;
-import java.util.Objects;
-
 import static org.aerogear.mobile.core.utils.SanityCheck.nonEmpty;
 import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
+import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Represents a user's keycloak roles information.
@@ -22,7 +22,7 @@ public class UserRole implements Serializable {
     private final RoleType type;
 
     /**
-     * Role name space/client ID.  Can be null.
+     * Role name space/client ID. Can be null.
      */
     private final String namespace;
 
@@ -74,19 +74,21 @@ public class UserRole implements Serializable {
      */
     @Override
     public boolean equals(final Object role) {
-        if (this == role) return true;
-        if (role == null || role.getClass() != getClass()) return false;
+        if (this == role)
+            return true;
+        if (role == null || role.getClass() != getClass())
+            return false;
         UserRole userRole = (UserRole) role;
-        if (userRole.type == RoleType.CLIENT) { //do a check on clientID
-            return userRole.name.equals(name) && userRole.type == type &&
-                userRole.namespace == namespace;
+        if (userRole.type == RoleType.CLIENT) { // do a check on clientID
+            return userRole.name.equals(name) && userRole.type == type
+                            && userRole.namespace == namespace;
         } else {
             return userRole.name.equals(name) && userRole.type == type;
         }
     }
 
     /**
-     *  Generates hashcode value from the UserRole name {@link #name} and type {@link #type}
+     * Generates hashcode value from the UserRole name {@link #name} and type {@link #type}
      *
      * @return hashcode value.
      */

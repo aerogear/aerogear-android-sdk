@@ -1,21 +1,21 @@
 package org.aerogear.mobile.core.http;
 
-import android.support.test.filters.SmallTest;
+import static junit.framework.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
-import java.io.IOException;
-import java.util.concurrent.CountDownLatch;
+import android.support.test.filters.SmallTest;
 
 import okhttp3.HttpUrl;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
-
-import static junit.framework.Assert.fail;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 @RunWith(RobolectricTestRunner.class)
 @SmallTest
@@ -43,11 +43,9 @@ public class OkHttpServiceModuleTest {
             latch.countDown();
         });
 
-        response.onComplete(() -> assertEquals("{\n" +
-            " \"story\": {\n" +
-            "     \"title\": \"Test Title\"\n" +
-            " }    \n" +
-            "}", response.stringBody()));
+        response.onComplete(() -> assertEquals("{\n" + " \"story\": {\n"
+                        + "     \"title\": \"Test Title\"\n" + " }    \n" + "}",
+                        response.stringBody()));
 
         response.waitForCompletionAndClose();
         assertEquals(latch.getCount(), 0);

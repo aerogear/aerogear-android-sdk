@@ -1,18 +1,19 @@
 package org.aerogear.mobile.security.checks;
 
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
+import static org.robolectric.RuntimeEnvironment.application;
 
-import org.aerogear.mobile.security.SecurityCheckResult;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
-import static org.robolectric.RuntimeEnvironment.application;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+
+import org.aerogear.mobile.security.SecurityCheckResult;
 
 @RunWith(RobolectricTestRunner.class)
 public class AllowBackupFlagCheckTest {
@@ -23,13 +24,15 @@ public class AllowBackupFlagCheckTest {
     @Before
     public void setup() throws PackageManager.NameNotFoundException {
         check = new AllowBackupFlagCheck();
-        packageInfo = application.getPackageManager().getPackageInfo(application.getPackageName(), 0);
+        packageInfo = application.getPackageManager().getPackageInfo(application.getPackageName(),
+                        0);
     }
 
     @Test
     public void checkIsEnabled() throws PackageManager.NameNotFoundException {
         // Set the allow backup flag
-        packageInfo.applicationInfo.flags = packageInfo.applicationInfo.flags | ApplicationInfo.FLAG_ALLOW_BACKUP;
+        packageInfo.applicationInfo.flags =
+                        packageInfo.applicationInfo.flags | ApplicationInfo.FLAG_ALLOW_BACKUP;
 
         SecurityCheckResult result = check.test(application);
         assertTrue(result.passed());
@@ -38,13 +41,14 @@ public class AllowBackupFlagCheckTest {
     @Test
     public void checkNotEnabled() throws PackageManager.NameNotFoundException {
         // Unset the allow backup flag
-        packageInfo.applicationInfo.flags = packageInfo.applicationInfo.flags & ~ApplicationInfo.FLAG_ALLOW_BACKUP;
+        packageInfo.applicationInfo.flags =
+                        packageInfo.applicationInfo.flags & ~ApplicationInfo.FLAG_ALLOW_BACKUP;
 
         SecurityCheckResult result = check.test(application);
         assertFalse(result.passed());
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void nullContextTest() {
         check.test(null);
     }

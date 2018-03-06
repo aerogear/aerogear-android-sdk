@@ -1,24 +1,26 @@
 package org.aerogear.mobile.security;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.aerogear.mobile.core.metrics.MetricsService;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Synchronously executes provided {@link SecurityCheck}s.
  */
-public class SyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<SyncSecurityCheckExecutor> {
+public class SyncSecurityCheckExecutor
+                extends AbstractSecurityCheckExecutor<SyncSecurityCheckExecutor> {
 
     /**
      * Builder class for constructing a SyncSecurityCheckExecutor object.
      */
-    public static class Builder extends SecurityCheckExecutor.Builder.AbstractBuilder<Builder, SyncSecurityCheckExecutor> {
+    public static class Builder extends
+                    SecurityCheckExecutor.Builder.AbstractBuilder<Builder, SyncSecurityCheckExecutor> {
 
         /**
          * Creates a Builder object.
@@ -49,18 +51,17 @@ public class SyncSecurityCheckExecutor extends AbstractSecurityCheckExecutor<Syn
      * @param metricsService {@link MetricsService}. Can be null
      */
     SyncSecurityCheckExecutor(@NonNull final Context context,
-                              @NonNull final Collection<SecurityCheck> checks,
-                              @Nullable final MetricsService metricsService) {
+                    @NonNull final Collection<SecurityCheck> checks,
+                    @Nullable final MetricsService metricsService) {
         super(context, checks, metricsService);
     }
 
     /**
-     * Executes the provided checks and returns the results.
-     * Blocks until all checks are executed.
+     * Executes the provided checks and returns the results. Blocks until all checks are executed.
      *
-     * Returns a {@link Map} containing the results of each executed test.
-     * The key of the map will be the output of {@link SecurityCheck#getName()}, while the value will be
-     * the {@link SecurityCheckResult} of the check.
+     * Returns a {@link Map} containing the results of each executed test. The key of the map will
+     * be the output of {@link SecurityCheck#getName()}, while the value will be the
+     * {@link SecurityCheckResult} of the check.
      *
      * @return {@link Map}
      */

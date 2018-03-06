@@ -10,14 +10,9 @@ public class ServiceConfigurationTest {
 
     @Test
     public void testCreateConfig() {
-        ServiceConfiguration config = ServiceConfiguration
-            .newConfiguration()
-            .setName("conf-name")
-            .setType("conf-type")
-            .setUrl("http://test-uri.feedhenry.org")
-            .addProperty("prop1", "value1")
-            .addProperty("prop2", "value2")
-            .build();
+        ServiceConfiguration config = ServiceConfiguration.newConfiguration().setName("conf-name")
+                        .setType("conf-type").setUrl("http://test-uri.feedhenry.org")
+                        .addProperty("prop1", "value1").addProperty("prop2", "value2").build();
 
         Assert.assertEquals("conf-name", config.getName());
         Assert.assertEquals("conf-type", config.getType());

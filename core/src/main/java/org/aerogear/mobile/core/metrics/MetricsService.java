@@ -1,5 +1,7 @@
 package org.aerogear.mobile.core.metrics;
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
 import android.support.annotation.NonNull;
 
 import org.aerogear.mobile.core.MobileCore;
@@ -9,8 +11,6 @@ import org.aerogear.mobile.core.metrics.impl.AppMetrics;
 import org.aerogear.mobile.core.metrics.impl.DeviceMetrics;
 import org.aerogear.mobile.core.metrics.publisher.LoggerMetricsPublisher;
 import org.aerogear.mobile.core.metrics.publisher.NetworkMetricsPublisher;
-
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 public class MetricsService implements ServiceModule {
 
@@ -32,36 +32,38 @@ public class MetricsService implements ServiceModule {
     }
 
     @Override
-    public void configure(@NonNull final MobileCore core, @NonNull final ServiceConfiguration serviceConfiguration) {
+    public void configure(@NonNull final MobileCore core,
+                    @NonNull final ServiceConfiguration serviceConfiguration) {
         nonNull(core, "mobileCore");
         nonNull(serviceConfiguration, "serviceConfiguration");
 
-        defaultMetrics = new Metrics[]{
-            new AppMetrics(core.getContext()),
-            new DeviceMetrics(core.getContext())
-        };
+        defaultMetrics = new Metrics[] {new AppMetrics(core.getContext()),
+                        new DeviceMetrics(core.getContext())};
 
         final String metricsUrl = serviceConfiguration.getUrl();
         if (metricsUrl == null) {
             publisher = new LoggerMetricsPublisher(MobileCore.getLogger());
         } else {
-            publisher = new NetworkMetricsPublisher(core.getContext(), core.getHttpLayer().newRequest(), metricsUrl);
+            publisher = new NetworkMetricsPublisher(core.getContext(),
+                            core.getHttpLayer().newRequest(), metricsUrl);
         }
     }
 
     @Override
-    public boolean requiresConfiguration() { return true; }
+    public boolean requiresConfiguration() {
+        return true;
+    }
 
     @Override
-    public void destroy() {
-    }
+    public void destroy() {}
 
     /**
      * Send default metrics
      */
     public void sendAppAndDeviceMetrics() {
         if (publisher == null) {
-            throw new IllegalStateException("Make sure you have called configure or get this instance from MobileCore.getInstance()");
+            throw new IllegalStateException(
+                            "Make sure you have called configure or get this instance from MobileCore.getInstance()");
         }
         publisher.publish(defaultMetrics);
     }
@@ -75,7 +77,8 @@ public class MetricsService implements ServiceModule {
     public MetricsService publish(final Metrics... metrics) {
         nonNull(metrics, "metrics");
         if (publisher == null) {
-            throw new IllegalStateException("Make sure you have called configure or get this instance from MobileCore.getInstance()");
+            throw new IllegalStateException(
+                            "Make sure you have called configure or get this instance from MobileCore.getInstance()");
         }
         publisher.publish(metrics);
         return this;

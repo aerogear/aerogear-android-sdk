@@ -1,20 +1,19 @@
 package org.aerogear.mobile.auth;
 
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
 import android.content.Context;
 
 import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.robolectric.RobolectricTestRunner;
-
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
 
 public class AuthServiceTest {
     @Mock
@@ -42,7 +41,8 @@ public class AuthServiceTest {
             authService.init(ctx, authServiceConfiguration);
             Assert.fail("Configure method has not been called, but no error has been thrown");
         } catch (IllegalStateException ise) {
-            Assert.assertEquals("configure method must be called before the init method", ise.getMessage());
+            Assert.assertEquals("configure method must be called before the init method",
+                            ise.getMessage());
         }
     }
 
@@ -54,7 +54,9 @@ public class AuthServiceTest {
             authService.login(null, null);
             Assert.fail("init method has not been called, but no error has been thrown");
         } catch (IllegalStateException ise) {
-            Assert.assertEquals("The AuthService has not been correctly initialised. Following methods needs to be called: [initialize]", ise.getMessage());
+            Assert.assertEquals(
+                            "The AuthService has not been correctly initialised. Following methods needs to be called: [initialize]",
+                            ise.getMessage());
         }
     }
 
@@ -65,7 +67,9 @@ public class AuthServiceTest {
             authService.login(null, null);
             Assert.fail("init and config methods have not been called, but no error has been thrown");
         } catch (IllegalStateException ise) {
-            Assert.assertEquals("The AuthService has not been correctly initialised. Following methods needs to be called: [configure, initialize]", ise.getMessage());
+            Assert.assertEquals(
+                            "The AuthService has not been correctly initialised. Following methods needs to be called: [configure, initialize]",
+                            ise.getMessage());
         }
     }
 
@@ -78,7 +82,8 @@ public class AuthServiceTest {
         try {
             authService.login(null, null);
         } catch (IllegalArgumentException iae) {
-            // The singleThreadService is ready: it must give an error because no callback has been provided
+            // The singleThreadService is ready: it must give an error because no callback has been
+            // provided
             Assert.assertEquals("Parameter 'callback' can't be null", iae.getMessage());
         }
     }

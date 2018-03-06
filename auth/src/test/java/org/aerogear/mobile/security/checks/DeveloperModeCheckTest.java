@@ -1,11 +1,8 @@
 package org.aerogear.mobile.security.checks;
 
-import android.content.Context;
-import android.provider.Settings;
-import android.test.mock.MockContentResolver;
+import static junit.framework.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
-import org.aerogear.mobile.security.SecurityCheckResult;
-import org.aerogear.mobile.security.impl.SecurityCheckResultImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,8 +10,12 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
 
-import static junit.framework.Assert.assertEquals;
-import static org.mockito.Mockito.when;
+import android.content.Context;
+import android.provider.Settings;
+import android.test.mock.MockContentResolver;
+
+import org.aerogear.mobile.security.SecurityCheckResult;
+import org.aerogear.mobile.security.impl.SecurityCheckResultImpl;
 
 @RunWith(RobolectricTestRunner.class)
 public class DeveloperModeCheckTest {
@@ -30,7 +31,8 @@ public class DeveloperModeCheckTest {
 
     @Test
     public void developerModeEnabledTest() {
-        Settings.Global.putInt(mockContentResolver, Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 1);
+        Settings.Global.putInt(mockContentResolver, Settings.Global.DEVELOPMENT_SETTINGS_ENABLED,
+                        1);
         when(context.getContentResolver()).thenReturn(mockContentResolver);
 
         DeveloperModeCheck developerModeCheck = new DeveloperModeCheck();
@@ -44,7 +46,8 @@ public class DeveloperModeCheckTest {
 
     @Test
     public void developerModeDisabledTest() {
-        Settings.Global.putInt(mockContentResolver, Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0);
+        Settings.Global.putInt(mockContentResolver, Settings.Global.DEVELOPMENT_SETTINGS_ENABLED,
+                        0);
         when(context.getContentResolver()).thenReturn(mockContentResolver);
 
         DeveloperModeCheck developerModeCheck = new DeveloperModeCheck();
@@ -56,7 +59,7 @@ public class DeveloperModeCheckTest {
         assertEquals(expected.passed(), actual.passed());
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void nullContextTest() {
         DeveloperModeCheck developerModeCheck = new DeveloperModeCheck();
         developerModeCheck.test(null);

@@ -20,7 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends BaseActivity
-    implements NavigationView.OnNavigationItemSelectedListener {
+                implements NavigationView.OnNavigationItemSelectedListener {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -42,15 +42,16 @@ public class MainActivity extends BaseActivity
 
         setSupportActionBar(toolbar);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-            this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
+                        R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         authService = (AuthService) mobileCore.getInstance(AuthService.class);
-        AuthServiceConfiguration authServiceConfiguration = new AuthServiceConfiguration.AuthConfigurationBuilder()
-            .withRedirectUri("org.aerogear.mobile.example:/callback")
-            .build();
+        AuthServiceConfiguration authServiceConfiguration =
+                        new AuthServiceConfiguration.AuthConfigurationBuilder()
+                                        .withRedirectUri("org.aerogear.mobile.example:/callback")
+                                        .build();
         authService.init(getApplicationContext(), authServiceConfiguration);
 
         navigationView.setNavigationItemSelectedListener(this);
@@ -101,10 +102,7 @@ public class MainActivity extends BaseActivity
     }
 
     public void navigateTo(Fragment fragment) {
-        getSupportFragmentManager()
-            .beginTransaction()
-            .replace(R.id.content, fragment)
-            .commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.content, fragment).commit();
     }
 
     public AuthService getAuthService() {

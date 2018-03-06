@@ -1,5 +1,15 @@
 package org.aerogear.mobile.core;
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import org.json.JSONException;
+
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -14,18 +24,8 @@ import org.aerogear.mobile.core.http.HttpServiceModule;
 import org.aerogear.mobile.core.http.OkHttpServiceModule;
 import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.logging.LoggerAdapter;
-import org.aerogear.mobile.core.metrics.MetricsService;
-import org.json.JSONException;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
-
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 /**
  * MobileCore is the entry point into AeroGear mobile services
@@ -52,7 +52,8 @@ public final class MobileCore {
      *
      * @param context Application context
      */
-    private MobileCore(final Context context, final Options options) throws InitializationException, IllegalStateException {
+    private MobileCore(final Context context, final Options options)
+                    throws InitializationException, IllegalStateException {
         this.context = nonNull(context, "context").getApplicationContext();
         this.configFileName = nonNull(options, "options").configFileName;
 
@@ -76,8 +77,8 @@ public final class MobileCore {
         if (options.httpServiceModule == null) {
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
             builder.connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
-                .writeTimeout(DEFAULT_WRITE_TIMEOUT, TimeUnit.SECONDS)
-                .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS);
+                            .writeTimeout(DEFAULT_WRITE_TIMEOUT, TimeUnit.SECONDS)
+                            .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS);
             final OkHttpServiceModule httpServiceModule = new OkHttpServiceModule(builder.build());
 
             ServiceConfiguration configuration = this.servicesConfig.get(httpServiceModule.type());
@@ -110,7 +111,8 @@ public final class MobileCore {
      * @param options AeroGear initialization options
      * @return MobileCore instance
      */
-    public static MobileCore init(final Context context, final Options options) throws InitializationException {
+    public static MobileCore init(final Context context, final Options options)
+                    throws InitializationException {
         return new MobileCore(context, options);
     }
 
@@ -131,8 +133,8 @@ public final class MobileCore {
 
     @SuppressWarnings("unchecked")
     public <T extends ServiceModule> T getInstance(final Class<T> serviceClass,
-                                                   final ServiceConfiguration serviceConfiguration)
-        throws InitializationException {
+                    final ServiceConfiguration serviceConfiguration)
+                    throws InitializationException {
         nonNull(serviceClass, "serviceClass");
 
         if (services.containsKey(serviceClass)) {
@@ -149,7 +151,8 @@ public final class MobileCore {
             }
 
             if (serviceCfg == null && serviceModule.requiresConfiguration()) {
-                throw new ConfigurationNotFoundException(serviceModule.type() + " not found on " + this.configFileName);
+                throw new ConfigurationNotFoundException(
+                                serviceModule.type() + " not found on " + this.configFileName);
             }
 
             serviceModule.configure(this, serviceCfg);
@@ -192,10 +195,8 @@ public final class MobileCore {
     private String getAppVersion(final Context context) throws InitializationException {
         nonNull(context, "context");
         try {
-            return context
-                .getPackageManager()
-                .getPackageInfo(context.getPackageName(), 0)
-                .versionName;
+            return context.getPackageManager().getPackageInfo(context.getPackageName(),
+                            0).versionName;
         } catch (PackageManager.NameNotFoundException e) {
             // Wrap in Initialization exception
             throw new InitializationException("Failed to read app version", e);
@@ -241,8 +242,7 @@ public final class MobileCore {
         private HttpServiceModule httpServiceModule;
         private Logger logger = new LoggerAdapter();
 
-        public Options() {
-        }
+        public Options() {}
 
         public Options setConfigFileName(@NonNull final String configFileName) {
             this.configFileName = nonNull(configFileName, "configFileName");

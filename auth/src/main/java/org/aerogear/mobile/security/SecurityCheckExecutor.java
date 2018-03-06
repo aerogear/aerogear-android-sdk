@@ -1,6 +1,11 @@
 package org.aerogear.mobile.security;
 
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
+import java.util.Collection;
+import java.util.HashSet;
+
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,14 +13,8 @@ import android.support.annotation.Nullable;
 import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.metrics.MetricsService;
 
-import java.util.Collection;
-import java.util.HashSet;
-
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
-
 /**
- * Entry point for the SecurityCheckExecutor.
- * This class provides the builders.
+ * Entry point for the SecurityCheckExecutor. This class provides the builders.
  */
 public class SecurityCheckExecutor {
     private SecurityCheckExecutor() {}
@@ -72,10 +71,11 @@ public class SecurityCheckExecutor {
             }
 
             /**
-             * Sets the metric service to be used.
-             * The metric service should be a {@link AppExecutors#singleThreadService()}.
+             * Sets the metric service to be used. The metric service should be a
+             * {@link AppExecutors#singleThreadService()}.
              *
-             * @param metricsService the {@link MetricsService} {@link AppExecutors#singleThreadService()} to be used. Can be null
+             * @param metricsService the {@link MetricsService}
+             *        {@link AppExecutors#singleThreadService()} to be used. Can be null
              * @return this
              */
             public T withMetricsService(@Nullable final MetricsService metricsService) {
@@ -144,7 +144,8 @@ public class SecurityCheckExecutor {
          * @param ctx {@link Context} to be used by the security checks
          * @return {@link AsyncSecurityCheckExecutor.Builder}
          */
-        public static AsyncSecurityCheckExecutor.Builder newAsyncExecutor(@NonNull final Context ctx) {
+        public static AsyncSecurityCheckExecutor.Builder newAsyncExecutor(
+                        @NonNull final Context ctx) {
             return new Builder().newAsyncBuilder(ctx);
         }
 
@@ -154,7 +155,8 @@ public class SecurityCheckExecutor {
          * @param ctx {@link Context} to be used by the security checks
          * @return {@link SyncSecurityCheckExecutor.Builder}
          */
-        public static SyncSecurityCheckExecutor.Builder newSyncExecutor(@NonNull final Context ctx) {
+        public static SyncSecurityCheckExecutor.Builder newSyncExecutor(
+                        @NonNull final Context ctx) {
             return new Builder().newSyncBuilder(ctx);
         }
     }

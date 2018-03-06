@@ -1,20 +1,21 @@
 package org.aerogear.mobile.core.metrics;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
+
 import android.support.test.filters.SmallTest;
 
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.metrics.publisher.LoggerMetricsPublisher;
 import org.aerogear.mobile.core.metrics.publisher.NetworkMetricsPublisher;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
 
 @RunWith(RobolectricTestRunner.class)
 @SmallTest
@@ -40,9 +41,8 @@ public class MetricsServiceTest {
     @Test
     public void defaultPublisherWithConfigUrl() {
         MobileCore mobileCore = MobileCore.init(RuntimeEnvironment.application);
-        ServiceConfiguration serviceConfiguration = new ServiceConfiguration.Builder()
-            .setUrl("http://dummy.url")
-            .build();
+        ServiceConfiguration serviceConfiguration =
+                        new ServiceConfiguration.Builder().setUrl("http://dummy.url").build();
 
         MetricsService metricsService = new MetricsService();
         metricsService.configure(mobileCore, serviceConfiguration);

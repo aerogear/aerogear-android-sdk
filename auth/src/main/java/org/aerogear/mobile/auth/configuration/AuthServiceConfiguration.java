@@ -1,8 +1,8 @@
 package org.aerogear.mobile.auth.configuration;
 
-import android.net.Uri;
-
 import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
+import android.net.Uri;
 
 /**
  * This represents an authentication config provided by the developer.
@@ -15,8 +15,8 @@ public class AuthServiceConfiguration {
     private final Uri redirectUri;
 
     /**
-     * Specify the minimum time between requests to get the JWKS (Json web key set) in minutes.
-     * The default value is 1440 (1 day).
+     * Specify the minimum time between requests to get the JWKS (Json web key set) in minutes. The
+     * default value is 1440 (1 day).
      */
     private final int minTimeBetweenJwksRequests;
 
@@ -35,12 +35,13 @@ public class AuthServiceConfiguration {
      */
     public static class AuthConfigurationBuilder {
         private Uri redirectUri;
-        private int minTimeBetweenJwksRequests = 24*60;
+        private int minTimeBetweenJwksRequests = 24 * 60;
 
         public AuthConfigurationBuilder() {}
 
         /**
          * Allow specify the value of the redirect uri
+         * 
          * @param redirectUri a new redirectUri value
          * @return the builder instance
          */
@@ -49,7 +50,8 @@ public class AuthServiceConfiguration {
             return this;
         }
 
-        public AuthConfigurationBuilder withMinTimeBetweenJwksRequests(final int minTimeBetweenJwksRequests) {
+        public AuthConfigurationBuilder withMinTimeBetweenJwksRequests(
+                        final int minTimeBetweenJwksRequests) {
             this.minTimeBetweenJwksRequests = minTimeBetweenJwksRequests;
             return this;
         }
@@ -67,7 +69,8 @@ public class AuthServiceConfiguration {
     }
 
     /**
-     * @return The minimum time between Json web key set requests. In minutes. Default value is 1440 (1 day).
+     * @return The minimum time between Json web key set requests. In minutes. Default value is 1440
+     *         (1 day).
      */
     public int getMinTimeBetweenJwksRequests() {
         return minTimeBetweenJwksRequests;

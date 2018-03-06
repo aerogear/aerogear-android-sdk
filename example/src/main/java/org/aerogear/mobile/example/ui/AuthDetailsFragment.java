@@ -83,10 +83,8 @@ public class AuthDetailsFragment extends BaseFragment {
      * Navigate to the auth fragment.
      */
     private void navigateToLogin() {
-        this.activity.getSupportFragmentManager()
-            .beginTransaction()
-            .replace(R.id.content, new AuthFragment())
-            .commit();
+        this.activity.getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.content, new AuthFragment()).commit();
     }
 
     /**
@@ -95,7 +93,8 @@ public class AuthDetailsFragment extends BaseFragment {
      * @param message the message to show in the snackbar
      */
     private void showMessage(final String message) {
-        Snackbar.make(this.activity.findViewById(R.id.content), message, Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(this.activity.findViewById(R.id.content), message, Snackbar.LENGTH_SHORT)
+                        .show();
     }
 
     /**
@@ -131,7 +130,7 @@ public class AuthDetailsFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Bundle args = getArguments();
-        if (args != null ) {
+        if (args != null) {
             currentUser = (UserPrincipal) args.getSerializable("currentUser");
             updateFields();
         }

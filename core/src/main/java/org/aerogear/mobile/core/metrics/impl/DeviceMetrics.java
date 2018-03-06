@@ -1,14 +1,14 @@
 package org.aerogear.mobile.core.metrics.impl;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.Context;
 import android.os.Build;
 
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.metrics.Metrics;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.util.HashMap;
 
 /**
  * Collects device metrics

@@ -1,17 +1,17 @@
 package org.aerogear.mobile.security.metrics;
 
+import java.util.Arrays;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.support.annotation.NonNull;
 
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.metrics.Metrics;
 import org.aerogear.mobile.security.SecurityCheckResult;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.Arrays;
-import java.util.Map;
 
 /**
  * Metric representation of {@link SecurityCheckResult}. This is intended to be used with the
@@ -80,7 +80,7 @@ public class SecurityCheckResultMetric implements Metrics<JSONArray> {
         final JSONArray data = new JSONArray();
 
         try {
-            for (SecurityCheckResult result: results) {
+            for (SecurityCheckResult result : results) {
                 final JSONObject resultJson = new JSONObject();
                 resultJson.put(KEY_TYPE, result.getName());
                 resultJson.put(KEY_VALUE, result.passed());
@@ -88,7 +88,7 @@ public class SecurityCheckResultMetric implements Metrics<JSONArray> {
             }
         } catch (JSONException e) {
             // should never happen since we're building from scratch
-            LOG.error(TAG,"Error building JSON from Self Defence Check result", e);
+            LOG.error(TAG, "Error building JSON from Self Defence Check result", e);
         }
 
         return data;

@@ -14,10 +14,8 @@ public final class ServiceConfiguration {
     private final String url;
     private final Map<String, String> properties;
 
-    private ServiceConfiguration(final String name,
-                                 final Map<String, String> properties,
-                                 final String type,
-                                 final String url) {
+    private ServiceConfiguration(final String name, final Map<String, String> properties,
+                    final String type, final String url) {
         this.name = name;
         this.properties = properties;
         this.type = type;

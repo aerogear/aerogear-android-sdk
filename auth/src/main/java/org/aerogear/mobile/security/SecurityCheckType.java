@@ -15,42 +15,36 @@ import org.aerogear.mobile.security.checks.ScreenLockCheck;
 public enum SecurityCheckType {
 
     /**
-     * Detect whether the device is rooted.
-     * See {@link RootedCheck}
+     * Detect whether the device is rooted. See {@link RootedCheck}
      */
     IS_ROOTED(new RootedCheck()),
 
     /**
-     * Detect if developer mode is enabled in the device.
-     * See {@link DeveloperModeCheck}
+     * Detect if developer mode is enabled in the device. See {@link DeveloperModeCheck}
      */
     IS_DEVELOPER_MODE(new DeveloperModeCheck()),
 
     /**
-     *  Detect if a device is in debug mode
-     *  See {@link DebuggerCheck}
+     * Detect if a device is in debug mode See {@link DebuggerCheck}
      */
     IS_DEBUGGER(new DebuggerCheck()),
 
     /**
-     *  Detect whether the device is emulated.
-     *  See {@link EmulatorCheck}
+     * Detect whether the device is emulated. See {@link EmulatorCheck}
      */
     IS_EMULATOR(new EmulatorCheck()),
 
     /**
-     *  Detect whether a screen lock is enabled (PIN, Password etc).
-     *  See {@link ScreenLockCheck}
+     * Detect whether a screen lock is enabled (PIN, Password etc). See {@link ScreenLockCheck}
      */
     SCREEN_LOCK_ENABLED(new ScreenLockCheck()),
     /**
-     * Detect whether the allowBackup flag is enabled for the application.
-     * See {@link AllowBackupFlagCheck}
+     * Detect whether the allowBackup flag is enabled for the application. See
+     * {@link AllowBackupFlagCheck}
      */
     ALLOW_BACKUP_ENABLED(new AllowBackupFlagCheck()),
     /**
-     * Detect whether a devices filesystem is encrypted.
-     * See {@link EncryptionCheck}
+     * Detect whether a devices filesystem is encrypted. See {@link EncryptionCheck}
      */
     HAS_ENCRYPTION_ENABLED(new EncryptionCheck());
 

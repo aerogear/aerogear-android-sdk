@@ -1,10 +1,10 @@
 package org.aerogear.mobile.security.checks;
 
-import android.app.KeyguardManager;
-import android.content.Context;
-import android.os.Build;
+import static junit.framework.Assert.assertFalse;
 
-import org.aerogear.mobile.security.SecurityCheckResult;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,10 +12,9 @@ import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
+import android.os.Build;
 
-import static junit.framework.Assert.assertFalse;
+import org.aerogear.mobile.security.SecurityCheckResult;
 
 @RunWith(RobolectricTestRunner.class)
 public class ScreenLockCheckTest {
@@ -52,7 +51,7 @@ public class ScreenLockCheckTest {
         field.set(null, newValue);
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void nullContextTest() {
         ScreenLockCheck screenLockCheck = new ScreenLockCheck();
         screenLockCheck.test(null);

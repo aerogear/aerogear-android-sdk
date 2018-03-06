@@ -1,7 +1,12 @@
 package org.aerogear.mobile.core.configuration;
 
-import android.app.Application;
-import android.support.test.filters.SmallTest;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.fail;
+import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Map;
 
 import org.json.JSONException;
 import org.junit.Test;
@@ -9,13 +14,8 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Map;
-
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.fail;
-import static org.junit.Assert.assertEquals;
+import android.app.Application;
+import android.support.test.filters.SmallTest;
 
 @RunWith(RobolectricTestRunner.class)
 @SmallTest
@@ -31,7 +31,8 @@ public class MobileCoreParserTest {
             assertNotNull(configs.get("metrics"));
 
             ServiceConfiguration keyCloakServiceConfiguration = configs.get("keycloak");
-            assertEquals("https://keycloak-myproject.192.168.64.74.nip.io/auth", keyCloakServiceConfiguration.getProperty("auth-server-url"));
+            assertEquals("https://keycloak-myproject.192.168.64.74.nip.io/auth",
+                            keyCloakServiceConfiguration.getProperty("auth-server-url"));
         } catch (JSONException | IOException exception) {
             System.out.println(exception);
             fail("mobile-services.json not file");
@@ -47,4 +48,3 @@ public class MobileCoreParserTest {
     }
 
 }
-

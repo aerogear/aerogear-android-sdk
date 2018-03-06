@@ -1,10 +1,19 @@
 package org.aerogear.mobile.core;
 
+import static java.net.HttpURLConnection.HTTP_OK;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
+
 import android.app.Application;
-import android.content.res.AssetManager;
 import android.support.test.filters.SmallTest;
 
-import org.aerogear.mobile.core.configuration.MobileCoreJsonParser;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.exception.ConfigurationNotFoundException;
 import org.aerogear.mobile.core.exception.InitializationException;
@@ -15,23 +24,6 @@ import org.aerogear.mobile.core.http.OkHttpServiceModule;
 import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.logging.LoggerAdapter;
 import org.aerogear.mobile.core.metrics.MetricsService;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-
-import java.io.IOException;
-import java.io.InputStream;
-
-import static java.net.HttpURLConnection.HTTP_OK;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 @RunWith(RobolectricTestRunner.class)
 @SmallTest
@@ -198,8 +190,7 @@ public class MobileCoreTest {
         }
 
         @Override
-        public void configure(MobileCore core, ServiceConfiguration serviceConfiguration) {
-        }
+        public void configure(MobileCore core, ServiceConfiguration serviceConfiguration) {}
 
         @Override
         public boolean requiresConfiguration() {
@@ -229,20 +220,16 @@ public class MobileCoreTest {
                 }
 
                 @Override
-                public void get(String url) {
-                }
+                public void get(String url) {}
 
                 @Override
-                public void post(String url, byte[] body) {
-                }
+                public void post(String url, byte[] body) {}
 
                 @Override
-                public void put(String url, byte[] body) {
-                }
+                public void put(String url, byte[] body) {}
 
                 @Override
-                public void delete(String url) {
-                }
+                public void delete(String url) {}
 
                 @Override
                 public HttpResponse execute() {
@@ -253,10 +240,14 @@ public class MobileCoreTest {
                         }
 
                         @Override
-                        public HttpResponse onError(Runnable runnable) { return this; }
+                        public HttpResponse onError(Runnable runnable) {
+                            return this;
+                        }
 
                         @Override
-                        public HttpResponse onSuccess(Runnable runnable) { return this; }
+                        public HttpResponse onSuccess(Runnable runnable) {
+                            return this;
+                        }
 
                         @Override
                         public int getStatus() {
@@ -264,8 +255,7 @@ public class MobileCoreTest {
                         }
 
                         @Override
-                        public void waitForCompletionAndClose() {
-                        }
+                        public void waitForCompletionAndClose() {}
 
                         @Override
                         public String stringBody() {
@@ -297,8 +287,7 @@ public class MobileCoreTest {
         }
 
         @Override
-        public void destroy() {
-        }
+        public void destroy() {}
 
         public String getUrl() {
             return this.uri;
@@ -309,68 +298,52 @@ public class MobileCoreTest {
     public static final class DummyLogger implements Logger {
 
         @Override
-        public void info(String tag, String message) {
-        }
+        public void info(String tag, String message) {}
 
         @Override
-        public void info(String message) {
-        }
+        public void info(String message) {}
 
         @Override
-        public void info(String tag, String message, Exception e) {
-        }
+        public void info(String tag, String message, Exception e) {}
 
         @Override
-        public void info(String message, Exception e) {
-        }
+        public void info(String message, Exception e) {}
 
         @Override
-        public void warning(String tag, String message) {
-        }
+        public void warning(String tag, String message) {}
 
         @Override
-        public void warning(String message) {
-        }
+        public void warning(String message) {}
 
         @Override
-        public void warning(String tag, String message, Exception e) {
-        }
+        public void warning(String tag, String message, Exception e) {}
 
         @Override
-        public void warning(String message, Exception e) {
-        }
+        public void warning(String message, Exception e) {}
 
         @Override
-        public void debug(String tag, String message) {
-        }
+        public void debug(String tag, String message) {}
 
         @Override
-        public void debug(String message) {
-        }
+        public void debug(String message) {}
 
         @Override
-        public void debug(String tag, String message, Exception e) {
-        }
+        public void debug(String tag, String message, Exception e) {}
 
         @Override
-        public void debug(String message, Exception e) {
-        }
+        public void debug(String message, Exception e) {}
 
         @Override
-        public void error(String tag, String message) {
-        }
+        public void error(String tag, String message) {}
 
         @Override
-        public void error(String message) {
-        }
+        public void error(String message) {}
 
         @Override
-        public void error(String tag, String message, Exception e) {
-        }
+        public void error(String tag, String message, Exception e) {}
 
         @Override
-        public void error(String message, Exception e) {
-        }
+        public void error(String message, Exception e) {}
 
     }
 

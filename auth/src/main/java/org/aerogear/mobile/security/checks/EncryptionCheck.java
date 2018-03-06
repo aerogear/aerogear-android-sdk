@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 /**
  * Detects whether a devices filesystem is encrypted
  */
-public class EncryptionCheck extends AbstractSecurityCheck{
+public class EncryptionCheck extends AbstractSecurityCheck {
     /**
      * Check if a devices filesystem is encrypted
      *
@@ -17,7 +17,9 @@ public class EncryptionCheck extends AbstractSecurityCheck{
      */
     @Override
     protected boolean execute(@NonNull final Context context) {
-        final DevicePolicyManager policyManager = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
-        return policyManager != null && policyManager.getStorageEncryptionStatus() == DevicePolicyManager.ENCRYPTION_STATUS_ACTIVE;
+        final DevicePolicyManager policyManager = (DevicePolicyManager) context
+                        .getSystemService(Context.DEVICE_POLICY_SERVICE);
+        return policyManager != null && policyManager
+                        .getStorageEncryptionStatus() == DevicePolicyManager.ENCRYPTION_STATUS_ACTIVE;
     }
 }

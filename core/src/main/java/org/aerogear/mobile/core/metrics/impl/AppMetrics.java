@@ -1,16 +1,14 @@
 package org.aerogear.mobile.core.metrics.impl;
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.Context;
 
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.metrics.Metrics;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 /**
  * Collects app metrics

@@ -1,7 +1,12 @@
 package org.aerogear.mobile.auth.authenticator;
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
 import android.content.Context;
 import android.support.annotation.NonNull;
+
+import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
+import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
 
 import net.openid.appauth.AppAuthConfiguration;
 import net.openid.appauth.AuthState;
@@ -11,11 +16,6 @@ import net.openid.appauth.AuthorizationServiceConfiguration;
 import net.openid.appauth.ResponseTypeValues;
 import net.openid.appauth.browser.BrowserBlacklist;
 import net.openid.appauth.browser.VersionedBrowserMatcher;
-
-import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
-import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
-
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 /**
  * Factory class used to create the 'openid' classes.
@@ -36,8 +36,8 @@ public class AuthorizationServiceFactory {
         private final AuthorizationRequest authorizationRequest;
 
         private ServiceWrapper(final AuthorizationService authorizationService,
-                               final AuthState authState,
-                               final AuthorizationRequest authorizationRequest) {
+                        final AuthState authState,
+                        final AuthorizationRequest authorizationRequest) {
             this.authorizationService = authorizationService;
             this.authState = authState;
             this.authorizationRequest = authorizationRequest;
@@ -58,6 +58,7 @@ public class AuthorizationServiceFactory {
 
     /**
      * Builds a new AuthorizationServiceFactory
+     * 
      * @param appContext the application context
      */
     public AuthorizationServiceFactory(@NonNull final Context appContext) {
@@ -65,36 +66,36 @@ public class AuthorizationServiceFactory {
     }
 
     /**
-     * Creates and initializes a new {@link AuthorizationService} ready to be used for authenticating with Keycloak.
+     * Creates and initializes a new {@link AuthorizationService} ready to be used for
+     * authenticating with Keycloak.
+     * 
      * @param keycloakConfiguration configuration to be used to access keycloak
      * @param authServiceConfiguration the authentication singleThreadService configuration
-     * @return a wrapper object containing all the `openid` object used to handle the OIDC authentication
+     * @return a wrapper object containing all the `openid` object used to handle the OIDC
+     *         authentication
      */
-    public ServiceWrapper createAuthorizationService(@NonNull final KeycloakConfiguration keycloakConfiguration,
-                                                     @NonNull final AuthServiceConfiguration authServiceConfiguration) {
+    public ServiceWrapper createAuthorizationService(
+                    @NonNull final KeycloakConfiguration keycloakConfiguration,
+                    @NonNull final AuthServiceConfiguration authServiceConfiguration) {
 
         nonNull(keycloakConfiguration, "keycloakConfiguration");
         nonNull(authServiceConfiguration, "authServiceConfiguration");
 
         AuthorizationServiceConfiguration authServiceConfig = new AuthorizationServiceConfiguration(
-            keycloakConfiguration.getAuthenticationEndpoint(),
-            keycloakConfiguration.getTokenEndpoint()
-        );
+                        keycloakConfiguration.getAuthenticationEndpoint(),
+                        keycloakConfiguration.getTokenEndpoint());
         AuthState authState = new AuthState(authServiceConfig);
 
-        AppAuthConfiguration.Builder appAuthConfigurationBuilder = new AppAuthConfiguration.Builder()
-            .setBrowserMatcher(new BrowserBlacklist(
-                VersionedBrowserMatcher.CHROME_CUSTOM_TAB));
+        AppAuthConfiguration.Builder appAuthConfigurationBuilder =
+                        new AppAuthConfiguration.Builder().setBrowserMatcher(new BrowserBlacklist(
+                                        VersionedBrowserMatcher.CHROME_CUSTOM_TAB));
 
         AppAuthConfiguration appAuthConfig = appAuthConfigurationBuilder.build();
 
         AuthorizationService authService = new AuthorizationService(this.appContext, appAuthConfig);
-        AuthorizationRequest authRequest = new AuthorizationRequest.Builder(
-            authServiceConfig,
-            keycloakConfiguration.getClientId(),
-            ResponseTypeValues.CODE,
-            authServiceConfiguration.getRedirectUri()
-        ).setScopes(SCOPE_OPENID).build();
+        AuthorizationRequest authRequest = new AuthorizationRequest.Builder(authServiceConfig,
+                        keycloakConfiguration.getClientId(), ResponseTypeValues.CODE,
+                        authServiceConfiguration.getRedirectUri()).setScopes(SCOPE_OPENID).build();
 
         return new ServiceWrapper(authService, authState, authRequest);
     }

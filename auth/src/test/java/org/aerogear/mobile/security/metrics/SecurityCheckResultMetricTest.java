@@ -1,8 +1,8 @@
 package org.aerogear.mobile.security.metrics;
 
-import org.aerogear.mobile.security.SecurityCheck;
-import org.aerogear.mobile.security.SecurityCheckResult;
-import org.aerogear.mobile.security.impl.SecurityCheckResultImpl;
+import static junit.framework.Assert.assertEquals;
+import static org.mockito.Mockito.when;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,9 +13,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.fail;
-import static org.mockito.Mockito.when;
+import org.aerogear.mobile.security.SecurityCheck;
+import org.aerogear.mobile.security.SecurityCheckResult;
+import org.aerogear.mobile.security.impl.SecurityCheckResultImpl;
 
 @RunWith(RobolectricTestRunner.class)
 public class SecurityCheckResultMetricTest {

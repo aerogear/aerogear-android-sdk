@@ -1,12 +1,12 @@
 package org.aerogear.mobile.auth.authenticator;
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
 import android.support.annotation.NonNull;
 
 import org.aerogear.mobile.auth.Callback;
 import org.aerogear.mobile.auth.user.UserPrincipal;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
-
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 /**
  * Base class for all authenticators
@@ -30,7 +30,8 @@ public abstract class AbstractAuthenticator {
      * @param authOptions the options for the authenticate action
      * @param callback the callback function to be invoked
      */
-    public abstract void authenticate(final AuthenticateOptions authOptions, final Callback<UserPrincipal> callback);
+    public abstract void authenticate(final AuthenticateOptions authOptions,
+                    final Callback<UserPrincipal> callback);
 
     /**
      * Logout the given principal
@@ -38,7 +39,8 @@ public abstract class AbstractAuthenticator {
      * @param principal principal to be log out
      * @param callback the callback function to be invoked
      */
-    public abstract void logout(final UserPrincipal principal, final Callback<UserPrincipal> callback);
+    public abstract void logout(final UserPrincipal principal,
+                    final Callback<UserPrincipal> callback);
 
     /**
      * Returns the authentication singleThreadService configuration

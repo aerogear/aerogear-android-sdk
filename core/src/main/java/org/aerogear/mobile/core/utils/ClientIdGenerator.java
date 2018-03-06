@@ -1,11 +1,11 @@
 package org.aerogear.mobile.core.utils;
 
+import java.util.UUID;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 
 import org.aerogear.mobile.core.MobileCore;
-
-import java.util.UUID;
 
 /**
  * Helper for generating ID's
@@ -18,20 +18,19 @@ public final class ClientIdGenerator {
     /**
      * Utility classes are not meant to be instantiated.
      */
-    private ClientIdGenerator() {
-    }
+    private ClientIdGenerator() {}
 
     /**
-     * Get or create the client ID that identifies a device as long as the user doesn't
-     * reinstall the app or delete the app storage. A random UUID is created and stored in the
-     * application shared preferences.
+     * Get or create the client ID that identifies a device as long as the user doesn't reinstall
+     * the app or delete the app storage. A random UUID is created and stored in the application
+     * shared preferences.
      *
      * @param context Application context
      * @return Client ID
      */
     public static String getOrCreateClientId(final Context context) {
-        final SharedPreferences preferences = context
-            .getSharedPreferences(STORAGE_NAME, Context.MODE_PRIVATE);
+        final SharedPreferences preferences =
+                        context.getSharedPreferences(STORAGE_NAME, Context.MODE_PRIVATE);
 
         String clientId = preferences.getString(STORAGE_KEY, null);
 

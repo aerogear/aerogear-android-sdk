@@ -1,9 +1,9 @@
 package org.aerogear.mobile.security.checks;
 
+import com.scottyab.rootbeer.RootBeer;
+
 import android.content.Context;
 import android.support.annotation.NonNull;
-
-import com.scottyab.rootbeer.RootBeer;
 
 /**
  * A check for whether the device the application is running on is rooted.
@@ -29,5 +29,5 @@ public class RootedCheck extends AbstractSecurityCheck {
      */
     protected RootBeer getRootBeer(final Context context) {
         return new RootBeer(context);
-   }
+    }
 }
