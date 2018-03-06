@@ -21,16 +21,21 @@ import org.aerogear.mobile.auth.credentials.OIDCCredentials;
 import org.aerogear.mobile.auth.user.UserPrincipal;
 import org.aerogear.mobile.auth.user.UserPrincipalImpl;
 import org.aerogear.mobile.auth.utils.UserIdentityParser;
+import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.http.HttpRequest;
+import org.aerogear.mobile.core.http.HttpResponse;
 import org.aerogear.mobile.core.http.HttpServiceModule;
 import org.aerogear.mobile.core.http.OkHttpServiceModule;
+import org.aerogear.mobile.core.logging.Logger;
 import org.jose4j.jwk.JsonWebKeySet;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
+import static java.net.HttpURLConnection.HTTP_OK;
 import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 /**
@@ -39,17 +44,13 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
 
     private AuthState authState;
-
     private AuthorizationService authService;
-
     private final KeycloakConfiguration keycloakConfiguration;
     private final AuthServiceConfiguration authServiceConfiguration;
-
     private Callback authCallback;
-
+    private Callback logoutCallback;
     private final AuthStateManager authStateManager;
     private final JwksManager jwksManager;
-
     private final AuthorizationServiceFactory authorizationServiceFactory;
 
     /**
@@ -145,7 +146,8 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
     }
 
     @Override
-    public void logout(final UserPrincipal principal) {
+    public void logout(final UserPrincipal principal, final Callback<UserPrincipal> callback) {
+        this.logoutCallback = nonNull(callback, "callback");
         nonNull(principal, "principal");
 
         // Get user's identity token
@@ -169,15 +171,27 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
         HttpRequest request = serviceModule.newRequest();
         request.get(logoutUrl.toString());
 
-        // Creates and handles the response
-        new AppExecutors().networkThread().execute(() -> request.execute());
-        //it doesn't matter if the logout request is successful or not, we should always delete the local tokens
-        //the remote session should be timed out eventually
-        authStateManager.save(null);
+        final HttpResponse httpResponse = request.execute();
+
+        httpResponse.onSuccess(() -> {
+            if (httpResponse.getStatus() == HTTP_OK || httpResponse.getStatus() == HTTP_MOVED_TEMP) {
+                // delete the local tokens when the session with the OIDC has been terminated
+                authStateManager.save(null);
+                logoutCallback.onSuccess();
+            } else {
+                // Non HTTP 200 or 302 Status Code Returned
+                Exception error = httpResponse.getError() != null ? httpResponse.getError() : new Exception("Non HTTP 200 or 302 Status Code.");
+                MobileCore.getLogger().error("Error Performing a Logout on the Remote OIDC Server: ", error);
+                logoutCallback.onError(error);
+            }
+        }).onError(() -> {
+            MobileCore.getLogger().error("Error Performing a Logout on the Remote OIDC Server: ", httpResponse.getError());
+            logoutCallback.onError(httpResponse.getError());
+        });
     }
 
     /**
-     * Constructs the logout url using the user's idenity token.
+     * Constructs the logout url using the user's identity token.
      *
      * @param identityToken {@link OIDCCredentials#getIdentityToken()}
      * @return the formatted logout url.
@@ -189,5 +203,12 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
         } catch (MalformedURLException e) {
             throw new IllegalArgumentException("Could not parse logout url");
         }
+    }
+
+    /**
+     * Delete the the current tokens/authentication state.
+     */
+    public void deleteTokens() {
+        authStateManager.clear();
     }
 }

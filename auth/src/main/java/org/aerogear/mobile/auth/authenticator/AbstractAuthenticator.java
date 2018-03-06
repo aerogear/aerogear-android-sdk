@@ -36,8 +36,9 @@ public abstract class AbstractAuthenticator {
      * Logout the given principal
      *
      * @param principal principal to be log out
+     * @param callback the callback function to be invoked
      */
-    public abstract void logout(final UserPrincipal principal);
+    public abstract void logout(final UserPrincipal principal, final Callback<UserPrincipal> callback);
 
     /**
      * Returns the authentication singleThreadService configuration
