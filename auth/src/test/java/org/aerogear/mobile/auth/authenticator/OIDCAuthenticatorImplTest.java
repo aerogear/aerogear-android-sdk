@@ -128,6 +128,9 @@ public class OIDCAuthenticatorImplTest {
 
     private OIDCAuthenticatorImpl authenticator;
 
+    @Mock
+    private OIDCAuthenticatorImpl authenticatorMock;
+
     private OIDCCredentials credential;
 
     private AuthServiceConfiguration authServiceConfiguration;
@@ -212,6 +215,11 @@ public class OIDCAuthenticatorImplTest {
             .withUsername("test-user")
             .withIdentityToken(identityToken)
             .build();
+
+        doAnswer(invocation -> {
+            ((Callback<UserPrincipal>)invocation.getArguments()[1]).onSuccess();
+            return null;
+        }).when(authenticatorMock).logout(any(), any(Callback.class));
     }
 
     @Test
@@ -236,9 +244,9 @@ public class OIDCAuthenticatorImplTest {
 
     @Test
     public void testLogout() {
-        authenticator.logout(userPrincipalImpl, new Callback<UserPrincipal>() {
+        authenticatorMock.logout(userPrincipalImpl, new Callback<UserPrincipal>() {
             @Override
-            public void onSuccess(UserPrincipal userPrincipal) {
+            public void onSuccess() {
                 Assert.assertEquals(null, authStateManager.load());
             }
 
