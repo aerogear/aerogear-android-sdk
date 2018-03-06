@@ -28,8 +28,6 @@ There are two ways to implement self defence checks: <<Provided Self Defence Che
 
 These are self defence checks provided by the SDK in link:javadoc[`SecurityCheckType`].
 
-// TODO: make check titles links to javadoc when javadoc location is available
-
 ==== IS_ROOTED
 
 To detect if a device has been rooted (jailbreak) the `SecurityCheckType#IS_ROOTED` function can be used.  This function uses the link:https://github.com/scottyab/rootbeer[Rootbeer] library to check if root access is present on the device.
