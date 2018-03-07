@@ -32,6 +32,3 @@ The Client ID will be generated and stored on the device when the App is started
 - *Platform*: Hardcoded to `android`
 - *Platform Version*: The API level of the device
 
-=== Extending metrics
-
-See link:./metrics-development.adoc[Extending Metrics Guide] 
