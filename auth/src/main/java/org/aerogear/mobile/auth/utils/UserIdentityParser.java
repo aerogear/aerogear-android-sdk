@@ -24,6 +24,8 @@ public class UserIdentityParser {
     private static final String REALM = "realm_access";
     private static final String CLIENT = "resource_access";
     private static final String ROLES = "roles";
+    private static final String FIRST_NAME = "given_name";
+    private static final String LAST_NAME = "family_name";
     private static final String RESOURCE = "resource";
     private static final String COMMA = ",";
 
@@ -49,6 +51,36 @@ public class UserIdentityParser {
             decodeUserIdentity();
         }
         this.keycloakConfiguration = nonNull(keycloakConfiguration, "keycloakConfiguration");
+    }
+
+    /**
+     * Parse the users first name from the {@link #userIdentity users identity}
+     *
+     * @return user's first name
+     * @throws JSONException if the {@link #FIRST_NAME} property cannot be retrieved from the user
+     *         identity.
+     */
+    public String parseFirstName() throws JSONException {
+        String firstName = "";
+        if (userIdentity != null && userIdentity.has(FIRST_NAME)) {
+            firstName = userIdentity.getString(FIRST_NAME);
+        }
+        return firstName;
+    }
+
+    /**
+     * Parse the users last name from the {@link #userIdentity users identity}
+     *
+     * @return user's last name
+     * @throws JSONException if the {@link #LAST_NAME} property cannot be retrieved from the user
+     *         identity.
+     */
+    public String parseLastName() throws JSONException {
+        String lastName = "";
+        if (userIdentity != null && userIdentity.has(LAST_NAME)) {
+            lastName = userIdentity.getString(LAST_NAME);
+        }
+        return lastName;
     }
 
     /**
@@ -108,8 +140,9 @@ public class UserIdentityParser {
 
     public UserPrincipalImpl parseUser() throws AuthenticationException {
         try {
-            return UserPrincipalImpl.newUser().withEmail(parseEmail()).withUsername(parseUsername())
-                            .withRoles(parseRoles())
+            return UserPrincipalImpl.newUser().withEmail(parseEmail())
+                            .withFirstName(parseFirstName()).withLastName(parseLastName())
+                            .withUsername(parseUsername()).withRoles(parseRoles())
                             .withIdentityToken(credential.getIdentityToken())
                             .withAccessToken(credential.getAccessToken())
                             .withRefreshToken(credential.getRefreshToken()).build();
