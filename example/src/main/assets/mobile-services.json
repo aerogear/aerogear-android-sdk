@@ -21,7 +21,7 @@
         {
             "id": "metrics",
             "name": "metrics",
-            "url": "http://192.168.0.101:3000/metrics"
+            "url": "http://192.168.0.101:3000/metrics",
             "type": "metrics",
             "config": {
             }
