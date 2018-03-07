@@ -28,12 +28,13 @@ public class SecurityCheckResultTest {
     }
 
     @Test
-    public void testGetType() {
-        assertEquals(securityCheck.getType(), result.getType());
+    public void testGetId() {
+        assertEquals(securityCheck.getId(), result.getId());
     }
 
-    public void testGetDisplayName() {
-        assertEquals(securityCheck.getDisplayName(), result.getDisplayName());
+    @Test
+    public void testGetName() {
+        assertEquals(securityCheck.getName(), result.getName());
     }
 
     @Test

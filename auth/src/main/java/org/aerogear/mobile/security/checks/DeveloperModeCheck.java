@@ -24,7 +24,7 @@ public class DeveloperModeCheck extends AbstractSecurityCheck {
     }
 
     @Override
-    public String getDisplayName() {
+    public String getName() {
         return "Developer Mode Check";
     }
 }

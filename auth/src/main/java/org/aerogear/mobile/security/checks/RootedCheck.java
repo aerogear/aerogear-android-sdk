@@ -32,7 +32,7 @@ public class RootedCheck extends AbstractSecurityCheck {
     }
 
     @Override
-    public String getDisplayName() {
+    public String getName() {
         return "Rooted Check";
     }
 }

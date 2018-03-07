@@ -18,12 +18,13 @@ public interface SecurityCheck {
     SecurityCheckResult test(Context context);
 
     /**
-     * Gets the name of the check. It must be a unique string. The default implementation is to
-     * return the check class name.
+     * Gets the name of the check to be used for display purposes in reports. This value should
+     * match other checks that implement the same verification across different platforms (i.e. iOS,
+     * cordova)
      *
      * @return {@link String} name of the check
      */
-    String getDisplayName();
+    String getName();
 
     /**
      * Gets the type of the check. It must be a unique string. The default implementation is to
@@ -31,7 +32,7 @@ public interface SecurityCheck {
      *
      * @return {@link String} name of the check
      */
-    default String getType() {
+    default String getId() {
         return this.getClass().getName();
     }
 }

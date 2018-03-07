@@ -29,7 +29,7 @@ public class ScreenLockCheck extends AbstractSecurityCheck {
     }
 
     @Override
-    public String getDisplayName() {
+    public String getName() {
         return "Screen Lock Check";
     }
 }

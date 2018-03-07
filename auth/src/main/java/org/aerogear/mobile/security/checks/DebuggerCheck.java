@@ -21,7 +21,7 @@ public class DebuggerCheck extends AbstractSecurityCheck {
     }
 
     @Override
-    public String getDisplayName() {
+    public String getName() {
         return "Debugger Check";
     }
 }

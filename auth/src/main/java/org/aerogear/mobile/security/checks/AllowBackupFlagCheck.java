@@ -32,7 +32,7 @@ public class AllowBackupFlagCheck extends AbstractSecurityCheck {
     }
 
     @Override
-    public String getDisplayName() {
+    public String getName() {
         return "Allow Backup Flag Check";
     }
 }

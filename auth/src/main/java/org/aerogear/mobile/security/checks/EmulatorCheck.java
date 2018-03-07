@@ -28,7 +28,7 @@ public class EmulatorCheck extends AbstractSecurityCheck {
     }
 
     @Override
-    public String getDisplayName() {
+    public String getName() {
         return "Emulator Check";
     }
 }

@@ -67,8 +67,8 @@ public class SecurityCheckExecutorTest {
                                         .withSecurityCheck(securityCheckType).build().execute();
 
         assertEquals(1, results.size());
-        assertTrue(results.containsKey(mockSecurityCheck.getType()));
-        assertEquals(true, results.get(mockSecurityCheck.getType()).passed());
+        assertTrue(results.containsKey(mockSecurityCheck.getId()));
+        assertEquals(true, results.get(mockSecurityCheck.getId()).passed());
     }
 
     @Test
@@ -79,8 +79,8 @@ public class SecurityCheckExecutorTest {
                         .withExecutorService(Executors.newFixedThreadPool(1)).build().execute();
 
         assertEquals(1, results.size());
-        assertTrue(results.containsKey(mockSecurityCheck.getType()));
-        assertEquals(true, results.get(mockSecurityCheck.getType()).get().passed());
+        assertTrue(results.containsKey(mockSecurityCheck.getId()));
+        assertEquals(true, results.get(mockSecurityCheck.getId()).get().passed());
     }
 
     @Test
@@ -93,8 +93,8 @@ public class SecurityCheckExecutorTest {
                         .withExecutorService(Executors.newFixedThreadPool(1)).build().execute();
 
         assertEquals(1, results.size());
-        assertTrue(results.containsKey(mockSecurityCheck.getType()));
-        results.get(mockSecurityCheck.getType()).get();
+        assertTrue(results.containsKey(mockSecurityCheck.getId()));
+        results.get(mockSecurityCheck.getId()).get();
 
         ExecutorService executorService = (new AppExecutors()).networkThread();
         executorService.submit(() -> verify(metricsService, times(1)).publish(any()));

@@ -25,12 +25,12 @@ public class SecurityCheckResultMetricTest {
 
     @Mock
     private SecurityCheck securityCheck;
-    private final String NAME = "TestCheck";
+    private final String CHECK_ID = "TestCheck";
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        when(securityCheck.getType()).thenReturn(NAME);
+        when(securityCheck.getId()).thenReturn(CHECK_ID);
         okResult = new SecurityCheckResultImpl(securityCheck, true);
         failedResult = new SecurityCheckResultImpl(securityCheck, false);
     }
@@ -44,10 +44,10 @@ public class SecurityCheckResultMetricTest {
         JSONObject okResultJson = data.getJSONObject(0);
         JSONObject failedResultJson = data.getJSONObject(1);
 
-        assertEquals(NAME, okResultJson.get(SecurityCheckResultMetric.KEY_TYPE));
+        assertEquals(CHECK_ID, okResultJson.get(SecurityCheckResultMetric.KEY_ID));
         assertEquals(true, okResultJson.getBoolean(SecurityCheckResultMetric.KEY_VALUE));
 
-        assertEquals(NAME, failedResultJson.get(SecurityCheckResultMetric.KEY_TYPE));
+        assertEquals(CHECK_ID, failedResultJson.get(SecurityCheckResultMetric.KEY_ID));
         assertEquals(false, failedResultJson.getBoolean(SecurityCheckResultMetric.KEY_VALUE));
     }
 }

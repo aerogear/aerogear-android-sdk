@@ -24,7 +24,7 @@ public class EncryptionCheck extends AbstractSecurityCheck {
     }
 
     @Override
-    public String getDisplayName() {
+    public String getName() {
         return "Encryption Check";
     }
 }

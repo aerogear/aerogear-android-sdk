@@ -24,7 +24,7 @@ public class SecurityCheckResultMetric implements Metrics<JSONArray> {
     private final String TAG = "SecurityCheckResultMetric";
 
     public static final String IDENTIFIER = "security";
-    public static final String KEY_TYPE = "type";
+    public static final String KEY_ID = "id";
     public static final String KEY_NAME = "name";
     public static final String KEY_VALUE = "passed";
 
@@ -83,8 +83,8 @@ public class SecurityCheckResultMetric implements Metrics<JSONArray> {
         try {
             for (SecurityCheckResult result : results) {
                 final JSONObject resultJson = new JSONObject();
-                resultJson.put(KEY_TYPE, result.getType());
-                resultJson.put(KEY_NAME, result.getDisplayName());
+                resultJson.put(KEY_ID, result.getId());
+                resultJson.put(KEY_NAME, result.getName());
                 resultJson.put(KEY_VALUE, result.passed());
                 data.put(resultJson);
             }
