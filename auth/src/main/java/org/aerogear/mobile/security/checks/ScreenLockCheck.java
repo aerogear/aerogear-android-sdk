@@ -27,4 +27,9 @@ public class ScreenLockCheck extends AbstractSecurityCheck {
         }
         return keyguardManager.isKeyguardSecure();
     }
+
+    @Override
+    public String getName() {
+        return "Screen Lock Check";
+    }
 }

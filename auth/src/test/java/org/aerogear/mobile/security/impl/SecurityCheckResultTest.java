@@ -28,6 +28,11 @@ public class SecurityCheckResultTest {
     }
 
     @Test
+    public void testGetId() {
+        assertEquals(securityCheck.getId(), result.getId());
+    }
+
+    @Test
     public void testGetName() {
         assertEquals(securityCheck.getName(), result.getName());
     }

@@ -31,6 +31,8 @@ import org.aerogear.mobile.core.logging.Logger;
  * Entry point for authenticating users.
  */
 public class AuthService implements ServiceModule {
+    private final static Logger LOG = MobileCore.getLogger();
+    private final static String TAG = "AuthService";
 
     private ServiceConfiguration serviceConfiguration;
     private KeycloakConfiguration keycloakConfiguration;
@@ -41,8 +43,6 @@ public class AuthService implements ServiceModule {
     private OIDCAuthenticatorImpl oidcAuthenticatorImpl;
 
     private Context appContext;
-    private final Logger LOG = MobileCore.getLogger();
-    private final String TAG = "AuthService";
     private JwksManager jwksManager;
 
     private MobileCore mobileCore;

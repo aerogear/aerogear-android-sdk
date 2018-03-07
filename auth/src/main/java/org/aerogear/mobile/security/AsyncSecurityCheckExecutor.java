@@ -94,8 +94,8 @@ public class AsyncSecurityCheckExecutor
      * Executes the checks asynchronously.
      *
      * Returns a {@link Map} containing the results of each executed test (a {@link Future}). The
-     * key of the map will be the output of {@link SecurityCheck#getName()}, while the value will be
-     * a {@link Map} of {@link Future} with the {@link SecurityCheckResult} of the check.
+     * key of the map will be the output of {@link SecurityCheck#getId()}, while the value will be a
+     * {@link Map} of {@link Future} with the {@link SecurityCheckResult} of the check.
      *
      * @return {@link Map}
      */
@@ -107,8 +107,8 @@ public class AsyncSecurityCheckExecutor
      * Executes the checks asynchronously.
      *
      * Returns a {@link Map} containing the results of each executed test (a {@link Future}). The
-     * key of the map will be the output of {@link SecurityCheck#getName()}, while the value will be
-     * a {@link Map} of {@link Future} with the {@link SecurityCheckResult} of the check.
+     * key of the map will be the output of {@link SecurityCheck#getId()}, while the value will be a
+     * {@link Map} of {@link Future} with the {@link SecurityCheckResult} of the check.
      *
      * @param securityCheckExecutorListeners list of listeners that will receive events about checks
      *        execution
@@ -129,7 +129,7 @@ public class AsyncSecurityCheckExecutor
         final AtomicInteger count = new AtomicInteger(checks.size());
 
         for (final SecurityCheck check : checks) {
-            res.put(check.getName(), (executorService.submit(() -> {
+            res.put(check.getId(), (executorService.submit(() -> {
                 final SecurityCheckResult result = check.test(getContext());
 
                 final int remaining = count.decrementAndGet();

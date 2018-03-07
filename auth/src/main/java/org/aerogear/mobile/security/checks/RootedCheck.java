@@ -30,4 +30,9 @@ public class RootedCheck extends AbstractSecurityCheck {
     protected RootBeer getRootBeer(final Context context) {
         return new RootBeer(context);
     }
+
+    @Override
+    public String getName() {
+        return "Rooted Check";
+    }
 }

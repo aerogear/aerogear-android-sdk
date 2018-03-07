@@ -60,7 +60,7 @@ public class SyncSecurityCheckExecutor
      * Executes the provided checks and returns the results. Blocks until all checks are executed.
      *
      * Returns a {@link Map} containing the results of each executed test. The key of the map will
-     * be the output of {@link SecurityCheck#getName()}, while the value will be the
+     * be the output of {@link SecurityCheck#getId()}, while the value will be the
      * {@link SecurityCheckResult} of the check.
      *
      * @return {@link Map}
@@ -72,7 +72,7 @@ public class SyncSecurityCheckExecutor
 
         for (SecurityCheck check : getChecks()) {
             SecurityCheckResult result = check.test(getContext());
-            results.put(check.getName(), result);
+            results.put(check.getId(), result);
 
             metricServicePublisher.onExecuted(result);
         }

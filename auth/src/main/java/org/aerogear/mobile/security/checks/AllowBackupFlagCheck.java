@@ -30,4 +30,9 @@ public class AllowBackupFlagCheck extends AbstractSecurityCheck {
         }
         return (packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_ALLOW_BACKUP) != 0;
     }
+
+    @Override
+    public String getName() {
+        return "Allow Backup Flag Check";
+    }
 }

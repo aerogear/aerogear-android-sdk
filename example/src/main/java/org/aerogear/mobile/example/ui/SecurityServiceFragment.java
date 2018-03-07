@@ -109,7 +109,7 @@ public class SecurityServiceFragment extends BaseFragment {
      */
     public void detectRoot(Map<String, SecurityCheckResult> results) {
         totalTests++;
-        SecurityCheckResult result = results.get(SecurityCheckType.IS_ROOTED.getName());
+        SecurityCheckResult result = results.get(SecurityCheckType.IS_ROOTED.getType());
         if (result != null && result.passed()) {
             setDetected(rootAccess, R.string.root_detected_positive);
         }
@@ -120,7 +120,7 @@ public class SecurityServiceFragment extends BaseFragment {
      */
     public void detectDeviceLock(Map<String, SecurityCheckResult> results) {
         totalTests++;
-        SecurityCheckResult result = results.get(SecurityCheckType.SCREEN_LOCK_ENABLED.getName());
+        SecurityCheckResult result = results.get(SecurityCheckType.SCREEN_LOCK_ENABLED.getType());
         if (result != null && result.passed()) {
             setDetected(lockScreenSetup, R.string.device_lock_detected_negative);
         }
@@ -131,7 +131,7 @@ public class SecurityServiceFragment extends BaseFragment {
      */
     public void debuggerDetected(Map<String, SecurityCheckResult> results) {
         totalTests++;
-        SecurityCheckResult result = results.get(SecurityCheckType.IS_DEBUGGER.getName());
+        SecurityCheckResult result = results.get(SecurityCheckType.IS_DEBUGGER.getType());
         if (result != null && result.passed()) {
             setDetected(debuggerAccess, R.string.debugger_detected_positive);
         }
@@ -142,7 +142,7 @@ public class SecurityServiceFragment extends BaseFragment {
      */
     public void detectEmulator(Map<String, SecurityCheckResult> results) {
         totalTests++;
-        SecurityCheckResult result = results.get(SecurityCheckType.IS_EMULATOR.getName());
+        SecurityCheckResult result = results.get(SecurityCheckType.IS_EMULATOR.getType());
         if (result != null && result.passed()) {
             setDetected(emulatorAccess, R.string.emulator_detected_positive);
         }
@@ -176,7 +176,7 @@ public class SecurityServiceFragment extends BaseFragment {
      */
     public void detectDeveloperOptions(Map<String, SecurityCheckResult> results) {
         totalTests++;
-        SecurityCheckResult result = results.get(SecurityCheckType.IS_DEVELOPER_MODE.getName());
+        SecurityCheckResult result = results.get(SecurityCheckType.IS_DEVELOPER_MODE.getType());
         if (result != null && result.passed()) {
             setDetected(developerOptions, R.string.developer_options_positive);
         }

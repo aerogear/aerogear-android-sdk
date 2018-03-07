@@ -22,4 +22,9 @@ public class EncryptionCheck extends AbstractSecurityCheck {
         return policyManager != null && policyManager
                         .getStorageEncryptionStatus() == DevicePolicyManager.ENCRYPTION_STATUS_ACTIVE;
     }
+
+    @Override
+    public String getName() {
+        return "Encryption Check";
+    }
 }

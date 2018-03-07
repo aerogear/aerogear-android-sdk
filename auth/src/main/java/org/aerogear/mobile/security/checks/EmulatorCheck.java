@@ -27,4 +27,8 @@ public class EmulatorCheck extends AbstractSecurityCheck {
                         || "google_sdk".equals(Build.PRODUCT);
     }
 
+    @Override
+    public String getName() {
+        return "Emulator Check";
+    }
 }

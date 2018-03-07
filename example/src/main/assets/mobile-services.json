@@ -21,7 +21,7 @@
         {
             "id": "metrics",
             "name": "metrics",
-            "url": "http://www.mocky.io/v2/5a8aaa642f00007200e470a9",
+            "url": "http://192.168.0.101:3000/metrics"
             "type": "metrics",
             "config": {
             }

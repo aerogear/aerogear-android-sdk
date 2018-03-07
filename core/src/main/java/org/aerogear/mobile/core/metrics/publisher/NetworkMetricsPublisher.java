@@ -2,6 +2,8 @@ package org.aerogear.mobile.core.metrics.publisher;
 
 import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
+import java.text.MessageFormat;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -10,6 +12,7 @@ import android.content.Context;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpResponse;
+import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.metrics.Metrics;
 import org.aerogear.mobile.core.metrics.MetricsPublisher;
 import org.aerogear.mobile.core.utils.ClientIdGenerator;
@@ -53,7 +56,10 @@ public class NetworkMetricsPublisher implements MetricsPublisher {
 
             final HttpResponse httpResponse = httpRequest.execute();
             httpResponse.onSuccess(() -> {
-                MobileCore.getLogger().debug("Metrics sent: " + json.toString());
+                Logger logger = MobileCore.getLogger();
+                logger.debug(MessageFormat.format("Metrics response: {0}: {1}",
+                                httpResponse.getStatus(), httpResponse.stringBody()));
+                logger.debug("Metrics sent: " + json.toString());
             }).onError(() -> {
                 MobileCore.getLogger().error("Metrics request error", httpResponse.getError());
             });

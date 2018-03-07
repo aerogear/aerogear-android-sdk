@@ -22,4 +22,9 @@ public class DeveloperModeCheck extends AbstractSecurityCheck {
                         Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0);
         return devOptions > 0;
     }
+
+    @Override
+    public String getName() {
+        return "Developer Mode Check";
+    }
 }
