@@ -60,7 +60,7 @@ public class SyncSecurityCheckExecutor
      * Executes the provided checks and returns the results. Blocks until all checks are executed.
      *
      * Returns a {@link Map} containing the results of each executed test. The key of the map will
-     * be the output of {@link SecurityCheck#getName()}, while the value will be the
+     * be the output of {@link SecurityCheck#getType()}, while the value will be the
      * {@link SecurityCheckResult} of the check.
      *
      * @return {@link Map}
