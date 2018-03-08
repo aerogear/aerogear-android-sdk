@@ -61,11 +61,7 @@ public class MetricsService implements ServiceModule {
      * Send default metrics
      */
     public void sendAppAndDeviceMetrics() {
-        if (publisher == null) {
-            throw new IllegalStateException(
-                            "Make sure you have called configure or get this instance from MobileCore.getInstance()");
-        }
-        publisher.publish(defaultMetrics);
+        this.publish(defaultMetrics);
     }
 
     /**
