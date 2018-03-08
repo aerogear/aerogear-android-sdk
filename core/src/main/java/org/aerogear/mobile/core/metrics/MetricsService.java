@@ -16,6 +16,7 @@ public class MetricsService implements ServiceModule {
 
     private Metrics[] defaultMetrics;
     private MetricsPublisher publisher;
+    private MetricsPublisherListener listener;
 
     public MetricsPublisher getPublisher() {
         return publisher;
@@ -68,16 +69,14 @@ public class MetricsService implements ServiceModule {
      * Send metrics
      *
      * @param metrics Metrics to send
-     * @return this MetricsService instance
      */
-    public MetricsService publish(final Metrics... metrics) {
+    public void publish(final Metrics... metrics) {
         nonNull(metrics, "metrics");
         if (publisher == null) {
             throw new IllegalStateException(
                             "Make sure you have called configure or get this instance from MobileCore.getInstance()");
         }
         publisher.publish(metrics);
-        return this;
     }
 
 }
