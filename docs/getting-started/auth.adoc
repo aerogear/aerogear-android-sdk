@@ -4,6 +4,8 @@ Mobile authentication SDK based on link:http://www.keycloak.org/[Keycloak] using
 
 Provides authentication features like access control and two factor authentication through Keycloak.
 
+image::https://img.youtube.com/vi/MGecRG11k6E/0.jpg[title="Demo Video (https://www.youtube.com/watch?v=MGecRG11k6E&feature=youtu.be)", link="https://www.youtube.com/watch?v=MGecRG11k6E&feature=youtu.be",caption=""]
+
 == Usage
 
 To use the Auth SDK you'll first need to:
