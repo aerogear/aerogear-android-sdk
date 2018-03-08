@@ -71,11 +71,11 @@ public class MetricsService implements ServiceModule {
      * @param metrics Metrics to send
      */
     public void publish(final Metrics... metrics) {
-        nonNull(metrics, "metrics");
         if (publisher == null) {
             throw new IllegalStateException(
                             "Make sure you have called configure or get this instance from MobileCore.getInstance()");
         }
+        nonNull(metrics, "metrics");
         publisher.publish(listener, metrics);
     }
 
