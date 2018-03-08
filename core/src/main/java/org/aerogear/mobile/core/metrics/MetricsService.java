@@ -76,7 +76,10 @@ public class MetricsService implements ServiceModule {
             throw new IllegalStateException(
                             "Make sure you have called configure or get this instance from MobileCore.getInstance()");
         }
-        publisher.publish(metrics);
+        publisher.publish(listener, metrics);
     }
 
+    public void setListener(MetricsPublisherListener listener) {
+        this.listener = listener;
+    }
 }
