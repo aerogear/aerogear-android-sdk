@@ -82,4 +82,8 @@ public class MetricsService implements ServiceModule {
     public void setListener(MetricsPublisherListener listener) {
         this.listener = listener;
     }
+
+    public void clearListener() {
+        this.listener = null;
+    }
 }

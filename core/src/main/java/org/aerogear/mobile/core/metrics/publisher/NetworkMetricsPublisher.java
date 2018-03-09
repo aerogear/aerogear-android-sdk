@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.http.HttpRequest;
@@ -55,9 +56,13 @@ public class NetworkMetricsPublisher implements MetricsPublisher {
 
             final HttpResponse httpResponse = httpRequest.execute();
             httpResponse.onSuccess(() -> {
+                if (listener != null) {
                     listener.onPublishMetricsSuccess();
+                }
             }).onError(() -> {
-                listener.onPublishMetricsError(httpResponse.getError());
+                if (listener != null) {
+                    listener.onPublishMetricsError(httpResponse.getError());
+                }
             });
 
         } catch (JSONException e) {

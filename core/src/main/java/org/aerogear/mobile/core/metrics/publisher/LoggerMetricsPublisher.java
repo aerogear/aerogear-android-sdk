@@ -24,5 +24,6 @@ public final class LoggerMetricsPublisher implements MetricsPublisher {
         for (final Metrics m : metrics) {
             logger.debug("Metrics -> [" + m.identifier() + "]:" + m.data().toString());
         }
+        listener.onPublishMetricsSuccess();
     }
 }

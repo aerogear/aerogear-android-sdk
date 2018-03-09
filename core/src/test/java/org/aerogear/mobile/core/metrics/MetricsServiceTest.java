@@ -1,12 +1,17 @@
 package org.aerogear.mobile.core.metrics;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
@@ -21,6 +26,15 @@ import org.aerogear.mobile.core.metrics.publisher.NetworkMetricsPublisher;
 @SmallTest
 public class MetricsServiceTest {
 
+    MobileCore mobileCore;
+    MetricsService metricsService;
+
+    @Before
+    public void setUp() throws Exception {
+        mobileCore = MobileCore.init(RuntimeEnvironment.application);
+        metricsService = new MetricsService();
+    }
+
     @Test
     public void type() {
         MetricsService metricsService = new MetricsService();
@@ -29,10 +43,8 @@ public class MetricsServiceTest {
 
     @Test
     public void defaultPublisherWithoutConfigUrl() {
-        MobileCore mobileCore = MobileCore.init(RuntimeEnvironment.application);
         ServiceConfiguration serviceConfiguration = new ServiceConfiguration.Builder().build();
 
-        MetricsService metricsService = new MetricsService();
         metricsService.configure(mobileCore, serviceConfiguration);
 
         assertEquals(LoggerMetricsPublisher.class, metricsService.getPublisher().getClass());
@@ -40,11 +52,9 @@ public class MetricsServiceTest {
 
     @Test
     public void defaultPublisherWithConfigUrl() {
-        MobileCore mobileCore = MobileCore.init(RuntimeEnvironment.application);
         ServiceConfiguration serviceConfiguration =
                         new ServiceConfiguration.Builder().setUrl("http://dummy.url").build();
 
-        MetricsService metricsService = new MetricsService();
         metricsService.configure(mobileCore, serviceConfiguration);
 
         assertEquals(NetworkMetricsPublisher.class, metricsService.getPublisher().getClass());
@@ -52,14 +62,42 @@ public class MetricsServiceTest {
 
     @Test(expected = IllegalStateException.class)
     public void sendingDefaultMetricsWithoutConfigureService() {
-        MetricsService metricsService = new MetricsService();
         metricsService.sendAppAndDeviceMetrics();
     }
 
     @Test(expected = IllegalStateException.class)
     public void sendingMetricsWithoutConfigureService() {
-        MetricsService metricsService = new MetricsService();
         metricsService.publish(new DummyMetrics());
+    }
+
+    @Test
+    public void testListenerSuccessMethodIsCalled() throws Exception {
+        metricsService.configure(mobileCore, new ServiceConfiguration.Builder().build());
+
+        MetricsPublisherListener listener = Mockito.mock(MetricsPublisherListener.class);
+        metricsService.setListener(listener);
+
+        metricsService.sendAppAndDeviceMetrics();
+        verify(listener, times(1)).onPublishMetricsSuccess();
+
+        metricsService.publish(new DummyMetrics());
+        verify(listener, times(2)).onPublishMetricsSuccess();
+    }
+
+    @Test
+    public void testListenerErrorMethodIsCalled() throws Exception {
+        ServiceConfiguration serviceConfiguration =
+                        new ServiceConfiguration.Builder().setUrl("http://dummy").build();
+        metricsService.configure(mobileCore, serviceConfiguration);
+
+        MetricsPublisherListener listener = Mockito.mock(MetricsPublisherListener.class);
+        metricsService.setListener(listener);
+
+        metricsService.sendAppAndDeviceMetrics();
+        verify(listener, times(1)).onPublishMetricsError(any());
+
+        metricsService.publish(new DummyMetrics());
+        verify(listener, times(2)).onPublishMetricsError(any());
     }
 
     public static class DummyMetrics implements Metrics<Map<String, String>> {
