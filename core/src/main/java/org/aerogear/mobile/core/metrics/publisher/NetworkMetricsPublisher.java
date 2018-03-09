@@ -32,7 +32,8 @@ public class NetworkMetricsPublisher implements MetricsPublisher {
     }
 
     @Override
-    public void publish(MetricsPublisherListener listener, final Metrics... metrics) {
+    public void publish(final Metrics[] metrics,
+                    @Nullable final MetricsPublisherListener listener) {
         nonNull(metrics, "metrics");
 
         try {

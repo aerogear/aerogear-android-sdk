@@ -19,7 +19,7 @@ public final class LoggerMetricsPublisher implements MetricsPublisher {
     }
 
     @Override
-    public void publish(MetricsPublisherListener listener, final Metrics... metrics) {
+    public void publish(final Metrics[] metrics, final MetricsPublisherListener listener) {
         nonNull(metrics, "metrics");
         for (final Metrics m : metrics) {
             logger.debug("Metrics -> [" + m.identifier() + "]:" + m.data().toString());

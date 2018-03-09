@@ -76,7 +76,7 @@ public class MetricsService implements ServiceModule {
                             "Make sure you have called configure or get this instance from MobileCore.getInstance()");
         }
         nonNull(metrics, "metrics");
-        publisher.publish(listener, metrics);
+        publisher.publish(metrics, listener);
     }
 
     public void setListener(MetricsPublisherListener listener) {
