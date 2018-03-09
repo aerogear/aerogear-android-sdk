@@ -1,12 +1,9 @@
 package org.aerogear.mobile.example;
 
-import java.text.MessageFormat;
-
 import android.app.Application;
 import android.widget.Toast;
 
 import org.aerogear.mobile.core.MobileCore;
-import org.aerogear.mobile.core.http.HttpResponse;
 import org.aerogear.mobile.core.metrics.MetricsPublisherListener;
 import org.aerogear.mobile.core.metrics.MetricsService;
 
@@ -42,10 +39,8 @@ public class ExampleApplication extends Application implements MetricsPublisherL
     }
 
     @Override
-    public void onPublishMetricsSuccess(HttpResponse httpResponse) {
-        String text = MessageFormat.format("Metrics response: {0}: {1}", httpResponse.getStatus(),
-                        httpResponse.stringBody());
-        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+    public void onPublishMetricsSuccess() {
+        Toast.makeText(this, "App metrics sent", Toast.LENGTH_SHORT).show();
     }
 
     @Override

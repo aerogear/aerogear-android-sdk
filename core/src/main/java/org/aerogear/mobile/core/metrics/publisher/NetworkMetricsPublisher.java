@@ -54,7 +54,7 @@ public class NetworkMetricsPublisher implements MetricsPublisher {
 
             final HttpResponse httpResponse = httpRequest.execute();
             httpResponse.onSuccess(() -> {
-                listener.onPublishMetricsSuccess(httpResponse);
+                    listener.onPublishMetricsSuccess();
             }).onError(() -> {
                 listener.onPublishMetricsError(httpResponse.getError());
             });
