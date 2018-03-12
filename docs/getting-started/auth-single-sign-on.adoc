@@ -1,6 +1,6 @@
 == Single Sign-On (SSO)
 
-The Auth SDK uses OpenID Connect  http://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth[Auhtorization Code Flow] to achieve SSO via a mobile device browser.
+The Auth SDK uses OpenID Connect http://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth[Auhtorization Code Flow] to achieve SSO via a mobile device browser.
 
 '''
 
@@ -19,7 +19,7 @@ It is not required to setup two or more Keycloak clients to achieve SSO across a
 
 .. *Client ID* is the client identifier for OIDC requests. This should be a simple alpha-numeric string. You can change this to the name of your app - `emailapp`.
 .. *Enabled* should be set to *ON*.
-.. The *openid-connect* option should be selected in the *Client Protocol* drop down box. 
+.. The *openid-connect* option should be selected in the *Client Protocol* drop down box.
 .. For this example, the *public* option can be selected in the *Access Type* drop down box.
 .. *Standard Flow Enabled* should be set to *ON*.
 .. *Direct Access Grants Enabled* should be set to *ON*.
