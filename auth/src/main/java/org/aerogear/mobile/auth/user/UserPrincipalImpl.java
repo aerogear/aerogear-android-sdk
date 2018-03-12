@@ -1,5 +1,12 @@
 package org.aerogear.mobile.auth.user;
 
+import android.util.Log;
+
+import org.jose4j.jws.JsonWebSignature;
+import org.jose4j.lang.JoseException;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import static org.aerogear.mobile.core.utils.SanityCheck.nonEmpty;
 
 import java.util.HashSet;
@@ -260,4 +267,34 @@ public class UserPrincipalImpl implements UserPrincipal {
         return refreshToken;
     }
 
+
+    /**
+     * Returns the custom attribute.
+     *
+     * @param attribute the attribute name to retrieve
+     * @return the custom attribute.
+     */
+    @Override
+    public String getCustomAttribute(final String attribute) {
+        String attributeValue = "";
+        try {
+            String identityToken = getIdentityToken();
+            JsonWebSignature signature = new JsonWebSignature();
+            signature.setCompactSerialization(identityToken);
+            String decoded = signature.getUnverifiedPayload();
+            try {
+                JSONObject rawIdentityToken = new JSONObject(decoded);
+                if (rawIdentityToken.has(attribute)) {
+                    attributeValue = rawIdentityToken.getString(attribute);
+                } else {
+                    Log.d("Invalid Path", "No Object Exists in the JSON Path " + attribute);
+                }
+            } catch (JSONException e) {
+                Log.d("Error Getting Attribute", e.getMessage());
+            }
+        } catch (JoseException e) {
+            Log.d("Error Getting Attribute", e.getMessage());
+        }
+        return attributeValue;
+    }
 }
