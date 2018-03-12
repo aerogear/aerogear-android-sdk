@@ -113,8 +113,21 @@ if (currentUser != null) {
 }
 ----
 
-A walkthrough has been provided in the link:./auth-user-attributes.adoc[Keycloak Custom User Attributes] document to show how you can allow custom user attributes in Keycloak to be available in the Identity or Access tokens.
+==== Retrieving Custom User Attributes
 
+A walkthrough has been provided in the link:./auth-user-attributes.adoc[Keycloak Custom User Attributes] document to show how you can allow custom user attributes in Keycloak to be available in the Identity token.
+
+You can then retrieve the custom attributes from the current user.
+
+[source,java]
+----
+// authService already initialized.
+UserPrincipal currentUser = authService.currentUser();
+
+if (currentUser != null) {
+    String customUserAttribute = currentUser.getCustomAttribute("myCustomAttribute");
+}
+----
 
 === Authenticating
 
