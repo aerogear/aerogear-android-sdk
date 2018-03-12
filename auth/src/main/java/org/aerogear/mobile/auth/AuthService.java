@@ -116,7 +116,7 @@ public class AuthService implements ServiceModule {
         JsonWebKeySet jwks = jwksManager.load(keycloakConfiguration);
         if (jwks != null) {
             OIDCCredentials currentCredentials = this.authStateManager.load();
-            if (!currentCredentials.isExpired()
+            if ((currentCredentials.getAccessToken() != null) && !currentCredentials.isExpired()
                             && currentCredentials.verifyClaims(jwks, keycloakConfiguration)
                             && currentCredentials.isAuthorized()) {
                 try {
