@@ -85,6 +85,6 @@ public class UserPrincipalImplTest {
     @Test
     public void testGetCustomAttribute() {
         assertEquals("true", userPrincipalImpl.getCustomAttribute("customAttribute"));
-        assertEquals("", userPrincipalImpl.getCustomAttribute("nonExistentCustomAttribute"));
+        assertEquals(null, userPrincipalImpl.getCustomAttribute("nonExistentCustomAttribute"));
     }
 }

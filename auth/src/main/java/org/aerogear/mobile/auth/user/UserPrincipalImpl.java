@@ -276,7 +276,7 @@ public class UserPrincipalImpl implements UserPrincipal {
      */
     @Override
     public String getCustomAttribute(final String attribute) {
-        String attributeValue = "";
+        String attributeValue = null;
         try {
             String identityToken = getIdentityToken();
             JsonWebSignature signature = new JsonWebSignature();
