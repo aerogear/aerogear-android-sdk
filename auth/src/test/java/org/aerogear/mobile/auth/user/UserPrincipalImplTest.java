@@ -19,19 +19,19 @@ public class UserPrincipalImplTest {
 
     private UserPrincipalImpl userPrincipalImpl;
     private Set<UserRole> roles = new HashSet<>();
-    private String identityToken = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJhZFNveVhOQW" +
-        "dReFY0M2VxSFNpUlpmNmhOOXl0dkJOUXliMmZGU2RDVFZNIn0.eyJqdGkiOiI4OGQ2MDY0Ni00YzA4LTQwYmMtYTh" +
-        "jMy00MzA3MmI4N2ZmMGQiLCJleHAiOjE1MjA5NjA5OTAsIm5iZiI6MCwiaWF0IjoxNTIwOTU5MTkwLCJpc3MiOiJo" +
-        "dHRwczovL2tleWNsb2FrLnNlY3VyaXR5LmZlZWRoZW5yeS5vcmcvYXV0aC9yZWFsbXMvc2VjdXJlLWFwcCIsImF1Z" +
-        "CI6ImNsaWVudC1hcHAiLCJzdWIiOiJiMTYxN2UzOC0zODczLTRhNDctOGE2Yy01YjgyMmFkYTI3NWUiLCJ0eXAiOi" +
-        "JJRCIsImF6cCI6ImNsaWVudC1hcHAiLCJhdXRoX3RpbWUiOjE1MjA5NTkxODksInNlc3Npb25fc3RhdGUiOiJmZTR" +
-        "mN2YxZi0wMzJiLTRlMjEtOTZlMS0zMGFkMjA2NzJlNTEiLCJhY3IiOiIxIiwiYm9vbGVhbiI6dHJ1ZSwic3RyaW5n" +
-        "Ijoic3RyaW5nIiwibmFtZSI6IlVzZXIgMSIsInByZWZlcnJlZF91c2VybmFtZSI6InVzZXIxIiwiZ2l2ZW5fbmFtZ" +
-        "SI6IlVzZXIiLCJmYW1pbHlfbmFtZSI6IjEiLCJlbWFpbCI6InVzZXIxQGZlZWRoZW5yeS5vcmciLCJpbnQiOjEsIm" +
-        "xvbmciOjF9.OJ1K3h9kOccsLmAxNo_FOoy2L5BWTl2u9K3Y6HhteGKL8rd293sM856-Da8ZiuScSd6wGzk2lQjpCG" +
-        "Cv_YUaduRGtN7RMtI61P4zYeYZj4z08A65ZhgXUDqIMkCvqgcSFkBdJvKeZBGeogWttqu6k_0oMHIywgWrxFm9uNw" +
-        "66F8-3jwbOP-hdZDGFeCf9EhOcT9EzZ56nGRfWZI_FPjo0VRmRyixmLF3ulIZ_yrlcRAUNdW3g-GVTsUgO2DIXW45" +
-        "xt-_Kz1AQRhMRW50775_TZOlWt__wRrt9-Y4Qn_KHfiPaCqDAbzAdNpJJLo0S_yemEqV9pEWEQE4ZoVA9hwypQ";
+    private String identityToken = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJhZFNveVhOQW"
+                    + "dReFY0M2VxSFNpUlpmNmhOOXl0dkJOUXliMmZGU2RDVFZNIn0.eyJqdGkiOiI4OGQ2MDY0Ni00YzA4LTQwYmMtYTh"
+                    + "jMy00MzA3MmI4N2ZmMGQiLCJleHAiOjE1MjA5NjA5OTAsIm5iZiI6MCwiaWF0IjoxNTIwOTU5MTkwLCJpc3MiOiJo"
+                    + "dHRwczovL2tleWNsb2FrLnNlY3VyaXR5LmZlZWRoZW5yeS5vcmcvYXV0aC9yZWFsbXMvc2VjdXJlLWFwcCIsImF1Z"
+                    + "CI6ImNsaWVudC1hcHAiLCJzdWIiOiJiMTYxN2UzOC0zODczLTRhNDctOGE2Yy01YjgyMmFkYTI3NWUiLCJ0eXAiOi"
+                    + "JJRCIsImF6cCI6ImNsaWVudC1hcHAiLCJhdXRoX3RpbWUiOjE1MjA5NTkxODksInNlc3Npb25fc3RhdGUiOiJmZTR"
+                    + "mN2YxZi0wMzJiLTRlMjEtOTZlMS0zMGFkMjA2NzJlNTEiLCJhY3IiOiIxIiwiYm9vbGVhbiI6dHJ1ZSwic3RyaW5n"
+                    + "Ijoic3RyaW5nIiwibmFtZSI6IlVzZXIgMSIsInByZWZlcnJlZF91c2VybmFtZSI6InVzZXIxIiwiZ2l2ZW5fbmFtZ"
+                    + "SI6IlVzZXIiLCJmYW1pbHlfbmFtZSI6IjEiLCJlbWFpbCI6InVzZXIxQGZlZWRoZW5yeS5vcmciLCJpbnQiOjEsIm"
+                    + "xvbmciOjF9.OJ1K3h9kOccsLmAxNo_FOoy2L5BWTl2u9K3Y6HhteGKL8rd293sM856-Da8ZiuScSd6wGzk2lQjpCG"
+                    + "Cv_YUaduRGtN7RMtI61P4zYeYZj4z08A65ZhgXUDqIMkCvqgcSFkBdJvKeZBGeogWttqu6k_0oMHIywgWrxFm9uNw"
+                    + "66F8-3jwbOP-hdZDGFeCf9EhOcT9EzZ56nGRfWZI_FPjo0VRmRyixmLF3ulIZ_yrlcRAUNdW3g-GVTsUgO2DIXW45"
+                    + "xt-_Kz1AQRhMRW50775_TZOlWt__wRrt9-Y4Qn_KHfiPaCqDAbzAdNpJJLo0S_yemEqV9pEWEQE4ZoVA9hwypQ";
 
     @Before
     public void setUp() {
@@ -85,24 +85,28 @@ public class UserPrincipalImplTest {
     @Test
     public void testGetCustomStringAttributes() {
         assertEquals("string", userPrincipalImpl.getCustomStringAttribute("string"));
-        assertEquals(null, userPrincipalImpl.getCustomStringAttribute("nonExistentCustomAttribute"));
+        assertEquals(null,
+                        userPrincipalImpl.getCustomStringAttribute("nonExistentCustomAttribute"));
     }
 
     @Test
     public void testGetCustomBooleanAttributes() {
         assertEquals(true, userPrincipalImpl.getCustomBooleanAttribute("boolean"));
-        assertEquals(false, userPrincipalImpl.getCustomBooleanAttribute("nonExistentCustomAttribute"));
+        assertEquals(false,
+                        userPrincipalImpl.getCustomBooleanAttribute("nonExistentCustomAttribute"));
     }
 
     @Test
     public void testGetCustomIntegerAttributes() {
         assertEquals(new Integer(1), userPrincipalImpl.getCustomIntegerAttribute("int"));
-        assertEquals(new Integer(0), userPrincipalImpl.getCustomIntegerAttribute("nonExistentCustomAttribute"));
+        assertEquals(new Integer(0),
+                        userPrincipalImpl.getCustomIntegerAttribute("nonExistentCustomAttribute"));
     }
 
     @Test
     public void testGetCustomLongAttributes() {
         assertEquals(new Long(1L), userPrincipalImpl.getCustomLongAttribute("long"));
-        assertEquals(new Long(0L), userPrincipalImpl.getCustomLongAttribute("nonExistentCustomAttribute"));
+        assertEquals(new Long(0L),
+                        userPrincipalImpl.getCustomLongAttribute("nonExistentCustomAttribute"));
     }
 }

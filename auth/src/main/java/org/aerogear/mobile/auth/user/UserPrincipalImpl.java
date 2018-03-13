@@ -307,11 +307,7 @@ public class UserPrincipalImpl implements UserPrincipal {
         JSONObject jwt = getRawIdentityToken();
 
         if (customAttributeExists(attributeName)) {
-            try {
-                attribute = jwt.getString(attributeName);
-            } catch (JSONException e) {
-                Log.d("Error Getting Attribute", e.getMessage());
-            }
+            attribute = jwt.optString(attributeName);
         }
         return attribute;
     }
@@ -327,11 +323,7 @@ public class UserPrincipalImpl implements UserPrincipal {
         JSONObject jwt = getRawIdentityToken();
 
         if (customAttributeExists(attributeName)) {
-            try {
-                attribute = jwt.getBoolean(attributeName);
-            } catch (JSONException e) {
-                Log.d("Error Getting Attribute", e.getMessage());
-            }
+            attribute = jwt.optBoolean(attributeName);
         }
         return attribute;
     }
@@ -347,11 +339,7 @@ public class UserPrincipalImpl implements UserPrincipal {
         JSONObject jwt = getRawIdentityToken();
 
         if (customAttributeExists(attributeName)) {
-            try {
-                attribute = jwt.getLong(attributeName);
-            } catch (JSONException e) {
-                Log.d("Error Getting Attribute", e.getMessage());
-            }
+            attribute = jwt.optLong(attributeName);
         }
         return attribute;
     }
@@ -367,11 +355,7 @@ public class UserPrincipalImpl implements UserPrincipal {
         JSONObject jwt = getRawIdentityToken();
 
         if (customAttributeExists(attributeName)) {
-            try {
-                attribute = jwt.getInt(attributeName);
-            } catch (JSONException e) {
-                Log.d("Error Getting Attribute", e.getMessage());
-            }
+            attribute = jwt.optInt(attributeName);
         }
         return attribute;
     }
