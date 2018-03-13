@@ -1,17 +1,17 @@
 package org.aerogear.mobile.auth.user;
 
-import android.util.Log;
+import static org.aerogear.mobile.core.utils.SanityCheck.nonEmpty;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.lang.JoseException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import static org.aerogear.mobile.core.utils.SanityCheck.nonEmpty;
-
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import android.util.Log;
 
 /**
  * This class represent an authenticated user
