@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.aerogear.mobile.core.configuration.HttpsCertificateJsonParser;
 import org.json.JSONException;
 
 import android.content.Context;
@@ -25,6 +26,7 @@ import org.aerogear.mobile.core.http.OkHttpServiceModule;
 import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.logging.LoggerAdapter;
 
+import okhttp3.CertificatePinner;
 import okhttp3.OkHttpClient;
 
 /**
@@ -45,6 +47,7 @@ public final class MobileCore {
     private final String configFileName;
     private final HttpServiceModule httpLayer;
     private final Map<String, ServiceConfiguration> servicesConfig;
+    private final Map<String, String> httpsConfig;
     private final Map<Class<? extends ServiceModule>, ServiceModule> services = new HashMap<>();
 
     /**
@@ -65,13 +68,32 @@ public final class MobileCore {
         // -- Parse JSON config file
         try (final InputStream configStream = context.getAssets().open(configFileName)) {
             this.servicesConfig = MobileCoreJsonParser.parse(configStream);
+            configStream.close();
         } catch (JSONException | IOException exception) {
             String message = String.format("%s could not be loaded", configFileName);
             throw new InitializationException(message, exception);
         }
 
+        try (final InputStream configStream = context.getAssets().open(configFileName)) {
+            this.httpsConfig = HttpsCertificateJsonParser.parse(configStream);
+            configStream.close();
+        } catch (JSONException | IOException exception) {
+            String message = String.format("%s could not be loaded", configFileName);
+            throw new InitializationException(message, exception);
+        }
+
+
         // -- Set the app version variable
         appVersion = getAppVersion(context);
+
+
+       CertificatePinner.Builder certPinnerBuilder = new CertificatePinner.Builder();
+
+        for (Map.Entry<String, String> https : httpsConfig.entrySet()){
+            certPinnerBuilder.add(https.getKey(), "sha256/"+https.getValue());
+        }
+        CertificatePinner certificatePinner = certPinnerBuilder.build();
+
 
         // -- Setting default http layer
         if (options.httpServiceModule == null) {
@@ -79,6 +101,7 @@ public final class MobileCore {
             builder.connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
                             .writeTimeout(DEFAULT_WRITE_TIMEOUT, TimeUnit.SECONDS)
                             .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS);
+            builder.certificatePinner(certificatePinner);
             final OkHttpServiceModule httpServiceModule = new OkHttpServiceModule(builder.build());
 
             ServiceConfiguration configuration = this.servicesConfig.get(httpServiceModule.type());

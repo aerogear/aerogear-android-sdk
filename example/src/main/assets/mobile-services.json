@@ -26,6 +26,12 @@
             "config": {
             }
         }
+    ],
+    "https": [
+        {
+            "host": "https://keycloak-myproject.192.168.37.1.nip.io",
+            "certificateHash": "o88ICr4sMHUiobmszVwBOyDxsaDzlhwwEbslc2Onm00="
+        }
     ]
 }
 
