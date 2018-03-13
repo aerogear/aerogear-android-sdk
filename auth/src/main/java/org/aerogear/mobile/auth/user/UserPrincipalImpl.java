@@ -269,32 +269,110 @@ public class UserPrincipalImpl implements UserPrincipal {
 
 
     /**
-     * Returns the custom attribute.
+     * Returns the Identity JWT.
      *
-     * @param attribute the attribute name to retrieve
-     * @return the custom attribute.
+     * @return the identity JWT.
      */
-    @Override
-    public String getCustomAttribute(final String attribute) {
-        String attributeValue = null;
+    private JSONObject getRawIdentityToken() {
+        JSONObject identityJWT = null;
         try {
             String identityToken = getIdentityToken();
             JsonWebSignature signature = new JsonWebSignature();
             signature.setCompactSerialization(identityToken);
             String decoded = signature.getUnverifiedPayload();
             try {
-                JSONObject rawIdentityToken = new JSONObject(decoded);
-                if (rawIdentityToken.has(attribute)) {
-                    attributeValue = rawIdentityToken.getString(attribute);
-                } else {
-                    Log.d("Invalid Path", "No Object Exists in the JSON Path " + attribute);
-                }
+                identityJWT = new JSONObject(decoded);
             } catch (JSONException e) {
                 Log.d("Error Getting Attribute", e.getMessage());
             }
         } catch (JoseException e) {
             Log.d("Error Getting Attribute", e.getMessage());
         }
-        return attributeValue;
+        return identityJWT;
+    }
+
+    private boolean customAttributeExists(String attributeName) {
+        JSONObject jwt = getRawIdentityToken();
+        return jwt != null && jwt.has(attributeName);
+    }
+
+    /**
+     * Returns the custom user attribute of type string.
+     *
+     * @param attributeName the user attribute to retrieve
+     * @return the custom string attribute
+     */
+    public String getCustomStringAttribute(String attributeName) {
+        String attribute = null;
+        JSONObject jwt = getRawIdentityToken();
+
+        if (customAttributeExists(attributeName)) {
+            try {
+                attribute = jwt.getString(attributeName);
+            } catch (JSONException e) {
+                Log.d("Error Getting Attribute", e.getMessage());
+            }
+        }
+        return attribute;
+    }
+
+    /**
+     * Returns the custom user attribute of type boolean.
+     *
+     * @param attributeName the user attribute to retrieve
+     * @return the custom boolean attribute
+     */
+    public Boolean getCustomBooleanAttribute(String attributeName) {
+        boolean attribute = false;
+        JSONObject jwt = getRawIdentityToken();
+
+        if (customAttributeExists(attributeName)) {
+            try {
+                attribute = jwt.getBoolean(attributeName);
+            } catch (JSONException e) {
+                Log.d("Error Getting Attribute", e.getMessage());
+            }
+        }
+        return attribute;
+    }
+
+    /**
+     * Returns the custom user attribute of type long.
+     *
+     * @param attributeName the user attribute to retrieve
+     * @return the custom long attribute
+     */
+    public Long getCustomLongAttribute(String attributeName) {
+        long attribute = 0;
+        JSONObject jwt = getRawIdentityToken();
+
+        if (customAttributeExists(attributeName)) {
+            try {
+                attribute = jwt.getLong(attributeName);
+            } catch (JSONException e) {
+                Log.d("Error Getting Attribute", e.getMessage());
+            }
+        }
+        return attribute;
+    }
+
+    /**
+     * Returns the custom user attribute of type int.
+     *
+     * @param attributeName the user attribute to retrieve
+     * @return the custom int attribute
+     */
+    public Integer getCustomIntegerAttribute(String attributeName) {
+        int attribute = 0;
+        JSONObject jwt = getRawIdentityToken();
+
+        if (customAttributeExists(attributeName)) {
+            try {
+                attribute = jwt.getInt(attributeName);
+            } catch (JSONException e) {
+                Log.d("Error Getting Attribute", e.getMessage());
+            }
+        }
+        return attribute;
     }
 }

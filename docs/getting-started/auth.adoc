@@ -121,11 +121,10 @@ You can then retrieve the custom attributes from the current user.
 
 [source,java]
 ----
-String customUserAttribute = currentUser.getCustomAttribute("myCustomAttribute");
-
-if (customUserAttribute != null) {
- // attribute exists, continue on..
-}
+boolean booleanAttribute = currentUser.getCustomBooleanAttribute("booleanAttribute");
+int intAttribute = currentUser.getCustomIntegerAttribute("intAttribute");
+long longAttribute = currentUser.getCustomLongAttribute("longAttribute");
+String stringAttribute = currentUser.getCustomStringAttribute("stringAttribute");
 
 ----
 

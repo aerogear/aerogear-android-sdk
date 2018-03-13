@@ -91,10 +91,34 @@ public interface UserPrincipal extends Serializable {
     String getRefreshToken();
 
     /**
-     * Returns the custom user attribute.
+     * Returns the custom user attribute of type string.
      *
-     * @param attribute the user attribute to retrieve
-     * @return the custom user attribute
+     * @param attributeName the user attribute to retrieve
+     * @return the custom string attribute
      */
-    String getCustomAttribute(String attribute);
+    String getCustomStringAttribute(String attributeName);
+
+    /**
+     * Returns the custom user attribute of type boolean.
+     *
+     * @param attributeName the user attribute to retrieve
+     * @return the custom boolean attribute
+     */
+    Boolean getCustomBooleanAttribute(String attributeName);
+
+    /**
+     * Returns the custom user attribute of type long.
+     *
+     * @param attributeName the user attribute to retrieve
+     * @return the custom long attribute
+     */
+    Long getCustomLongAttribute(String attributeName);
+
+    /**
+     * Returns the custom user attribute of type int.
+     *
+     * @param attributeName the user attribute to retrieve
+     * @return the custom int attribute
+     */
+    Integer getCustomIntegerAttribute(String attributeName);
 }
