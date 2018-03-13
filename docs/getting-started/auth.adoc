@@ -121,12 +121,12 @@ You can then retrieve the custom attributes from the current user.
 
 [source,java]
 ----
-// authService already initialized.
-UserPrincipal currentUser = authService.currentUser();
+String customUserAttribute = currentUser.getCustomAttribute("myCustomAttribute");
 
-if (currentUser != null) {
-    String customUserAttribute = currentUser.getCustomAttribute("myCustomAttribute");
+if (customUserAttribute != null) {
+ // attribute exists, continue on..
 }
+
 ----
 
 === Authenticating
