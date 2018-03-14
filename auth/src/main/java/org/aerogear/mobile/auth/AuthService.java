@@ -106,7 +106,7 @@ public class AuthService implements ServiceModule {
 
     /**
      * Return the user that is currently logged and is still valid. Otherwise returns null
-     * 
+     *
      * @return the current logged in. Could be null.
      */
     public UserPrincipal currentUser() {
@@ -156,7 +156,7 @@ public class AuthService implements ServiceModule {
     /**
      * This function should be called in the start activity's "onActivityResult" method to allow the
      * SDK to process the response from the authentication server.
-     * 
+     *
      * @param data The intent data that is passed to "onActivityResult"
      */
     public void handleAuthResult(@NonNull final Intent data) {
@@ -192,7 +192,7 @@ public class AuthService implements ServiceModule {
 
     /**
      * Initialize the module. This should be called before any other method when using the module.
-     * 
+     *
      * @param context the current application context
      * @param authServiceConfiguration the configuration of the auth service
      */

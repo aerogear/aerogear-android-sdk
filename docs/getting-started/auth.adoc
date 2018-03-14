@@ -113,6 +113,21 @@ if (currentUser != null) {
 }
 ----
 
+==== Retrieving Custom User Attributes
+
+A walkthrough has been provided in the link:./auth-user-attributes.adoc[Keycloak Custom User Attributes] document to show how you can allow custom user attributes in Keycloak to be available in the Identity token.
+
+You can then retrieve the custom attributes from the current user.
+
+[source,java]
+----
+boolean booleanAttribute = currentUser.getCustomBooleanAttribute("booleanAttribute");
+int intAttribute = currentUser.getCustomIntegerAttribute("intAttribute");
+long longAttribute = currentUser.getCustomLongAttribute("longAttribute");
+String stringAttribute = currentUser.getCustomStringAttribute("stringAttribute");
+
+----
+
 === Authenticating
 
 To start the authentication invoke the `AuthService#login` method.
@@ -226,4 +241,5 @@ You can use the `AuthService#deleteTokens` function to delete the local authenti
 
 *Note:* To perform backchannel or federated logouts, you must enable the Backchannel Logout option for the federated identity provider. More information is available in the Keycloak documentation under  http://www.keycloak.org/docs/latest/server_admin/index.html#openid-connect-v1-0-identity-providers[OIDC Identity Providers].
 
-
+=== Single Sign-on
+A walkthrough on how to setup Single Sign-on across Android Applications can be seen under the link:./auth-single-sign-on.adoc[Single Sign-on Documentation].
