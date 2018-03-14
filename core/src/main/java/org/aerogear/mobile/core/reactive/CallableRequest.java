@@ -1,0 +1,27 @@
+package org.aerogear.mobile.core.reactive;
+
+import org.aerogear.mobile.core.Request;
+import org.aerogear.mobile.core.Responder;
+import org.aerogear.mobile.core.utils.SanityCheck;
+
+import java.util.concurrent.Callable;
+
+public class CallableRequest<T> implements Request<T> {
+    private final Callable<T> callable;
+
+    public CallableRequest(Callable<T> callable) {
+        SanityCheck.nonNull(callable, "callable");
+        this.callable = callable;
+    }
+
+    @Override
+    public Request<T> respondWith(Responder<T> responder) {
+        SanityCheck.nonNull(responder, "responder");
+        try {
+            responder.onSuccess(callable.call());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return this;
+    }
+}

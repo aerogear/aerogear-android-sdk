@@ -42,21 +42,39 @@ public class ReactiveCaseTest {
     @Test
     public void synchronousConstantTest() {
 
-        final AtomicBoolean passed = new AtomicBoolean(false);
-        final AtomicReference<String> testValue = new AtomicReference<>();
-        Responder<String> responder = new Responder<String>() {
-            @Override
-            public void onSuccess(String value) {
-                passed.set(true);
-                testValue.set(value);
-            }
-        };
+        TestResponder<String> responder = new TestResponder<>();
 
         Requester.emit("Test")
             .respondWith(responder);
 
-        assertTrue(passed.get());
-        assertEquals("Test", testValue.get());
+        assertTrue(responder.passed);
+        assertEquals("Test", responder.testValue);
+
+    }
+
+    @Test
+    public void synchronousCallableTest() {
+
+        TestResponder<String> responder = new TestResponder<>();
+
+        Requester.call( () -> "Test2").respondWith(responder);
+
+        assertTrue(responder.passed);
+        assertEquals("Test2", responder.testValue);
+
+    }
+
+    private static class TestResponder<T> implements Responder<T> {
+        boolean passed = false;
+        T testValue = null;
+
+        @Override
+        public void onSuccess(T value) {
+            passed = true;
+            testValue = value;
+        }
+
+
 
     }
 
