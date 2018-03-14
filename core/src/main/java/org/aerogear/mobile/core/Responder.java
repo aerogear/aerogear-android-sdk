@@ -8,7 +8,8 @@ import java.util.concurrent.Callable;
  */
 public interface Responder<T> {
 
-    void onSuccess(T value);
+    void onResult(T value);
 
 
+    void onException(Exception e);
 }

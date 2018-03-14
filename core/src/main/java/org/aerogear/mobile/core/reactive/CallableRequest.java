@@ -18,9 +18,9 @@ public class CallableRequest<T> implements Request<T> {
     public Request<T> respondWith(Responder<T> responder) {
         SanityCheck.nonNull(responder, "responder");
         try {
-            responder.onSuccess(callable.call());
+            responder.onResult(callable.call());
         } catch (Exception e) {
-            e.printStackTrace();
+            responder.onException(e);
         }
         return this;
     }

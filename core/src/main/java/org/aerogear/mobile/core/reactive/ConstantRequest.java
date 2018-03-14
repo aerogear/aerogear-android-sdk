@@ -16,7 +16,7 @@ public class ConstantRequest<T> implements Request<T> {
 
     @Override
     public Request<T> respondWith(Responder<T> responder) {
-        responder.onSuccess(value);
+        responder.onResult(value);
         return this;
     }
 }

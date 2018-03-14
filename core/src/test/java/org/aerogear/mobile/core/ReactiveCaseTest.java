@@ -64,17 +64,35 @@ public class ReactiveCaseTest {
 
     }
 
+    @Test
+    public void synchronousCallableCallsOnErrorWhenExceptionTest() {
+
+        TestResponder responder = new TestResponder();
+
+        Requester.call( () -> {throw new RuntimeException("Catch this!");}).respondWith(responder);
+
+        assertTrue(responder.failed);
+        assertEquals("Catch this!", responder.errorMessage);
+
+    }
+
     private static class TestResponder<T> implements Responder<T> {
         boolean passed = false;
         T testValue = null;
+        boolean failed;
+        String errorMessage = "";
 
         @Override
-        public void onSuccess(T value) {
+        public void onResult(T value) {
             passed = true;
             testValue = value;
         }
 
-
+        @Override
+        public void onException(Exception e) {
+            failed = true;
+            errorMessage = e.getMessage();
+        }
 
     }
 
