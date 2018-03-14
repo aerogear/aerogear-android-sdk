@@ -13,6 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -145,6 +146,17 @@ public class PushService implements ServiceModule {
                 public void run() {
                     switch (httpResponse.getStatus()) {
                         case HTTP_OK:
+
+                            FirebaseMessaging firebaseMessaging = FirebaseMessaging.getInstance();
+
+                            if (categories != null) {
+                                for (String catgory : categories) {
+                                    firebaseMessaging.subscribeToTopic(catgory);
+                                }
+                            }
+
+                            firebaseMessaging.subscribeToTopic(unifiedPushCredentials.getVariant());
+
                             callback.onSuccess();
                             break;
                         default:
