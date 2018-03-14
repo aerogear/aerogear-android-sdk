@@ -13,7 +13,6 @@ import android.app.Activity;
 import android.content.Intent;
 
 import org.aerogear.mobile.auth.AuthStateManager;
-import org.aerogear.mobile.auth.Callback;
 import org.aerogear.mobile.auth.authenticator.AbstractAuthenticator;
 import org.aerogear.mobile.auth.authenticator.AuthenticateOptions;
 import org.aerogear.mobile.auth.authenticator.AuthorizationServiceFactory;
@@ -25,6 +24,7 @@ import org.aerogear.mobile.auth.credentials.OIDCCredentials;
 import org.aerogear.mobile.auth.user.UserPrincipal;
 import org.aerogear.mobile.auth.user.UserPrincipalImpl;
 import org.aerogear.mobile.auth.utils.UserIdentityParser;
+import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.http.HttpRequest;

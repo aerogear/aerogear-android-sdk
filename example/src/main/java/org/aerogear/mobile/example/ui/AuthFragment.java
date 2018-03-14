@@ -5,9 +5,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.aerogear.mobile.auth.AuthService;
-import org.aerogear.mobile.auth.Callback;
 import org.aerogear.mobile.auth.authenticator.DefaultAuthenticateOptions;
 import org.aerogear.mobile.auth.user.UserPrincipal;
+import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.example.R;
 
 import butterknife.BindView;
