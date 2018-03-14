@@ -17,4 +17,8 @@ public abstract class AbstractRequest<T> implements Request<T> {
         return new RunOnRequest<>(this, executorService);
     }
 
+    @Override
+    public final Request<T> cache() {
+        return new CacheRequest<T>(this);
+    }
 }

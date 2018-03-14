@@ -29,4 +29,12 @@ public interface Request<T> {
      * Requests may be asynchronous and need to be cancelled.
      */
     void cancel();
+
+    /**
+     * This tells the Request chain to cache its value and not to rerun any underlying generating
+     * function.
+     *
+     * @return a chainable instance of Request, not guaranteed to be `this`
+     */
+    Request<T> cache();
 }

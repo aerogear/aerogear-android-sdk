@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -129,13 +130,51 @@ public class ReactiveCaseTest {
 
     }
 
+    /**
+     * Our operating principle is that responders will reinvoke any underlying calculations when
+     * they are attached unless cache() is called on the request
+     */
+    @Test
+    public void testMultipleRespondersRerunCall() {
+        AtomicInteger counter = new AtomicInteger(0);
+        TestResponder<Integer> responder = new TestResponder<>();
+        TestResponder<Integer> responder2 = new TestResponder<>();
+
+        Requester.call(() -> counter.getAndIncrement()).respondWith(responder)
+                        .respondWith(responder2);
+
+        assertTrue(responder2.passed);
+        assertEquals(0, (int) responder.resultValue);
+        assertEquals(1, (int) responder2.resultValue);
+
+    }
+
+    /**
+     * Our operating principle is that responders will reinvoke any underlying calculations when
+     * they are attached unless cache() is called on the request.
+     */
+    @Test
+    public void testMultipleRespondersGetCachedValue() {
+        AtomicInteger counter = new AtomicInteger(0);
+        TestResponder<Integer> responder = new TestResponder<>();
+        TestResponder<Integer> responder2 = new TestResponder<>();
+
+        Requester.call(() -> counter.getAndIncrement()).cache().respondWith(responder)
+                        .respondWith(responder2);
+
+        assertTrue(responder2.passed);
+        assertEquals(0, (int) responder.resultValue);
+        assertEquals(0, (int) responder2.resultValue);
+
+    }
+
     private static class TestResponder<T> implements Responder<T> {
         private final CountDownLatch latch;
+        public boolean cancelled = false;
         boolean passed = false;
         T resultValue = null;
         boolean failed;
         String errorMessage = "";
-        public boolean cancelled = false;
 
         public TestResponder() {
             this.latch = null;
