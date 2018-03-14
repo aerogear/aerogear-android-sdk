@@ -4,8 +4,8 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 import android.support.annotation.NonNull;
 
-import org.aerogear.mobile.auth.Callback;
 import org.aerogear.mobile.auth.user.UserPrincipal;
+import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 
 /**

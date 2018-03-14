@@ -24,9 +24,9 @@ import org.robolectric.RobolectricTestRunner;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import org.aerogear.mobile.auth.Callback;
 import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
 import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
+import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpResponse;
