@@ -4,7 +4,9 @@ import static java.net.HttpURLConnection.HTTP_OK;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,6 +14,8 @@ import org.json.JSONObject;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Base64;
 
 import org.aerogear.mobile.core.Callback;
@@ -32,6 +36,9 @@ public class PushService implements ServiceModule {
 
     private static final String registryDeviceEndpoint = "rest/registry/device";
 
+    private static final List<MessageHandler> MAIN_THREAD_HANDLERS = new ArrayList<>();
+    private static final List<MessageHandler> BACKGROUND_THREAD_HANDLERS = new ArrayList<>();
+
     private final String deviceType = "ANDROID";
     private final String operatingSystem = "android";
     private final String osVersion = android.os.Build.VERSION.RELEASE;
@@ -49,6 +56,7 @@ public class PushService implements ServiceModule {
     public void configure(MobileCore core, ServiceConfiguration serviceConfiguration) {
         this.core = core;
         this.url = serviceConfiguration.getUrl();
+        loadConfigJson();
     }
 
     @Override
@@ -97,12 +105,11 @@ public class PushService implements ServiceModule {
         }
     }
 
-    public void registerDeviceOnUnifiedPushServer(final Callback callback) {
-        registerDeviceOnUnifiedPushServer(new UnifiedPushConfig(), callback);
+    public void registerDevice(final Callback callback) {
+        registerDevice(new UnifiedPushConfig(), callback);
     }
 
-    public void registerDeviceOnUnifiedPushServer(UnifiedPushConfig unifiedPushConfig,
-                    final Callback callback) {
+    public void registerDevice(final UnifiedPushConfig unifiedPushConfig, final Callback callback) {
 
         loadConfigJson();
 
@@ -116,7 +123,7 @@ public class PushService implements ServiceModule {
             data.put("osVersion", osVersion);
             data.put("alias", unifiedPushConfig.getAlias());
 
-            List<String> categories = unifiedPushConfig.getCategories();
+            final List<String> categories = unifiedPushConfig.getCategories();
             if (categories != null && !categories.isEmpty()) {
                 JSONArray jsonCategories = new JSONArray();
                 for (String category : categories) {
@@ -145,15 +152,11 @@ public class PushService implements ServiceModule {
                             break;
                     }
                 }
-            }).onComplete(new Runnable() {
-                @Override
-                public void run() {
-                    MobileCore.getLogger().info("onComplete");
-                }
             });
 
         } catch (JSONException e) {
             MobileCore.getLogger().error(e.getMessage(), e);
+            callback.onSuccess(e);
         }
 
     }
@@ -164,6 +167,74 @@ public class PushService implements ServiceModule {
         String hashedCrentials =
                         Base64.encodeToString(unhashedCredentials.getBytes(), Base64.NO_WRAP);
         return headerValueBuilder.append(hashedCrentials).toString();
+    }
+
+
+    /**
+     * When a push message is received, all main thread handlers will be notified on the main(UI)
+     * thread. This is very convenient for Activities and Fragments.
+     *
+     * @param handler a handler to added to the list of handlers to be notified.
+     */
+    public static void registerMainThreadHandler(MessageHandler handler) {
+        MAIN_THREAD_HANDLERS.add(handler);
+    }
+
+    /**
+     * When a push message is received, all background thread handlers will be notified on a non UI
+     * thread. This should be used by classes which need to update internal state or preform some
+     * action which doesn't change the UI.
+     *
+     * @param handler a handler to added to the list of handlers to be notified.
+     */
+    public static void registerBackgroundThreadHandler(MessageHandler handler) {
+        BACKGROUND_THREAD_HANDLERS.add(handler);
+    }
+
+    /**
+     * This will remove the given handler from the collection of main thread handlers. This MUST be
+     * called when a Fragment or activity is backgrounded via onPause.
+     *
+     * @param handler a handler to be removed to the list of handlers
+     */
+    public static void unregisterMainThreadHandler(MessageHandler handler) {
+        MAIN_THREAD_HANDLERS.remove(handler);
+    }
+
+    /**
+     * This will remove the given handler from the collection of background thread handlers.
+     *
+     * @param handler a handler to be removed to the list of handlers
+     */
+    public static void unregisterBackgroundThreadHandler(MessageHandler handler) {
+        BACKGROUND_THREAD_HANDLERS.remove(handler);
+    }
+
+    /**
+     * This will deliver an message to all registered handlers.
+     *
+     * @param message the message to pass
+     */
+    public static void notifyHandlers(final Map<String, String> message) {
+
+        for (final MessageHandler handler : BACKGROUND_THREAD_HANDLERS) {
+            new Thread(new Runnable() {
+                public void run() {
+                    handler.onMessage(message);
+                }
+            }).start();
+        }
+
+        Looper main = Looper.getMainLooper();
+
+        for (final MessageHandler handler : MAIN_THREAD_HANDLERS) {
+            new Handler(main).post(new Runnable() {
+                @Override
+                public void run() {
+                    handler.onMessage(message);
+                }
+            });
+        }
     }
 
 }
