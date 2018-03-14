@@ -6,7 +6,7 @@ import org.aerogear.mobile.core.utils.SanityCheck;
 
 import java.util.concurrent.Callable;
 
-public class CallableRequest<T> implements Request<T> {
+public class CallableRequest<T> extends AbstractRequest<T> {
     private final Callable<T> callable;
 
     public CallableRequest(Callable<T> callable) {

@@ -5,16 +5,14 @@ import android.support.test.filters.SmallTest;
 
 import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.reactive.Requester;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -48,7 +46,7 @@ public class ReactiveCaseTest {
             .respondWith(responder);
 
         assertTrue(responder.passed);
-        assertEquals("Test", responder.testValue);
+        assertEquals("Test", responder.resultValue);
 
     }
 
@@ -60,7 +58,7 @@ public class ReactiveCaseTest {
         Requester.call( () -> "Test2").respondWith(responder);
 
         assertTrue(responder.passed);
-        assertEquals("Test2", responder.testValue);
+        assertEquals("Test2", responder.resultValue);
 
     }
 
@@ -76,22 +74,55 @@ public class ReactiveCaseTest {
 
     }
 
+    @Test
+    public void asynchronousCallableRunsOnDifferentThread() throws InterruptedException {
+        Thread testThread = Thread.currentThread();
+        CountDownLatch latch = new CountDownLatch(1);
+        TestResponder responder = new TestResponder(latch);
+
+        Requester.call( () -> {return Thread.currentThread() != testThread;})
+            .runOn(new AppExecutors().singleThreadService())
+            .respondWith(responder);
+
+        latch.await(1, TimeUnit.SECONDS);
+
+        assertTrue(responder.passed);
+        assertEquals(true, responder.resultValue);
+
+    }
+
+
     private static class TestResponder<T> implements Responder<T> {
+        private final CountDownLatch latch;
         boolean passed = false;
-        T testValue = null;
+        T resultValue = null;
         boolean failed;
         String errorMessage = "";
+
+        public TestResponder() {
+            this.latch = null;
+        }
+
+        public TestResponder(CountDownLatch latch) {
+            this.latch = latch;
+        }
 
         @Override
         public void onResult(T value) {
             passed = true;
-            testValue = value;
+            resultValue = value;
+            if (latch != null) {
+                latch.countDown();
+            }
         }
 
         @Override
         public void onException(Exception e) {
             failed = true;
             errorMessage = e.getMessage();
+            if (latch != null) {
+                latch.countDown();
+            }
         }
 
     }
