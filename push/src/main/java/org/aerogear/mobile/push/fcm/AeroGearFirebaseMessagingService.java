@@ -11,7 +11,7 @@ public class AeroGearFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
-        PushService.notifyHandlers(remoteMessage.getData());
+        PushService.notifyHandlers(getApplicationContext(), remoteMessage.getData());
 
     }
 

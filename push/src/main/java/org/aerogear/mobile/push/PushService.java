@@ -15,6 +15,10 @@ import org.json.JSONObject;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Base64;
@@ -29,13 +33,14 @@ import org.aerogear.mobile.core.http.HttpResponse;
 
 public class PushService implements ServiceModule {
 
+    public static final String DEFAULT_MESSAGE_HANDLER_KEY = "DEFAULT_MESSAGE_HANDLER_KEY";
+
+    private static final String registryDeviceEndpoint = "rest/registry/device";
     private static final String PUSH_CONFIG_FILE_NAME = "push-config.json";
     private static final String JSON_OBJECT = "android";
     private static final String JSON_SENDER_ID = "senderID";
     private static final String JSON_VARIANT_ID = "variantID";
     private static final String JSON_VARIANT_SECRET = "variantSecret";
-
-    private static final String registryDeviceEndpoint = "rest/registry/device";
 
     private static final List<MessageHandler> MAIN_THREAD_HANDLERS = new ArrayList<>();
     private static final List<MessageHandler> BACKGROUND_THREAD_HANDLERS = new ArrayList<>();
@@ -48,6 +53,8 @@ public class PushService implements ServiceModule {
     private String url;
     private UnifiedPushCredentials unifiedPushCredentials;
 
+    private static MessageHandler defaultHandler;
+
     @Override
     public String type() {
         return "push";
@@ -57,6 +64,7 @@ public class PushService implements ServiceModule {
     public void configure(MobileCore core, ServiceConfiguration serviceConfiguration) {
         this.core = core;
         this.url = serviceConfiguration.getUrl();
+        getDefaultHandler(core.getContext());
         loadConfigJson();
     }
 
@@ -168,7 +176,7 @@ public class PushService implements ServiceModule {
 
         } catch (JSONException e) {
             MobileCore.getLogger().error(e.getMessage(), e);
-            callback.onSuccess(e);
+            callback.onError(e);
         }
 
     }
@@ -227,26 +235,68 @@ public class PushService implements ServiceModule {
      *
      * @param message the message to pass
      */
-    public static void notifyHandlers(final Map<String, String> message) {
+    public static void notifyHandlers(final Context context, final Map<String, String> message) {
 
-        for (final MessageHandler handler : BACKGROUND_THREAD_HANDLERS) {
+        if (BACKGROUND_THREAD_HANDLERS.isEmpty() && MAIN_THREAD_HANDLERS.isEmpty()
+                        && defaultHandler != null) {
             new Thread(new Runnable() {
                 public void run() {
-                    handler.onMessage(message);
+                    defaultHandler.onMessage(context, message);
                 }
             }).start();
+        } else {
+
+            for (final MessageHandler handler : BACKGROUND_THREAD_HANDLERS) {
+                new Thread(new Runnable() {
+                    public void run() {
+                        handler.onMessage(context, message);
+                    }
+                }).start();
+            }
+
+            Looper main = Looper.getMainLooper();
+
+            for (final MessageHandler handler : MAIN_THREAD_HANDLERS) {
+                new Handler(main).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        handler.onMessage(context, message);
+                    }
+                });
+            }
+
         }
 
-        Looper main = Looper.getMainLooper();
+    }
 
-        for (final MessageHandler handler : MAIN_THREAD_HANDLERS) {
-            new Handler(main).post(new Runnable() {
-                @Override
-                public void run() {
-                    handler.onMessage(message);
+    private static void getDefaultHandler(Context context) {
+        try {
+
+            ApplicationInfo applicationInfo = context.getPackageManager().getApplicationInfo(
+                            context.getPackageName(), PackageManager.GET_META_DATA);
+
+            Bundle metaData = applicationInfo.metaData;
+
+            if (metaData != null) {
+
+                String defaultHandlerClassName = metaData.getString(DEFAULT_MESSAGE_HANDLER_KEY);
+                if (defaultHandlerClassName != null) {
+                    try {
+                        Class<? extends MessageHandler> defaultHandlerClass =
+                                        (Class<? extends MessageHandler>) Class
+                                                        .forName(defaultHandlerClassName);
+                        defaultHandler = defaultHandlerClass.newInstance();
+                    } catch (Exception ex) {
+                        MobileCore.getLogger().error(ex.getMessage(), ex);
+                    }
                 }
-            });
+
+            }
+
+        } catch (PackageManager.NameNotFoundException e) {
+            MobileCore.getLogger().warning(e.getMessage(), e);
         }
+
     }
 
 }

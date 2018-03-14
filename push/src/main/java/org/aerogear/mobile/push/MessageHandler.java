@@ -2,6 +2,8 @@ package org.aerogear.mobile.push;
 
 import java.util.Map;
 
+import android.content.Context;
+
 public interface MessageHandler {
 
     /**
@@ -9,6 +11,6 @@ public interface MessageHandler {
      *
      * @param message A map containing the submitted key/value pairs
      */
-    public void onMessage(Map<String, String> message);
+    public void onMessage(Context context, Map<String, String> message);
 
 }
