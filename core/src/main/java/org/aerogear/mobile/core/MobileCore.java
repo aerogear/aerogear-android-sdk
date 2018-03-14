@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.aerogear.mobile.core.configuration.HttpsCertificateJsonParser;
 import org.json.JSONException;
 
 import android.content.Context;
@@ -67,21 +66,14 @@ public final class MobileCore {
 
         // -- Parse JSON config file
         try (final InputStream configStream = context.getAssets().open(configFileName)) {
-            this.servicesConfig = MobileCoreJsonParser.parse(configStream);
+            MobileCoreJsonParser.parse(configStream);
+            this.servicesConfig = MobileCoreJsonParser.getServicesConfig();
+            this.httpsConfig = MobileCoreJsonParser.getCertificatePinningHashes();
             configStream.close();
         } catch (JSONException | IOException exception) {
             String message = String.format("%s could not be loaded", configFileName);
             throw new InitializationException(message, exception);
         }
-
-        try (final InputStream configStream = context.getAssets().open(configFileName)) {
-            this.httpsConfig = HttpsCertificateJsonParser.parse(configStream);
-            configStream.close();
-        } catch (JSONException | IOException exception) {
-            String message = String.format("%s could not be loaded", configFileName);
-            throw new InitializationException(message, exception);
-        }
-
 
         // -- Set the app version variable
         appVersion = getAppVersion(context);
