@@ -2,6 +2,7 @@ package org.aerogear.mobile.core;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
@@ -243,6 +244,16 @@ public class ReactiveCaseTest {
         assertEquals("Test", second.resultValue);
 
 
+    }
+
+    @Test
+    public void testDisconnectResponder() {
+        fail("Not implemented");
+    }
+
+    @Test
+    public void testRespondOnThread() {
+        fail("Not implemented");
     }
 
     private static class TestResponder<T> implements Responder<T> {
