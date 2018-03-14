@@ -19,4 +19,9 @@ public class ConstantRequest<T> extends AbstractRequest<T> {
         responder.onResult(value);
         return this;
     }
+
+    @Override
+    public void cancel() {
+        //Cancel does nothing because this is a constant value.
+    }
 }

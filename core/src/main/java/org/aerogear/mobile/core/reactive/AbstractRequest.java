@@ -14,6 +14,7 @@ public abstract class AbstractRequest<T> implements Request<T> {
     @Override
     public final Request<T> runOn(ExecutorService executorService) {
         nonNull(executorService, "executorService");
-        return new RunOnRequest<T>(this, executorService);
+        return new RunOnRequest<>(this, executorService);
     }
+
 }

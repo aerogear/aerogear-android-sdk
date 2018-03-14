@@ -24,4 +24,9 @@ public interface Request<T> {
      * @return a chainable instance of Request, not guaranteed to be `this`
      */
     Request<T> runOn(ExecutorService executorService);
+
+    /**
+     * Requests may be asynchronous and need to be cancelled.
+     */
+    void cancel();
 }

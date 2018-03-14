@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -50,12 +51,29 @@ public class ReactiveCaseTest {
 
     }
 
+    /**
+     * Similar to {@link ReactiveCaseTest#synchronousConstantTest()}, but with a different value to
+     * appease the linter gods.
+     */
+    @Test
+    public void synchronousConstantTestDifferentValue() {
+
+        TestResponder<String> responder = new TestResponder<>();
+
+        Requester.emit("Test2")
+            .respondWith(responder);
+
+        assertTrue(responder.passed);
+        assertEquals("Test2", responder.resultValue);
+
+    }
+
     @Test
     public void synchronousCallableTest() {
 
         TestResponder<String> responder = new TestResponder<>();
 
-        Requester.call( () -> "Test2").respondWith(responder);
+        Requester.call(() -> "Test2").respondWith(responder);
 
         assertTrue(responder.passed);
         assertEquals("Test2", responder.resultValue);
@@ -65,9 +83,11 @@ public class ReactiveCaseTest {
     @Test
     public void synchronousCallableCallsOnErrorWhenExceptionTest() {
 
-        TestResponder responder = new TestResponder();
+        TestResponder<Object> responder = new TestResponder<>();
 
-        Requester.call( () -> {throw new RuntimeException("Catch this!");}).respondWith(responder);
+        Requester.call(() -> {
+            throw new RuntimeException("Catch this!");
+        }).respondWith(responder);
 
         assertTrue(responder.failed);
         assertEquals("Catch this!", responder.errorMessage);
@@ -78,9 +98,9 @@ public class ReactiveCaseTest {
     public void asynchronousCallableRunsOnDifferentThread() throws InterruptedException {
         Thread testThread = Thread.currentThread();
         CountDownLatch latch = new CountDownLatch(1);
-        TestResponder responder = new TestResponder(latch);
+        TestResponder<Boolean> responder = new TestResponder<>(latch);
 
-        Requester.call( () -> {return Thread.currentThread() != testThread;})
+        Requester.call(() -> Thread.currentThread() != testThread)
             .runOn(new AppExecutors().singleThreadService())
             .respondWith(responder);
 
@@ -91,6 +111,28 @@ public class ReactiveCaseTest {
 
     }
 
+    @Test
+    public void cancelAsynchronousRequest() throws InterruptedException {
+        Thread testThread = Thread.currentThread();
+        CountDownLatch latch = new CountDownLatch(1);
+        TestResponder<Boolean> responder = new TestResponder<>(latch);
+
+        Request request = Requester.call(() -> {
+            Thread.sleep(Long.MAX_VALUE);//Sleep forever
+            return Thread.currentThread() != testThread;
+        })
+            .runOn(new AppExecutors().singleThreadService())
+            .respondWith(responder);
+
+        latch.await(1, TimeUnit.SECONDS);
+
+        request.cancel();
+
+        latch.await(10, TimeUnit.SECONDS);
+
+        assertTrue(responder.failed);
+
+    }
 
     private static class TestResponder<T> implements Responder<T> {
         private final CountDownLatch latch;
@@ -98,6 +140,7 @@ public class ReactiveCaseTest {
         T resultValue = null;
         boolean failed;
         String errorMessage = "";
+        public boolean cancelled = false;
 
         public TestResponder() {
             this.latch = null;

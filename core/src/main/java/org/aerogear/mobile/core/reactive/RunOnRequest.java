@@ -21,8 +21,12 @@ public class RunOnRequest<T> extends AbstractRequest<T>{
 
     @Override
     public Request<T> respondWith(final Responder<T> responder) {
-        executorService.submit(()->{delegateTo.respondWith(responder);});
+        executorService.submit(()->delegateTo.respondWith(responder));
         return this;
     }
 
+    @Override
+    public void cancel() {
+        delegateTo.cancel();
+    }
 }
