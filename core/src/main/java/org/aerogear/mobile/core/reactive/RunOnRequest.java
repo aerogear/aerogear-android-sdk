@@ -7,10 +7,10 @@ import org.aerogear.mobile.core.Responder;
 
 /**
  * This request will run a Request on a thread provided by RunOn.
- * 
- * @param <T>
+ *
+ * @param <T> type of the value to be emitted
  */
-public class RunOnRequest<T> extends AbstractRequest<T> {
+public final class RunOnRequest<T> extends AbstractRequest<T> {
 
     private final Request<T> delegateTo;
     private final ExecutorService executorService;

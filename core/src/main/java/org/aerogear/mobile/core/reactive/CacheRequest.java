@@ -9,7 +9,7 @@ import java.util.List;
 import org.aerogear.mobile.core.Request;
 import org.aerogear.mobile.core.Responder;
 
-public class CacheRequest<T> extends AbstractRequest<T> implements Responder<T> {
+public final class CacheRequest<T> extends AbstractRequest<T> implements Responder<T> {
     private final Request<T> delegateTo;
 
     private T cachedResult;

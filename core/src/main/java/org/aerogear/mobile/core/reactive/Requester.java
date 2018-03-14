@@ -11,7 +11,7 @@ public final class Requester {
     private Requester() {}
 
     public static <T> Request<T> emit(T value) {
-        return new ConstantRequest<>(value);
+        return new CallableRequest<>(() -> value);
     }
 
     public static <T> Request<T> call(Callable<T> callable) {

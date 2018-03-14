@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -165,6 +166,82 @@ public class ReactiveCaseTest {
         assertTrue(responder2.passed);
         assertEquals(0, (int) responder.resultValue);
         assertEquals(0, (int) responder2.resultValue);
+
+    }
+
+    /**
+     * Ok, so several operations and delegates have been coded. This test is a bit of a logical
+     * stress test for interactions between multiple responders, caches, and a very slow requester.
+     */
+    @Test
+    public void testGonzo() throws InterruptedException {
+        AtomicInteger counter = new AtomicInteger(0);
+        CountDownLatch latch = new CountDownLatch(4);
+        TestResponder<Integer> getsValue0OnThisThread = new TestResponder<>(latch);
+        TestResponder<Integer> getsValue1OnThisThread = new TestResponder<>(latch);
+        TestResponder<Integer> getsValue2OnThisThreadAfterCache = new TestResponder<>(latch);
+        TestResponder<Integer> getsValue2OnAnotherThreadAfterCache = new TestResponder<>(latch);
+
+
+        Requester.call(() -> {
+            Thread.sleep(1000); // $DELAY
+            return counter.getAndIncrement();
+        }).respondWith(getsValue0OnThisThread).respondWith(getsValue1OnThisThread).cache()
+                        .respondWith(getsValue2OnThisThreadAfterCache)
+                        .runOn(Executors.newSingleThreadExecutor())
+                        .respondWith(getsValue2OnAnotherThreadAfterCache);
+
+        boolean timeout = latch.await(3100, TimeUnit.MILLISECONDS);// $DELAY should only be called
+                                                                   // three times
+        // Therefore if it is called more the lock
+        // will timeout
+
+        assertTrue(getsValue1OnThisThread.passed);
+        assertTrue(timeout);
+        assertEquals(0, (int) getsValue0OnThisThread.resultValue);
+        assertEquals(1, (int) getsValue1OnThisThread.resultValue);
+        assertEquals(2, (int) getsValue2OnThisThreadAfterCache.resultValue);
+        assertEquals(2, (int) getsValue2OnAnotherThreadAfterCache.resultValue);
+
+    }
+
+    @Test
+    public void testDeepCacheOnlyCallsRequestOnce() throws InterruptedException {
+        AtomicInteger counter = new AtomicInteger(0);
+        CountDownLatch latch = new CountDownLatch(4);
+        TestResponder<Integer> first = new TestResponder<>(latch);
+        TestResponder<Integer> second = new TestResponder<>(latch);
+
+        Requester.call(() -> {
+            Thread.sleep(1000); // $DELAY
+            return counter.getAndIncrement();
+        }).cache().cache().cache().cache().runOn(Executors.newSingleThreadExecutor()).cache()
+                        .cache().cache().cache().respondWith(first).respondWith(second);
+
+        boolean timeout = latch.await(1100, TimeUnit.MILLISECONDS);// $DELAY should only be called
+                                                                   // once
+
+        assertTrue(second.passed);
+        assertTrue(timeout);
+        assertEquals(0, (int) first.resultValue);
+        assertEquals(0, (int) second.resultValue);
+    }
+
+
+    @Test
+    public void testCrashingRespondersDoNotCrashRequest() {
+        TestResponder<String> second = new TestResponder<>();
+
+        Requester.emit("Test").respondWith(new TestResponder<String>() {
+            @Override
+            public void onResult(String value) {
+                throw new RuntimeException("Contrived exception");
+            }
+        }).respondWith(second);
+
+        assertTrue(second.passed);
+        assertEquals("Test", second.resultValue);
+
 
     }
 
