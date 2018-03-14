@@ -1,8 +1,8 @@
 package org.aerogear.mobile.core.reactive;
 
-import org.aerogear.mobile.core.Request;
-
 import java.util.concurrent.Callable;
+
+import org.aerogear.mobile.core.Request;
 
 /**
  * Factory class for creating {@link org.aerogear.mobile.core.Request} objects.

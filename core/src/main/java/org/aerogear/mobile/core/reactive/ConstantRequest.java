@@ -5,6 +5,7 @@ import org.aerogear.mobile.core.Responder;
 
 /**
  * This is a Request which follows the Single Observer pattern and emits a constant value.
+ * 
  * @param <T> any type
  */
 public class ConstantRequest<T> extends AbstractRequest<T> {
@@ -22,6 +23,6 @@ public class ConstantRequest<T> extends AbstractRequest<T> {
 
     @Override
     public void cancel() {
-        //Cancel does nothing because this is a constant value.
+        // Cancel does nothing because this is a constant value.
     }
 }

@@ -18,7 +18,7 @@ public interface Request<T> {
     Request<T> respondWith(Responder<T> responder);
 
     /**
-     * Requests can be run off the calling thread.  This method configures that.
+     * Requests can be run off the calling thread. This method configures that.
      *
      * @param executorService service to Run the thread on
      * @return a chainable instance of Request, not guaranteed to be `this`

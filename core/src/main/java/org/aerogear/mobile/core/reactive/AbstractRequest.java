@@ -1,10 +1,10 @@
 package org.aerogear.mobile.core.reactive;
 
-import org.aerogear.mobile.core.Request;
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 import java.util.concurrent.ExecutorService;
 
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+import org.aerogear.mobile.core.Request;
 
 /**
  * This class performs wrapping and checking for subclasses.

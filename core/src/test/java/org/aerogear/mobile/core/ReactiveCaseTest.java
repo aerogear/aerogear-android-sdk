@@ -1,22 +1,22 @@
 package org.aerogear.mobile.core;
 
-import android.app.Application;
-import android.support.test.filters.SmallTest;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import org.aerogear.mobile.core.executor.AppExecutors;
-import org.aerogear.mobile.core.reactive.Requester;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import android.app.Application;
+import android.support.test.filters.SmallTest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.aerogear.mobile.core.executor.AppExecutors;
+import org.aerogear.mobile.core.reactive.Requester;
 
 /**
  * This package exists to test reactive patterns as we accomplish AG-2333.
@@ -43,8 +43,7 @@ public class ReactiveCaseTest {
 
         TestResponder<String> responder = new TestResponder<>();
 
-        Requester.emit("Test")
-            .respondWith(responder);
+        Requester.emit("Test").respondWith(responder);
 
         assertTrue(responder.passed);
         assertEquals("Test", responder.resultValue);
@@ -60,8 +59,7 @@ public class ReactiveCaseTest {
 
         TestResponder<String> responder = new TestResponder<>();
 
-        Requester.emit("Test2")
-            .respondWith(responder);
+        Requester.emit("Test2").respondWith(responder);
 
         assertTrue(responder.passed);
         assertEquals("Test2", responder.resultValue);
@@ -101,8 +99,7 @@ public class ReactiveCaseTest {
         TestResponder<Boolean> responder = new TestResponder<>(latch);
 
         Requester.call(() -> Thread.currentThread() != testThread)
-            .runOn(new AppExecutors().singleThreadService())
-            .respondWith(responder);
+                        .runOn(new AppExecutors().singleThreadService()).respondWith(responder);
 
         latch.await(1, TimeUnit.SECONDS);
 
@@ -118,11 +115,9 @@ public class ReactiveCaseTest {
         TestResponder<Boolean> responder = new TestResponder<>(latch);
 
         Request request = Requester.call(() -> {
-            Thread.sleep(Long.MAX_VALUE);//Sleep forever
+            Thread.sleep(Long.MAX_VALUE);// Sleep forever
             return Thread.currentThread() != testThread;
-        })
-            .runOn(new AppExecutors().singleThreadService())
-            .respondWith(responder);
+        }).runOn(new AppExecutors().singleThreadService()).respondWith(responder);
 
         latch.await(1, TimeUnit.SECONDS);
 

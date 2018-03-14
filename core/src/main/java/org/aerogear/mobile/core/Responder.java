@@ -1,6 +1,5 @@
 package org.aerogear.mobile.core;
 
-import java.util.concurrent.Callable;
 
 /**
  * This interface describes an implementation of the Subscriber Reactive pattern.
