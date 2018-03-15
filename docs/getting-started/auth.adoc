@@ -80,6 +80,15 @@ AuthServiceConfiguration authServiceConfig = new AuthServiceConfiguration.AuthCo
 authService.init(context, authServiceConfig);
 ----
 
+==== Defining Custom Scopes
+Optionally, scopes can be defined for the auth request using a space as the delimiter as per https://tools.ietf.org/html/rfc6749#section-3.3[RFC-6749].
+By default, the `"openid"` scope is sent if no scopes are defined.
+[source,java]
+----
+// default is 'openid' when not defined
+.withScopes("openid offline_access")
+----
+
 If `AuthService#init` is not invoked then an `IllegalStateException` will be thrown when using the
 service.
 
