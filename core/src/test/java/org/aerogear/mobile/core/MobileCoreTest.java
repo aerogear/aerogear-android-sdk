@@ -304,10 +304,10 @@ public class MobileCoreTest {
         public void info(String message) {}
 
         @Override
-        public void info(String tag, String message, Exception e) {}
+        public void info(String tag, String message, Throwable e) {}
 
         @Override
-        public void info(String message, Exception e) {}
+        public void info(String message, Throwable e) {}
 
         @Override
         public void warning(String tag, String message) {}
@@ -316,10 +316,10 @@ public class MobileCoreTest {
         public void warning(String message) {}
 
         @Override
-        public void warning(String tag, String message, Exception e) {}
+        public void warning(String tag, String message, Throwable e) {}
 
         @Override
-        public void warning(String message, Exception e) {}
+        public void warning(String message, Throwable e) {}
 
         @Override
         public void debug(String tag, String message) {}
@@ -328,10 +328,10 @@ public class MobileCoreTest {
         public void debug(String message) {}
 
         @Override
-        public void debug(String tag, String message, Exception e) {}
+        public void debug(String tag, String message, Throwable e) {}
 
         @Override
-        public void debug(String message, Exception e) {}
+        public void debug(String message, Throwable e) {}
 
         @Override
         public void error(String tag, String message) {}
@@ -340,10 +340,10 @@ public class MobileCoreTest {
         public void error(String message) {}
 
         @Override
-        public void error(String tag, String message, Exception e) {}
+        public void error(String tag, String message, Throwable e) {}
 
         @Override
-        public void error(String message, Exception e) {}
+        public void error(String message, Throwable e) {}
 
     }
 
