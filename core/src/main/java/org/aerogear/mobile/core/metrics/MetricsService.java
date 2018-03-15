@@ -61,7 +61,7 @@ public class MetricsService implements ServiceModule {
     /**
      * Send default metrics
      */
-    public void sendAppAndDeviceMetrics(Callback callback) {
+    public void sendAppAndDeviceMetrics(final Callback callback) {
         this.publish(defaultMetrics, callback);
     }
 
@@ -70,7 +70,7 @@ public class MetricsService implements ServiceModule {
      *
      * @param metrics Metrics to send
      */
-    public void publish(final Metrics[] metrics, Callback callback) {
+    public void publish(final Metrics[] metrics, final Callback callback) {
         if (publisher == null) {
             throw new IllegalStateException(
                             "Make sure you have called configure or get this instance from MobileCore.getInstance()");

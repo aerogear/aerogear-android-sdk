@@ -1,5 +1,7 @@
 package org.aerogear.mobile.core.metrics;
 
+import android.support.annotation.Nullable;
+
 import org.aerogear.mobile.core.Callback;
 
 public interface MetricsPublisher {
@@ -10,6 +12,6 @@ public interface MetricsPublisher {
      * @param metrics a array of metrics objects to publish
      * @param callback callback of the publication
      */
-    void publish(Metrics[] metrics, Callback callback);
+    void publish(Metrics[] metrics, @Nullable final Callback callback);
 
 }

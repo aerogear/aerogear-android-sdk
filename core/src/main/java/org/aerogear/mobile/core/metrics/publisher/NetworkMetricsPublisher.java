@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 
 import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.MobileCore;
@@ -32,7 +33,7 @@ public class NetworkMetricsPublisher implements MetricsPublisher {
     }
 
     @Override
-    public void publish(final Metrics[] metrics, Callback callback) {
+    public void publish(final Metrics[] metrics, @Nullable final Callback callback) {
         nonNull(metrics, "metrics");
 
         try {

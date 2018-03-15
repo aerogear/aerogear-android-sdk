@@ -17,6 +17,7 @@ import org.robolectric.RuntimeEnvironment;
 
 import android.support.test.filters.SmallTest;
 
+import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.metrics.publisher.LoggerMetricsPublisher;
@@ -62,26 +63,25 @@ public class MetricsServiceTest {
 
     @Test(expected = IllegalStateException.class)
     public void sendingDefaultMetricsWithoutConfigureService() {
-        metricsService.sendAppAndDeviceMetrics();
+        metricsService.sendAppAndDeviceMetrics(null);
     }
 
     @Test(expected = IllegalStateException.class)
     public void sendingMetricsWithoutConfigureService() {
-        metricsService.publish(new DummyMetrics());
+        metricsService.publish(new DummyMetrics[] {new DummyMetrics()}, null);
     }
 
     @Test
     public void testListenerSuccessMethodIsCalled() throws Exception {
         metricsService.configure(mobileCore, new ServiceConfiguration.Builder().build());
 
-        MetricsPublisherListener listener = Mockito.mock(MetricsPublisherListener.class);
-        metricsService.setListener(listener);
+        Callback callback = Mockito.mock(Callback.class);
 
-        metricsService.sendAppAndDeviceMetrics();
-        verify(listener, times(1)).onPublishMetricsSuccess();
+        metricsService.sendAppAndDeviceMetrics(callback);
+        verify(callback, times(1)).onSuccess();
 
-        metricsService.publish(new DummyMetrics());
-        verify(listener, times(2)).onPublishMetricsSuccess();
+        metricsService.publish(new DummyMetrics[] {new DummyMetrics()}, callback);
+        verify(callback, times(2)).onSuccess();
     }
 
     @Test
@@ -90,14 +90,13 @@ public class MetricsServiceTest {
                         new ServiceConfiguration.Builder().setUrl("http://dummy").build();
         metricsService.configure(mobileCore, serviceConfiguration);
 
-        MetricsPublisherListener listener = Mockito.mock(MetricsPublisherListener.class);
-        metricsService.setListener(listener);
+        Callback callback = Mockito.mock(Callback.class);
 
-        metricsService.sendAppAndDeviceMetrics();
-        verify(listener, times(1)).onPublishMetricsError(any());
+        metricsService.sendAppAndDeviceMetrics(callback);
+        verify(callback, times(1)).onError(any());
 
-        metricsService.publish(new DummyMetrics());
-        verify(listener, times(2)).onPublishMetricsError(any());
+        metricsService.publish(new DummyMetrics[] {new DummyMetrics()}, callback);
+        verify(callback, times(2)).onError(any());
     }
 
     public static class DummyMetrics implements Metrics<Map<String, String>> {
