@@ -29,8 +29,8 @@
     ],
     "https": [
         {
-            "host": "https://keycloak-myproject.192.168.37.1.nip.io",
-            "certificateHash": "o88ICr4sMHUiobmszVwBOyDxsaDzlhwwEbslc2Onm00="
+            "host": "security.feedhenry.org",
+            "certificateHash": "292B039CAC326C7A81450C7C21F4235C6568DCF9F2A74FBB7E977318462DCABD="
         }
     ]
 }
