@@ -1,5 +1,6 @@
 package org.aerogear.mobile.push;
 
+import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
 import static java.net.HttpURLConnection.HTTP_OK;
 
 import java.io.IOException;
@@ -149,28 +150,25 @@ public class PushService implements ServiceModule {
             httpRequest.post(url + registryDeviceEndpoint, data.toString().getBytes());
 
             final HttpResponse httpResponse = httpRequest.execute();
-            httpResponse.onSuccess(new Runnable() {
-                @Override
-                public void run() {
-                    switch (httpResponse.getStatus()) {
-                        case HTTP_OK:
+            httpResponse.onSuccess(() -> {
+                switch (httpResponse.getStatus()) {
+                    case HTTP_OK:
 
-                            FirebaseMessaging firebaseMessaging = FirebaseMessaging.getInstance();
+                        FirebaseMessaging firebaseMessaging = FirebaseMessaging.getInstance();
 
-                            if (categories != null) {
-                                for (String catgory : categories) {
-                                    firebaseMessaging.subscribeToTopic(catgory);
-                                }
+                        if (categories != null) {
+                            for (String catgory : categories) {
+                                firebaseMessaging.subscribeToTopic(catgory);
                             }
+                        }
 
-                            firebaseMessaging.subscribeToTopic(unifiedPushCredentials.getVariant());
+                        firebaseMessaging.subscribeToTopic(unifiedPushCredentials.getVariant());
 
-                            callback.onSuccess();
-                            break;
-                        default:
-                            callback.onError(new HttpException());
-                            break;
-                    }
+                        callback.onSuccess();
+                        break;
+                    default:
+                        callback.onError(new HttpException());
+                        break;
                 }
             });
 
@@ -178,6 +176,44 @@ public class PushService implements ServiceModule {
             MobileCore.getLogger().error(e.getMessage(), e);
             callback.onError(e);
         }
+
+    }
+
+    public void unregisterDevice(final Callback callback) {
+        unregisterDevice(new UnifiedPushConfig(), callback);
+    }
+
+    public void unregisterDevice(final UnifiedPushConfig unifiedPushConfig,
+                    final Callback callback) {
+
+        String authHash = getHashedAuth(unifiedPushCredentials.getVariant(),
+                        unifiedPushCredentials.getSecret().toCharArray());
+
+        final HttpRequest httpRequest = core.getHttpLayer().newRequest();
+        httpRequest.addHeader("Authorization", authHash);
+        httpRequest.delete(url + registryDeviceEndpoint + "/"
+                        + FirebaseInstanceId.getInstance().getToken());
+
+        final HttpResponse httpResponse = httpRequest.execute();
+        httpResponse.onSuccess(() -> {
+            switch (httpResponse.getStatus()) {
+                case HTTP_NO_CONTENT:
+
+                    FirebaseMessaging firebaseMessaging = FirebaseMessaging.getInstance();
+
+                    for (String category : unifiedPushConfig.getCategories()) {
+                        firebaseMessaging.unsubscribeFromTopic(category);
+                    }
+
+                    firebaseMessaging.unsubscribeFromTopic(unifiedPushCredentials.getVariant());
+
+                    callback.onSuccess();
+                    break;
+                default:
+                    callback.onError(new HttpException());
+                    break;
+            }
+        });
 
     }
 
@@ -269,6 +305,7 @@ public class PushService implements ServiceModule {
 
     }
 
+    @SuppressWarnings("unchecked")
     private static void getDefaultHandler(Context context) {
         try {
 

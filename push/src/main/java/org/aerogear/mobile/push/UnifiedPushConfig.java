@@ -1,5 +1,6 @@
 package org.aerogear.mobile.push;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class UnifiedPushConfig {
@@ -16,6 +17,9 @@ public final class UnifiedPushConfig {
     }
 
     public List<String> getCategories() {
+        if (categories == null) {
+            return new ArrayList<>();
+        }
         return categories;
     }
 
