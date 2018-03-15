@@ -1,12 +1,12 @@
 package org.aerogear.mobile.core.reactive;
 
-import android.support.annotation.NonNull;
-
 import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicReference;
+
+import android.support.annotation.NonNull;
 
 import org.aerogear.mobile.core.Request;
 import org.aerogear.mobile.core.Responder;
@@ -17,7 +17,8 @@ import org.aerogear.mobile.core.utils.SanityCheck;
  */
 public abstract class AbstractRequest<T> implements InternalRequest<T> {
 
-    private final ConcurrentHashMap<Responder<T>, AtomicReference<Responder<T>>> connectedResponders = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Responder<T>, AtomicReference<Responder<T>>> connectedResponders =
+                    new ConcurrentHashMap<>();
 
 
     @Override
@@ -27,10 +28,10 @@ public abstract class AbstractRequest<T> implements InternalRequest<T> {
     }
 
     @Override
-    public final Request<T> respondWith(@NonNull  Responder<T> responder) {
+    public final Request<T> respondWith(@NonNull Responder<T> responder) {
         SanityCheck.nonNull(responder, "responder");
         connectedResponders.putIfAbsent(responder, new AtomicReference<>(responder));
-        return  respondWithActual(connectedResponders.get(responder));
+        return respondWithActual(connectedResponders.get(responder));
 
     }
 

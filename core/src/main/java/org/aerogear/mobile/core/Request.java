@@ -39,7 +39,7 @@ public interface Request<T> {
     Request<T> cache();
 
     /**
-     * Remove a responder from the request.  If the request has already been run for this responder
+     * Remove a responder from the request. If the request has already been run for this responder
      * then we will do nothing.
      *
      * @param responderToDisconnect The responder to be disconnected

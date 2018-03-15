@@ -1,6 +1,5 @@
 package org.aerogear.mobile.core;
 
-import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -11,7 +10,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.aerogear.mobile.core.reactive.RunOnRequest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -262,17 +260,16 @@ public class ReactiveCaseTest {
         Request<Integer> request = Requester.call(() -> {
             Thread.sleep(1000);
             return counter.getAndIncrement();
-        }).runOn(Executors.newSingleThreadExecutor())
-            .respondWith(stayConnectedResponder)
-            .respondWith(disconnectResponder);
+        }).runOn(Executors.newSingleThreadExecutor()).respondWith(stayConnectedResponder)
+                        .respondWith(disconnectResponder);
 
         request.disconnect(disconnectResponder);
 
         /*
-        * We have two responders and a request which has a 1 second delay.  While the first responder
-        * is loading we are going to disconnect the second responder.  This means that the latch will
-        * not be called and we expect the await to timeout.  When await times out without completing
-        * it returns false.  This is the result we expect
+         * We have two responders and a request which has a 1 second delay. While the first
+         * responder is loading we are going to disconnect the second responder. This means that the
+         * latch will not be called and we expect the await to timeout. When await times out without
+         * completing it returns false. This is the result we expect
          */
         latch.await(3, TimeUnit.SECONDS);
 
@@ -324,9 +321,7 @@ public class ReactiveCaseTest {
 
         @Override
         public String toString() {
-            return "TestResponder{" +
-                "name='" + name + '\'' +
-                '}';
+            return "TestResponder{" + "name='" + name + '\'' + '}';
         }
     }
 

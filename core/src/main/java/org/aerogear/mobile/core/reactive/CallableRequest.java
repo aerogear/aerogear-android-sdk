@@ -29,7 +29,7 @@ public final class CallableRequest<T> extends AbstractRequest<T> {
     @Override
     public Request<T> respondWithActual(AtomicReference<Responder<T>> responderRef) {
 
-        if (responderRef.get() == null) { //responder may have been disconnected.
+        if (responderRef.get() == null) { // responder may have been disconnected.
             return this;
         }
 
@@ -57,7 +57,8 @@ public final class CallableRequest<T> extends AbstractRequest<T> {
         }
 
         Responder<T> responder = responderRef.get();
-        if (responder == null) { //responder may have been disconnected while the calculation was performed.
+        if (responder == null) { // responder may have been disconnected while the calculation was
+                                 // performed.
             return this;
         }
 
