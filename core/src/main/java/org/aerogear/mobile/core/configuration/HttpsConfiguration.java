@@ -14,8 +14,8 @@ public class HttpsConfiguration {
     }
 
     public static class Builder {
-        protected String hostName;
-        protected String certificateHash;
+        private String hostName;
+        private String certificateHash;
 
         public Builder setHostName(final String hostName){
             this.hostName = hostName;
