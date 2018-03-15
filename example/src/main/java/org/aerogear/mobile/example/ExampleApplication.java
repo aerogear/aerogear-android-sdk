@@ -1,13 +1,12 @@
 package org.aerogear.mobile.example;
 
 import android.app.Application;
-import android.widget.Toast;
 
+import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.MobileCore;
-import org.aerogear.mobile.core.metrics.MetricsPublisherListener;
 import org.aerogear.mobile.core.metrics.MetricsService;
 
-public class ExampleApplication extends Application implements MetricsPublisherListener {
+public class ExampleApplication extends Application {
 
     private MobileCore mobileCore;
     private MetricsService metricsService;
@@ -18,9 +17,13 @@ public class ExampleApplication extends Application implements MetricsPublisherL
 
         mobileCore = MobileCore.init(this);
         metricsService = mobileCore.getInstance(MetricsService.class);
-        metricsService.setListener(this);
 
-        metricsService.sendAppAndDeviceMetrics();
+        metricsService.sendAppAndDeviceMetrics(new Callback() {
+            @Override
+            public void onError(Throwable error) {
+                MobileCore.getLogger().error(error.getMessage());
+            }
+        });
     }
 
     @Override
@@ -38,13 +41,4 @@ public class ExampleApplication extends Application implements MetricsPublisherL
         return metricsService;
     }
 
-    @Override
-    public void onPublishMetricsSuccess() {
-        Toast.makeText(this, "App metrics sent", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onPublishMetricsError(Exception error) {
-        Toast.makeText(this, "Metrics request error: " + error, Toast.LENGTH_SHORT).show();
-    }
 }

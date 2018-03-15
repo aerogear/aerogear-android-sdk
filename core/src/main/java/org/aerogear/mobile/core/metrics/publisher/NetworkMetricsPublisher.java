@@ -6,14 +6,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
 
+import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpResponse;
 import org.aerogear.mobile.core.metrics.Metrics;
 import org.aerogear.mobile.core.metrics.MetricsPublisher;
-import org.aerogear.mobile.core.metrics.MetricsPublisherListener;
 import org.aerogear.mobile.core.utils.ClientIdGenerator;
 
 /**
@@ -33,8 +32,7 @@ public class NetworkMetricsPublisher implements MetricsPublisher {
     }
 
     @Override
-    public void publish(final Metrics[] metrics,
-                    @Nullable final MetricsPublisherListener listener) {
+    public void publish(final Metrics[] metrics, Callback callback) {
         nonNull(metrics, "metrics");
 
         try {
@@ -56,12 +54,12 @@ public class NetworkMetricsPublisher implements MetricsPublisher {
 
             final HttpResponse httpResponse = httpRequest.execute();
             httpResponse.onSuccess(() -> {
-                if (listener != null) {
-                    listener.onPublishMetricsSuccess();
+                if (callback != null) {
+                    callback.onSuccess();
                 }
             }).onError(() -> {
-                if (listener != null) {
-                    listener.onPublishMetricsError(httpResponse.getError());
+                if (callback != null) {
+                    callback.onError(httpResponse.getError());
                 }
             });
 

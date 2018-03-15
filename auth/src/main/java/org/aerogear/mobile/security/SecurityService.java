@@ -132,7 +132,9 @@ public class SecurityService implements ServiceModule {
     public SecurityCheckResult checkAndSendMetric(final SecurityCheck securityCheck,
                     @NonNull final MetricsService metricsService) {
         final SecurityCheckResult result = check(securityCheck);
-        nonNull(metricsService, "metricsService").publish(new SecurityCheckResultMetric(result));
+        nonNull(metricsService, "metricsService").publish(
+                        new SecurityCheckResultMetric[] {new SecurityCheckResultMetric(result)},
+                        null);
         return result;
     }
 }

@@ -4,6 +4,7 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 import android.support.annotation.NonNull;
 
+import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.ServiceModule;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
@@ -16,7 +17,6 @@ public class MetricsService implements ServiceModule {
 
     private Metrics[] defaultMetrics;
     private MetricsPublisher publisher;
-    private MetricsPublisherListener listener;
 
     public MetricsPublisher getPublisher() {
         return publisher;
@@ -61,8 +61,8 @@ public class MetricsService implements ServiceModule {
     /**
      * Send default metrics
      */
-    public void sendAppAndDeviceMetrics() {
-        this.publish(defaultMetrics);
+    public void sendAppAndDeviceMetrics(Callback callback) {
+        this.publish(defaultMetrics, callback);
     }
 
     /**
@@ -70,20 +70,13 @@ public class MetricsService implements ServiceModule {
      *
      * @param metrics Metrics to send
      */
-    public void publish(final Metrics... metrics) {
+    public void publish(final Metrics[] metrics, Callback callback) {
         if (publisher == null) {
             throw new IllegalStateException(
                             "Make sure you have called configure or get this instance from MobileCore.getInstance()");
         }
         nonNull(metrics, "metrics");
-        publisher.publish(metrics, listener);
+        publisher.publish(metrics, callback);
     }
 
-    public void setListener(MetricsPublisherListener listener) {
-        this.listener = listener;
-    }
-
-    public void clearListener() {
-        this.listener = null;
-    }
 }
