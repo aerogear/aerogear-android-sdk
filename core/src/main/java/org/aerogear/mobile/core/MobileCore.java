@@ -14,9 +14,10 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
+import android.util.Log;
 
 import org.aerogear.android.core.BuildConfig;
-import org.aerogear.mobile.core.configuration.MobileCoreJsonParser;
+import org.aerogear.mobile.core.configuration.MobileCoreJsonConfig;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.exception.ConfigurationNotFoundException;
 import org.aerogear.mobile.core.exception.InitializationException;
@@ -66,9 +67,9 @@ public final class MobileCore {
 
         // -- Parse JSON config file
         try (final InputStream configStream = context.getAssets().open(configFileName)) {
-            MobileCoreJsonParser.parse(configStream);
-            this.servicesConfig = MobileCoreJsonParser.getServicesConfig();
-            this.httpsConfig = MobileCoreJsonParser.getCertificatePinningHashes();
+            MobileCoreJsonConfig jsonConfig = MobileCoreJsonConfig.produce(configStream);
+            httpsConfig = jsonConfig.getCertificatePinningHashes();
+            servicesConfig = jsonConfig.getServicesConfig();
             configStream.close();
         } catch (JSONException | IOException exception) {
             String message = String.format("%s could not be loaded", configFileName);
@@ -78,24 +79,21 @@ public final class MobileCore {
         // -- Set the app version variable
         appVersion = getAppVersion(context);
 
-
-       CertificatePinner.Builder certPinnerBuilder = new CertificatePinner.Builder();
-
+        // -- Creating OkHttp Certificate Pinner
+        CertificatePinner.Builder certPinnerBuilder = new CertificatePinner.Builder();
         for (Map.Entry<String, String> https : httpsConfig.entrySet()){
             certPinnerBuilder.add(https.getKey(), "sha256/"+https.getValue());
         }
         CertificatePinner certificatePinner = certPinnerBuilder.build();
 
-
         // -- Setting default http layer
         if (options.httpServiceModule == null) {
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
+            builder.certificatePinner(certificatePinner);
             builder.connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
                             .writeTimeout(DEFAULT_WRITE_TIMEOUT, TimeUnit.SECONDS)
                             .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS);
-            builder.certificatePinner(certificatePinner);
             final OkHttpServiceModule httpServiceModule = new OkHttpServiceModule(builder.build());
-
             ServiceConfiguration configuration = this.servicesConfig.get(httpServiceModule.type());
             if (configuration == null) {
                 configuration = new ServiceConfiguration.Builder().build();

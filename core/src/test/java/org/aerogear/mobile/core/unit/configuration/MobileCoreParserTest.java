@@ -29,7 +29,8 @@ public class MobileCoreParserTest {
         Application context = RuntimeEnvironment.application;
 
         try (InputStream configStream = context.getAssets().open("mobile-services.json")) {
-            Map<String, ServiceConfiguration> configs = MobileCoreJsonParser.parse(configStream);
+            MobileCoreJsonConfig jsonConfig = MobileCoreJsonConfig.produce(configStream);
+            Map<String, ServiceConfiguration> configs = jsonConfig.getServicesConfig();
 
             assertNotNull(configs.get("metrics"));
 
@@ -47,7 +48,7 @@ public class MobileCoreParserTest {
         Application context = RuntimeEnvironment.application;
         InputStream configStream = context.getAssets().open("wrong-file-name.json");
 
-        MobileCoreJsonParser.parse(configStream);
+        MobileCoreJsonConfig.produce(configStream);
     }
 
 }

@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -18,13 +19,13 @@ import org.json.JSONObject;
  * This class is responsible for consuming a reader and producing a tree of config values to be
  * consumed by modules.
  */
-public class MobileCoreJsonParser {
+public class MobileCoreJsonConfig {
 
-    private static final Map<String, ServiceConfiguration> values = new TreeMap<>();
-    private static final Map<String, String> hashes = new HashMap<>();
+    private final Map<String, ServiceConfiguration> values = new TreeMap<>();
+    private final Map<String, String> hashes = new HashMap<>();
 
 
-    private MobileCoreJsonParser(final InputStream jsonStream) throws IOException, JSONException {
+    private MobileCoreJsonConfig(final InputStream jsonStream) throws IOException, JSONException {
         final String jsonText = readJsonStream(jsonStream);
         final JSONObject jsonDocument = new JSONObject(jsonText);
         parseMobileCoreArray(jsonDocument.getJSONArray("services"));
@@ -97,20 +98,20 @@ public class MobileCoreJsonParser {
      * @param jsonStream a inputStream to for mobile-core.json. Please note that this should be
      *        managed by the calling core. The parser will not close the resource when it is
      *        finished.
-     *
+     * @return MobileCoreJsonConfig
      * @throws IOException if reading the stream fails
      * @throws JSONException if the json document is malformed
      */
-    public static void parse(final InputStream jsonStream)
-                    throws IOException, JSONException {
-        new MobileCoreJsonParser(jsonStream);
+    public static MobileCoreJsonConfig produce(final InputStream jsonStream) throws IOException, JSONException{
+        MobileCoreJsonConfig jsonConfig = new MobileCoreJsonConfig(jsonStream);
+        return jsonConfig;
     }
 
-    public static Map<String, ServiceConfiguration> getServicesConfig(){
-        return values;
+    public Map<String, ServiceConfiguration> getServicesConfig(){
+        return Collections.unmodifiableMap(values);
     }
 
-    public static Map<String, String> getCertificatePinningHashes(){
-        return hashes;
+    public Map<String, String> getCertificatePinningHashes(){
+        return Collections.unmodifiableMap(hashes);
     }
 }
