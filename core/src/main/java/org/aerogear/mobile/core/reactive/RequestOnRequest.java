@@ -11,12 +11,12 @@ import org.aerogear.mobile.core.Responder;
  *
  * @param <T> type of the value to be emitted
  */
-public final class RunOnRequest<T> extends AbstractRequest<T> {
+public final class RequestOnRequest<T> extends AbstractRequest<T> {
 
     private final InternalRequest<T> delegateTo;
     private final ExecutorService executorService;
 
-    protected RunOnRequest(InternalRequest<T> delegateTo, ExecutorService executorService) {
+    protected RequestOnRequest(InternalRequest<T> delegateTo, ExecutorService executorService) {
         this.delegateTo = delegateTo;
         this.executorService = executorService;
     }

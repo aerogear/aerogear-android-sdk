@@ -22,9 +22,15 @@ public abstract class AbstractRequest<T> implements InternalRequest<T> {
 
 
     @Override
-    public final Request<T> runOn(ExecutorService executorService) {
+    public final Request<T> requestOn(ExecutorService executorService) {
         nonNull(executorService, "executorService");
-        return new RunOnRequest<>(this, executorService);
+        return new RequestOnRequest<>(this, executorService);
+    }
+
+    @Override
+    public final Request<T> respondOn(ExecutorService executorService) {
+        nonNull(executorService, "executorService");
+        return new RespondOnRequest<>(this, executorService);
     }
 
     @Override
@@ -41,7 +47,7 @@ public abstract class AbstractRequest<T> implements InternalRequest<T> {
     }
 
     @Override
-    public Request<T> disconnect(Responder<T> responderToDisconnect) {
+    public final Request<T> disconnect(Responder<T> responderToDisconnect) {
         AtomicReference<Responder<T>> reference = connectedResponders.remove(responderToDisconnect);
 
         if (reference != null) {
@@ -49,4 +55,5 @@ public abstract class AbstractRequest<T> implements InternalRequest<T> {
         }
         return this;
     }
+
 }

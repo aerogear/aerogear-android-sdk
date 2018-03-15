@@ -10,7 +10,10 @@ public interface Request<T> {
 
 
     /**
-     * This configures a handler that will process responses from a request.
+     * This configures a handler that will process responses from a request. The underlying request
+     * object will begin processing its request when this method is invoked. You may cancel the
+     * request with {@link #cancel()}, or you may disconnect the responder with
+     * {@link #disconnect(Responder)}.
      *
      * @param responder a responder
      * @return a chainable instance of Request, not guaranteed to be `this`
@@ -23,7 +26,7 @@ public interface Request<T> {
      * @param executorService service to Run the thread on
      * @return a chainable instance of Request, not guaranteed to be `this`
      */
-    Request<T> runOn(ExecutorService executorService);
+    Request<T> requestOn(ExecutorService executorService);
 
     /**
      * Requests may be asynchronous and need to be cancelled.
@@ -46,4 +49,13 @@ public interface Request<T> {
      * @return a request instance that represents the request the parameter was disconnected from.
      */
     Request<T> disconnect(Responder<T> responderToDisconnect);
+
+
+    /**
+     * Responses can be run off the calling thread. This method configures that.
+     *
+     * @param executorService service to Run the thread on
+     * @return a chainable instance of Request, not guaranteed to be `this`
+     */
+    Request<T> respondOn(ExecutorService executorService);
 }

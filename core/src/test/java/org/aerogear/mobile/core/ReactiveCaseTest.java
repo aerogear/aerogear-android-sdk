@@ -3,11 +3,11 @@ package org.aerogear.mobile.core;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Before;
@@ -103,7 +103,7 @@ public class ReactiveCaseTest {
         TestResponder<Boolean> responder = new TestResponder<>(latch);
 
         Requester.call(() -> Thread.currentThread() != testThread)
-                        .runOn(new AppExecutors().singleThreadService()).respondWith(responder);
+                        .requestOn(executor.singleThreadService()).respondWith(responder);
 
         latch.await(1, TimeUnit.SECONDS);
 
@@ -121,7 +121,7 @@ public class ReactiveCaseTest {
         Request request = Requester.call(() -> {
             Thread.sleep(Long.MAX_VALUE);// Sleep forever
             return Thread.currentThread() != testThread;
-        }).runOn(new AppExecutors().singleThreadService()).respondWith(responder);
+        }).requestOn(executor.singleThreadService()).respondWith(responder);
 
         latch.await(1, TimeUnit.SECONDS);
 
@@ -171,42 +171,6 @@ public class ReactiveCaseTest {
 
     }
 
-    /**
-     * Ok, so several operations and delegates have been coded. This test is a bit of a logical
-     * stress test for interactions between multiple responders, caches, and a very slow requester.
-     */
-    @Test
-    public void gonzoTest() throws InterruptedException {
-        AtomicInteger counter = new AtomicInteger(0);
-        CountDownLatch latch = new CountDownLatch(4);
-        TestResponder<Integer> getsValue0OnThisThread = new TestResponder<>(latch);
-        TestResponder<Integer> getsValue1OnThisThread = new TestResponder<>(latch);
-        TestResponder<Integer> getsValue2OnThisThreadAfterCache = new TestResponder<>(latch);
-        TestResponder<Integer> getsValue2OnAnotherThreadAfterCache = new TestResponder<>(latch);
-
-
-        Requester.call(() -> {
-            Thread.sleep(1000); // $DELAY
-            return counter.getAndIncrement();
-        }).respondWith(getsValue0OnThisThread).respondWith(getsValue1OnThisThread).cache()
-                        .respondWith(getsValue2OnThisThreadAfterCache)
-                        .runOn(Executors.newSingleThreadExecutor())
-                        .respondWith(getsValue2OnAnotherThreadAfterCache);
-
-        boolean timeout = latch.await(3100, TimeUnit.MILLISECONDS);// $DELAY should only be called
-                                                                   // three times
-        // Therefore if it is called more the lock
-        // will timeout
-
-        assertTrue(getsValue1OnThisThread.passed);
-        assertTrue(timeout);
-        assertEquals(0, (int) getsValue0OnThisThread.resultValue);
-        assertEquals(1, (int) getsValue1OnThisThread.resultValue);
-        assertEquals(2, (int) getsValue2OnThisThreadAfterCache.resultValue);
-        assertEquals(2, (int) getsValue2OnAnotherThreadAfterCache.resultValue);
-
-    }
-
     @Test
     public void deepCacheOnlyCallsRequestOnceTest() throws InterruptedException {
         AtomicInteger counter = new AtomicInteger(0);
@@ -217,11 +181,11 @@ public class ReactiveCaseTest {
         Requester.call(() -> {
             Thread.sleep(1000); // $DELAY
             return counter.getAndIncrement();
-        }).cache().cache().cache().cache().runOn(Executors.newSingleThreadExecutor()).cache()
-                        .cache().cache().cache().respondWith(first).respondWith(second);
+        }).cache().cache().cache().cache().requestOn(executor.singleThreadService()).cache().cache()
+                        .cache().cache().respondWith(first).respondWith(second);
 
         boolean timeout = latch.await(1100, TimeUnit.MILLISECONDS);// $DELAY should only be called
-                                                                   // once
+        // once
 
         assertTrue(second.passed);
         assertTrue(timeout);
@@ -260,7 +224,7 @@ public class ReactiveCaseTest {
         Request<Integer> request = Requester.call(() -> {
             Thread.sleep(1000);
             return counter.getAndIncrement();
-        }).runOn(Executors.newSingleThreadExecutor()).respondWith(stayConnectedResponder)
+        }).requestOn(executor.singleThreadService()).respondWith(stayConnectedResponder)
                         .respondWith(disconnectResponder);
 
         request.disconnect(disconnectResponder);
@@ -280,8 +244,77 @@ public class ReactiveCaseTest {
     }
 
     @Test
-    public void respondOnThreadTest() {
-        fail("Not implemented");
+    public void respondOnThreadTest() throws InterruptedException {
+        final CountDownLatch latch = new CountDownLatch(1);
+        final AtomicBoolean differentThreads = new AtomicBoolean(false);
+
+        Responder<Thread> responder = new Responder<Thread>() {
+            @Override
+            public void onResult(Thread requestThread) {
+                Thread responseThread = Thread.currentThread();
+                differentThreads.set(requestThread != (responseThread));
+                latch.countDown();
+            }
+
+            @Override
+            public void onException(Exception exception) {
+                latch.countDown();
+            }
+        };
+
+        Requester.call(() -> Thread.currentThread()).respondOn(executor.singleThreadService())
+                        .respondWith(responder);
+
+        latch.await(1, TimeUnit.SECONDS);
+
+        assertTrue(differentThreads.get());
+
+
+    }
+
+    /**
+     * Can this library cancel a cached response that has a requester running on one thread, a
+     * responder running on a second, and the test running on a third?
+     *
+     * The green bar this test makes says it can.
+     */
+    @Test
+    public void useAllTheFeaturesTest() throws Exception {
+        AtomicInteger counter = new AtomicInteger(0);
+        CountDownLatch latch = new CountDownLatch(4);
+        TestResponder<Integer> getsValue0OnThisThread = new TestResponder<>(latch);
+        TestResponder<Integer> getsValue1OnThisThread = new TestResponder<>(latch);
+        TestResponder<Integer> getsValue2OnThisThreadAfterCache = new TestResponder<>(latch);
+        TestResponder<Integer> getsValue2OnAnotherThreadAfterCache = new TestResponder<>(latch);
+        TestResponder<Integer> getsDisconnected = new TestResponder<>(latch);
+
+
+        Request<Integer> request = Requester.call(() -> {
+            Thread.sleep(1000); // $DELAY
+            return counter.getAndIncrement();
+        }).respondWith(getsValue0OnThisThread).respondWith(getsValue1OnThisThread).cache()
+                        .respondWith(getsValue2OnThisThreadAfterCache)
+                        .requestOn(executor.singleThreadService())
+                        .respondOn(Executors.newSingleThreadExecutor())
+                        .respondWith(getsValue2OnAnotherThreadAfterCache)
+
+                        .respondWith(getsDisconnected);
+
+        request.disconnect(getsDisconnected);
+
+        boolean timeout = latch.await(3100, TimeUnit.MILLISECONDS);// $DELAY should only be called
+        // three times
+        // Therefore if it is called more the lock
+        // will timeout
+
+        assertTrue(getsValue1OnThisThread.passed);
+        assertTrue(timeout);
+        assertEquals(0, (int) getsValue0OnThisThread.resultValue);
+        assertEquals(1, (int) getsValue1OnThisThread.resultValue);
+        assertEquals(2, (int) getsValue2OnThisThreadAfterCache.resultValue);
+        assertEquals(2, (int) getsValue2OnAnotherThreadAfterCache.resultValue);
+        assertFalse(getsDisconnected.passed);
+        assertFalse(getsDisconnected.failed);
     }
 
     private static class TestResponder<T> implements Responder<T> {
