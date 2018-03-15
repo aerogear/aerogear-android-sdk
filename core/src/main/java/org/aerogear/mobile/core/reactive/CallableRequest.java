@@ -1,6 +1,7 @@
 package org.aerogear.mobile.core.reactive;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicReference;
 
 import android.util.Log;
 
@@ -26,8 +27,11 @@ public final class CallableRequest<T> extends AbstractRequest<T> {
     }
 
     @Override
-    public Request<T> respondWith(Responder<T> responder) {
-        SanityCheck.nonNull(responder, "responder");
+    public Request<T> respondWithActual(AtomicReference<Responder<T>> responderRef) {
+
+        if (responderRef.get() == null) { //responder may have been disconnected.
+            return this;
+        }
 
         T value = null;
         Exception exception = null;
@@ -52,6 +56,10 @@ public final class CallableRequest<T> extends AbstractRequest<T> {
             exception = e;
         }
 
+        Responder<T> responder = responderRef.get();
+        if (responder == null) { //responder may have been disconnected while the calculation was performed.
+            return this;
+        }
 
         try {
             if (exception == null) {

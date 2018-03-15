@@ -37,4 +37,13 @@ public interface Request<T> {
      * @return a chainable instance of Request, not guaranteed to be `this`
      */
     Request<T> cache();
+
+    /**
+     * Remove a responder from the request.  If the request has already been run for this responder
+     * then we will do nothing.
+     *
+     * @param responderToDisconnect The responder to be disconnected
+     * @return a request instance that represents the request the parameter was disconnected from.
+     */
+    Request<T> disconnect(Responder<T> responderToDisconnect);
 }

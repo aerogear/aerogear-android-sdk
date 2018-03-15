@@ -1,6 +1,8 @@
 package org.aerogear.mobile.core;
 
+import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -9,6 +11,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.aerogear.mobile.core.reactive.RunOnRequest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -96,7 +99,7 @@ public class ReactiveCaseTest {
     }
 
     @Test
-    public void asynchronousCallableRunsOnDifferentThread() throws InterruptedException {
+    public void asynchronousCallableRunsOnDifferentThreadTest() throws InterruptedException {
         Thread testThread = Thread.currentThread();
         CountDownLatch latch = new CountDownLatch(1);
         TestResponder<Boolean> responder = new TestResponder<>(latch);
@@ -137,7 +140,7 @@ public class ReactiveCaseTest {
      * they are attached unless cache() is called on the request
      */
     @Test
-    public void testMultipleRespondersRerunCall() {
+    public void multipleRespondersRerunCallTest() {
         AtomicInteger counter = new AtomicInteger(0);
         TestResponder<Integer> responder = new TestResponder<>();
         TestResponder<Integer> responder2 = new TestResponder<>();
@@ -156,7 +159,7 @@ public class ReactiveCaseTest {
      * they are attached unless cache() is called on the request.
      */
     @Test
-    public void testMultipleRespondersGetCachedValue() {
+    public void multipleRespondersGetCachedValueTest() {
         AtomicInteger counter = new AtomicInteger(0);
         TestResponder<Integer> responder = new TestResponder<>();
         TestResponder<Integer> responder2 = new TestResponder<>();
@@ -175,7 +178,7 @@ public class ReactiveCaseTest {
      * stress test for interactions between multiple responders, caches, and a very slow requester.
      */
     @Test
-    public void testGonzo() throws InterruptedException {
+    public void gonzoTest() throws InterruptedException {
         AtomicInteger counter = new AtomicInteger(0);
         CountDownLatch latch = new CountDownLatch(4);
         TestResponder<Integer> getsValue0OnThisThread = new TestResponder<>(latch);
@@ -207,7 +210,7 @@ public class ReactiveCaseTest {
     }
 
     @Test
-    public void testDeepCacheOnlyCallsRequestOnce() throws InterruptedException {
+    public void deepCacheOnlyCallsRequestOnceTest() throws InterruptedException {
         AtomicInteger counter = new AtomicInteger(0);
         CountDownLatch latch = new CountDownLatch(4);
         TestResponder<Integer> first = new TestResponder<>(latch);
@@ -226,43 +229,72 @@ public class ReactiveCaseTest {
         assertTrue(timeout);
         assertEquals(0, (int) first.resultValue);
         assertEquals(0, (int) second.resultValue);
+        assertEquals(1, counter.get());
     }
 
 
     @Test
-    public void testCrashingRespondersDoNotCrashRequest() {
-        TestResponder<String> second = new TestResponder<>();
+    public void crashingRespondersDoNotCrashRequestTest() {
+        TestResponder<String> testResponder = new TestResponder<>();
 
         Requester.emit("Test").respondWith(new TestResponder<String>() {
             @Override
             public void onResult(String value) {
                 throw new RuntimeException("Contrived exception");
             }
-        }).respondWith(second);
+        }).respondWith(testResponder);
 
-        assertTrue(second.passed);
-        assertEquals("Test", second.resultValue);
+        assertTrue(testResponder.passed);
+        assertEquals("Test", testResponder.resultValue);
 
 
     }
 
     @Test
-    public void testDisconnectResponder() {
-        fail("Not implemented");
+    public void disconnectResponderTest() throws InterruptedException {
+        AtomicInteger counter = new AtomicInteger(0);
+        CountDownLatch latch = new CountDownLatch(2);
+        TestResponder<Integer> stayConnectedResponder = new TestResponder<>(latch);
+        stayConnectedResponder.name = "stay";
+        TestResponder<Integer> disconnectResponder = new TestResponder<>(latch);
+        disconnectResponder.name = "go";
+
+        Request<Integer> request = Requester.call(() -> {
+            Thread.sleep(1000);
+            return counter.getAndIncrement();
+        }).runOn(Executors.newSingleThreadExecutor())
+            .respondWith(stayConnectedResponder)
+            .respondWith(disconnectResponder);
+
+        request.disconnect(disconnectResponder);
+
+        /*
+        * We have two responders and a request which has a 1 second delay.  While the first responder
+        * is loading we are going to disconnect the second responder.  This means that the latch will
+        * not be called and we expect the await to timeout.  When await times out without completing
+        * it returns false.  This is the result we expect
+         */
+        latch.await(3, TimeUnit.SECONDS);
+
+
+        assertTrue(stayConnectedResponder.passed);
+        assertFalse(disconnectResponder.passed);
+        assertFalse(disconnectResponder.failed);
     }
 
     @Test
-    public void testRespondOnThread() {
+    public void respondOnThreadTest() {
         fail("Not implemented");
     }
 
     private static class TestResponder<T> implements Responder<T> {
         private final CountDownLatch latch;
-        public boolean cancelled = false;
+
         boolean passed = false;
         T resultValue = null;
         boolean failed;
         String errorMessage = "";
+        String name = "";
 
         public TestResponder() {
             this.latch = null;
@@ -290,6 +322,12 @@ public class ReactiveCaseTest {
             }
         }
 
+        @Override
+        public String toString() {
+            return "TestResponder{" +
+                "name='" + name + '\'' +
+                '}';
+        }
     }
 
 }
