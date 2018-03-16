@@ -14,7 +14,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
-import android.util.Log;
 
 import org.aerogear.android.core.BuildConfig;
 import org.aerogear.mobile.core.configuration.MobileCoreJsonConfig;
@@ -81,8 +80,8 @@ public final class MobileCore {
 
         // -- Creating OkHttp Certificate Pinner
         CertificatePinner.Builder certPinnerBuilder = new CertificatePinner.Builder();
-        for (Map.Entry<String, String> https : httpsConfig.entrySet()){
-            certPinnerBuilder.add(https.getKey(), "sha256/"+https.getValue());
+        for (Map.Entry<String, String> https : httpsConfig.entrySet()) {
+            certPinnerBuilder.add(https.getKey(), "sha256/" + https.getValue());
         }
         CertificatePinner certificatePinner = certPinnerBuilder.build();
 

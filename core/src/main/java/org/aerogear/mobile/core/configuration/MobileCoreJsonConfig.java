@@ -29,7 +29,7 @@ public class MobileCoreJsonConfig {
         final String jsonText = readJsonStream(jsonStream);
         final JSONObject jsonDocument = new JSONObject(jsonText);
         parseMobileCoreArray(jsonDocument.getJSONArray("services"));
-        if(jsonDocument.has("https")) {
+        if (jsonDocument.has("https")) {
             parseHttpsArray(jsonDocument.getJSONArray("https"));
         }
     }
@@ -76,17 +76,18 @@ public class MobileCoreJsonConfig {
         values.put(serviceConfig.getName(), serviceConfig);
     }
 
-    private void parseHttpsArray(final JSONArray array) throws JSONException, IOException{
+    private void parseHttpsArray(final JSONArray array) throws JSONException, IOException {
         final int arrayLength = nonNull(array, "jsonArray").length();
-        for(int i=0; i< arrayLength; i++){
+        for (int i = 0; i < arrayLength; i++) {
             parseHttpsObject(array.getJSONObject(i));
         }
     }
 
-    private void parseHttpsObject(final JSONObject jsonObject) throws JSONException, IOException{
+    private void parseHttpsObject(final JSONObject jsonObject) throws JSONException, IOException {
         nonNull(jsonObject, "jsonObject");
 
-        final HttpsConfiguration.Builder httpsConfigBuilder = HttpsConfiguration.newHashConfiguration();
+        final HttpsConfiguration.Builder httpsConfigBuilder =
+                        HttpsConfiguration.newHashConfiguration();
         httpsConfigBuilder.setHostName(jsonObject.getString("host"));
         httpsConfigBuilder.setCertificateHash(jsonObject.getString("certificateHash"));
 
@@ -102,16 +103,17 @@ public class MobileCoreJsonConfig {
      * @throws IOException if reading the stream fails
      * @throws JSONException if the json document is malformed
      */
-    public static MobileCoreJsonConfig produce(final InputStream jsonStream) throws IOException, JSONException{
+    public static MobileCoreJsonConfig produce(final InputStream jsonStream)
+                    throws IOException, JSONException {
         MobileCoreJsonConfig jsonConfig = new MobileCoreJsonConfig(jsonStream);
         return jsonConfig;
     }
 
-    public Map<String, ServiceConfiguration> getServicesConfig(){
+    public Map<String, ServiceConfiguration> getServicesConfig() {
         return Collections.unmodifiableMap(values);
     }
 
-    public Map<String, String> getCertificatePinningHashes(){
+    public Map<String, String> getCertificatePinningHashes() {
         return Collections.unmodifiableMap(hashes);
     }
 }

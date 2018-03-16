@@ -9,11 +9,12 @@ import org.robolectric.RobolectricTestRunner;
 public class HttpsConfigurationTest {
 
     @Test
-    public void testCreateConfig(){
-        HttpsConfiguration configuration = HttpsConfiguration.newHashConfiguration().setHostName("aerogear.org").setCertificateHash("AAAAAAAAAAAAAAAAAAAAAAAAAAAAA").build();
+    public void testCreateConfig() {
+        HttpsConfiguration configuration = HttpsConfiguration.newHashConfiguration()
+                        .setHostName("aerogear.org")
+                        .setCertificateHash("AAAAAAAAAAAAAAAAAAAAAAAAAAAAA").build();
 
         Assert.assertEquals("aerogear.org", configuration.getHostName());
         Assert.assertEquals("AAAAAAAAAAAAAAAAAAAAAAAAAAAAA", configuration.getCertificateHash());
     }
 }
-
