@@ -68,7 +68,7 @@ public class MetricsServiceTest {
 
     @Test(expected = IllegalStateException.class)
     public void sendingMetricsWithoutConfigureService() {
-        metricsService.publish(new DummyMetrics[] {new DummyMetrics()}, null);
+        metricsService.publish(new DummyMetrics());
     }
 
     @Test

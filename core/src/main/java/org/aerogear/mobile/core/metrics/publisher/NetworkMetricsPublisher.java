@@ -2,6 +2,7 @@ package org.aerogear.mobile.core.metrics.publisher;
 
 import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
+import org.aerogear.mobile.core.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,6 +21,8 @@ import org.aerogear.mobile.core.utils.ClientIdGenerator;
  * Sends metrics data to the backend using the configuration in JSON config file
  */
 public class NetworkMetricsPublisher implements MetricsPublisher {
+
+    public static final Logger LOGGER = MobileCore.getLogger();
 
     private final Context context;
     private final HttpRequest httpRequest;
@@ -51,7 +54,7 @@ public class NetworkMetricsPublisher implements MetricsPublisher {
 
             httpRequest.post(url, json.toString().getBytes());
 
-            MobileCore.getLogger().debug("Sending metrics");
+            LOGGER.debug("Sending metrics");
 
             final HttpResponse httpResponse = httpRequest.execute();
             httpResponse.onSuccess(() -> {
@@ -61,11 +64,13 @@ public class NetworkMetricsPublisher implements MetricsPublisher {
             }).onError(() -> {
                 if (callback != null) {
                     callback.onError(httpResponse.getError());
+                } else {
+                    LOGGER.error(httpResponse.getError().getMessage());
                 }
             });
 
         } catch (JSONException e) {
-            MobileCore.getLogger().error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
         }
     }
 }
