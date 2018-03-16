@@ -8,7 +8,7 @@ public class HttpsConfiguration {
     private final String hostName;
     private final String certificateHash;
 
-    private HttpsConfiguration(final String hostName, final String certificateHash){
+    private HttpsConfiguration(final String hostName, final String certificateHash) {
         this.hostName = hostName;
         this.certificateHash = certificateHash;
     }
@@ -17,26 +17,26 @@ public class HttpsConfiguration {
         private String hostName;
         private String certificateHash;
 
-        public Builder setHostName(final String hostName){
+        public Builder setHostName(final String hostName) {
             this.hostName = hostName;
             return this;
         }
 
-        public Builder setCertificateHash(final String certificateHash){
+        public Builder setCertificateHash(final String certificateHash) {
             this.certificateHash = certificateHash;
             return this;
         }
 
-        public HttpsConfiguration build(){
+        public HttpsConfiguration build() {
             return new HttpsConfiguration(this.hostName, this.certificateHash);
         }
     }
 
-    public String getHostName(){
+    public String getHostName() {
         return hostName;
     }
 
-    public String getCertificateHash(){
+    public String getCertificateHash() {
         return certificateHash;
     }
 
