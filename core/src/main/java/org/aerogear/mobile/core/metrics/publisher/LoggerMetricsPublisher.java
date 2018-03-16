@@ -1,8 +1,8 @@
 package org.aerogear.mobile.core.metrics.publisher;
 
-import android.support.annotation.Nullable;
-
 import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
+import android.support.annotation.Nullable;
 
 import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.logging.Logger;

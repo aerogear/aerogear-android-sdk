@@ -2,7 +2,6 @@ package org.aerogear.mobile.core.metrics.publisher;
 
 import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
-import org.aerogear.mobile.core.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -13,6 +12,7 @@ import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpResponse;
+import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.metrics.Metrics;
 import org.aerogear.mobile.core.metrics.MetricsPublisher;
 import org.aerogear.mobile.core.utils.ClientIdGenerator;
