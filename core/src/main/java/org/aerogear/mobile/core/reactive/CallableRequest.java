@@ -1,5 +1,6 @@
 package org.aerogear.mobile.core.reactive;
 
+import android.support.annotation.NonNull;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -22,12 +23,11 @@ public final class CallableRequest<T> extends AbstractRequest<T> {
     private Thread callableThread = null;
 
     public CallableRequest(Callable<T> callable) {
-        SanityCheck.nonNull(callable, "callable");
-        this.callable = callable;
+        this.callable = SanityCheck.nonNull(callable, "callable");
     }
 
     @Override
-    public Request<T> respondWithActual(AtomicReference<Responder<T>> responderRef) {
+    public Request<T> respondWithActual(@NonNull AtomicReference<Responder<T>> responderRef) {
 
         if (responderRef.get() == null) { // responder may have been disconnected.
             return this;

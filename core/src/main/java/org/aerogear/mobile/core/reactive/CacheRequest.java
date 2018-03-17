@@ -2,6 +2,7 @@ package org.aerogear.mobile.core.reactive;
 
 import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
+import android.support.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,7 +14,7 @@ import org.aerogear.mobile.core.Responder;
 /**
  * This class wraps a request and subscribes itself. When the request returns a value this request
  * will save the value and emit it to any responders that attach themselves.
- * 
+ *
  * @param <T> The result type of the underlying request
  */
 public final class CacheRequest<T> extends AbstractRequest<T> implements Responder<T> {
@@ -22,7 +23,7 @@ public final class CacheRequest<T> extends AbstractRequest<T> implements Respond
     private T cachedResult;
     private Exception cachedException;
 
-    private List<AtomicReference<Responder<T>>> awaitingResponders =
+    private final List<AtomicReference<Responder<T>>> awaitingResponders =
                     Collections.synchronizedList(new ArrayList<>());
 
     public CacheRequest(Request<T> delegateTo) {
@@ -31,7 +32,7 @@ public final class CacheRequest<T> extends AbstractRequest<T> implements Respond
     }
 
     @Override
-    public Request<T> respondWithActual(AtomicReference<Responder<T>> responderRef) {
+    public Request<T> respondWithActual(@NonNull AtomicReference<Responder<T>> responderRef) {
         Responder<T> responder = responderRef.get();
 
         if (responder == null) {// responder was disconnected, short circuit.

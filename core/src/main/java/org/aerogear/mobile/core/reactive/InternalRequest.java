@@ -25,7 +25,7 @@ interface InternalRequest<T> extends Request<T> {
      * This method is the internal implementation of {@link AbstractRequest#respondWith(Responder)}.
      *
      * The abstract class respondWith manages certain cross cutting concerns like null safety, state
-     * management, etc. This method is for the mundane tasks that request implementaitons will need
+     * management, etc. This method is for the mundane tasks that request implementations will need
      * to deal with.
      *
      * @param responderRef a reference to the responder. This reference may become null if the

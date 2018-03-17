@@ -15,7 +15,7 @@ import org.aerogear.mobile.core.utils.SanityCheck;
 /**
  * This class performs wrapping and checking for subclasses.
  */
-public abstract class AbstractRequest<T> implements InternalRequest<T> {
+abstract class AbstractRequest<T> implements InternalRequest<T> {
 
     private final ConcurrentHashMap<Responder<T>, AtomicReference<Responder<T>>> connectedResponders =
                     new ConcurrentHashMap<>();
@@ -43,7 +43,7 @@ public abstract class AbstractRequest<T> implements InternalRequest<T> {
 
     @Override
     public final Request<T> cache() {
-        return new CacheRequest<T>(this);
+        return new CacheRequest<>(this);
     }
 
     @Override
