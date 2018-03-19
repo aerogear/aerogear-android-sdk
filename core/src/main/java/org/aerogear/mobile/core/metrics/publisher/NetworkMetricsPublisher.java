@@ -2,13 +2,14 @@ package org.aerogear.mobile.core.metrics.publisher;
 
 import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
-import java.text.MessageFormat;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
+import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpResponse;
@@ -22,6 +23,8 @@ import org.aerogear.mobile.core.utils.ClientIdGenerator;
  */
 public class NetworkMetricsPublisher implements MetricsPublisher {
 
+    public static final Logger LOGGER = MobileCore.getLogger();
+
     private final Context context;
     private final HttpRequest httpRequest;
     private final String url;
@@ -34,7 +37,7 @@ public class NetworkMetricsPublisher implements MetricsPublisher {
     }
 
     @Override
-    public void publish(final Metrics... metrics) {
+    public void publish(@NonNull final Metrics[] metrics, @Nullable final Callback callback) {
         nonNull(metrics, "metrics");
 
         try {
@@ -52,20 +55,23 @@ public class NetworkMetricsPublisher implements MetricsPublisher {
 
             httpRequest.post(url, json.toString().getBytes());
 
-            MobileCore.getLogger().debug("Sending metrics");
+            LOGGER.debug("Sending metrics");
 
             final HttpResponse httpResponse = httpRequest.execute();
             httpResponse.onSuccess(() -> {
-                Logger logger = MobileCore.getLogger();
-                logger.debug(MessageFormat.format("Metrics response: {0}: {1}",
-                                httpResponse.getStatus(), httpResponse.stringBody()));
-                logger.debug("Metrics sent: " + json.toString());
+                if (callback != null) {
+                    callback.onSuccess();
+                }
             }).onError(() -> {
-                MobileCore.getLogger().error("Metrics request error", httpResponse.getError());
+                if (callback != null) {
+                    callback.onError(httpResponse.getError());
+                } else {
+                    LOGGER.error(httpResponse.getError().getMessage());
+                }
             });
 
         } catch (JSONException e) {
-            MobileCore.getLogger().error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
         }
     }
 }

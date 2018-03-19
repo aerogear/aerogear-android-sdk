@@ -1,10 +1,13 @@
 package org.aerogear.mobile.core.metrics;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -12,6 +15,7 @@ import org.robolectric.RuntimeEnvironment;
 
 import android.support.test.filters.SmallTest;
 
+import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.metrics.publisher.LoggerMetricsPublisher;
@@ -21,6 +25,15 @@ import org.aerogear.mobile.core.metrics.publisher.NetworkMetricsPublisher;
 @SmallTest
 public class MetricsServiceTest {
 
+    MobileCore mobileCore;
+    MetricsService metricsService;
+
+    @Before
+    public void setUp() throws Exception {
+        mobileCore = MobileCore.init(RuntimeEnvironment.application);
+        metricsService = new MetricsService();
+    }
+
     @Test
     public void type() {
         MetricsService metricsService = new MetricsService();
@@ -29,10 +42,8 @@ public class MetricsServiceTest {
 
     @Test
     public void defaultPublisherWithoutConfigUrl() {
-        MobileCore mobileCore = MobileCore.init(RuntimeEnvironment.application);
         ServiceConfiguration serviceConfiguration = new ServiceConfiguration.Builder().build();
 
-        MetricsService metricsService = new MetricsService();
         metricsService.configure(mobileCore, serviceConfiguration);
 
         assertEquals(LoggerMetricsPublisher.class, metricsService.getPublisher().getClass());
@@ -40,11 +51,9 @@ public class MetricsServiceTest {
 
     @Test
     public void defaultPublisherWithConfigUrl() {
-        MobileCore mobileCore = MobileCore.init(RuntimeEnvironment.application);
         ServiceConfiguration serviceConfiguration =
                         new ServiceConfiguration.Builder().setUrl("http://dummy.url").build();
 
-        MetricsService metricsService = new MetricsService();
         metricsService.configure(mobileCore, serviceConfiguration);
 
         assertEquals(NetworkMetricsPublisher.class, metricsService.getPublisher().getClass());
@@ -52,14 +61,54 @@ public class MetricsServiceTest {
 
     @Test(expected = IllegalStateException.class)
     public void sendingDefaultMetricsWithoutConfigureService() {
-        MetricsService metricsService = new MetricsService();
-        metricsService.sendAppAndDeviceMetrics();
+        metricsService.sendAppAndDeviceMetrics(null);
     }
 
     @Test(expected = IllegalStateException.class)
     public void sendingMetricsWithoutConfigureService() {
-        MetricsService metricsService = new MetricsService();
         metricsService.publish(new DummyMetrics());
+    }
+
+    @Test
+    public void testCallbackSuccessMethodIsCalled() throws Exception {
+        metricsService.configure(mobileCore, new ServiceConfiguration.Builder().build());
+
+        final Callback testCallback = new Callback() {
+            @Override
+            public void onSuccess() {
+                assertTrue(true);
+            }
+
+            @Override
+            public void onError(Throwable error) {
+                fail("Shouldn't throw any error: " + error.getMessage());
+            }
+        };
+        metricsService.sendAppAndDeviceMetrics(testCallback);
+
+        metricsService.publish(new DummyMetrics[] {new DummyMetrics()}, testCallback);
+    }
+
+    @Test
+    public void testCallbackErrorMethodIsCalled() throws Exception {
+        ServiceConfiguration serviceConfiguration =
+                        new ServiceConfiguration.Builder().setUrl("http://dummy").build();
+        metricsService.configure(mobileCore, serviceConfiguration);
+
+        final Callback testCallback = new Callback() {
+            @Override
+            public void onSuccess() {
+                fail("Should throw an error");
+            }
+
+            @Override
+            public void onError(Throwable error) {
+                assertTrue(error != null);
+            }
+        };
+
+        metricsService.sendAppAndDeviceMetrics(testCallback);
+        metricsService.publish(new DummyMetrics[] {new DummyMetrics()}, testCallback);
     }
 
     public static class DummyMetrics implements Metrics<Map<String, String>> {

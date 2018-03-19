@@ -4,6 +4,7 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 import android.support.annotation.NonNull;
 
+import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.ServiceModule;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
@@ -61,27 +62,40 @@ public class MetricsService implements ServiceModule {
      * Send default metrics
      */
     public void sendAppAndDeviceMetrics() {
-        if (publisher == null) {
-            throw new IllegalStateException(
-                            "Make sure you have called configure or get this instance from MobileCore.getInstance()");
-        }
-        publisher.publish(defaultMetrics);
+        this.publish(defaultMetrics, null);
+    }
+
+    /**
+     * Send default metrics
+     *
+     * @param callback callback of the publication
+     */
+    public void sendAppAndDeviceMetrics(final Callback callback) {
+        this.publish(defaultMetrics, callback);
     }
 
     /**
      * Send metrics
      *
      * @param metrics Metrics to send
-     * @return this MetricsService instance
      */
-    public MetricsService publish(final Metrics... metrics) {
-        nonNull(metrics, "metrics");
+    public void publish(Metrics... metrics) {
+        publish(metrics, null);
+    }
+
+    /**
+     * Send metrics
+     *
+     * @param metrics Metrics to send
+     * @param callback callback of the publication
+     */
+    public void publish(@NonNull final Metrics[] metrics, final Callback callback) {
         if (publisher == null) {
             throw new IllegalStateException(
                             "Make sure you have called configure or get this instance from MobileCore.getInstance()");
         }
-        publisher.publish(metrics);
-        return this;
+        nonNull(metrics, "metrics");
+        publisher.publish(metrics, callback);
     }
 
 }

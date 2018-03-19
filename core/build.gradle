@@ -51,6 +51,7 @@ dependencies {
     testImplementation "com.android.support.test:runner"
     testImplementation "com.android.support.test:rules"
     testImplementation "com.android.support.test.espresso:espresso-core"
+    testImplementation 'org.mockito:mockito-core'
     testImplementation "org.robolectric:robolectric"
     testImplementation "com.squareup.okhttp3:mockwebserver"
 }

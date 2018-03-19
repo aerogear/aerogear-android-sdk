@@ -2,6 +2,10 @@ package org.aerogear.mobile.core.metrics.publisher;
 
 import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.metrics.Metrics;
 import org.aerogear.mobile.core.metrics.MetricsPublisher;
@@ -18,10 +22,13 @@ public final class LoggerMetricsPublisher implements MetricsPublisher {
     }
 
     @Override
-    public void publish(final Metrics... metrics) {
+    public void publish(@NonNull final Metrics[] metrics, @Nullable final Callback callback) {
         nonNull(metrics, "metrics");
         for (final Metrics m : metrics) {
             logger.debug("Metrics -> [" + m.identifier() + "]:" + m.data().toString());
+        }
+        if (callback != null) {
+            callback.onSuccess();
         }
     }
 }

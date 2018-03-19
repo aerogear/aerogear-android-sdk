@@ -2,6 +2,7 @@ package org.aerogear.mobile.example;
 
 import android.app.Application;
 
+import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.metrics.MetricsService;
 
@@ -17,7 +18,12 @@ public class ExampleApplication extends Application {
         mobileCore = MobileCore.init(this);
         metricsService = mobileCore.getInstance(MetricsService.class);
 
-        metricsService.sendAppAndDeviceMetrics();
+        metricsService.sendAppAndDeviceMetrics(new Callback() {
+            @Override
+            public void onError(Throwable error) {
+                MobileCore.getLogger().error(error.getMessage());
+            }
+        });
     }
 
     @Override
