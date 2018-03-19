@@ -80,7 +80,7 @@ public class MetricsService implements ServiceModule {
      * @param metrics Metrics to send
      * @param callback callback of the publication
      */
-    public void publish(final Metrics[] metrics, final Callback callback) {
+    public void publish(@NonNull final Metrics[] metrics, final Callback callback) {
         if (publisher == null) {
             throw new IllegalStateException(
                             "Make sure you have called configure or get this instance from MobileCore.getInstance()");
