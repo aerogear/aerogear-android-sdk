@@ -61,6 +61,15 @@ public class MetricsService implements ServiceModule {
     /**
      * Send default metrics
      */
+    public void sendAppAndDeviceMetrics() {
+        this.publish(defaultMetrics, null);
+    }
+
+    /**
+     * Send default metrics
+     *
+     * @param callback callback of the publication
+     */
     public void sendAppAndDeviceMetrics(final Callback callback) {
         this.publish(defaultMetrics, callback);
     }
