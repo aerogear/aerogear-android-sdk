@@ -6,15 +6,12 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import android.support.annotation.NonNull;
 
-import org.aerogear.mobile.core.Request;
-import org.aerogear.mobile.core.Responder;
-
 public class RespondOnRequest<T> extends AbstractRequest<T> {
-    private final InternalRequest<T> delegateTo;
+    private final AbstractRequest<T> delegateTo;
     private final ExecutorService executorService;
 
 
-    public RespondOnRequest(InternalRequest<T> delegateTo, ExecutorService executorService) {
+    public RespondOnRequest(AbstractRequest<T> delegateTo, ExecutorService executorService) {
         this.delegateTo = delegateTo;
         this.executorService = executorService;
     }

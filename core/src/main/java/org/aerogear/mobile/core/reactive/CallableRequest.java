@@ -1,14 +1,13 @@
 package org.aerogear.mobile.core.reactive;
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicReference;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import org.aerogear.mobile.core.Request;
-import org.aerogear.mobile.core.Responder;
-import org.aerogear.mobile.core.utils.SanityCheck;
 
 /**
  * This class will synchronously invoke a callable parameter when
@@ -23,7 +22,7 @@ public final class CallableRequest<T> extends AbstractRequest<T> {
     private Thread callableThread = null;
 
     public CallableRequest(Callable<T> callable) {
-        this.callable = SanityCheck.nonNull(callable, "callable");
+        this.callable = nonNull(callable, "callable");
     }
 
     @Override

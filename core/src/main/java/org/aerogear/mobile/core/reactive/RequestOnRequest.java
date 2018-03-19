@@ -5,9 +5,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import android.support.annotation.NonNull;
 
-import org.aerogear.mobile.core.Request;
-import org.aerogear.mobile.core.Responder;
-
 /**
  * This request will run a Request on a thread provided by RunOn.
  *
@@ -15,10 +12,10 @@ import org.aerogear.mobile.core.Responder;
  */
 public final class RequestOnRequest<T> extends AbstractRequest<T> {
 
-    private final InternalRequest<T> delegateTo;
+    private final AbstractRequest<T> delegateTo;
     private final ExecutorService executorService;
 
-    RequestOnRequest(InternalRequest<T> delegateTo, ExecutorService executorService) {
+    RequestOnRequest(AbstractRequest<T> delegateTo, ExecutorService executorService) {
         this.delegateTo = delegateTo;
         this.executorService = executorService;
     }

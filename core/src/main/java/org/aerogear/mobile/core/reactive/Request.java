@@ -1,4 +1,4 @@
-package org.aerogear.mobile.core;
+package org.aerogear.mobile.core.reactive;
 
 import java.util.concurrent.ExecutorService;
 
@@ -16,7 +16,7 @@ public interface Request<T> {
      * {@link #disconnect(Responder)}.
      *
      * @param responder a responder
-     * @return a chainable instance of Request, not guaranteed to be `this`
+     * @return a chainable instance of Request, not guaranteed to be the this reference
      */
     Request<T> respondWith(Responder<T> responder);
 
@@ -24,7 +24,7 @@ public interface Request<T> {
      * Requests can be run off the calling thread. This method configures that.
      *
      * @param executorService service to Run the thread on
-     * @return a chainable instance of Request, not guaranteed to be `this`
+     * @return a chainable instance of Request, not guaranteed to be the this reference
      */
     Request<T> requestOn(ExecutorService executorService);
 
@@ -37,7 +37,7 @@ public interface Request<T> {
      * This tells the Request chain to cache its value and not to rerun any underlying generating
      * function.
      *
-     * @return a chainable instance of Request, not guaranteed to be `this`
+     * @return a chainable instance of Request, not guaranteed to be the this reference
      */
     Request<T> cache();
 
@@ -55,7 +55,7 @@ public interface Request<T> {
      * Responses can be run off the calling thread. This method configures that.
      *
      * @param executorService service to Run the thread on
-     * @return a chainable instance of Request, not guaranteed to be `this`
+     * @return a chainable instance of Request, not guaranteed to be the this reference
      */
     Request<T> respondOn(ExecutorService executorService);
 }

@@ -8,14 +8,11 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import android.support.annotation.NonNull;
 
-import org.aerogear.mobile.core.Request;
-import org.aerogear.mobile.core.Responder;
-import org.aerogear.mobile.core.utils.SanityCheck;
 
 /**
  * This class performs wrapping and checking for subclasses.
  */
-abstract class AbstractRequest<T> implements InternalRequest<T> {
+abstract class AbstractRequest<T> implements Request<T> {
 
     private final ConcurrentHashMap<Responder<T>, AtomicReference<Responder<T>>> connectedResponders =
                     new ConcurrentHashMap<>();
@@ -35,7 +32,7 @@ abstract class AbstractRequest<T> implements InternalRequest<T> {
 
     @Override
     public final Request<T> respondWith(@NonNull Responder<T> responder) {
-        SanityCheck.nonNull(responder, "responder");
+        nonNull(responder, "responder");
         connectedResponders.putIfAbsent(responder, new AtomicReference<>(responder));
         return respondWithActual(connectedResponders.get(responder));
 
@@ -55,5 +52,18 @@ abstract class AbstractRequest<T> implements InternalRequest<T> {
         }
         return this;
     }
+
+    /**
+     * This method is the internal implementation of {@link AbstractRequest#respondWith(Responder)}.
+     *
+     * The abstract class respondWith manages certain cross cutting concerns like null safety, state
+     * management, etc. This method is for the mundane tasks that request implementations will need
+     * to deal with.
+     *
+     * @param responderRef a reference to the responder. This reference may become null if the
+     *        responder is disconnected.
+     * @return a chainable instance of Request, not guaranteed to be `this`
+     */
+    abstract Request<T> respondWithActual(@NonNull AtomicReference<Responder<T>> responderRef);
 
 }

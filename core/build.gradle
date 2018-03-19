@@ -47,8 +47,6 @@ dependencies {
     implementation "com.android.support:appcompat-v7"
     implementation "com.squareup.okhttp3:okhttp"
 
-    lintChecks files('libs/checks.jar')
-
     testImplementation "junit:junit"
     testImplementation "com.android.support.test:runner"
     testImplementation "com.android.support.test:rules"

@@ -9,9 +9,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import android.support.annotation.NonNull;
 
-import org.aerogear.mobile.core.Request;
-import org.aerogear.mobile.core.Responder;
-
 /**
  * This class wraps a request and subscribes itself. When the request returns a value this request
  * will save the value and emit it to any responders that attach themselves.
@@ -23,13 +20,11 @@ public final class CacheRequest<T> extends AbstractRequest<T> implements Respond
 
     private T cachedResult;
     private Exception cachedException;
-
     private final List<AtomicReference<Responder<T>>> awaitingResponders =
                     Collections.synchronizedList(new ArrayList<>());
 
     public CacheRequest(Request<T> delegateTo) {
-        nonNull(delegateTo, "delegateTo");
-        this.delegateTo = delegateTo;
+        this.delegateTo = nonNull(delegateTo, "delegateTo");
     }
 
     @Override

@@ -20,7 +20,9 @@ import android.app.Application;
 import android.support.test.filters.SmallTest;
 
 import org.aerogear.mobile.core.executor.AppExecutors;
+import org.aerogear.mobile.core.reactive.Request;
 import org.aerogear.mobile.core.reactive.Requester;
+import org.aerogear.mobile.core.reactive.Responder;
 
 /**
  * This package exists to test reactive patterns as we accomplish AG-2333.
