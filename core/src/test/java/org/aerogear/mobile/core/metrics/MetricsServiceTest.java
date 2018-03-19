@@ -72,7 +72,7 @@ public class MetricsServiceTest {
     }
 
     @Test
-    public void testListenerSuccessMethodIsCalled() throws Exception {
+    public void testCallbackSuccessMethodIsCalled() throws Exception {
         metricsService.configure(mobileCore, new ServiceConfiguration.Builder().build());
 
         Callback callback = Mockito.mock(Callback.class);
@@ -85,7 +85,7 @@ public class MetricsServiceTest {
     }
 
     @Test
-    public void testListenerErrorMethodIsCalled() throws Exception {
+    public void testCallbackErrorMethodIsCalled() throws Exception {
         ServiceConfiguration serviceConfiguration =
                         new ServiceConfiguration.Builder().setUrl("http://dummy").build();
         metricsService.configure(mobileCore, serviceConfiguration);
