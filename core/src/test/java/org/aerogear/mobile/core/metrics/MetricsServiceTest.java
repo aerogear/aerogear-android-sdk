@@ -1,9 +1,8 @@
 package org.aerogear.mobile.core.metrics;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +10,6 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
@@ -75,13 +73,20 @@ public class MetricsServiceTest {
     public void testCallbackSuccessMethodIsCalled() throws Exception {
         metricsService.configure(mobileCore, new ServiceConfiguration.Builder().build());
 
-        Callback callback = Mockito.mock(Callback.class);
+        final Callback testCallback = new Callback() {
+            @Override
+            public void onSuccess() {
+                assertTrue(true);
+            }
 
-        metricsService.sendAppAndDeviceMetrics(callback);
-        verify(callback, times(1)).onSuccess();
+            @Override
+            public void onError(Throwable error) {
+                fail("Shouldn't throw any error: " + error.getMessage());
+            }
+        };
+        metricsService.sendAppAndDeviceMetrics(testCallback);
 
-        metricsService.publish(new DummyMetrics[] {new DummyMetrics()}, callback);
-        verify(callback, times(2)).onSuccess();
+        metricsService.publish(new DummyMetrics[] {new DummyMetrics()}, testCallback);
     }
 
     @Test
@@ -90,13 +95,20 @@ public class MetricsServiceTest {
                         new ServiceConfiguration.Builder().setUrl("http://dummy").build();
         metricsService.configure(mobileCore, serviceConfiguration);
 
-        Callback callback = Mockito.mock(Callback.class);
+        final Callback testCallback = new Callback() {
+            @Override
+            public void onSuccess() {
+                fail("Should throw an error");
+            }
 
-        metricsService.sendAppAndDeviceMetrics(callback);
-        verify(callback, times(1)).onError(any());
+            @Override
+            public void onError(Throwable error) {
+                assertTrue(error != null);
+            }
+        };
 
-        metricsService.publish(new DummyMetrics[] {new DummyMetrics()}, callback);
-        verify(callback, times(2)).onError(any());
+        metricsService.sendAppAndDeviceMetrics(testCallback);
+        metricsService.publish(new DummyMetrics[] {new DummyMetrics()}, testCallback);
     }
 
     public static class DummyMetrics implements Metrics<Map<String, String>> {

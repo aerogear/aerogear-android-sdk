@@ -50,13 +50,10 @@ public class SecurityCheckExecutorTest {
 
     @Test
     public void testSendMetricsSync() {
-        when(metricsService.publish(any())).thenReturn(null);
-
         SecurityCheckExecutor.Builder.newSyncExecutor(context).withSecurityCheck(securityCheckType)
                         .withMetricsService(metricsService).build().execute();
 
         verify(metricsService, times(1)).publish(any());
-
     }
 
     @Test
@@ -85,8 +82,6 @@ public class SecurityCheckExecutorTest {
 
     @Test
     public void testSendMetricsAsync() throws Exception {
-        when(metricsService.publish(any())).thenReturn(null);
-
         final Map<String, Future<SecurityCheckResult>> results = SecurityCheckExecutor.Builder
                         .newAsyncExecutor(context).withSecurityCheck(securityCheckType)
                         .withMetricsService(metricsService)
