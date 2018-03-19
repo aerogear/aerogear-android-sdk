@@ -2,11 +2,12 @@ package org.aerogear.mobile.core.reactive;
 
 import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
-import android.support.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+
+import android.support.annotation.NonNull;
 
 import org.aerogear.mobile.core.Request;
 import org.aerogear.mobile.core.Responder;

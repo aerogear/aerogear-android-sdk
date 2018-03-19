@@ -1,9 +1,9 @@
 package org.aerogear.mobile.core.reactive;
 
-import android.support.annotation.NonNull;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicReference;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import org.aerogear.mobile.core.Request;

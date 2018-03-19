@@ -1,8 +1,9 @@
 package org.aerogear.mobile.core.reactive;
 
-import android.support.annotation.NonNull;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicReference;
+
+import android.support.annotation.NonNull;
 
 import org.aerogear.mobile.core.Request;
 import org.aerogear.mobile.core.Responder;
@@ -23,7 +24,7 @@ public final class RequestOnRequest<T> extends AbstractRequest<T> {
     }
 
     @Override
-    public Request<T> respondWithActual(@NonNull final AtomicReference<Responder<T>>  responderRef) {
+    public Request<T> respondWithActual(@NonNull final AtomicReference<Responder<T>> responderRef) {
         executorService.submit(() -> delegateTo.respondWithActual(responderRef));
         return this;
     }
