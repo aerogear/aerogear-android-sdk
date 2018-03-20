@@ -20,8 +20,6 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Base64;
 
 import org.aerogear.mobile.core.Callback;
@@ -262,14 +260,12 @@ public class PushService implements ServiceModule {
         } else {
 
             for (final MessageHandler handler : BACKGROUND_THREAD_HANDLERS) {
-                new AppExecutors().mainThread().execute(() -> handler.onMessage(context,
+                new AppExecutors().singleThreadService().execute(() -> handler.onMessage(context,
                                 Collections.unmodifiableMap(message)));
             }
 
-            Looper main = Looper.getMainLooper();
-
             for (final MessageHandler handler : MAIN_THREAD_HANDLERS) {
-                new Handler(main).post(() -> handler.onMessage(context,
+                new AppExecutors().mainThread().execute(() -> handler.onMessage(context,
                                 Collections.unmodifiableMap(message)));
             }
 
