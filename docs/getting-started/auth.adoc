@@ -118,7 +118,7 @@ if (currentUser != null) {
     // Get the refresh token of the authenticated user
     String refreshToken = currentUser.getRefreshToken();
 } else {
-    // User is not authenticates, start authentication flow
+    // User is not authenticated, start authentication flow
 }
 ----
 
