@@ -1,7 +1,6 @@
 package org.aerogear.mobile.core.integration;
 
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
