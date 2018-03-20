@@ -1,50 +1,91 @@
 package org.aerogear.mobile.core.integration;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.util.concurrent.CountDownLatch;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
+
+import android.support.test.filters.SmallTest;
 
 import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.MobileCore;
-import org.aerogear.mobile.core.configuration.ServiceConfiguration;
+import org.aerogear.mobile.core.metrics.Metrics;
 import org.aerogear.mobile.core.metrics.MetricsService;
+import org.aerogear.mobile.core.unit.metrics.MetricsServiceTest;
 
-@RunWith(JUnit4.class)
+@RunWith(RobolectricTestRunner.class)
+@SmallTest
 public class MetricsServiceIntegrationTest {
 
-    MobileCore mobileCore;
-    MetricsService metricsService;
+    private static final String MOBILE_SERVICES_JSON = "integration-test-mobile-services.json";
+
+    private MetricsService metricsService;
+    private Throwable error;
 
     @Before
     public void setUp() throws Exception {
-        mobileCore = MobileCore.init(RuntimeEnvironment.application);
-        metricsService = new MetricsService();
+        MobileCore.Options options = new MobileCore.Options();
+        options.setConfigFileName(MOBILE_SERVICES_JSON);
+
+        MobileCore mobileCore = MobileCore.init(RuntimeEnvironment.application, options);
+        metricsService = mobileCore.getInstance(MetricsService.class);
     }
 
     @Test
-    public void testSendMetricsShouldReturnNoError() throws Exception {
-        ServiceConfiguration serviceConfiguration =
-                        new ServiceConfiguration.Builder().setUrl("TODO put integration server URL").build();
-        metricsService.configure(mobileCore, serviceConfiguration);
+    public void testSendDefaultMetricsShouldReturnNoError() throws Exception {
+        CountDownLatch latch = new CountDownLatch(1);
 
         final Callback testCallback = new Callback() {
             @Override
             public void onSuccess() {
-                assertTrue(true);
+                latch.countDown();
             }
 
             @Override
-            public void onError(Throwable error) {
-                fail("Should not throw an error: " + error.getMessage());
+            public void onError(Throwable err) {
+                error = err;
+                latch.countDown();
             }
         };
 
         metricsService.sendAppAndDeviceMetrics(testCallback);
+        latch.await();
+
+        if (error != null) {
+            fail(error.getMessage());
+        }
+    }
+
+    @Test
+    public void testPublishMetricsShouldReturnNoError() throws Exception {
+        CountDownLatch latch = new CountDownLatch(1);
+
+        Metrics metrics = new MetricsServiceTest.DummyMetrics();
+
+        final Callback testCallback = new Callback() {
+            @Override
+            public void onSuccess() {
+                latch.countDown();
+            }
+
+            @Override
+            public void onError(Throwable err) {
+                error = err;
+                latch.countDown();
+            }
+        };
+
+        metricsService.publish(new Metrics[] {metrics}, testCallback);
+        latch.await();
+
+        if (error != null) {
+            fail(error.getMessage());
+        }
     }
 
 }
