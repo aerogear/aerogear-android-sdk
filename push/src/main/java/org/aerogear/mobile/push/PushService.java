@@ -37,14 +37,16 @@ public class PushService implements ServiceModule {
     public static final String DEFAULT_MESSAGE_HANDLER_KEY = "DEFAULT_MESSAGE_HANDLER_KEY";
 
     private static final String registryDeviceEndpoint = "rest/registry/device";
-    private static final String JSON_OBJECT = "android";
-    private static final String JSON_VARIANT_ID = "variantId";
-    private static final String JSON_VARIANT_SECRET = "variantSecret";
-    private static final String JSON_SENDER_ID = "senderId";
+    private static final String JSON_ANDROID_CONFIG_KEY = "android";
+    private static final String JSON_VARIANT_ID_KEY = "variantId";
+    private static final String JSON_VARIANT_SECRET_KEY = "variantSecret";
+    private static final String JSON_SENDER_ID_KEY = "senderId";
 
 
-    private static final List<MessageHandler> MAIN_THREAD_HANDLERS = Collections.synchronizedList(new ArrayList<>());
-    private static final List<MessageHandler> BACKGROUND_THREAD_HANDLERS = Collections.synchronizedList(new ArrayList<>());
+    private static final List<MessageHandler> MAIN_THREAD_HANDLERS =
+                    Collections.synchronizedList(new ArrayList<>());
+    private static final List<MessageHandler> BACKGROUND_THREAD_HANDLERS =
+                    Collections.synchronizedList(new ArrayList<>());
 
     private final String deviceType = "ANDROID";
     private final String operatingSystem = "android";
@@ -68,13 +70,13 @@ public class PushService implements ServiceModule {
         getDefaultHandler(core.getContext());
 
         try {
-            JSONObject android =
-                            new JSONObject(serviceConfiguration.getProperties().get(JSON_OBJECT));
+            JSONObject android = new JSONObject(
+                            serviceConfiguration.getProperties().get(JSON_ANDROID_CONFIG_KEY));
 
             unifiedPushCredentials = new UnifiedPushCredentials();
-            unifiedPushCredentials.setVariant(android.getString(JSON_VARIANT_ID));
-            unifiedPushCredentials.setSecret(android.getString(JSON_VARIANT_SECRET));
-            unifiedPushCredentials.setSender(android.getString(JSON_SENDER_ID));
+            unifiedPushCredentials.setVariant(android.getString(JSON_VARIANT_ID_KEY));
+            unifiedPushCredentials.setSecret(android.getString(JSON_VARIANT_SECRET_KEY));
+            unifiedPushCredentials.setSender(android.getString(JSON_SENDER_ID_KEY));
 
         } catch (JSONException e) {
             MobileCore.getLogger().error(e.getMessage(), e);
