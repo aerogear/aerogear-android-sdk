@@ -22,8 +22,6 @@ import net.openid.appauth.browser.VersionedBrowserMatcher;
  */
 public class AuthorizationServiceFactory {
 
-    private final static String SCOPE_OPENID = "openid";
-
     private final Context appContext;
 
     /**
@@ -58,7 +56,7 @@ public class AuthorizationServiceFactory {
 
     /**
      * Builds a new AuthorizationServiceFactory
-     * 
+     *
      * @param appContext the application context
      */
     public AuthorizationServiceFactory(@NonNull final Context appContext) {
@@ -68,7 +66,7 @@ public class AuthorizationServiceFactory {
     /**
      * Creates and initializes a new {@link AuthorizationService} ready to be used for
      * authenticating with Keycloak.
-     * 
+     *
      * @param keycloakConfiguration configuration to be used to access keycloak
      * @param authServiceConfiguration the authentication singleThreadService configuration
      * @return a wrapper object containing all the `openid` object used to handle the OIDC
@@ -95,7 +93,8 @@ public class AuthorizationServiceFactory {
         AuthorizationService authService = new AuthorizationService(this.appContext, appAuthConfig);
         AuthorizationRequest authRequest = new AuthorizationRequest.Builder(authServiceConfig,
                         keycloakConfiguration.getClientId(), ResponseTypeValues.CODE,
-                        authServiceConfiguration.getRedirectUri()).setScopes(SCOPE_OPENID).build();
+                        authServiceConfiguration.getRedirectUri())
+                                        .setScopes(authServiceConfiguration.getScopes()).build();
 
         return new ServiceWrapper(authService, authState, authRequest);
     }

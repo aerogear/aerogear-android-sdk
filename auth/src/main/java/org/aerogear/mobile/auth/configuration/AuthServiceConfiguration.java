@@ -10,9 +10,19 @@ import android.net.Uri;
 public class AuthServiceConfiguration {
 
     /**
+     * The default scope.
+     */
+    private final String SCOPE_OPENID;
+
+    /**
      * The redirect uri for the developers app.
      */
     private final Uri redirectUri;
+
+    /**
+     * The OIDC scopes to use in the auth request.
+     */
+    private final String scopes;
 
     /**
      * Specify the minimum time between requests to get the JWKS (Json web key set) in minutes. The
@@ -28,6 +38,8 @@ public class AuthServiceConfiguration {
     private AuthServiceConfiguration(final AuthConfigurationBuilder builder) {
         this.redirectUri = builder.redirectUri;
         this.minTimeBetweenJwksRequests = builder.minTimeBetweenJwksRequests;
+        this.scopes = builder.scopes;
+        this.SCOPE_OPENID = builder.SCOPE_OPENID;
     }
 
     /**
@@ -36,17 +48,30 @@ public class AuthServiceConfiguration {
     public static class AuthConfigurationBuilder {
         private Uri redirectUri;
         private int minTimeBetweenJwksRequests = 24 * 60;
+        private String scopes;
+        private final String SCOPE_OPENID = "openid";
 
         public AuthConfigurationBuilder() {}
 
         /**
          * Allow specify the value of the redirect uri
-         * 
+         *
          * @param redirectUri a new redirectUri value
          * @return the builder instance
          */
         public AuthConfigurationBuilder withRedirectUri(final String redirectUri) {
             this.redirectUri = Uri.parse(nonNull(redirectUri, "redirectUri"));
+            return this;
+        }
+
+        /**
+         * Allow specifying the OIDC scopes of the auth request
+         *
+         * @param scopes the OIDC scopes
+         * @return the builder instance
+         */
+        public AuthConfigurationBuilder withScopes(final String scopes) {
+            this.scopes = scopes;
             return this;
         }
 
@@ -66,6 +91,18 @@ public class AuthServiceConfiguration {
      */
     public Uri getRedirectUri() {
         return redirectUri;
+    }
+
+    /**
+     * @return the OIDC scopes for the auth request. If no scopes are defined, the default 'openid'
+     *         scope will be sent.
+     */
+    public String getScopes() {
+        if (scopes != null) {
+            return scopes;
+        } else {
+            return SCOPE_OPENID;
+        }
     }
 
     /**
