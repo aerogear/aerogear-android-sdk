@@ -5,6 +5,7 @@ import static java.net.HttpURLConnection.HTTP_OK;
 import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -41,8 +42,9 @@ public class PushService implements ServiceModule {
     private static final String JSON_VARIANT_SECRET = "variantSecret";
     private static final String JSON_SENDER_ID = "senderId";
 
-    private static final List<MessageHandler> MAIN_THREAD_HANDLERS = new ArrayList<>();
-    private static final List<MessageHandler> BACKGROUND_THREAD_HANDLERS = new ArrayList<>();
+
+    private static final List<MessageHandler> MAIN_THREAD_HANDLERS = Collections.synchronizedList(new ArrayList<>());
+    private static final List<MessageHandler> BACKGROUND_THREAD_HANDLERS = Collections.synchronizedList(new ArrayList<>());
 
     private final String deviceType = "ANDROID";
     private final String operatingSystem = "android";
