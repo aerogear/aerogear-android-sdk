@@ -25,6 +25,14 @@
             "type": "metrics",
             "config": {
             }
+        },
+        {
+            "id": "push",
+            "name": "push",
+            "url": "https://testing.zeta.feedhenry.com/api/v2/ag-push/",
+            "type": "push",
+            "config": {
+            }
         }
     ]
 }

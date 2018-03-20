@@ -20,6 +20,10 @@
             android:id="@+id/nav_checks"
             android:icon="@drawable/ic_phone_lock"
             android:title="@string/nav_checks" />
+        <item
+            android:id="@+id/nav_push"
+            android:icon="@drawable/ic_message"
+            android:title="@string/nav_push" />
     </group>
 
 </menu>
