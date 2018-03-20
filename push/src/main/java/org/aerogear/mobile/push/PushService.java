@@ -188,7 +188,7 @@ public class PushService implements ServiceModule {
 
     }
 
-    private String getHashedAuth(String username, char[] password) {
+    private String getHashedAuth(final String username, final char[] password) {
         StringBuilder headerValueBuilder = new StringBuilder("Basic").append(" ");
         String unhashedCredentials = username + ":" + String.valueOf(password);
         String hashedCrentials =
@@ -203,7 +203,7 @@ public class PushService implements ServiceModule {
      *
      * @param handler a handler to added to the list of handlers to be notified.
      */
-    public static void registerMainThreadHandler(MessageHandler handler) {
+    public static void registerMainThreadHandler(final MessageHandler handler) {
         MAIN_THREAD_HANDLERS.add(handler);
     }
 
@@ -214,7 +214,7 @@ public class PushService implements ServiceModule {
      *
      * @param handler a handler to added to the list of handlers to be notified.
      */
-    public static void registerBackgroundThreadHandler(MessageHandler handler) {
+    public static void registerBackgroundThreadHandler(final MessageHandler handler) {
         BACKGROUND_THREAD_HANDLERS.add(handler);
     }
 
@@ -224,7 +224,7 @@ public class PushService implements ServiceModule {
      *
      * @param handler a handler to be removed to the list of handlers
      */
-    public static void unregisterMainThreadHandler(MessageHandler handler) {
+    public static void unregisterMainThreadHandler(final MessageHandler handler) {
         MAIN_THREAD_HANDLERS.remove(handler);
     }
 
@@ -233,7 +233,7 @@ public class PushService implements ServiceModule {
      *
      * @param handler a handler to be removed to the list of handlers
      */
-    public static void unregisterBackgroundThreadHandler(MessageHandler handler) {
+    public static void unregisterBackgroundThreadHandler(final MessageHandler handler) {
         BACKGROUND_THREAD_HANDLERS.remove(handler);
     }
 
@@ -277,7 +277,7 @@ public class PushService implements ServiceModule {
     }
 
     @SuppressWarnings("unchecked")
-    private static void getDefaultHandler(Context context) {
+    private static void getDefaultHandler(final Context context) {
         try {
 
             ApplicationInfo applicationInfo = context.getPackageManager().getApplicationInfo(
