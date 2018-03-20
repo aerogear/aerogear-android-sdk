@@ -2,6 +2,7 @@ package org.aerogear.mobile.push;
 
 import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
 import static java.net.HttpURLConnection.HTTP_OK;
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -204,6 +205,7 @@ public class PushService implements ServiceModule {
      * @param handler a handler to added to the list of handlers to be notified.
      */
     public static void registerMainThreadHandler(final MessageHandler handler) {
+        nonNull(handler, "handle");
         MAIN_THREAD_HANDLERS.add(handler);
     }
 
@@ -215,6 +217,7 @@ public class PushService implements ServiceModule {
      * @param handler a handler to added to the list of handlers to be notified.
      */
     public static void registerBackgroundThreadHandler(final MessageHandler handler) {
+        nonNull(handler, "handle");
         BACKGROUND_THREAD_HANDLERS.add(handler);
     }
 
@@ -225,6 +228,7 @@ public class PushService implements ServiceModule {
      * @param handler a handler to be removed to the list of handlers
      */
     public static void unregisterMainThreadHandler(final MessageHandler handler) {
+        nonNull(handler, "handle");
         MAIN_THREAD_HANDLERS.remove(handler);
     }
 
@@ -234,6 +238,7 @@ public class PushService implements ServiceModule {
      * @param handler a handler to be removed to the list of handlers
      */
     public static void unregisterBackgroundThreadHandler(final MessageHandler handler) {
+        nonNull(handler, "handle");
         BACKGROUND_THREAD_HANDLERS.remove(handler);
     }
 
@@ -243,6 +248,7 @@ public class PushService implements ServiceModule {
      * @param message the message to pass
      */
     public static void notifyHandlers(final Context context, final Map<String, String> message) {
+        nonNull(context, "context");
 
         if (BACKGROUND_THREAD_HANDLERS.isEmpty() && MAIN_THREAD_HANDLERS.isEmpty()
                         && defaultHandler != null) {
@@ -278,6 +284,8 @@ public class PushService implements ServiceModule {
 
     @SuppressWarnings("unchecked")
     private static void getDefaultHandler(final Context context) {
+        nonNull(context, "context");
+
         try {
 
             ApplicationInfo applicationInfo = context.getPackageManager().getApplicationInfo(
