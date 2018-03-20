@@ -1,8 +1,10 @@
 package org.aerogear.mobile.core.integration;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -34,6 +36,8 @@ public class MetricsServiceIntegrationTest {
 
         MobileCore mobileCore = MobileCore.init(RuntimeEnvironment.application, options);
         metricsService = mobileCore.getInstance(MetricsService.class);
+
+        error = null;
     }
 
     @Test
@@ -54,11 +58,9 @@ public class MetricsServiceIntegrationTest {
         };
 
         metricsService.sendAppAndDeviceMetrics(testCallback);
-        latch.await();
+        latch.await(10, TimeUnit.SECONDS);
 
-        if (error != null) {
-            fail(error.getMessage());
-        }
+        assertNull(error);
     }
 
     @Test
@@ -81,11 +83,9 @@ public class MetricsServiceIntegrationTest {
         };
 
         metricsService.publish(new Metrics[] {metrics}, testCallback);
-        latch.await();
+        latch.await(10, TimeUnit.SECONDS);
 
-        if (error != null) {
-            fail(error.getMessage());
-        }
+        assertNull(error);
     }
 
 }
