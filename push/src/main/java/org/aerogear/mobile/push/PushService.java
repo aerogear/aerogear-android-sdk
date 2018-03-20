@@ -29,6 +29,7 @@ import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.ServiceModule;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.exception.HttpException;
+import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpResponse;
 
@@ -256,11 +257,12 @@ public class PushService implements ServiceModule {
 
         if (BACKGROUND_THREAD_HANDLERS.isEmpty() && MAIN_THREAD_HANDLERS.isEmpty()
                         && defaultHandler != null) {
-            new Thread(() -> defaultHandler.onMessage(context, message)).start();
+            new AppExecutors().mainThread()
+                            .execute(() -> defaultHandler.onMessage(context, message));
         } else {
 
             for (final MessageHandler handler : BACKGROUND_THREAD_HANDLERS) {
-                new Thread(() -> handler.onMessage(context, message)).start();
+                new AppExecutors().mainThread().execute(() -> handler.onMessage(context, message));
             }
 
             Looper main = Looper.getMainLooper();
