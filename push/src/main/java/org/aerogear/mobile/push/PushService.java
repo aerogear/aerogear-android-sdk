@@ -257,18 +257,20 @@ public class PushService implements ServiceModule {
 
         if (BACKGROUND_THREAD_HANDLERS.isEmpty() && MAIN_THREAD_HANDLERS.isEmpty()
                         && defaultHandler != null) {
-            new AppExecutors().mainThread()
-                            .execute(() -> defaultHandler.onMessage(context, message));
+            new AppExecutors().mainThread().execute(() -> defaultHandler.onMessage(context,
+                            Collections.unmodifiableMap(message)));
         } else {
 
             for (final MessageHandler handler : BACKGROUND_THREAD_HANDLERS) {
-                new AppExecutors().mainThread().execute(() -> handler.onMessage(context, message));
+                new AppExecutors().mainThread().execute(() -> handler.onMessage(context,
+                                Collections.unmodifiableMap(message)));
             }
 
             Looper main = Looper.getMainLooper();
 
             for (final MessageHandler handler : MAIN_THREAD_HANDLERS) {
-                new Handler(main).post(() -> handler.onMessage(context, message));
+                new Handler(main).post(() -> handler.onMessage(context,
+                                Collections.unmodifiableMap(message)));
             }
 
         }
