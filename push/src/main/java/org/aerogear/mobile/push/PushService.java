@@ -3,8 +3,6 @@ package org.aerogear.mobile.push;
 import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
 import static java.net.HttpURLConnection.HTTP_OK;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,11 +35,10 @@ public class PushService implements ServiceModule {
     public static final String DEFAULT_MESSAGE_HANDLER_KEY = "DEFAULT_MESSAGE_HANDLER_KEY";
 
     private static final String registryDeviceEndpoint = "rest/registry/device";
-    private static final String PUSH_CONFIG_FILE_NAME = "push-config.json";
     private static final String JSON_OBJECT = "android";
-    private static final String JSON_SENDER_ID = "senderID";
-    private static final String JSON_VARIANT_ID = "variantID";
+    private static final String JSON_VARIANT_ID = "variantId";
     private static final String JSON_VARIANT_SECRET = "variantSecret";
+    private static final String JSON_SENDER_ID = "senderId";
 
     private static final List<MessageHandler> MAIN_THREAD_HANDLERS = new ArrayList<>();
     private static final List<MessageHandler> BACKGROUND_THREAD_HANDLERS = new ArrayList<>();
@@ -66,7 +63,21 @@ public class PushService implements ServiceModule {
         this.core = core;
         this.url = serviceConfiguration.getUrl();
         getDefaultHandler(core.getContext());
-        loadConfigJson();
+
+        try {
+            JSONObject android =
+                            new JSONObject(serviceConfiguration.getProperties().get(JSON_OBJECT));
+
+            unifiedPushCredentials = new UnifiedPushCredentials();
+            unifiedPushCredentials.setVariant(android.getString(JSON_VARIANT_ID));
+            unifiedPushCredentials.setSecret(android.getString(JSON_VARIANT_SECRET));
+            unifiedPushCredentials.setSender(android.getString(JSON_SENDER_ID));
+
+        } catch (JSONException e) {
+            MobileCore.getLogger().error(e.getMessage(), e);
+            // Should never happen
+        }
+
     }
 
     @Override
@@ -77,51 +88,11 @@ public class PushService implements ServiceModule {
     @Override
     public void destroy() {}
 
-    private void loadConfigJson() {
-        InputStream fileStream = null;
-
-        try {
-            fileStream = core.getContext().getResources().getAssets().open(PUSH_CONFIG_FILE_NAME);
-            int size = fileStream.available();
-            byte[] buffer = new byte[size];
-            fileStream.read(buffer);
-            fileStream.close();
-            String json = new String(buffer);
-
-            JSONObject pushConfig = new JSONObject(json);
-            JSONObject pushAndroidConfig = pushConfig.getJSONObject(JSON_OBJECT);
-            UnifiedPushCredentials unifiedPushCredentials = new UnifiedPushCredentials();
-            unifiedPushCredentials.setSender(pushAndroidConfig.getString(JSON_SENDER_ID));
-            unifiedPushCredentials.setVariant(pushAndroidConfig.getString(JSON_VARIANT_ID));
-            unifiedPushCredentials.setSecret(pushAndroidConfig.getString(JSON_VARIANT_SECRET));
-
-            this.unifiedPushCredentials = unifiedPushCredentials;
-        } catch (JSONException e) {
-            MobileCore.getLogger().error(e.getMessage(), e);
-            throw new RuntimeException("An error occurred while parsing the "
-                            + PUSH_CONFIG_FILE_NAME + ". Please check the file format");
-        } catch (IOException e) {
-            MobileCore.getLogger().error(e.getMessage(), e);
-            throw new RuntimeException("An error occurred while parsing the "
-                            + PUSH_CONFIG_FILE_NAME + ". Please check if the file exists");
-        } finally {
-            if (fileStream != null) {
-                try {
-                    fileStream.close();
-                } catch (IOException e) {
-                    // Ignore IOException
-                }
-            }
-        }
-    }
-
     public void registerDevice(final Callback callback) {
         registerDevice(new UnifiedPushConfig(), callback);
     }
 
     public void registerDevice(final UnifiedPushConfig unifiedPushConfig, final Callback callback) {
-
-        loadConfigJson();
 
         try {
 

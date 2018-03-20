@@ -32,6 +32,11 @@
             "url": "https://testing.zeta.feedhenry.com/api/v2/ag-push/",
             "type": "push",
             "config": {
+                "android": {
+                    "variantId": "8d35bdcb-3261-43d9-b61e-31f618cc48e2",
+                    "variantSecret": "0707927e-7851-4ead-848e-991b943ea4ea",
+                    "senderId": "56938872708"
+                }
             }
         }
     ]

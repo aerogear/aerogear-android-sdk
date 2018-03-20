@@ -78,7 +78,6 @@ public class PushFragment extends BaseFragment implements MessageHandler {
             @Override
             public void onSuccess() {
                 new AppExecutors().mainThread().execute(() -> registered(true));
-
             }
 
             @Override
