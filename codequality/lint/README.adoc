@@ -1,0 +1,46 @@
+= AeroGear Android SDK API Lint Rules
+
+The AeroGear Android SDK has opinions on how its APIs should be used and these lint rules have been assembled by our team as we have found common antipatterns or bad practices when using our APIs.  
+
+== Installation
+
+To build the lint rules all you need to do is run 
+
+[source, sh]
+----
+./gradlew checks:jar
+----
+
+then to use the checks in your Android project adding a lintChecks dependency to the checks.jar file in the checks/build/libs directory.
+
+[source, groovy]
+----
+dependencies {
+    lintChecks files('libs/checks.jar')
+    //In this example we've copied checks.jar to our project's libs directory
+    //All your other dependencies
+}
+----
+
+
+== Available checks
+
+=== NonNullAssignment
+This check looks at a block of code and finds instances where the developer has performed a nonNull check using our SanityChecks APIs and later performs an assignment.  SanityChecks.nonNull returns the value under test and the assignment should happen on the same line.
+
+[source, java]
+----
+public CallableRequest(Callable<T> callable) {
+        nonNull(callable, "callable");
+        this.callable = callable;
+}
+----
+
+Would report a lint warning.  To clear this warning your code should look like the following 
+
+[source, java]
+----
+public CallableRequest(Callable<T> callable) {
+        this.callable = nonNull(callable, "callable");
+}
+----

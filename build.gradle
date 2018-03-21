@@ -42,6 +42,13 @@ subprojects {
             eclipse('4.7.1').configFile '../codequality/eclipse-code-style.xml'
         }
     }
+
+    
+    afterEvaluate { project ->
+        dependencies {
+            lintChecks files('libs/checks.jar')
+        }   
+    }
 }
 
 // We want to expose the SDK version and name to the metrics subproject
