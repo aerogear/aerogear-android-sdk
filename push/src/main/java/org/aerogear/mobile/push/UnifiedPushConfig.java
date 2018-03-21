@@ -7,7 +7,7 @@ import java.util.List;
 public final class UnifiedPushConfig {
 
     private String alias;
-    private List<String> categories;
+    private List<String> categories = Collections.emptyList();
 
     public String getAlias() {
         return alias;
@@ -18,14 +18,11 @@ public final class UnifiedPushConfig {
     }
 
     public List<String> getCategories() {
-        if (categories == null) {
-            return new ArrayList<>();
-        }
         return Collections.unmodifiableList(categories);
     }
 
     public void setCategories(List<String> categories) {
-        Collections.copy(this.categories, categories);
+        this.categories = new ArrayList<>(categories);
     }
 
 }
