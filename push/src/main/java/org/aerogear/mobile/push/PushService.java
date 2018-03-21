@@ -208,8 +208,7 @@ public class PushService implements ServiceModule {
      * @param handler a handler to added to the list of handlers to be notified.
      */
     public static void registerMainThreadHandler(final MessageHandler handler) {
-        nonNull(handler, "handle");
-        MAIN_THREAD_HANDLERS.add(handler);
+        MAIN_THREAD_HANDLERS.add(nonNull(handler, "handle"));
     }
 
     /**
@@ -220,8 +219,7 @@ public class PushService implements ServiceModule {
      * @param handler a handler to added to the list of handlers to be notified.
      */
     public static void registerBackgroundThreadHandler(final MessageHandler handler) {
-        nonNull(handler, "handle");
-        BACKGROUND_THREAD_HANDLERS.add(handler);
+        BACKGROUND_THREAD_HANDLERS.add(nonNull(handler, "handle"));
     }
 
     /**
@@ -231,8 +229,7 @@ public class PushService implements ServiceModule {
      * @param handler a handler to be removed to the list of handlers
      */
     public static void unregisterMainThreadHandler(final MessageHandler handler) {
-        nonNull(handler, "handle");
-        MAIN_THREAD_HANDLERS.remove(handler);
+        MAIN_THREAD_HANDLERS.remove(nonNull(handler, "handle"));
     }
 
     /**
@@ -241,8 +238,7 @@ public class PushService implements ServiceModule {
      * @param handler a handler to be removed to the list of handlers
      */
     public static void unregisterBackgroundThreadHandler(final MessageHandler handler) {
-        nonNull(handler, "handle");
-        BACKGROUND_THREAD_HANDLERS.remove(handler);
+        BACKGROUND_THREAD_HANDLERS.remove(nonNull(handler, "handle"));
     }
 
     /**
