@@ -6,6 +6,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -17,14 +19,19 @@ import org.json.JSONObject;
  * This class is responsible for consuming a reader and producing a tree of config values to be
  * consumed by modules.
  */
-public class MobileCoreJsonParser {
+public class MobileCoreJsonConfig {
 
     private final Map<String, ServiceConfiguration> values = new TreeMap<>();
+    private final Map<String, String> hashes = new HashMap<>();
 
-    private MobileCoreJsonParser(final InputStream jsonStream) throws IOException, JSONException {
+
+    private MobileCoreJsonConfig(final InputStream jsonStream) throws IOException, JSONException {
         final String jsonText = readJsonStream(jsonStream);
         final JSONObject jsonDocument = new JSONObject(jsonText);
         parseMobileCoreArray(jsonDocument.getJSONArray("services"));
+        if (jsonDocument.has("https")) {
+            parseHttpsArray(jsonDocument.getJSONArray("https"));
+        }
     }
 
     private String readJsonStream(final InputStream jsonStream) throws IOException {
@@ -69,18 +76,44 @@ public class MobileCoreJsonParser {
         values.put(serviceConfig.getName(), serviceConfig);
     }
 
+    private void parseHttpsArray(final JSONArray array) throws JSONException, IOException {
+        final int arrayLength = nonNull(array, "jsonArray").length();
+        for (int i = 0; i < arrayLength; i++) {
+            parseHttpsObject(array.getJSONObject(i));
+        }
+    }
+
+    private void parseHttpsObject(final JSONObject jsonObject) throws JSONException, IOException {
+        nonNull(jsonObject, "jsonObject");
+
+        final HttpsConfiguration.Builder httpsConfigBuilder =
+                        HttpsConfiguration.newHashConfiguration();
+        httpsConfigBuilder.setHostName(jsonObject.getString("host"));
+        httpsConfigBuilder.setCertificateHash(jsonObject.getString("certificateHash"));
+
+        final HttpsConfiguration httpsConfiguration = httpsConfigBuilder.build();
+        hashes.put(httpsConfiguration.getHostName(), httpsConfiguration.getCertificateHash());
+    }
+
     /**
      * @param jsonStream a inputStream to for mobile-core.json. Please note that this should be
      *        managed by the calling core. The parser will not close the resource when it is
      *        finished.
-     *
-     * @return A map of ServiceConfigs mapped by their name.
+     * @return MobileCoreJsonConfig
      * @throws IOException if reading the stream fails
      * @throws JSONException if the json document is malformed
      */
-    public static Map<String, ServiceConfiguration> parse(final InputStream jsonStream)
+    public static MobileCoreJsonConfig produce(final InputStream jsonStream)
                     throws IOException, JSONException {
-        MobileCoreJsonParser parser = new MobileCoreJsonParser(jsonStream);
-        return parser.values;
+        MobileCoreJsonConfig jsonConfig = new MobileCoreJsonConfig(jsonStream);
+        return jsonConfig;
+    }
+
+    public Map<String, ServiceConfiguration> getServicesConfig() {
+        return Collections.unmodifiableMap(values);
+    }
+
+    public Map<String, String> getCertificatePinningHashes() {
+        return Collections.unmodifiableMap(hashes);
     }
 }
