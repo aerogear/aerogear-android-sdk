@@ -26,6 +26,7 @@ import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.ServiceModule;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
+import org.aerogear.mobile.core.exception.ConfigurationNotFoundException;
 import org.aerogear.mobile.core.exception.HttpException;
 import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.http.HttpRequest;
@@ -79,9 +80,9 @@ public class PushService implements ServiceModule {
 
         } catch (JSONException e) {
             MobileCore.getLogger().error(e.getMessage(), e);
-            // Should never happen
+            throw new ConfigurationNotFoundException(
+                            "An error occurred while trying to load the push config");
         }
-
     }
 
     @Override
