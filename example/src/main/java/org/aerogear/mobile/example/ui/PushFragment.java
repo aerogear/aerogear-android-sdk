@@ -34,6 +34,7 @@ public class PushFragment extends BaseFragment implements MessageHandler {
     @BindView(R.id.unregister)
     Button unregister;
 
+    private static final String TAG = PushFragment.class.getName();
     private ArrayAdapter<String> adapter;
 
     @Override
@@ -83,6 +84,8 @@ public class PushFragment extends BaseFragment implements MessageHandler {
             @Override
             public void onError(Throwable error) {
                 new AppExecutors().mainThread().execute(() -> {
+                    register.setEnabled(true);
+                    MobileCore.getLogger().error(TAG, error.getMessage(), error);
                     registered(false);
                     Toast.makeText(getContext(), R.string.device_register_error, Toast.LENGTH_LONG)
                                     .show();
@@ -105,6 +108,7 @@ public class PushFragment extends BaseFragment implements MessageHandler {
 
             @Override
             public void onError(Throwable error) {
+                register.setEnabled(false);
                 MobileCore.getLogger().error(error.getMessage(), error);
                 new AppExecutors().mainThread().execute(() -> {
                     registered(true);

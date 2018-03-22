@@ -146,6 +146,11 @@ public class PushService implements ServiceModule {
                         break;
                 }
             });
+            httpResponse.onError(() -> {
+                Exception error = httpResponse.getError();
+                MobileCore.getLogger().error(error.getMessage(), error);
+                callback.onError(error);
+            });
 
         } catch (JSONException e) {
             MobileCore.getLogger().error(e.getMessage(), e);
@@ -188,6 +193,11 @@ public class PushService implements ServiceModule {
                     callback.onError(new HttpException());
                     break;
             }
+        });
+        httpResponse.onError(() -> {
+            Exception error = httpResponse.getError();
+            MobileCore.getLogger().error(error.getMessage(), error);
+            callback.onError(error);
         });
 
     }
