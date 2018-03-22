@@ -1,4 +1,4 @@
-package org.aerogear.mobile.core.metrics;
+package org.aerogear.mobile.core.unit.metrics;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -18,6 +18,8 @@ import android.support.test.filters.SmallTest;
 import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
+import org.aerogear.mobile.core.metrics.Metrics;
+import org.aerogear.mobile.core.metrics.MetricsService;
 import org.aerogear.mobile.core.metrics.publisher.LoggerMetricsPublisher;
 import org.aerogear.mobile.core.metrics.publisher.NetworkMetricsPublisher;
 

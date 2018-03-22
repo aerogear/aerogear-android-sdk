@@ -1,4 +1,4 @@
-package org.aerogear.mobile.core.http;
+package org.aerogear.mobile.core.unit.http;
 
 import static junit.framework.Assert.fail;
 import static org.junit.Assert.assertEquals;
@@ -12,6 +12,11 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
 import android.support.test.filters.SmallTest;
+
+import org.aerogear.mobile.core.http.HttpRequest;
+import org.aerogear.mobile.core.http.HttpResponse;
+import org.aerogear.mobile.core.http.HttpServiceModule;
+import org.aerogear.mobile.core.http.OkHttpServiceModule;
 
 import okhttp3.HttpUrl;
 import okhttp3.mockwebserver.MockResponse;

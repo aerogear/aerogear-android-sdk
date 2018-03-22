@@ -1,4 +1,4 @@
-package org.aerogear.mobile.core.metrics.impl;
+package org.aerogear.mobile.core.unit.metrics.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -15,8 +15,10 @@ import android.app.Application;
 import android.support.test.filters.SmallTest;
 
 import org.aerogear.mobile.core.MobileCore;
+import org.aerogear.mobile.core.metrics.impl.AppMetrics;
 
 @RunWith(RobolectricTestRunner.class)
+
 @SmallTest
 public class AppMetricsTest {
 
