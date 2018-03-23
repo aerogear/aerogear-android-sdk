@@ -83,7 +83,6 @@ public class AuthorizationServiceFactory {
                         keycloakConfiguration.getAuthenticationEndpoint(),
                         keycloakConfiguration.getTokenEndpoint());
         AuthState authState = new AuthState(authServiceConfig);
-
         AppAuthConfiguration.Builder appAuthConfigurationBuilder =
                         new AppAuthConfiguration.Builder().setBrowserMatcher(new BrowserBlacklist(
                                         VersionedBrowserMatcher.CHROME_CUSTOM_TAB));
