@@ -73,7 +73,7 @@ public class SecurityServiceFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        securityService = MobileCore.getInstance(SecurityService.class);
+        securityService = MobileCore.getInstance().getService(SecurityService.class);
         runTests();
     }
 
@@ -89,8 +89,9 @@ public class SecurityServiceFragment extends BaseFragment {
                         .withSecurityCheck(SecurityCheckType.IS_EMULATOR)
                         .withSecurityCheck(SecurityCheckType.IS_DEBUGGER)
                         .withSecurityCheck(SecurityCheckType.IS_DEVELOPER_MODE)
-                        .withMetricsService(MobileCore.getInstance(MetricsService.class)).build()
-                        .execute();
+                        .withMetricsService(
+                                        MobileCore.getInstance().getService(MetricsService.class))
+                        .build().execute();
 
         // perform detections
         detectRoot(results);

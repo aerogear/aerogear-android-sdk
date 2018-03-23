@@ -91,7 +91,7 @@ public class MetricsService implements ServiceModule {
     public void publish(@NonNull final Metrics[] metrics, final Callback callback) {
         if (publisher == null) {
             throw new IllegalStateException(
-                            "Make sure you have called configure or get this instance from MobileCore.getInstance()");
+                            "Make sure you have called configure or get this instance from MobileCore.getInstance().getService()");
         }
         nonNull(metrics, "metrics");
         publisher.publish(metrics, callback);

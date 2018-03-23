@@ -110,12 +110,12 @@ public final class MobileCore {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends ServiceModule> T getInstance(final Class<T> serviceClass) {
-        return getInstance(serviceClass, null);
+    public <T extends ServiceModule> T getService(final Class<T> serviceClass) {
+        return getService(serviceClass, null);
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends ServiceModule> T getInstance(final Class<T> serviceClass,
+    public <T extends ServiceModule> T getService(final Class<T> serviceClass,
                     final ServiceConfiguration serviceConfiguration)
                     throws InitializationException {
         nonNull(serviceClass, "serviceClass");
