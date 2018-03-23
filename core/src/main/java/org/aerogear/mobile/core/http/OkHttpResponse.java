@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import org.aerogear.mobile.core.executor.AppExecutors;
-
 import javax.net.ssl.SSLPeerUnverifiedException;
+
+import org.aerogear.mobile.core.executor.AppExecutors;
 
 import okhttp3.Call;
 import okhttp3.Response;
