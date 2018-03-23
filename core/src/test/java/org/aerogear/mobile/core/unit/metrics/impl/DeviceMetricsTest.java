@@ -23,7 +23,7 @@ public class DeviceMetricsTest {
     public void testType() {
         Application context = RuntimeEnvironment.application;
 
-        DeviceMetrics deviceMetrics = new DeviceMetrics(context);
+        DeviceMetrics deviceMetrics = new DeviceMetrics();
         assertEquals("device", deviceMetrics.identifier());
     }
 
@@ -31,7 +31,7 @@ public class DeviceMetricsTest {
     public void testData() throws JSONException {
         Application context = RuntimeEnvironment.application;
 
-        DeviceMetrics deviceMetrics = new DeviceMetrics(context);
+        DeviceMetrics deviceMetrics = new DeviceMetrics();
         JSONObject result = deviceMetrics.data();
 
         assertNotNull(result.getString("platform"));

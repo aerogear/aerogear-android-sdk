@@ -197,12 +197,13 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
                 // Non HTTP 200 or 302 Status Code Returned
                 Exception error = httpResponse.getError() != null ? httpResponse.getError()
                                 : new Exception("Non HTTP 200 or 302 Status Code.");
-                MobileCore.getLogger().error(
+                MobileCore.getInstance().getLogger().error(
                                 "Error Performing a Logout on the Remote OIDC Server: ", error);
                 logoutCallback.onError(error);
             }
         }).onError(() -> {
-            MobileCore.getLogger().error("Error Performing a Logout on the Remote OIDC Server: ",
+            MobileCore.getInstance().getLogger().error(
+                            "Error Performing a Logout on the Remote OIDC Server: ",
                             httpResponse.getError());
             logoutCallback.onError(httpResponse.getError());
         });

@@ -20,7 +20,7 @@ import org.aerogear.mobile.security.SecurityCheckResult;
 public class SecurityCheckResultMetric implements Metrics<JSONArray> {
 
     private final JSONArray data;
-    private final Logger LOG = MobileCore.getLogger();
+    private final Logger LOG = MobileCore.getInstance().getLogger();
     private final String TAG = "SecurityCheckResultMetric";
 
     public static final String IDENTIFIER = "security";

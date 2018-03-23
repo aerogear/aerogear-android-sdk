@@ -37,7 +37,7 @@ public final class ClientIdGenerator {
         if (clientId == null) {
             clientId = UUID.randomUUID().toString();
 
-            MobileCore.getLogger().info("Generated a new client ID: " + clientId);
+            MobileCore.getInstance().getLogger().info("Generated a new client ID: " + clientId);
 
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString(STORAGE_KEY, clientId);

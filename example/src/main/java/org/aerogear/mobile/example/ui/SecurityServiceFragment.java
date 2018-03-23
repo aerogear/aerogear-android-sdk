@@ -10,6 +10,7 @@ import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.metrics.MetricsService;
 import org.aerogear.mobile.example.R;
 import org.aerogear.mobile.security.SecurityCheckExecutor;
@@ -72,7 +73,7 @@ public class SecurityServiceFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        securityService = activity.mobileCore.getInstance(SecurityService.class);
+        securityService = MobileCore.getInstance(SecurityService.class);
         runTests();
     }
 
@@ -88,8 +89,8 @@ public class SecurityServiceFragment extends BaseFragment {
                         .withSecurityCheck(SecurityCheckType.IS_EMULATOR)
                         .withSecurityCheck(SecurityCheckType.IS_DEBUGGER)
                         .withSecurityCheck(SecurityCheckType.IS_DEVELOPER_MODE)
-                        .withMetricsService(activity.mobileCore.getInstance(MetricsService.class))
-                        .build().execute();
+                        .withMetricsService(MobileCore.getInstance(MetricsService.class)).build()
+                        .execute();
 
         // perform detections
         detectRoot(results);

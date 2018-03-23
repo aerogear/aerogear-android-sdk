@@ -38,12 +38,11 @@ public class MetricsService implements ServiceModule {
         nonNull(core, "mobileCore");
         nonNull(serviceConfiguration, "serviceConfiguration");
 
-        defaultMetrics = new Metrics[] {new AppMetrics(core.getContext()),
-                        new DeviceMetrics(core.getContext())};
+        defaultMetrics = new Metrics[] {new AppMetrics(core.getContext()), new DeviceMetrics()};
 
         final String metricsUrl = serviceConfiguration.getUrl();
         if (metricsUrl == null) {
-            publisher = new LoggerMetricsPublisher(MobileCore.getLogger());
+            publisher = new LoggerMetricsPublisher(core.getLogger());
         } else {
             publisher = new NetworkMetricsPublisher(core.getContext(),
                             core.getHttpLayer().newRequest(), metricsUrl);

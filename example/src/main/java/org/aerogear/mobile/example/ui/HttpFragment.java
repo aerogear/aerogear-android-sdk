@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpResponse;
@@ -41,7 +42,7 @@ public class HttpFragment extends BaseFragment {
 
         new LastAdapter(users, BR.user).map(User.class, R.layout.item_http).into(userList);
 
-        HttpRequest httpRequest = activity.mobileCore.getHttpLayer().newRequest();
+        HttpRequest httpRequest = MobileCore.getInstance().getHttpLayer().newRequest();
         httpRequest.get("https://jsonplaceholder.typicode.com/users");
         HttpResponse httpResponse = httpRequest.execute();
         httpResponse.onComplete(() -> {
@@ -51,7 +52,7 @@ public class HttpFragment extends BaseFragment {
                 List<User> retrievesUsers = new Gson().fromJson(jsonResponse,
                                 new TypeToken<List<User>>() {}.getType());
 
-                activity.mobileCore.getLogger().info("Users: " + retrievesUsers.size());
+                MobileCore.getInstance().getLogger().info("Users: " + retrievesUsers.size());
 
                 users.addAll(retrievesUsers);
             });

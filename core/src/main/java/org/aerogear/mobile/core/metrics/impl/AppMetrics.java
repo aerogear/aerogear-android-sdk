@@ -21,8 +21,8 @@ public class AppMetrics implements Metrics<JSONObject> {
 
     public AppMetrics(final Context context) {
         this.appId = nonNull(context, "context").getPackageName();
-        this.appVersion = MobileCore.getAppVersion();
-        this.sdkVersion = MobileCore.getSdkVersion();
+        this.appVersion = MobileCore.getInstance().getAppVersion();
+        this.sdkVersion = MobileCore.getInstance().getSdkVersion();
     }
 
     @Override
@@ -44,7 +44,7 @@ public class AppMetrics implements Metrics<JSONObject> {
             data.put("sdkVersion", sdkVersion);
             return data;
         } catch (JSONException e) {
-            MobileCore.getLogger().error("Error building JSON for App Metrics", e);
+            MobileCore.getInstance().getLogger().error("Error building JSON for App Metrics", e);
         }
         return data;
     }

@@ -23,7 +23,7 @@ import org.aerogear.mobile.core.utils.ClientIdGenerator;
  */
 public class NetworkMetricsPublisher implements MetricsPublisher {
 
-    public static final Logger LOGGER = MobileCore.getLogger();
+    private static final Logger LOGGER = MobileCore.getInstance().getLogger();
 
     private final Context context;
     private final HttpRequest httpRequest;
