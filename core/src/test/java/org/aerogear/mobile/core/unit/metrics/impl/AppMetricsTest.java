@@ -8,17 +8,16 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
 import android.app.Application;
 import android.support.test.filters.SmallTest;
 
+import org.aerogear.mobile.core.AeroGearTestRunner;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.metrics.impl.AppMetrics;
 
-@RunWith(RobolectricTestRunner.class)
-
+@RunWith(AeroGearTestRunner.class)
 @SmallTest
 public class AppMetricsTest {
 

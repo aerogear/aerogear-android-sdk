@@ -11,16 +11,16 @@ import java.util.Map;
 import org.json.JSONException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
 import android.app.Application;
 import android.support.test.filters.SmallTest;
 
+import org.aerogear.mobile.core.AeroGearTestRunner;
 import org.aerogear.mobile.core.configuration.MobileCoreJsonParser;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 
-@RunWith(RobolectricTestRunner.class)
+@RunWith(AeroGearTestRunner.class)
 @SmallTest
 public class MobileCoreParserTest {
 

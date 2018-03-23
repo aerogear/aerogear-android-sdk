@@ -10,11 +10,11 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
 import android.support.test.filters.SmallTest;
 
+import org.aerogear.mobile.core.AeroGearTestRunner;
 import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
@@ -23,7 +23,7 @@ import org.aerogear.mobile.core.metrics.MetricsService;
 import org.aerogear.mobile.core.metrics.publisher.LoggerMetricsPublisher;
 import org.aerogear.mobile.core.metrics.publisher.NetworkMetricsPublisher;
 
-@RunWith(RobolectricTestRunner.class)
+@RunWith(AeroGearTestRunner.class)
 @SmallTest
 public class MetricsServiceTest {
 
