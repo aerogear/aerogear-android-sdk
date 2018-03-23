@@ -58,7 +58,7 @@ public class AuthorizationServiceFactory {
 
     /**
      * Builds a new AuthorizationServiceFactory
-     * 
+     *
      * @param appContext the application context
      */
     public AuthorizationServiceFactory(@NonNull final Context appContext) {
@@ -68,7 +68,7 @@ public class AuthorizationServiceFactory {
     /**
      * Creates and initializes a new {@link AuthorizationService} ready to be used for
      * authenticating with Keycloak.
-     * 
+     *
      * @param keycloakConfiguration configuration to be used to access keycloak
      * @param authServiceConfiguration the authentication singleThreadService configuration
      * @return a wrapper object containing all the `openid` object used to handle the OIDC
@@ -85,7 +85,6 @@ public class AuthorizationServiceFactory {
                         keycloakConfiguration.getAuthenticationEndpoint(),
                         keycloakConfiguration.getTokenEndpoint());
         AuthState authState = new AuthState(authServiceConfig);
-
         AppAuthConfiguration.Builder appAuthConfigurationBuilder =
                         new AppAuthConfiguration.Builder().setBrowserMatcher(new BrowserBlacklist(
                                         VersionedBrowserMatcher.CHROME_CUSTOM_TAB));

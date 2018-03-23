@@ -6,6 +6,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.aerogear.mobile.core.executor.AppExecutors;
 
+import javax.net.ssl.SSLPeerUnverifiedException;
+
 import okhttp3.Call;
 import okhttp3.Response;
 
@@ -26,6 +28,10 @@ class OkHttpResponse implements HttpResponse {
                 response = okHttpCall.execute();
                 requestCompleteLatch.countDown();
                 runSuccessHandler();
+            } catch (SSLPeerUnverifiedException e) {
+                error = e;
+                requestCompleteLatch.countDown();
+                runErrorHandler();
             } catch (IOException e) {
                 error = e;
                 requestCompleteLatch.countDown();

@@ -7,6 +7,7 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.aerogear.mobile.auth.utils.CertificatePinningCheck;
 import org.jose4j.jwk.JsonWebKeySet;
 
 import android.app.Activity;
@@ -36,7 +37,6 @@ import net.openid.appauth.AuthState;
 import net.openid.appauth.AuthorizationException;
 import net.openid.appauth.AuthorizationResponse;
 import net.openid.appauth.AuthorizationService;
-
 /**
  * Authenticates the user by using OpenID Connect.
  */
@@ -51,6 +51,7 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
     private final AuthStateManager authStateManager;
     private final JwksManager jwksManager;
     private final AuthorizationServiceFactory authorizationServiceFactory;
+    private final CertificatePinningCheck certificatePinningCheck;
 
     /**
      * Creates a new OIDCAuthenticatorImpl object
@@ -65,7 +66,8 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
                     final AuthServiceConfiguration authServiceConfiguration,
                     final AuthStateManager authStateManager,
                     final AuthorizationServiceFactory authorizationServiceFactory,
-                    final JwksManager jwksManager) {
+                    final JwksManager jwksManager,
+    final CertificatePinningCheck certificatePinningCheck) {
         super(serviceConfiguration);
         this.keycloakConfiguration = new KeycloakConfiguration(serviceConfiguration);
         this.authServiceConfiguration =
@@ -74,7 +76,9 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
                         nonNull(authorizationServiceFactory, "authorizationServiceFactory");
         this.authStateManager = nonNull(authStateManager, "authStateManager");
         this.jwksManager = nonNull(jwksManager, "jwksManager");
+        this.certificatePinningCheck = certificatePinningCheck;
     }
+
 
     /**
      * Builds a new OIDCUserPrincipalImpl object after the user's credential has been authenticated
@@ -96,22 +100,22 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
     // Authentication code
     private void performAuthRequest(final Activity fromActivity, final int resultCode) {
         nonNull(fromActivity, "fromActivity");
+        if (this.certificatePinningCheck.getError() != null) {
+            throw new IllegalStateException(this.certificatePinningCheck.getError());
+        }
+            AuthorizationServiceFactory.ServiceWrapper wrapper =
+                this.authorizationServiceFactory.createAuthorizationService(
+                    keycloakConfiguration, authServiceConfiguration);
+            this.authState = wrapper.getAuthState();
+            this.authService = wrapper.getAuthorizationService();
 
-        AuthorizationServiceFactory.ServiceWrapper wrapper =
-                        this.authorizationServiceFactory.createAuthorizationService(
-                                        keycloakConfiguration, authServiceConfiguration);
-
-        this.authState = wrapper.getAuthState();
-        this.authService = wrapper.getAuthorizationService();
-
-        Intent authIntent = authService
-                        .getAuthorizationRequestIntent(wrapper.getAuthorizationRequest());
-        fromActivity.startActivityForResult(authIntent, resultCode);
+            Intent authIntent = authService
+                .getAuthorizationRequestIntent(wrapper.getAuthorizationRequest());
+            fromActivity.startActivityForResult(authIntent, resultCode);
     }
 
     public void handleAuthResult(final Intent intent) {
         nonNull(intent, "intent");
-
         AuthorizationResponse response = AuthorizationResponse.fromIntent(intent);
         AuthorizationException error = AuthorizationException.fromIntent(intent);
 

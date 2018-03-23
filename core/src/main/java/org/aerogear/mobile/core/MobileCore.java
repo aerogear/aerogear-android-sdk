@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.aerogear.mobile.core.http.OkHttpCertificatePinning;
 import org.json.JSONException;
 
 import android.content.Context;
@@ -25,7 +26,6 @@ import org.aerogear.mobile.core.http.OkHttpServiceModule;
 import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.logging.LoggerAdapter;
 
-import okhttp3.CertificatePinner;
 import okhttp3.OkHttpClient;
 
 /**
@@ -55,7 +55,7 @@ public final class MobileCore {
      * @param context Application context
      */
     private MobileCore(final Context context, final Options options)
-                    throws InitializationException, IllegalStateException {
+        throws InitializationException, IllegalStateException {
         this.context = nonNull(context, "context").getApplicationContext();
         this.configFileName = nonNull(options, "options").configFileName;
 
@@ -78,20 +78,16 @@ public final class MobileCore {
         // -- Set the app version variable
         appVersion = getAppVersion(context);
 
-        // -- Creating OkHttp Certificate Pinner
-        CertificatePinner.Builder certPinnerBuilder = new CertificatePinner.Builder();
-        for (Map.Entry<String, String> https : httpsConfig.entrySet()) {
-            certPinnerBuilder.add(https.getKey(), "sha256/" + https.getValue());
-        }
-        CertificatePinner certificatePinner = certPinnerBuilder.build();
-
         // -- Setting default http layer
         if (options.httpServiceModule == null) {
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
-            builder.certificatePinner(certificatePinner);
+
+            OkHttpCertificatePinning certificatePinning = new OkHttpCertificatePinning(httpsConfig);
+            builder.certificatePinner(certificatePinning.pinCertificates());
+
             builder.connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
-                            .writeTimeout(DEFAULT_WRITE_TIMEOUT, TimeUnit.SECONDS)
-                            .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS);
+                .writeTimeout(DEFAULT_WRITE_TIMEOUT, TimeUnit.SECONDS)
+                .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS);
             final OkHttpServiceModule httpServiceModule = new OkHttpServiceModule(builder.build());
             ServiceConfiguration configuration = this.servicesConfig.get(httpServiceModule.type());
             if (configuration == null) {
@@ -124,7 +120,7 @@ public final class MobileCore {
      * @return MobileCore instance
      */
     public static MobileCore init(final Context context, final Options options)
-                    throws InitializationException {
+        throws InitializationException {
         return new MobileCore(context, options);
     }
 
@@ -145,8 +141,8 @@ public final class MobileCore {
 
     @SuppressWarnings("unchecked")
     public <T extends ServiceModule> T getInstance(final Class<T> serviceClass,
-                    final ServiceConfiguration serviceConfiguration)
-                    throws InitializationException {
+                                                   final ServiceConfiguration serviceConfiguration)
+        throws InitializationException {
         nonNull(serviceClass, "serviceClass");
 
         if (services.containsKey(serviceClass)) {
@@ -164,7 +160,7 @@ public final class MobileCore {
 
             if (serviceCfg == null && serviceModule.requiresConfiguration()) {
                 throw new ConfigurationNotFoundException(
-                                serviceModule.type() + " not found on " + this.configFileName);
+                    serviceModule.type() + " not found on " + this.configFileName);
             }
 
             serviceModule.configure(this, serviceCfg);
@@ -208,7 +204,7 @@ public final class MobileCore {
         nonNull(context, "context");
         try {
             return context.getPackageManager().getPackageInfo(context.getPackageName(),
-                            0).versionName;
+                0).versionName;
         } catch (PackageManager.NameNotFoundException e) {
             // Wrap in Initialization exception
             throw new InitializationException("Failed to read app version", e);

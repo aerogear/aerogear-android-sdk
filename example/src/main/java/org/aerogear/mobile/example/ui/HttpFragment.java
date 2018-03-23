@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.http.HttpRequest;
@@ -44,12 +45,15 @@ public class HttpFragment extends BaseFragment {
         HttpRequest httpRequest = activity.mobileCore.getHttpLayer().newRequest();
         httpRequest.get("https://jsonplaceholder.typicode.com/users");
         HttpResponse httpResponse = httpRequest.execute();
-        httpResponse.onComplete(() -> {
+        httpResponse.onError(() -> {
+            Log.e("<<< http error >>>", httpResponse.getError().toString());
+        } );
+        httpResponse.onSuccess(() -> {
             String jsonResponse = httpResponse.stringBody();
             new AppExecutors().mainThread().execute(() -> {
 
                 List<User> retrievesUsers = new Gson().fromJson(jsonResponse,
-                                new TypeToken<List<User>>() {}.getType());
+                    new TypeToken<List<User>>() {}.getType());
 
                 activity.mobileCore.getLogger().info("Users: " + retrievesUsers.size());
 

@@ -29,8 +29,8 @@
     ],
     "https": [
         {
-            "host": "security.feedhenry.org",
-            "certificateHash": "292B039CAC326C7A81450C7C21F4235C6568DCF9F2A74FBB7E977318462DCABD="
+            "host": "keycloak.security.feedhenry.org",
+            "certificateHash": "trENjoQnbWupnAtu1/WagBE0RgJ+p7ke2ppWML8vAl0="
         }
     ]
 }
