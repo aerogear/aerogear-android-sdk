@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 
-import org.aerogear.mobile.auth.utils.CertificatePinningCheck;
 import org.jose4j.jwk.JsonWebKeySet;
 
 import android.content.Context;
@@ -22,6 +21,7 @@ import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
 import org.aerogear.mobile.auth.credentials.JwksManager;
 import org.aerogear.mobile.auth.credentials.OIDCCredentials;
 import org.aerogear.mobile.auth.user.UserPrincipal;
+import org.aerogear.mobile.auth.utils.CertificatePinningCheck;
 import org.aerogear.mobile.auth.utils.UserIdentityParser;
 import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.MobileCore;
@@ -204,7 +204,8 @@ public class AuthService implements ServiceModule {
                             "configure method must be called before the init method");
         }
 
-        CertificatePinningCheck pinningCheck = new CertificatePinningCheck(this.mobileCore.getHttpLayer());
+        CertificatePinningCheck pinningCheck =
+                        new CertificatePinningCheck(this.mobileCore.getHttpLayer());
         pinningCheck.check(this.serviceConfiguration.getUrl());
 
         this.appContext = nonNull(context, "context");

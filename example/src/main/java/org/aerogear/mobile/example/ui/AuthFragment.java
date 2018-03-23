@@ -41,7 +41,7 @@ public class AuthFragment extends BaseFragment {
         Log.i(TAG, "<<< Performing login >>>");
         AuthService authService = ((MainActivity) getActivity()).getAuthService();
         DefaultAuthenticateOptions authOptions =
-            new DefaultAuthenticateOptions(this.getActivity(), LOGIN_RESULT_CODE);
+                        new DefaultAuthenticateOptions(this.getActivity(), LOGIN_RESULT_CODE);
         try {
             authService.login(authOptions, new Callback<UserPrincipal>() {
                 @Override
@@ -57,7 +57,7 @@ public class AuthFragment extends BaseFragment {
                     Log.e(TAG, "login failed due to error " + error.getLocalizedMessage());
                 }
             });
-        } catch(IllegalStateException e) {
+        } catch (IllegalStateException e) {
             Log.e("Pinning Error", e.getMessage());
         }
     }

@@ -10,11 +10,11 @@ public class CertificatePinningCheck {
     private boolean isComplete = false;
     private Exception error;
 
-    public CertificatePinningCheck(final HttpServiceModule httpModule){
+    public CertificatePinningCheck(final HttpServiceModule httpModule) {
         this.httpModule = httpModule;
     }
 
-    public void check(final String url){
+    public void check(final String url) {
         HttpRequest request = httpModule.newRequest();
         request.get(url);
         HttpResponse response = request.execute();
