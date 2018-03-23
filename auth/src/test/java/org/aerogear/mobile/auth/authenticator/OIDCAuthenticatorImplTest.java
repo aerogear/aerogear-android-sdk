@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 
+import org.aerogear.mobile.auth.utils.CertificatePinningCheck;
 import org.jose4j.jwk.JsonWebKeySet;
 import org.json.JSONException;
 import org.junit.Before;
@@ -175,6 +176,9 @@ public class OIDCAuthenticatorImplTest {
     @Mock
     private JwksManager jwksManager;
 
+    @Mock
+    private CertificatePinningCheck certificatePinningCheck;
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
@@ -213,7 +217,7 @@ public class OIDCAuthenticatorImplTest {
         authServiceConfiguration = new AuthServiceConfiguration.AuthConfigurationBuilder()
                         .withRedirectUri("some.redirect.uri:/callback").build();
         authenticator = new OIDCAuthenticatorImpl(serviceConfig, authServiceConfiguration,
-                        authStateManager, authorizationServiceFactory, jwksManager);
+                        authStateManager, authorizationServiceFactory, jwksManager, certificatePinningCheck);
 
         doAnswer(invocation -> {
             ((Callback<JsonWebKeySet>) invocation.getArguments()[1]).onSuccess(null);
