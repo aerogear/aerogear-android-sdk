@@ -47,13 +47,13 @@ public class HttpFragment extends BaseFragment {
         HttpResponse httpResponse = httpRequest.execute();
         httpResponse.onError(() -> {
             Log.e("<<< http error >>>", httpResponse.getError().toString());
-        } );
+        });
         httpResponse.onSuccess(() -> {
             String jsonResponse = httpResponse.stringBody();
             new AppExecutors().mainThread().execute(() -> {
 
                 List<User> retrievesUsers = new Gson().fromJson(jsonResponse,
-                    new TypeToken<List<User>>() {}.getType());
+                                new TypeToken<List<User>>() {}.getType());
 
                 activity.mobileCore.getLogger().info("Users: " + retrievesUsers.size());
 
