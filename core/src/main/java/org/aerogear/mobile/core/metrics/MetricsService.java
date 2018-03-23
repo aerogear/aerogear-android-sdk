@@ -38,12 +38,11 @@ public class MetricsService implements ServiceModule {
         nonNull(core, "mobileCore");
         nonNull(serviceConfiguration, "serviceConfiguration");
 
-        defaultMetrics = new Metrics[] {new AppMetrics(core.getContext()),
-                        new DeviceMetrics(core.getContext())};
+        defaultMetrics = new Metrics[] {new AppMetrics(core.getContext()), new DeviceMetrics()};
 
         final String metricsUrl = serviceConfiguration.getUrl();
         if (metricsUrl == null) {
-            publisher = new LoggerMetricsPublisher(MobileCore.getLogger());
+            publisher = new LoggerMetricsPublisher(core.getLogger());
         } else {
             publisher = new NetworkMetricsPublisher(core.getContext(),
                             core.getHttpLayer().newRequest(), metricsUrl);
@@ -92,7 +91,7 @@ public class MetricsService implements ServiceModule {
     public void publish(@NonNull final Metrics[] metrics, final Callback callback) {
         if (publisher == null) {
             throw new IllegalStateException(
-                            "Make sure you have called configure or get this instance from MobileCore.getInstance()");
+                            "Make sure you have called configure or get this instance from MobileCore.getInstance().getService()");
         }
         nonNull(metrics, "metrics");
         publisher.publish(metrics, callback);

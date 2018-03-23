@@ -26,7 +26,7 @@ import org.aerogear.mobile.core.logging.Logger;
  */
 public class JwksManager {
 
-    private static final Logger logger = MobileCore.getLogger();
+    private static final Logger logger = MobileCore.getInstance().getLogger();
     private static final int MILLISECONDS_PER_MINUTE = 60 * 1000;
     private static final String STORE_NAME = "org.aerogear.mobile.auth.JwksStore";
     private static final String ENTRY_SUFFIX_FOR_KEY_CONTENT = "jwks_content";
