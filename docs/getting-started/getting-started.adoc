@@ -155,3 +155,6 @@ Please follow individual SDK's documentation to see how to add them to the proje
  * link:./core.adoc[Core]
  * link:./auth.adoc[Auth] 
 
+== Certificate Pinning
+
+To implement certificate pinning in the individual SDKs, see link:./certificate-pinning.adoc[the certificate pinning guide].
