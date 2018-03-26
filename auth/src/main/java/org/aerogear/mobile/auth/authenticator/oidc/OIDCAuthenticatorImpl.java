@@ -11,6 +11,7 @@ import org.jose4j.jwk.JsonWebKeySet;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 
 import org.aerogear.mobile.auth.AuthStateManager;
 import org.aerogear.mobile.auth.authenticator.AbstractAuthenticator;
@@ -23,7 +24,6 @@ import org.aerogear.mobile.auth.credentials.JwksManager;
 import org.aerogear.mobile.auth.credentials.OIDCCredentials;
 import org.aerogear.mobile.auth.user.UserPrincipal;
 import org.aerogear.mobile.auth.user.UserPrincipalImpl;
-import org.aerogear.mobile.auth.utils.CertificatePinningCheck;
 import org.aerogear.mobile.auth.utils.UserIdentityParser;
 import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.MobileCore;
@@ -32,6 +32,8 @@ import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpResponse;
 import org.aerogear.mobile.core.http.HttpServiceModule;
 import org.aerogear.mobile.core.http.OkHttpServiceModule;
+import org.aerogear.mobile.core.http.pinning.CertificatePinningCheck;
+import org.aerogear.mobile.core.http.pinning.CertificatePinningCheckListener;
 
 import net.openid.appauth.AuthState;
 import net.openid.appauth.AuthorizationException;
@@ -52,7 +54,7 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
     private final AuthStateManager authStateManager;
     private final JwksManager jwksManager;
     private final AuthorizationServiceFactory authorizationServiceFactory;
-    private final CertificatePinningCheck certificatePinningCheck;
+    private final HttpServiceModule httpModule;
 
     /**
      * Creates a new OIDCAuthenticatorImpl object
@@ -62,14 +64,14 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
      * @param authStateManager {@link AuthStateManager}
      * @param authorizationServiceFactory {@link AuthorizationServiceFactory}
      * @param jwksManager {@link JwksManager}
-     * @param certificatePinningCheck {@link CertificatePinningCheck}
+     * @param httpModule {@link HttpServiceModule} Module used to make HTTP requests for
+     *        authenticator.
      */
     public OIDCAuthenticatorImpl(final ServiceConfiguration serviceConfiguration,
                     final AuthServiceConfiguration authServiceConfiguration,
                     final AuthStateManager authStateManager,
                     final AuthorizationServiceFactory authorizationServiceFactory,
-                    final JwksManager jwksManager,
-                    final CertificatePinningCheck certificatePinningCheck) {
+                    final JwksManager jwksManager, final HttpServiceModule httpModule) {
         super(serviceConfiguration);
         this.keycloakConfiguration = new KeycloakConfiguration(serviceConfiguration);
         this.authServiceConfiguration =
@@ -78,7 +80,7 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
                         nonNull(authorizationServiceFactory, "authorizationServiceFactory");
         this.authStateManager = nonNull(authStateManager, "authStateManager");
         this.jwksManager = nonNull(jwksManager, "jwksManager");
-        this.certificatePinningCheck = certificatePinningCheck;
+        this.httpModule = httpModule;
     }
 
 
@@ -101,19 +103,29 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
 
     // Authentication code
     private void performAuthRequest(final Activity fromActivity, final int resultCode) {
-        nonNull(fromActivity, "fromActivity");
-        if (this.certificatePinningCheck.getError() != null) {
-            throw new IllegalStateException(this.certificatePinningCheck.getError());
-        }
-        AuthorizationServiceFactory.ServiceWrapper wrapper =
-                        this.authorizationServiceFactory.createAuthorizationService(
-                                        keycloakConfiguration, authServiceConfiguration);
-        this.authState = wrapper.getAuthState();
-        this.authService = wrapper.getAuthorizationService();
+        CertificatePinningCheck pinningCheck = new CertificatePinningCheck(httpModule);
+        pinningCheck.execute(keycloakConfiguration.getHostUrl());
+        pinningCheck.attachListener(new CertificatePinningCheckListener() {
+            @Override
+            public void onSuccess() {
+                nonNull(fromActivity, "fromActivity");
+                AuthorizationServiceFactory.ServiceWrapper wrapper =
+                                authorizationServiceFactory.createAuthorizationService(
+                                                keycloakConfiguration, authServiceConfiguration);
+                authState = wrapper.getAuthState();
+                authService = wrapper.getAuthorizationService();
 
-        Intent authIntent = authService
-                        .getAuthorizationRequestIntent(wrapper.getAuthorizationRequest());
-        fromActivity.startActivityForResult(authIntent, resultCode);
+                Intent authIntent = authService
+                                .getAuthorizationRequestIntent(wrapper.getAuthorizationRequest());
+                fromActivity.startActivityForResult(authIntent, resultCode);
+            }
+
+            @Override
+            public void onFailure() {
+                // TODO: Finish this.
+                Log.e("DELETE ME", pinningCheck.getError().getMessage());
+            }
+        });
     }
 
     public void handleAuthResult(final Intent intent) {

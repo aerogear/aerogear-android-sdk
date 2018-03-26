@@ -40,7 +40,7 @@ public class HttpsConfiguration {
         return certificateHash;
     }
 
-    public static Builder newHashConfiguration() {
+    public static Builder newBuilder() {
         return new Builder();
     }
 }

@@ -22,7 +22,7 @@ import org.json.JSONObject;
 public class MobileCoreJsonConfig {
 
     private final Map<String, ServiceConfiguration> values = new TreeMap<>();
-    private final Map<String, String> hashes = new HashMap<>();
+    private final Map<String, String> httpsConfig = new HashMap<>();
 
 
     private MobileCoreJsonConfig(final InputStream jsonStream) throws IOException, JSONException {
@@ -86,13 +86,12 @@ public class MobileCoreJsonConfig {
     private void parseHttpsObject(final JSONObject jsonObject) throws JSONException, IOException {
         nonNull(jsonObject, "jsonObject");
 
-        final HttpsConfiguration.Builder httpsConfigBuilder =
-                        HttpsConfiguration.newHashConfiguration();
+        final HttpsConfiguration.Builder httpsConfigBuilder = HttpsConfiguration.newBuilder();
         httpsConfigBuilder.setHostName(jsonObject.getString("host"));
         httpsConfigBuilder.setCertificateHash(jsonObject.getString("certificateHash"));
 
         final HttpsConfiguration httpsConfiguration = httpsConfigBuilder.build();
-        hashes.put(httpsConfiguration.getHostName(), httpsConfiguration.getCertificateHash());
+        httpsConfig.put(httpsConfiguration.getHostName(), httpsConfiguration.getCertificateHash());
     }
 
     /**
@@ -113,7 +112,7 @@ public class MobileCoreJsonConfig {
         return Collections.unmodifiableMap(values);
     }
 
-    public Map<String, String> getCertificatePinningHashes() {
-        return Collections.unmodifiableMap(hashes);
+    public Map<String, String> getHttpsConfig() {
+        return Collections.unmodifiableMap(httpsConfig);
     }
 }
