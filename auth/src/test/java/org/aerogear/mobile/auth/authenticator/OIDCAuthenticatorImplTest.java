@@ -28,7 +28,6 @@ import org.aerogear.mobile.auth.credentials.JwksManager;
 import org.aerogear.mobile.auth.credentials.OIDCCredentials;
 import org.aerogear.mobile.auth.user.UserPrincipal;
 import org.aerogear.mobile.auth.user.UserPrincipalImpl;
-import org.aerogear.mobile.auth.utils.CertificatePinningCheck;
 import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 

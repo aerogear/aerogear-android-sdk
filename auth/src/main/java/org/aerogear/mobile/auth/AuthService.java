@@ -21,7 +21,6 @@ import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
 import org.aerogear.mobile.auth.credentials.JwksManager;
 import org.aerogear.mobile.auth.credentials.OIDCCredentials;
 import org.aerogear.mobile.auth.user.UserPrincipal;
-import org.aerogear.mobile.auth.utils.CertificatePinningCheck;
 import org.aerogear.mobile.auth.utils.UserIdentityParser;
 import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.MobileCore;
@@ -204,10 +203,6 @@ public class AuthService implements ServiceModule {
                             "configure method must be called before the init method");
         }
 
-        CertificatePinningCheck pinningCheck =
-                        new CertificatePinningCheck(this.mobileCore.getHttpLayer());
-        pinningCheck.check(this.serviceConfiguration.getUrl());
-
         this.appContext = nonNull(context, "context");
         this.authStateManager = AuthStateManager.getInstance(context);
         this.authServiceConfiguration =
@@ -216,7 +211,8 @@ public class AuthService implements ServiceModule {
                         this.authServiceConfiguration);
         this.oidcAuthenticatorImpl = new OIDCAuthenticatorImpl(this.serviceConfiguration,
                         this.authServiceConfiguration, this.authStateManager,
-                        new AuthorizationServiceFactory(appContext), jwksManager, pinningCheck);
+                        new AuthorizationServiceFactory(appContext), jwksManager,
+                        mobileCore.getHttpLayer());
         initialisationStatus.add(STEP.INITIALIZED);
     }
 

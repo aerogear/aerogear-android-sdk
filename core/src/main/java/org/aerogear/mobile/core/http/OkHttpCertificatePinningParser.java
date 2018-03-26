@@ -4,16 +4,16 @@ import java.util.Map;
 
 import okhttp3.CertificatePinner;
 
-public class OkHttpCertificatePinning implements HttpCertificatePinning {
+public class OkHttpCertificatePinningParser implements HttpCertificatePinningParser {
 
     private final Map<String, String> httpsConfig;
 
-    public OkHttpCertificatePinning(final Map<String, String> httpsConfig) {
+    public OkHttpCertificatePinningParser(final Map<String, String> httpsConfig) {
         this.httpsConfig = httpsConfig;
     }
 
     @Override
-    public CertificatePinner pinCertificates() {
+    public CertificatePinner parse() {
         CertificatePinner.Builder certPinnerBuilder = new CertificatePinner.Builder();
         for (Map.Entry<String, String> https : httpsConfig.entrySet()) {
             certPinnerBuilder.add(https.getKey(), "sha256/" + https.getValue());

@@ -21,7 +21,7 @@ import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.exception.ConfigurationNotFoundException;
 import org.aerogear.mobile.core.exception.InitializationException;
 import org.aerogear.mobile.core.http.HttpServiceModule;
-import org.aerogear.mobile.core.http.OkHttpCertificatePinning;
+import org.aerogear.mobile.core.http.OkHttpCertificatePinningParser;
 import org.aerogear.mobile.core.http.OkHttpServiceModule;
 import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.logging.LoggerAdapter;
@@ -67,7 +67,7 @@ public final class MobileCore {
         // -- Parse JSON config file
         try (final InputStream configStream = context.getAssets().open(configFileName)) {
             MobileCoreJsonConfig jsonConfig = MobileCoreJsonConfig.produce(configStream);
-            httpsConfig = jsonConfig.getCertificatePinningHashes();
+            httpsConfig = jsonConfig.getHttpsConfig();
             servicesConfig = jsonConfig.getServicesConfig();
             configStream.close();
         } catch (JSONException | IOException exception) {
@@ -82,8 +82,9 @@ public final class MobileCore {
         if (options.httpServiceModule == null) {
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
 
-            OkHttpCertificatePinning certificatePinning = new OkHttpCertificatePinning(httpsConfig);
-            builder.certificatePinner(certificatePinning.pinCertificates());
+            OkHttpCertificatePinningParser certificatePinning =
+                            new OkHttpCertificatePinningParser(httpsConfig);
+            builder.certificatePinner(certificatePinning.parse());
 
             builder.connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
                             .writeTimeout(DEFAULT_WRITE_TIMEOUT, TimeUnit.SECONDS)
