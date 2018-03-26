@@ -1,4 +1,4 @@
-package org.aerogear.mobile.core;
+package org.aerogear.mobile.core.unit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -13,12 +13,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
 import android.app.Application;
 import android.support.test.filters.SmallTest;
 
+import org.aerogear.mobile.core.AeroGearTestRunner;
+import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.reactive.Request;
 import org.aerogear.mobile.core.reactive.Requester;
@@ -27,7 +28,7 @@ import org.aerogear.mobile.core.reactive.Responder;
 /**
  * This package exists to test reactive patterns as we accomplish AG-2333.
  */
-@RunWith(RobolectricTestRunner.class)
+@RunWith(AeroGearTestRunner.class)
 @SmallTest
 public class ReactiveCaseTest {
 

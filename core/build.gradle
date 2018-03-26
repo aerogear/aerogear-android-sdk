@@ -6,8 +6,6 @@ android {
     defaultConfig {
         minSdkVersion project.ext.minSdkVersion
         targetSdkVersion project.ext.targetSdkVersion
-
-        // Required for metrics, exposed by the parent project
         versionName project.ext.versionName
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -24,13 +22,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
-    sourceSets {
-        test {
-            assets.srcDirs = ["src/test/assets"]
-        }
-    }
-
 
     testOptions {
         unitTests {
