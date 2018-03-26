@@ -13,6 +13,8 @@ import org.robolectric.internal.ManifestIdentifier;
 import org.robolectric.manifest.AndroidManifest;
 import org.robolectric.res.FileFsFile;
 
+import org.aerogear.android.core.BuildConfig;
+
 public class AeroGearTestRunner extends RobolectricTestRunner {
     private static final Map<ManifestIdentifier, AndroidManifest> appManifestsCache =
                     new HashMap<>();
@@ -36,7 +38,8 @@ public class AeroGearTestRunner extends RobolectricTestRunner {
         ManifestIdentifier identifier = manifestFactory.identify(config);
         identifier = new ManifestIdentifier(identifier.getPackageName(),
                         identifier.getManifestFile(), identifier.getResDir(),
-                        FileFsFile.from("src/test/assets"), identifier.getLibraries());
+                        FileFsFile.from(BuildConfig.PROJECT_ROOT + "src/test/assets"),
+                        identifier.getLibraries());
         synchronized (appManifestsCache) {
             AndroidManifest appManifest;
             appManifest = appManifestsCache.get(identifier);

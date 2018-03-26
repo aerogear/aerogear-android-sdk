@@ -8,18 +8,18 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
 import android.support.test.filters.SmallTest;
 
+import org.aerogear.mobile.core.AeroGearTestRunner;
 import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.metrics.Metrics;
 import org.aerogear.mobile.core.metrics.MetricsService;
 import org.aerogear.mobile.core.unit.metrics.MetricsServiceTest;
 
-@RunWith(RobolectricTestRunner.class)
+@RunWith(AeroGearTestRunner.class)
 @SmallTest
 public class MetricsServiceIntegrationTest {
 

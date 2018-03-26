@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -15,8 +16,10 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.robolectric.RobolectricTestRunner;
 
 import android.content.Context;
 
@@ -24,6 +27,7 @@ import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.metrics.MetricsService;
 import org.aerogear.mobile.security.impl.SecurityCheckResultImpl;
 
+@RunWith(RobolectricTestRunner.class)
 public class SecurityCheckExecutorTest {
     @Mock
     Context context;
@@ -82,6 +86,9 @@ public class SecurityCheckExecutorTest {
 
     @Test
     public void testSendMetricsAsync() throws Exception {
+
+        CountDownLatch latch = new CountDownLatch(1);
+
         final Map<String, Future<SecurityCheckResult>> results = SecurityCheckExecutor.Builder
                         .newAsyncExecutor(context).withSecurityCheck(securityCheckType)
                         .withMetricsService(metricsService)
@@ -92,8 +99,14 @@ public class SecurityCheckExecutorTest {
         results.get(mockSecurityCheck.getId()).get();
 
         ExecutorService executorService = (new AppExecutors()).networkThread();
-        executorService.submit(() -> verify(metricsService, times(1)).publish(any()));
-        executorService.awaitTermination(1, TimeUnit.SECONDS);
-        executorService.shutdown();
+        executorService.submit(() -> {
+            try {
+                verify(metricsService, times(1)).publish(any());
+            } finally {
+                latch.countDown();
+            }
+        });
+        latch.await(1, TimeUnit.SECONDS);
+
     }
 }

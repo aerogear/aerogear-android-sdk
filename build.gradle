@@ -8,7 +8,7 @@ buildscript {
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
 
     }
-    
+
 }
 
 plugins {
@@ -43,11 +43,16 @@ subprojects {
         }
     }
 
-    
+
     afterEvaluate { project ->
         dependencies {
             lintChecks files('libs/checks.jar')
-        }   
+        }
+
+        android.buildTypes.each { type ->
+            type.buildConfigField 'String', 'PROJECT_ROOT', "\"" + project.projectDir.absolutePath + "/\""
+        }
+
     }
 }
 
