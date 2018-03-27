@@ -1,4 +1,4 @@
-. In order to perform SSO, you need to make sure there is at least one client is configured in Keycloak. Ensure the Keycloak client has the following settings:
+. In order to perform SSO, you need to make sure there is at least one client configured in Keycloak. Ensure the Keycloak client has the following settings:
 
 .. *Client ID* is the client identifier for OIDC requests. This should be a simple alpha-numeric string. You can change this to the name of your app.
 .. *Enabled* should be set to *ON*.
