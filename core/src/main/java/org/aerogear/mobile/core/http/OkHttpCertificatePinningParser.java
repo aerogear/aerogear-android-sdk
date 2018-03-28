@@ -18,8 +18,7 @@ public class OkHttpCertificatePinningParser implements HttpCertificatePinningPar
     public CertificatePinner parse() {
         CertificatePinner.Builder certPinnerBuilder = new CertificatePinner.Builder();
         for (CertificatePinningEntry pinningEntry : pinningConfig) {
-            String fullPinningHash = "sha256/" + pinningEntry.getCertificateHash();
-            certPinnerBuilder.add(pinningEntry.getHostName(), fullPinningHash);
+            certPinnerBuilder.add(pinningEntry.getHostName(), pinningEntry.getCertificateHash());
         }
         return certPinnerBuilder.build();
     }
