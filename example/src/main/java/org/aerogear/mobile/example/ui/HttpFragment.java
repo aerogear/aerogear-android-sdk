@@ -24,6 +24,8 @@ import butterknife.BindView;
 
 public class HttpFragment extends BaseFragment {
 
+    private static final String TAG = "HttpFragment";
+
     @BindView(R.id.userList)
     RecyclerView userList;
 
@@ -46,7 +48,7 @@ public class HttpFragment extends BaseFragment {
         httpRequest.get("https://jsonplaceholder.typicode.com/users");
         HttpResponse httpResponse = httpRequest.execute();
         httpResponse.onError(() -> {
-            Log.e("<<< http error >>>", httpResponse.getError().toString());
+            Log.e(TAG, httpResponse.getError().toString());
         });
         httpResponse.onSuccess(() -> {
             String jsonResponse = httpResponse.stringBody();

@@ -30,6 +30,10 @@ import org.aerogear.mobile.auth.user.UserPrincipal;
 import org.aerogear.mobile.auth.user.UserPrincipalImpl;
 import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
+import org.aerogear.mobile.core.http.HttpRequest;
+import org.aerogear.mobile.core.http.HttpResponse;
+import org.aerogear.mobile.core.http.HttpServiceModule;
+import org.aerogear.mobile.core.http.pinning.CertificatePinningCheck;
 
 import junit.framework.Assert;
 import net.openid.appauth.AuthState;
@@ -176,6 +180,15 @@ public class OIDCAuthenticatorImplTest {
     private JwksManager jwksManager;
 
     @Mock
+    private HttpServiceModule httpsServiceModule;
+
+    @Mock
+    private HttpRequest httpRequest;
+
+    @Mock
+    private HttpResponse httpResponse;
+
+    @Mock
     private CertificatePinningCheck certificatePinningCheck;
 
     @Before
@@ -217,7 +230,7 @@ public class OIDCAuthenticatorImplTest {
                         .withRedirectUri("some.redirect.uri:/callback").build();
         authenticator = new OIDCAuthenticatorImpl(serviceConfig, authServiceConfiguration,
                         authStateManager, authorizationServiceFactory, jwksManager,
-                        certificatePinningCheck);
+                        httpsServiceModule);
 
         doAnswer(invocation -> {
             ((Callback<JsonWebKeySet>) invocation.getArguments()[1]).onSuccess(null);
@@ -235,7 +248,9 @@ public class OIDCAuthenticatorImplTest {
 
     @Test
     public void testAuthenticate() throws AuthenticationException, IOException, JSONException {
-        DefaultAuthenticateOptions opts = new DefaultAuthenticateOptions(activity, 0);
+        DefaultAuthenticateOptions opts = DefaultAuthenticateOptions.newBuilder()
+                        .setFromActivity(activity).setResultCode(0)
+                        .setSkipCertificatePinningChecks(true).build();
 
         authenticator.authenticate(opts, new Callback<UserPrincipal>() {
             @Override

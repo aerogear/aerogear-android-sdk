@@ -11,7 +11,6 @@ import org.jose4j.jwk.JsonWebKeySet;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.util.Log;
 
 import org.aerogear.mobile.auth.AuthStateManager;
 import org.aerogear.mobile.auth.authenticator.AbstractAuthenticator;
@@ -97,33 +96,43 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
         this.authCallback = nonNull(callback, "callback");
         DefaultAuthenticateOptions defaultAuthenticateOptions =
                         (DefaultAuthenticateOptions) (nonNull(authOptions, "authOptions"));
-        performAuthRequest(defaultAuthenticateOptions.getFromActivity(),
-                        defaultAuthenticateOptions.getResultCode());
+        Activity fromActivity = defaultAuthenticateOptions.getFromActivity();
+        int resultCode = defaultAuthenticateOptions.getResultCode();
+
+        if (defaultAuthenticateOptions.getSkipCertificatePinningChecks()) {
+            performAuthRequest(fromActivity, resultCode);
+            return;
+        }
+        performAuthRequestWithPreflightCheck(fromActivity, resultCode);
     }
 
     // Authentication code
     private void performAuthRequest(final Activity fromActivity, final int resultCode) {
+        nonNull(fromActivity, "fromActivity");
+        AuthorizationServiceFactory.ServiceWrapper wrapper =
+                        authorizationServiceFactory.createAuthorizationService(
+                                        keycloakConfiguration, authServiceConfiguration);
+        authState = wrapper.getAuthState();
+        authService = wrapper.getAuthorizationService();
+
+        Intent authIntent = authService
+                        .getAuthorizationRequestIntent(wrapper.getAuthorizationRequest());
+        fromActivity.startActivityForResult(authIntent, resultCode);
+    }
+
+    private void performAuthRequestWithPreflightCheck(final Activity fromActivity,
+                    final int resultCode) {
         CertificatePinningCheck pinningCheck = new CertificatePinningCheck(httpModule);
         pinningCheck.execute(keycloakConfiguration.getHostUrl());
         pinningCheck.attachListener(new CertificatePinningCheckListener() {
             @Override
             public void onSuccess() {
-                nonNull(fromActivity, "fromActivity");
-                AuthorizationServiceFactory.ServiceWrapper wrapper =
-                                authorizationServiceFactory.createAuthorizationService(
-                                                keycloakConfiguration, authServiceConfiguration);
-                authState = wrapper.getAuthState();
-                authService = wrapper.getAuthorizationService();
-
-                Intent authIntent = authService
-                                .getAuthorizationRequestIntent(wrapper.getAuthorizationRequest());
-                fromActivity.startActivityForResult(authIntent, resultCode);
+                performAuthRequest(fromActivity, resultCode);
             }
 
             @Override
             public void onFailure() {
-                // TODO: Finish this.
-                Log.e("DELETE ME", pinningCheck.getError().getMessage());
+                authCallback.onError(pinningCheck.getError());
             }
         });
     }

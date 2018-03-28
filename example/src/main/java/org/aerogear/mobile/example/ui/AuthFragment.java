@@ -38,7 +38,6 @@ public class AuthFragment extends BaseFragment {
 
     @OnClick(R.id.keycloak_login)
     public void doLogin() {
-        Log.i(TAG, "<<< Performing login >>>");
         AuthService authService = ((MainActivity) getActivity()).getAuthService();
         DefaultAuthenticateOptions authOptions =
                         new DefaultAuthenticateOptions(this.getActivity(), LOGIN_RESULT_CODE);

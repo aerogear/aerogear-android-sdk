@@ -1,22 +1,25 @@
 package org.aerogear.mobile.core.http;
 
-import java.util.Map;
+import java.util.List;
+
+import org.aerogear.mobile.core.configuration.https.CertificatePinningEntry;
 
 import okhttp3.CertificatePinner;
 
 public class OkHttpCertificatePinningParser implements HttpCertificatePinningParser {
 
-    private final Map<String, String> httpsConfig;
+    private final List<CertificatePinningEntry> pinningConfig;
 
-    public OkHttpCertificatePinningParser(final Map<String, String> httpsConfig) {
-        this.httpsConfig = httpsConfig;
+    public OkHttpCertificatePinningParser(final List<CertificatePinningEntry> pinningConfig) {
+        this.pinningConfig = pinningConfig;
     }
 
     @Override
     public CertificatePinner parse() {
         CertificatePinner.Builder certPinnerBuilder = new CertificatePinner.Builder();
-        for (Map.Entry<String, String> https : httpsConfig.entrySet()) {
-            certPinnerBuilder.add(https.getKey(), "sha256/" + https.getValue());
+        for (CertificatePinningEntry pinningEntry : pinningConfig) {
+            String fullPinningHash = "sha256/" + pinningEntry.getCertificateHash();
+            certPinnerBuilder.add(pinningEntry.getHostName(), fullPinningHash);
         }
         return certPinnerBuilder.build();
     }
