@@ -40,6 +40,7 @@ dependencies {
     implementation "com.android.support:design:${project.ext.android_support_version}"
 
     implementation "com.android.support.constraint:constraint-layout:1.0.2"
+    implementation "com.google.firebase:firebase-messaging:${project.ext.firebase_version}"
     implementation "com.jakewharton:butterknife:8.8.1"
     annotationProcessor "com.jakewharton:butterknife-compiler:8.8.1"
     implementation "com.github.nitrico.lastadapter:lastadapter:2.3.0"

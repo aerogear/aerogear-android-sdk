@@ -22,4 +22,7 @@ project.ext {
     appauth_version = "0.7.0"
     jose4j_version = "0.6.3"
     rootbeer_version = "0.0.6"
+
+    // Push
+    firebase_version = "12.0.1"
 }
