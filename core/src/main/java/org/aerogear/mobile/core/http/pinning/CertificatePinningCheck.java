@@ -29,8 +29,8 @@ public class CertificatePinningCheck {
 
     /**
      * Retrieve the error, if any, from the check.
-     * 
-     * @return The error from making the checks HTTP call.
+     *
+     * @return The error from making the checks HTTP call, or null.
      */
     public Exception getError() {
         return this.error;
@@ -74,7 +74,9 @@ public class CertificatePinningCheck {
         // invocation if a new listener is attached.
         httpResponse.onSuccess(() -> {
             this.isSuccess = true;
-            this.listener.onSuccess();
+            if (this.listener != null) {
+                this.listener.onSuccess();
+            }
         });
         httpResponse.onError(() -> {
             this.error = httpResponse.getError();

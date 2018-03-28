@@ -16,8 +16,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
 import org.aerogear.android.core.BuildConfig;
-import org.aerogear.mobile.core.configuration.MobileCoreJsonConfig;
+import org.aerogear.mobile.core.configuration.MobileCoreConfiguration;
+import org.aerogear.mobile.core.configuration.MobileCoreJsonParser;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
+import org.aerogear.mobile.core.configuration.https.HttpsConfiguration;
 import org.aerogear.mobile.core.exception.ConfigurationNotFoundException;
 import org.aerogear.mobile.core.exception.InitializationException;
 import org.aerogear.mobile.core.http.HttpServiceModule;
@@ -46,7 +48,7 @@ public final class MobileCore {
     private final String configFileName;
     private final HttpServiceModule httpLayer;
     private final Map<String, ServiceConfiguration> servicesConfig;
-    private final Map<String, String> httpsConfig;
+    private final HttpsConfiguration httpsConfig;
     private final Map<Class<? extends ServiceModule>, ServiceModule> services = new HashMap<>();
 
     /**
@@ -66,7 +68,7 @@ public final class MobileCore {
 
         // -- Parse JSON config file
         try (final InputStream configStream = context.getAssets().open(configFileName)) {
-            MobileCoreJsonConfig jsonConfig = MobileCoreJsonConfig.produce(configStream);
+            MobileCoreConfiguration jsonConfig = new MobileCoreJsonParser(configStream).parse();
             httpsConfig = jsonConfig.getHttpsConfig();
             servicesConfig = jsonConfig.getServicesConfig();
             configStream.close();
@@ -83,7 +85,7 @@ public final class MobileCore {
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
 
             OkHttpCertificatePinningParser certificatePinning =
-                            new OkHttpCertificatePinningParser(httpsConfig);
+                            new OkHttpCertificatePinningParser(httpsConfig.getCertPinningConfig());
             builder.certificatePinner(certificatePinning.parse());
 
             builder.connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
