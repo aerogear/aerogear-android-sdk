@@ -16,3 +16,6 @@ JIRA: https://issues.jboss.org/browse/AGDROID-{}
 ## Additional Notes
 
 <!-- Optional, extra context or instructions around the contents of this Pull Request -->
+
+<!-- NOTE -->
+<!-- To run the integration tests, select "test/integration" label in the right column. Check the Jenkins log to get the test results -->
