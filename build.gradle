@@ -42,7 +42,7 @@ subprojects {
         }
 
         android.buildTypes.each { type ->
-            type.buildConfigField 'String', 'PROJECT_ROOT', "\"" + project.projectDir.absolutePath + "/\""
+            type.buildConfigField 'String', 'PROJECT_ROOT', "\"" + project.projectDir.absolutePath.replace("\\","\\\\") + "/\""
         }
 
     }
