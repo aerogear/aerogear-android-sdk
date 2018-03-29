@@ -33,6 +33,7 @@ android {
 
 dependencies {
     implementation project(path: ":core")
+
     implementation "net.openid:appauth:${project.ext.appauth_version}"
     implementation "com.android.support:customtabs:${project.ext.android_support_version}"
     implementation "org.bitbucket.b_c:jose4j:${project.ext.jose4j_version}"
