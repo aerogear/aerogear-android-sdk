@@ -1,5 +1,25 @@
 project.ext {
+    // Global
+
     minSdkVersion = 21
-    compileSdkVersion = 26
-    targetSdkVersion = 26
+    compileSdkVersion = 27
+    targetSdkVersion = 27
+    android_support_version = "27.1.0"
+
+    // Test
+    junit_version = "4.12"
+    android_support_test_runner_version = "1.0.1"
+    android_support_test_rules_version = "1.0.1"
+    android_support_test_espresso_version = "3.0.1"
+    mockito_version = "2.10.0"
+    robolectric_version = "3.6.1"
+    json_version = "20180130"
+
+    // Core
+    okhttp_version = "3.9.1"
+
+    // Auth
+    appauth_version = "0.7.0"
+    jose4j_version = "0.6.3"
+    rootbeer_version = "0.0.6"
 }

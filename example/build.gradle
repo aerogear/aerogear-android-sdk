@@ -8,11 +8,8 @@ android {
     defaultConfig {
         applicationId "org.aerogear.mobile.example"
 
-        minSdkVersion 21
-        targetSdkVersion 27
-
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion project.ext.minSdkVersion
+        targetSdkVersion project.ext.targetSdkVersion
 
         manifestPlaceholders = ['appAuthRedirectScheme': 'org.aerogear.mobile.example']
 
@@ -31,19 +28,17 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
-}
-
-ext {
-    android_support_version = "27.0.2"
 }
 
 dependencies {
     implementation project(path: ":core")
     implementation project(path: ":auth")
-    implementation "com.android.support:appcompat-v7:$android_support_version"
-    implementation "com.android.support:support-v4:$android_support_version"
-    implementation "com.android.support:design:$android_support_version"
+
+    implementation "com.android.support:appcompat-v7:${project.ext.android_support_version}"
+    implementation "com.android.support:support-v4:${project.ext.android_support_version}"
+    implementation "com.android.support:design:${project.ext.android_support_version}"
+
+    // Dependencies used on the app but not on the libraries should not be in the constants.gradle
     implementation "com.android.support.constraint:constraint-layout:1.0.2"
     implementation "com.jakewharton:butterknife:8.8.1"
     annotationProcessor "com.jakewharton:butterknife-compiler:8.8.1"
