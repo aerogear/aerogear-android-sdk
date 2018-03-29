@@ -8,11 +8,9 @@ buildscript {
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
 
     }
-
 }
 
 plugins {
-    id "io.spring.dependency-management" version "1.0.4.RELEASE"
     id "com.diffplug.gradle.spotless" version "3.10.0"
 }
 
@@ -26,14 +24,8 @@ allprojects {
 }
 
 subprojects {
-    apply plugin: 'io.spring.dependency-management'
     apply plugin: "com.diffplug.gradle.spotless"
 
-    dependencyManagement {
-        imports {
-            mavenBom 'org.jboss.aerogear:aerogear-android-sdk-bom:1.1.11'
-        }
-    }
     spotless {
         java {
             target '**/*.java'

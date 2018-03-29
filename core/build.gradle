@@ -35,16 +35,16 @@ tasks.withType(JavaCompile) {
 }
 
 dependencies {
-    implementation "com.android.support:appcompat-v7"
-    implementation "com.squareup.okhttp3:okhttp"
+    implementation "com.android.support:appcompat-v7:${project.ext.android_support_version}"
+    implementation "com.squareup.okhttp3:okhttp:${project.ext.okhttp_version}"
 
-    testImplementation "junit:junit"
-    testImplementation "com.android.support.test:runner"
-    testImplementation "com.android.support.test:rules"
-    testImplementation "com.android.support.test.espresso:espresso-core"
-    testImplementation 'org.mockito:mockito-core'
-    testImplementation "org.robolectric:robolectric"
-    testImplementation "com.squareup.okhttp3:mockwebserver"
+    testImplementation "junit:junit:${project.ext.junit_version}"
+    testImplementation "com.android.support.test:runner:${project.ext.android_support_test_runner_version}"
+    testImplementation "com.android.support.test:rules:${project.ext.android_support_test_rules_version}"
+    testImplementation "com.android.support.test.espresso:espresso-core:${project.ext.android_support_test_espresso_version}"
+    testImplementation "org.mockito:mockito-core:${project.ext.mockito_version}"
+    testImplementation "org.robolectric:robolectric:${project.ext.robolectric_version}"
+    testImplementation "com.squareup.okhttp3:mockwebserver:${project.ext.okhttp_version}"
 }
 
 apply from: "../gradle-mvn-push.gradle"
