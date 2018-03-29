@@ -9,6 +9,7 @@
     <string name="nav_http">HTTP</string>
     <string name="nav_auth">Auth</string>
     <string name="nav_checks">Self Defense Checks</string>
+    <string name="nav_push">Push</string>
 
     <!-- Strings related to Authentication -->
     <string name="fragment_auth_login">Authenticate</string>
@@ -38,4 +39,10 @@
     <string name="device_os_latest_negative">Device OS Outdated</string>
     <string name="developer_options_positive">Developer Options Enabled</string>
     <string name="developer_options_negative">Developer Options Disabled</string>
+
+    <!-- Push -->
+    <string name="device_register_success">Device success registered on Unified Push Server</string>
+    <string name="device_register_error">An error occurred while trying to register the device on Unified Push Server</string>
+    <string name="nothing_here">Nothing here yet</string>
+    <string name="send_notification">Send notifications from the console</string>
 </resources>

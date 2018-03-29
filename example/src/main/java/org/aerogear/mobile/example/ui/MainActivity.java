@@ -92,6 +92,9 @@ public class MainActivity extends BaseActivity
             case R.id.nav_checks:
                 navigateTo(new SecurityServiceFragment());
                 break;
+            case R.id.nav_push:
+                navigateTo(new PushFragment());
+                break;
             default:
                 navigateTo(new HomeFragment());
                 break;
