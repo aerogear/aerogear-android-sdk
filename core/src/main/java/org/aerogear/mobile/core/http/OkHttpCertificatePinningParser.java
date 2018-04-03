@@ -1,5 +1,6 @@
 package org.aerogear.mobile.core.http;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.aerogear.mobile.core.configuration.https.CertificatePinningEntry;
@@ -11,7 +12,7 @@ public class OkHttpCertificatePinningParser implements HttpCertificatePinningPar
     private final List<CertificatePinningEntry> pinningConfig;
 
     public OkHttpCertificatePinningParser(final List<CertificatePinningEntry> pinningConfig) {
-        this.pinningConfig = pinningConfig;
+        this.pinningConfig = new ArrayList<>(pinningConfig);
     }
 
     @Override

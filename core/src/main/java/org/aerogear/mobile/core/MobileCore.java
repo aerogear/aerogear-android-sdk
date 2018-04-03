@@ -71,7 +71,6 @@ public final class MobileCore {
             MobileCoreConfiguration jsonConfig = new MobileCoreJsonParser(configStream).parse();
             httpsConfig = jsonConfig.getHttpsConfig();
             servicesConfig = jsonConfig.getServicesConfig();
-            configStream.close();
         } catch (JSONException | IOException exception) {
             String message = String.format("%s could not be loaded", configFileName);
             throw new InitializationException(message, exception);

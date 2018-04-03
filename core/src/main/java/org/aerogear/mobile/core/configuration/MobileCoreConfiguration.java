@@ -18,7 +18,7 @@ public class MobileCoreConfiguration {
         this.serviceConfig = serviceConfig;
     }
 
-    static class Builder {
+    public static class Builder {
         private HttpsConfiguration httpsConfig;
         private Map<String, ServiceConfiguration> serviceConfig;
 
@@ -42,7 +42,7 @@ public class MobileCoreConfiguration {
 
     /**
      * Get the services configuration.
-     * 
+     *
      * @return Services details from mobile core config.
      */
     public Map<String, ServiceConfiguration> getServicesConfig() {
@@ -51,7 +51,7 @@ public class MobileCoreConfiguration {
 
     /**
      * Get the https configuration.
-     * 
+     *
      * @return {@link HttpsConfiguration}
      */
     public HttpsConfiguration getHttpsConfig() {
@@ -60,7 +60,7 @@ public class MobileCoreConfiguration {
 
     /**
      * Return a new {@link MobileCoreConfiguration.Builder}.
-     * 
+     *
      * @return new {@link MobileCoreConfiguration.Builder}.
      */
     public static Builder newBuilder() {

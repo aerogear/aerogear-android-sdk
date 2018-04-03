@@ -4,7 +4,7 @@ package org.aerogear.mobile.core.configuration.https;
  * Class to represent an entry in certificatePins of the https configuration for mobile core.
  */
 public class CertificatePinningEntry {
-    private final static String SHA256_PREFIX = "sha256/";
+    private static final String SHA256_PREFIX = "sha256/";
 
     private final String hostName;
     private final String certificateHash;

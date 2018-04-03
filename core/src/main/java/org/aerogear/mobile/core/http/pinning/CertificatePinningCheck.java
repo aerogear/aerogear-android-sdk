@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpResponse;
 import org.aerogear.mobile.core.http.HttpServiceModule;
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
 
 /**
  * Class for performing certificate pinning checks.
@@ -24,7 +26,7 @@ public class CertificatePinningCheck {
     private boolean isComplete = false;
 
     public CertificatePinningCheck(final HttpServiceModule httpModule) {
-        this.httpModule = httpModule;
+        this.httpModule = nonNull(httpModule, "httpModule");
     }
 
     /**
