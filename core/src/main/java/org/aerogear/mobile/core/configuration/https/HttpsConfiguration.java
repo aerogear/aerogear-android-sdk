@@ -1,9 +1,10 @@
 package org.aerogear.mobile.core.configuration.https;
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 
 /**
@@ -15,7 +16,7 @@ public class HttpsConfiguration {
     private final List<CertificatePinningEntry> certPinningConfig;
 
     private HttpsConfiguration(final List<CertificatePinningEntry> certPinningConfig) {
-        this.certPinningConfig = nonNull(certPinningConfig,"certPinningConfig");
+        this.certPinningConfig = nonNull(certPinningConfig, "certPinningConfig");
     }
 
     public static class Builder {
