@@ -14,6 +14,9 @@ import android.content.Context;
 import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
+import org.aerogear.mobile.core.http.HttpRequest;
+import org.aerogear.mobile.core.http.HttpResponse;
+import org.aerogear.mobile.core.http.HttpServiceModule;
 
 public class AuthServiceTest {
     @Mock
@@ -28,10 +31,23 @@ public class AuthServiceTest {
     @Mock
     AuthServiceConfiguration authServiceConfiguration;
 
+
+    @Mock
+    HttpServiceModule httpServiceModule;
+
+    @Mock
+    HttpRequest httpRequest;
+
+    @Mock
+    HttpResponse httpResponse;
+
     @Before
     public void setup() throws NoSuchFieldException, IllegalAccessException {
         MockitoAnnotations.initMocks(this);
         when(serviceConfiguration.getProperty(anyString())).thenReturn("dummyvalue");
+        when(mobileCore.getHttpLayer()).thenReturn(httpServiceModule);
+        when(httpServiceModule.newRequest()).thenReturn(httpRequest);
+        when(httpRequest.execute()).thenReturn(httpResponse);
     }
 
     @Test
@@ -78,7 +94,6 @@ public class AuthServiceTest {
         AuthService authService = new AuthService();
         authService.configure(mobileCore, serviceConfiguration);
         authService.init(ctx, authServiceConfiguration);
-
         try {
             authService.login(null, null);
         } catch (IllegalArgumentException iae) {

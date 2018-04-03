@@ -34,7 +34,6 @@ import org.aerogear.mobile.core.logging.Logger;
 public class AuthService implements ServiceModule {
     private final static Logger LOG = MobileCore.getLogger();
     private final static String TAG = "AuthService";
-
     private ServiceConfiguration serviceConfiguration;
     private KeycloakConfiguration keycloakConfiguration;
     private AuthServiceConfiguration authServiceConfiguration;
@@ -212,8 +211,8 @@ public class AuthService implements ServiceModule {
                         this.authServiceConfiguration);
         this.oidcAuthenticatorImpl = new OIDCAuthenticatorImpl(this.serviceConfiguration,
                         this.authServiceConfiguration, this.authStateManager,
-                        new AuthorizationServiceFactory(appContext), jwksManager);
-
+                        new AuthorizationServiceFactory(appContext), jwksManager,
+                        mobileCore.getHttpLayer());
         initialisationStatus.add(STEP.INITIALIZED);
     }
 

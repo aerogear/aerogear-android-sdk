@@ -31,6 +31,8 @@ import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpResponse;
 import org.aerogear.mobile.core.http.HttpServiceModule;
 import org.aerogear.mobile.core.http.OkHttpServiceModule;
+import org.aerogear.mobile.core.http.pinning.CertificatePinningCheck;
+import org.aerogear.mobile.core.http.pinning.CertificatePinningCheckListener;
 
 import net.openid.appauth.AuthState;
 import net.openid.appauth.AuthorizationException;
@@ -51,6 +53,7 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
     private final AuthStateManager authStateManager;
     private final JwksManager jwksManager;
     private final AuthorizationServiceFactory authorizationServiceFactory;
+    private final HttpServiceModule httpModule;
 
     /**
      * Creates a new OIDCAuthenticatorImpl object
@@ -60,12 +63,14 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
      * @param authStateManager {@link AuthStateManager}
      * @param authorizationServiceFactory {@link AuthorizationServiceFactory}
      * @param jwksManager {@link JwksManager}
+     * @param httpModule {@link HttpServiceModule} Module used to make HTTP requests for
+     *        authenticator.
      */
     public OIDCAuthenticatorImpl(final ServiceConfiguration serviceConfiguration,
                     final AuthServiceConfiguration authServiceConfiguration,
                     final AuthStateManager authStateManager,
                     final AuthorizationServiceFactory authorizationServiceFactory,
-                    final JwksManager jwksManager) {
+                    final JwksManager jwksManager, final HttpServiceModule httpModule) {
         super(serviceConfiguration);
         this.keycloakConfiguration = new KeycloakConfiguration(serviceConfiguration);
         this.authServiceConfiguration =
@@ -74,7 +79,9 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
                         nonNull(authorizationServiceFactory, "authorizationServiceFactory");
         this.authStateManager = nonNull(authStateManager, "authStateManager");
         this.jwksManager = nonNull(jwksManager, "jwksManager");
+        this.httpModule = httpModule;
     }
+
 
     /**
      * Builds a new OIDCUserPrincipalImpl object after the user's credential has been authenticated
@@ -89,29 +96,49 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
         this.authCallback = nonNull(callback, "callback");
         DefaultAuthenticateOptions defaultAuthenticateOptions =
                         (DefaultAuthenticateOptions) (nonNull(authOptions, "authOptions"));
-        performAuthRequest(defaultAuthenticateOptions.getFromActivity(),
-                        defaultAuthenticateOptions.getResultCode());
+        Activity fromActivity = defaultAuthenticateOptions.getFromActivity();
+        int resultCode = defaultAuthenticateOptions.getResultCode();
+
+        if (defaultAuthenticateOptions.getSkipCertificatePinningChecks()) {
+            performAuthRequest(fromActivity, resultCode);
+            return;
+        }
+        performAuthRequestWithPreflightCheck(fromActivity, resultCode);
     }
 
     // Authentication code
     private void performAuthRequest(final Activity fromActivity, final int resultCode) {
         nonNull(fromActivity, "fromActivity");
-
         AuthorizationServiceFactory.ServiceWrapper wrapper =
-                        this.authorizationServiceFactory.createAuthorizationService(
+                        authorizationServiceFactory.createAuthorizationService(
                                         keycloakConfiguration, authServiceConfiguration);
-
-        this.authState = wrapper.getAuthState();
-        this.authService = wrapper.getAuthorizationService();
+        authState = wrapper.getAuthState();
+        authService = wrapper.getAuthorizationService();
 
         Intent authIntent = authService
                         .getAuthorizationRequestIntent(wrapper.getAuthorizationRequest());
         fromActivity.startActivityForResult(authIntent, resultCode);
     }
 
+    private void performAuthRequestWithPreflightCheck(final Activity fromActivity,
+                    final int resultCode) {
+        CertificatePinningCheck pinningCheck = new CertificatePinningCheck(httpModule);
+        pinningCheck.execute(keycloakConfiguration.getHostUrl());
+        pinningCheck.attachListener(new CertificatePinningCheckListener() {
+            @Override
+            public void onSuccess() {
+                performAuthRequest(fromActivity, resultCode);
+            }
+
+            @Override
+            public void onFailure() {
+                authCallback.onError(pinningCheck.getError());
+            }
+        });
+    }
+
     public void handleAuthResult(final Intent intent) {
         nonNull(intent, "intent");
-
         AuthorizationResponse response = AuthorizationResponse.fromIntent(intent);
         AuthorizationException error = AuthorizationException.fromIntent(intent);
 

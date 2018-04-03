@@ -17,6 +17,7 @@ import android.app.Application;
 import android.support.test.filters.SmallTest;
 
 import org.aerogear.mobile.core.AeroGearTestRunner;
+import org.aerogear.mobile.core.configuration.MobileCoreConfiguration;
 import org.aerogear.mobile.core.configuration.MobileCoreJsonParser;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 
@@ -29,7 +30,8 @@ public class MobileCoreParserTest {
         Application context = RuntimeEnvironment.application;
 
         try (InputStream configStream = context.getAssets().open("mobile-services.json")) {
-            Map<String, ServiceConfiguration> configs = MobileCoreJsonParser.parse(configStream);
+            MobileCoreConfiguration jsonConfig = new MobileCoreJsonParser(configStream).parse();
+            Map<String, ServiceConfiguration> configs = jsonConfig.getServicesConfig();
 
             assertNotNull(configs.get("metrics"));
 
@@ -38,7 +40,7 @@ public class MobileCoreParserTest {
                             keyCloakServiceConfiguration.getProperty("auth-server-url"));
         } catch (JSONException | IOException exception) {
             System.out.println(exception);
-            fail("mobile-services.json not file");
+            fail(exception.getMessage());
         }
     }
 
@@ -47,7 +49,7 @@ public class MobileCoreParserTest {
         Application context = RuntimeEnvironment.application;
         InputStream configStream = context.getAssets().open("wrong-file-name.json");
 
-        MobileCoreJsonParser.parse(configStream);
+        new MobileCoreJsonParser(configStream).parse();
     }
 
 }

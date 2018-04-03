@@ -6,25 +6,28 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import org.aerogear.mobile.core.configuration.https.CertificatePinningEntry;
+import org.aerogear.mobile.core.configuration.https.HttpsConfiguration;
+
 /**
  * This class is responsible for consuming a reader and producing a tree of config values to be
  * consumed by modules.
  */
-public class MobileCoreJsonParser {
+public final class MobileCoreJsonParser {
 
-    private final Map<String, ServiceConfiguration> values = new TreeMap<>();
+    private final InputStream jsonStream;
 
-    private MobileCoreJsonParser(final InputStream jsonStream) throws IOException, JSONException {
-        final String jsonText = readJsonStream(jsonStream);
-        final JSONObject jsonDocument = new JSONObject(jsonText);
-        parseMobileCoreArray(jsonDocument.getJSONArray("services"));
+    public MobileCoreJsonParser(final InputStream jsonStream) {
+        this.jsonStream = jsonStream;
     }
 
     private String readJsonStream(final InputStream jsonStream) throws IOException {
@@ -40,14 +43,19 @@ public class MobileCoreJsonParser {
         return builder.toString();
     }
 
-    private void parseMobileCoreArray(final JSONArray array) throws JSONException, IOException {
+    private Map<String, ServiceConfiguration> parseMobileCoreArray(final JSONArray array)
+                    throws JSONException, IOException {
         final int length = nonNull(array, "json array").length();
+        Map<String, ServiceConfiguration> serviceConfigs = new HashMap<>();
         for (int i = 0; i < length; i++) {
-            parseConfigObject(array.getJSONObject(i));
+            ServiceConfiguration serviceConfig = parseConfigObject(array.getJSONObject(i));
+            serviceConfigs.put(serviceConfig.getName(), serviceConfig);
         }
+        return serviceConfigs;
     }
 
-    private void parseConfigObject(final JSONObject jsonObject) throws JSONException, IOException {
+    private ServiceConfiguration parseConfigObject(final JSONObject jsonObject)
+                    throws JSONException, IOException {
         nonNull(jsonObject, "jsonObject");
 
         final ServiceConfiguration.Builder serviceConfigBuilder =
@@ -65,22 +73,48 @@ public class MobileCoreJsonParser {
                 serviceConfigBuilder.addProperty(name, config.getString(name));
             }
         }
-        final ServiceConfiguration serviceConfig = serviceConfigBuilder.build();
-        values.put(serviceConfig.getName(), serviceConfig);
+        return serviceConfigBuilder.build();
+    }
+
+    private HttpsConfiguration parseHttpsConfig(final JSONObject httpsJsonConfig)
+                    throws JSONException, IOException {
+        HttpsConfiguration.Builder configBuilder = HttpsConfiguration.newBuilder();
+
+        if (httpsJsonConfig != null && httpsJsonConfig.has(HttpsConfiguration.CERT_PINNING_KEY)) {
+            List<CertificatePinningEntry> certPinningConfig = getCertPinningConfig(
+                            httpsJsonConfig.getJSONArray(HttpsConfiguration.CERT_PINNING_KEY));
+            configBuilder.setCertPinningConfig(certPinningConfig);
+        }
+        return configBuilder.build();
+    }
+
+    private List<CertificatePinningEntry> getCertPinningConfig(
+                    final JSONArray certPinningJsonConfig) throws JSONException, IOException {
+        final int arrayLength = nonNull(certPinningJsonConfig, "jsonArray").length();
+
+        List<CertificatePinningEntry> pinningConfig = new ArrayList<>();
+        for (int i = 0; i < arrayLength; i++) {
+            JSONObject pinningJsonEntry = certPinningJsonConfig.getJSONObject(i);
+            CertificatePinningEntry pinningEntry =
+                            new CertificatePinningEntry(pinningJsonEntry.getString("host"),
+                                            pinningJsonEntry.getString("certificateHash"));
+            pinningConfig.add(pinningEntry);
+        }
+        return pinningConfig;
     }
 
     /**
-     * @param jsonStream a inputStream to for mobile-core.json. Please note that this should be
-     *        managed by the calling core. The parser will not close the resource when it is
-     *        finished.
-     *
-     * @return A map of ServiceConfigs mapped by their name.
+     * @return MobileCoreJsonConfig
      * @throws IOException if reading the stream fails
      * @throws JSONException if the json document is malformed
      */
-    public static Map<String, ServiceConfiguration> parse(final InputStream jsonStream)
-                    throws IOException, JSONException {
-        MobileCoreJsonParser parser = new MobileCoreJsonParser(jsonStream);
-        return parser.values;
+    public MobileCoreConfiguration parse() throws IOException, JSONException {
+        JSONObject jsonConfig = new JSONObject(readJsonStream(jsonStream));
+        JSONArray servicesJson = jsonConfig.getJSONArray("services");
+        JSONObject httpsJson = jsonConfig.optJSONObject("https");
+
+        return MobileCoreConfiguration.newBuilder()
+                        .setHttpsConfiguration(parseHttpsConfig(httpsJson))
+                        .setServiceConfiguration(parseMobileCoreArray(servicesJson)).build();
     }
 }

@@ -16,11 +16,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
 import org.aerogear.android.core.BuildConfig;
+import org.aerogear.mobile.core.configuration.MobileCoreConfiguration;
 import org.aerogear.mobile.core.configuration.MobileCoreJsonParser;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
+import org.aerogear.mobile.core.configuration.https.HttpsConfiguration;
 import org.aerogear.mobile.core.exception.ConfigurationNotFoundException;
 import org.aerogear.mobile.core.exception.InitializationException;
 import org.aerogear.mobile.core.http.HttpServiceModule;
+import org.aerogear.mobile.core.http.OkHttpCertificatePinningParser;
 import org.aerogear.mobile.core.http.OkHttpServiceModule;
 import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.logging.LoggerAdapter;
@@ -45,6 +48,7 @@ public final class MobileCore {
     private final String configFileName;
     private final HttpServiceModule httpLayer;
     private final Map<String, ServiceConfiguration> servicesConfig;
+    private final HttpsConfiguration httpsConfig;
     private final Map<Class<? extends ServiceModule>, ServiceModule> services = new HashMap<>();
 
     /**
@@ -64,7 +68,10 @@ public final class MobileCore {
 
         // -- Parse JSON config file
         try (final InputStream configStream = context.getAssets().open(configFileName)) {
-            this.servicesConfig = MobileCoreJsonParser.parse(configStream);
+            MobileCoreConfiguration jsonConfig = new MobileCoreJsonParser(configStream).parse();
+            httpsConfig = jsonConfig.getHttpsConfig();
+            servicesConfig = jsonConfig.getServicesConfig();
+            configStream.close();
         } catch (JSONException | IOException exception) {
             String message = String.format("%s could not be loaded", configFileName);
             throw new InitializationException(message, exception);
@@ -76,11 +83,15 @@ public final class MobileCore {
         // -- Setting default http layer
         if (options.httpServiceModule == null) {
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
+
+            OkHttpCertificatePinningParser certificatePinning =
+                            new OkHttpCertificatePinningParser(httpsConfig.getCertPinningConfig());
+            builder.certificatePinner(certificatePinning.parse());
+
             builder.connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
                             .writeTimeout(DEFAULT_WRITE_TIMEOUT, TimeUnit.SECONDS)
                             .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS);
             final OkHttpServiceModule httpServiceModule = new OkHttpServiceModule(builder.build());
-
             ServiceConfiguration configuration = this.servicesConfig.get(httpServiceModule.type());
             if (configuration == null) {
                 configuration = new ServiceConfiguration.Builder().build();
