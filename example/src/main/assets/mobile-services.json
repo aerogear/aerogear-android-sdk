@@ -11,7 +11,6 @@
             "url": "https://keycloak.security.feedhenry.org",
             "config": {
                 "auth-server-url": "https://keycloak.security.feedhenry.org/auth",
-                "clientId": "client-app",
                 "realm": "secure-app",
                 "resource": "client-app",
                 "ssl-required": "external",
