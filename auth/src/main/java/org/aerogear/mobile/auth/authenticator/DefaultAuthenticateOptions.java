@@ -22,7 +22,7 @@ public class DefaultAuthenticateOptions implements AuthenticateOptions {
         this.skipCertificatePinningCheck = skipCertificatePinningCheck;
     }
 
-    static class Builder {
+    public static class Builder {
         private Activity fromActivity;
         private int resultCode;
         private boolean skipCertificatePinningCheck = false;

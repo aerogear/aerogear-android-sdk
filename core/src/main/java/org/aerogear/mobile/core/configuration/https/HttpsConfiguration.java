@@ -1,8 +1,11 @@
 package org.aerogear.mobile.core.configuration.https;
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 
 /**
  * This represents a parsed Https configuration from JSON configuration
@@ -13,19 +16,19 @@ public class HttpsConfiguration {
     private final List<CertificatePinningEntry> certPinningConfig;
 
     private HttpsConfiguration(final List<CertificatePinningEntry> certPinningConfig) {
-        this.certPinningConfig = certPinningConfig;
+        this.certPinningConfig = nonNull(certPinningConfig, "certPinningConfig");
     }
 
     public static class Builder {
         private List<CertificatePinningEntry> certPinningConfig = new ArrayList<>();
 
         public Builder setCertPinningConfig(final List<CertificatePinningEntry> pinningConfig) {
-            this.certPinningConfig = pinningConfig;
+            this.certPinningConfig = new ArrayList<>(pinningConfig);
             return this;
         }
 
         public Builder addCertPinningEntry(final CertificatePinningEntry pinningEntry) {
-            this.certPinningConfig.add(pinningEntry);
+            this.certPinningConfig.add(nonNull(pinningEntry, "pinningEntry"));
             return this;
         }
 
@@ -36,7 +39,7 @@ public class HttpsConfiguration {
 
     /**
      * Retrieve certificate pinning entries
-     * 
+     *
      * @return List of {@link CertificatePinningEntry}
      */
     public List<CertificatePinningEntry> getCertPinningConfig() {
@@ -45,7 +48,7 @@ public class HttpsConfiguration {
 
     /**
      * Create a new {@link HttpsConfiguration.Builder}
-     * 
+     *
      * @return {@link HttpsConfiguration.Builder}
      */
     public static Builder newBuilder() {

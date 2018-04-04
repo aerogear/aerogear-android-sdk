@@ -79,7 +79,7 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
                         nonNull(authorizationServiceFactory, "authorizationServiceFactory");
         this.authStateManager = nonNull(authStateManager, "authStateManager");
         this.jwksManager = nonNull(jwksManager, "jwksManager");
-        this.httpModule = httpModule;
+        this.httpModule = nonNull(httpModule, "httpModule");
     }
 
 
