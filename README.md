@@ -15,6 +15,7 @@
 ## Documentation
 
 1. [End User Getting Started Guide](./docs/getting-started/getting-started.adoc)
+1. [Self Defence Checks](./docs/getting-started/certificate-pinning.adoc)
 1. [Troubleshooting](./docs/troubleshooting.adoc)
 1. [Service Contributor Guide](./docs/contributing-guide.adoc)
 
