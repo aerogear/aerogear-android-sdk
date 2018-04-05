@@ -3,6 +3,7 @@ package org.aerogear.mobile.core.executor;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -16,22 +17,20 @@ public final class AppExecutors {
 
     private static final ExecutorService networkExecutor = Executors.newSingleThreadExecutor();
 
-    private static final Executor mainThreadExecutor = new Executor() {
-        private Handler mainThreadHandler = new Handler(Looper.getMainLooper());
-
+    private static final ExecutorService mainThreadExecutor = Executors.newSingleThreadExecutor(new ThreadFactory() {
         @Override
-        public void execute(@NonNull Runnable command) {
-            mainThreadHandler.post(command);
+        public Thread newThread(@NonNull Runnable r) {
+            return Looper.getMainLooper().getThread();
         }
-    };
+    });
+
 
     private static final ExecutorService serviceThreadExecutor =
                     Executors.newSingleThreadExecutor();
 
     public AppExecutors() {}
 
-
-    public Executor mainThread() {
+    public ExecutorService mainThread() {
         return mainThreadExecutor;
     }
 
