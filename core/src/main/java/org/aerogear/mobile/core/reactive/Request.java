@@ -41,6 +41,7 @@ public interface Request<T> {
      * Requests may be asynchronous and need to be cancelled.
      *
      * @param canceller a function to handel cancelling a call
+     * @return a chainable instance of Request, not guaranteed to be the this reference
      */
     Request<T> cancelWith(Canceller canceller);
 

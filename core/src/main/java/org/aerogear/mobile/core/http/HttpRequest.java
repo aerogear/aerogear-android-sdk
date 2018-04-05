@@ -6,7 +6,7 @@ import org.aerogear.mobile.core.reactive.Request;
  * Generic interface for requests to HTTP Services.
  */
 
-public interface HttpRequest<T extends HttpResponse> {
+public interface HttpRequest {
 
     String CONTENT_TYPE_HEADER = "Content-Type";
     String JSON_MIME_TYPE = "application/json";
@@ -18,12 +18,12 @@ public interface HttpRequest<T extends HttpResponse> {
      *
      * @param url a URL for a resource.
      */
-    Request<T> get(String url);
+    Request<HttpResponse> get(String url);
 
-    Request<T> post(String url, byte[] body);
+    Request<HttpResponse> post(String url, byte[] body);
 
-    Request<T> put(String url, byte[] body);
+    Request<HttpResponse> put(String url, byte[] body);
 
-    Request<T> delete(String url);
+    Request<HttpResponse> delete(String url);
 
 }

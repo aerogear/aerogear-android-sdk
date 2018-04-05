@@ -47,7 +47,14 @@ public class HttpFragment extends BaseFragment {
 
         HttpRequest httpRequest = activity.mobileCore.getHttpLayer().newRequest();
         httpRequest.get("https://jsonplaceholder.typicode.com/users")
-                        .map((response) -> ((HttpResponse) response).stringBody())
+                        .map((response)-> {
+                            System.out.println("Mapping!");
+                            try {
+                                Thread.sleep(10000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            return response.stringBody();})
                         .respondOn(new AppExecutors().mainThread())
                         .respondWith(new Responder<String>() {
                             @Override

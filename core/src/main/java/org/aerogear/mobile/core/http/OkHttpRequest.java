@@ -38,7 +38,7 @@ public class OkHttpRequest implements HttpRequest {
     }
 
     @Override
-    public org.aerogear.mobile.core.reactive.Request<? extends HttpResponse> get(final String url) {
+    public org.aerogear.mobile.core.reactive.Request<HttpResponse> get(final String url) {
         AtomicReference<OkHttpResponse> response = new AtomicReference<>();
         return Requester.call(() -> {
             System.out.println("Http call on" + Thread.currentThread());
@@ -49,7 +49,7 @@ public class OkHttpRequest implements HttpRequest {
 
             OkHttpResponse okHttpResponse = new OkHttpResponse(call);
             response.set(okHttpResponse);
-            return okHttpResponse;
+            return (HttpResponse) okHttpResponse;//cast to force generic type
         }, () -> {
             /* Cleaner */
             System.out.println("Cleanup call on " + Thread.currentThread());
@@ -64,7 +64,7 @@ public class OkHttpRequest implements HttpRequest {
     }
 
     @Override
-    public org.aerogear.mobile.core.reactive.Request<OkHttpResponse> post(final String url,
+    public org.aerogear.mobile.core.reactive.Request<HttpResponse> post(final String url,
                     final byte[] body) {
 
         AtomicReference<OkHttpResponse> response = new AtomicReference<>();
@@ -79,7 +79,7 @@ public class OkHttpRequest implements HttpRequest {
 
             OkHttpResponse okHttpResponse = new OkHttpResponse(call);
             response.set(okHttpResponse);
-            return okHttpResponse;
+            return (HttpResponse) okHttpResponse;//cast to force generic type
         }, () -> {
             /* Cleaner */
             OkHttpResponse okHttpResponse = response.get();
@@ -92,7 +92,7 @@ public class OkHttpRequest implements HttpRequest {
     }
 
     @Override
-    public org.aerogear.mobile.core.reactive.Request<OkHttpResponse> put(final String url,
+    public org.aerogear.mobile.core.reactive.Request<HttpResponse> put(final String url,
                     final byte[] body) {
 
         AtomicReference<OkHttpResponse> response = new AtomicReference<>();
@@ -107,7 +107,7 @@ public class OkHttpRequest implements HttpRequest {
 
             OkHttpResponse okHttpResponse = new OkHttpResponse(call);
             response.set(okHttpResponse);
-            return okHttpResponse;
+            return (HttpResponse) okHttpResponse;//cast to force generic type
         }, () -> {
             /* Cleaner */
             OkHttpResponse okHttpResponse = response.get();
@@ -121,7 +121,7 @@ public class OkHttpRequest implements HttpRequest {
     }
 
     @Override
-    public org.aerogear.mobile.core.reactive.Request<OkHttpResponse> delete(final String url) {
+    public org.aerogear.mobile.core.reactive.Request<HttpResponse> delete(final String url) {
 
         AtomicReference<OkHttpResponse> response = new AtomicReference<>();
         return Requester.call(() -> {
@@ -133,7 +133,7 @@ public class OkHttpRequest implements HttpRequest {
 
             OkHttpResponse okHttpResponse = new OkHttpResponse(call);
             response.set(okHttpResponse);
-            return okHttpResponse;
+            return (HttpResponse) okHttpResponse;//cast to force generic type
         }, () -> {
             /* Cleaner */
             OkHttpResponse okHttpResponse = response.get();
