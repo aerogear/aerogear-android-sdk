@@ -16,6 +16,7 @@ import android.util.Log;
 import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpResponse;
+import org.aerogear.mobile.core.reactive.Responder;
 import org.aerogear.mobile.example.BR;
 import org.aerogear.mobile.example.R;
 import org.aerogear.mobile.example.model.User;
@@ -45,23 +46,26 @@ public class HttpFragment extends BaseFragment {
         new LastAdapter(users, BR.user).map(User.class, R.layout.item_http).into(userList);
 
         HttpRequest httpRequest = activity.mobileCore.getHttpLayer().newRequest();
-        httpRequest.get("https://jsonplaceholder.typicode.com/users");
-        HttpResponse httpResponse = httpRequest.execute();
-        httpResponse.onError(() -> {
-            Log.e(TAG, httpResponse.getError().toString());
-        });
-        httpResponse.onSuccess(() -> {
-            String jsonResponse = httpResponse.stringBody();
-            new AppExecutors().mainThread().execute(() -> {
+        httpRequest.get("https://jsonplaceholder.typicode.com/users")
+            .map((response)-> ((HttpResponse)response).stringBody())
+            .respondOn(new AppExecutors().mainThread())
+            .respondWith(new Responder<String>() {
+                @Override
+                public void onResult(String jsonResponse) {
+                        List<User> retrievesUsers = new Gson().fromJson(jsonResponse,
+                            new TypeToken<List<User>>() {}.getType());
 
-                List<User> retrievesUsers = new Gson().fromJson(jsonResponse,
-                                new TypeToken<List<User>>() {}.getType());
+                        activity.mobileCore.getLogger().info("Users: " + retrievesUsers.size());
 
-                activity.mobileCore.getLogger().info("Users: " + retrievesUsers.size());
+                        users.addAll(retrievesUsers);
+                }
 
-                users.addAll(retrievesUsers);
+                @Override
+                public void onException(Exception exception) {
+                    Log.e(TAG, exception.toString());
+                }
+
             });
-        });
     }
 
 }
