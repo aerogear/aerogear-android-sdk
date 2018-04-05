@@ -32,9 +32,12 @@ import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpResponse;
 
+/**
+ * The entry point for communication with Unified Push Server
+ */
 public class PushService implements ServiceModule {
 
-    public static final String DEFAULT_MESSAGE_HANDLER_KEY = "DEFAULT_MESSAGE_HANDLER_KEY";
+    private static final String DEFAULT_MESSAGE_HANDLER_KEY = "DEFAULT_MESSAGE_HANDLER_KEY";
 
     private static final String registryDeviceEndpoint = "rest/registry/device";
     private static final String JSON_ANDROID_CONFIG_KEY = "android";
@@ -93,10 +96,21 @@ public class PushService implements ServiceModule {
     @Override
     public void destroy() {}
 
+    /**
+     * Register the device on Unified Push Server
+     *
+     * @param callback A callback to handler success or fail registration
+     */
     public void registerDevice(final Callback callback) {
         registerDevice(new UnifiedPushConfig(), callback);
     }
 
+    /**
+     * Register the device on Unified Push Server
+     *
+     * @param unifiedPushConfig Unified Push configuration to be send to the Unified Push Server
+     * @param callback A callback to handler success or fail registration
+     */
     public void registerDevice(final UnifiedPushConfig unifiedPushConfig, final Callback callback) {
 
         try {
@@ -160,10 +174,21 @@ public class PushService implements ServiceModule {
 
     }
 
+    /**
+     * Unregister the device on Unified Push Server
+     *
+     * @param callback A callback to handler success or fail unregister
+     */
     public void unregisterDevice(final Callback callback) {
         unregisterDevice(new UnifiedPushConfig(), callback);
     }
 
+    /**
+     * Unregister the device on Unified Push Server
+     *
+     * @param unifiedPushConfig Unified Push configuration to be send to the Unified Push Server
+     * @param callback A callback to handler success or fail unregister
+     */
     public void unregisterDevice(final UnifiedPushConfig unifiedPushConfig,
                     final Callback callback) {
 
@@ -203,9 +228,16 @@ public class PushService implements ServiceModule {
 
     }
 
-    private String getHashedAuth(final String username, final char[] password) {
+    /**
+     * Provide an Auth hash to be used to authenticate in Unified Push Service
+     *
+     * @param variant Unified Push variant id
+     * @param secret Unified Push variant secret
+     * @return Auth hash
+     */
+    private String getHashedAuth(final String variant, final char[] secret) {
         StringBuilder headerValueBuilder = new StringBuilder("Basic").append(" ");
-        String unhashedCredentials = username + ":" + String.valueOf(password);
+        String unhashedCredentials = variant + ":" + String.valueOf(secret);
         String hashedCrentials =
                         Base64.encodeToString(unhashedCredentials.getBytes(), Base64.NO_WRAP);
         return headerValueBuilder.append(hashedCrentials).toString();
@@ -253,10 +285,10 @@ public class PushService implements ServiceModule {
     }
 
     /**
-     * This will deliver an message to all registered handlers.
+     * Notify all registered handlers.
      *
      * @param context the Android context
-     * @param message the message to pass
+     * @param message the push message
      */
     public static void notifyHandlers(final Context context, final Map<String, String> message) {
         nonNull(context, "context");
@@ -281,6 +313,15 @@ public class PushService implements ServiceModule {
 
     }
 
+    /**
+     * Get a default handler from AndroidManifest.xml if exists
+     *
+     * <code>
+     * <meta-data
+     *   android:name="DEFAULT_MESSAGE_HANDLER_KEY" android:value="my.package.HandlerClassName" />
+     * </code>
+     *
+     */
     @SuppressWarnings("unchecked")
     private static void getDefaultHandler(final Context context) {
         nonNull(context, "context");

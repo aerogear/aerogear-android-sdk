@@ -17,18 +17,40 @@ public final class UnifiedPushConfig {
     private String alias;
     private List<String> categories = Collections.emptyList();
 
+    /**
+     * The Alias is an identifier of the user of the system.
+     *
+     * @return alias
+     *
+     */
     public String getAlias() {
         return alias;
     }
 
+    /**
+     * The Alias is an identifier of the user of the system.
+     *
+     * @param alias the new alias
+     *
+     */
     public void setAlias(String alias) {
         this.alias = alias;
     }
 
+    /**
+     * The categories specifies a channel which may be used to send messages
+     *
+     * @return the current categories
+     */
     public List<String> getCategories() {
         return Collections.unmodifiableList(categories);
     }
 
+    /**
+     * The categories specifies a channel which may be used to send messages
+     *
+     * @param categories the new categories
+     */
     public void setCategories(List<String> categories) {
         nonNull(categories, "categories");
         validateCategories(categories);
