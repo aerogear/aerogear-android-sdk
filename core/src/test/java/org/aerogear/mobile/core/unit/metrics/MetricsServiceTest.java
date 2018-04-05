@@ -68,7 +68,7 @@ public class MetricsServiceTest {
 
     @Test(expected = IllegalStateException.class)
     public void sendingMetricsWithoutConfigureService() {
-        metricsService.publish(new DummyMetrics());
+        metricsService.publish("init", new DummyMetrics());
     }
 
     @Test
@@ -88,7 +88,7 @@ public class MetricsServiceTest {
         };
         metricsService.sendAppAndDeviceMetrics(testCallback);
 
-        metricsService.publish(new DummyMetrics[] {new DummyMetrics()}, testCallback);
+        metricsService.publish("init", new DummyMetrics[] {new DummyMetrics()}, testCallback);
     }
 
     @Test
@@ -110,7 +110,7 @@ public class MetricsServiceTest {
         };
 
         metricsService.sendAppAndDeviceMetrics(testCallback);
-        metricsService.publish(new DummyMetrics[] {new DummyMetrics()}, testCallback);
+        metricsService.publish("init", new DummyMetrics[] {new DummyMetrics()}, testCallback);
     }
 
     public static class DummyMetrics implements Metrics<Map<String, String>> {

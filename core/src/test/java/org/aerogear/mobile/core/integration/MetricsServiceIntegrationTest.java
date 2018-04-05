@@ -81,7 +81,7 @@ public class MetricsServiceIntegrationTest {
             }
         };
 
-        metricsService.publish(new Metrics[] {metrics}, testCallback);
+        metricsService.publish("init", new Metrics[] {metrics}, testCallback);
         latch.await(10, TimeUnit.SECONDS);
 
         assertNull(error);

@@ -22,6 +22,7 @@ import org.aerogear.mobile.security.metrics.SecurityCheckResultMetric;
  */
 public class SecurityService implements ServiceModule {
 
+    public static final String SECURITY_METRICS_EVENT_TYPE = "security";
     private final static String TYPE = "security";
 
     private MobileCore core;
@@ -132,7 +133,8 @@ public class SecurityService implements ServiceModule {
     public SecurityCheckResult checkAndSendMetric(final SecurityCheck securityCheck,
                     @NonNull final MetricsService metricsService) {
         final SecurityCheckResult result = check(securityCheck);
-        nonNull(metricsService, "metricsService").publish(new SecurityCheckResultMetric(result));
+        nonNull(metricsService, "metricsService").publish(SECURITY_METRICS_EVENT_TYPE,
+                new SecurityCheckResultMetric(result));
         return result;
     }
 }
