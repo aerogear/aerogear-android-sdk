@@ -1,12 +1,19 @@
 package org.aerogear.mobile.core.unit.http;
 
+import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
+import org.aerogear.mobile.core.executor.AppExecutors;
+import org.aerogear.mobile.core.reactive.Responder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -33,125 +40,71 @@ public class OkHttpServiceModuleTest {
     }
 
     @Test
-    public void testGetRequestSuccessful() {
-        HttpServiceModule module = new OkHttpServiceModule();
+    public void testGetRequestSuccessful() throws InterruptedException {
 
-        HttpRequest request = module.newRequest();
-        request.get("http://www.mocky.io/v2/5a5f74172e00006e260a8476");
+        final String expected = "{\n" + " \"story\": {\n"
+            + "     \"title\": \"Test Title\"\n" + " }    \n" + "}";
 
-        HttpResponse response = request.execute();
-
-        assertNotNull(response);
-
-        CountDownLatch latch = new CountDownLatch(1);
-        response.onSuccess(() -> {
-            latch.countDown();
-        });
-
-        response.onComplete(() -> assertEquals("{\n" + " \"story\": {\n"
-                        + "     \"title\": \"Test Title\"\n" + " }    \n" + "}",
-                        response.stringBody()));
-
-        response.waitForCompletionAndClose();
-        assertEquals(latch.getCount(), 0);
-    }
 
     @Test
     public void testSuccessHandlerNotCalledInConnectionProblemCase() {
+
         HttpServiceModule module = new OkHttpServiceModule();
-
-        HttpRequest request = module.newRequest();
-        request.get("http://does.not.exist.com");
-
-        final HttpResponse response = request.execute();
-        assertNotNull(response);
-
-        response.onSuccess(() -> {
-            fail("The success handler must not be called here");
-        });
-
         CountDownLatch latch = new CountDownLatch(1);
-        response.onError(() -> {
-            assertNotNull(response.getError());
-            latch.countDown();
-        });
+        HttpRequest request = module.newRequest();
+        StringBuilder responseString = new StringBuilder();
 
-        response.waitForCompletionAndClose();
-        assertEquals(latch.getCount(), 0);
+        request.get("http://www.mocky.io/v2/5a5f74172e00006e260a8476")
+            .respondOn(new AppExecutors().singleThreadService())
+            .respondWith(new Responder<HttpResponse>() {
+                @Override
+                public void onResult(HttpResponse value) {
+                    responseString.append(value.stringBody());
+                    latch.countDown();
+                }
+
+                @Override
+                public void onException(Exception exception) {
+                    latch.countDown();
+                }
+            });
+
+        assertTrue(latch.await(30, TimeUnit.SECONDS));
+        assertEquals(expected, responseString.toString());
     }
 
     @Test
-    public void testSuccessHandlerNotCalledInHttpErrorCase() {
+    public void testSuccessHandlerNotCalledInErrorCase() throws InterruptedException {
         HttpServiceModule module = new OkHttpServiceModule();
-
-        HttpRequest request = module.newRequest();
-        request.get("http://www.mocky.io/v2/5ac5d8f74a000052007e04f5");
-
-        final HttpResponse response = request.execute();
-        assertNotNull(response);
-
-        response.onSuccess(() -> {
-            fail("The success handler must not be called here");
-        });
-
         CountDownLatch latch = new CountDownLatch(1);
-        response.onError(() -> {
-            assertNotNull(response.getError());
-            latch.countDown();
-        });
+        AtomicReference valueRef = new AtomicReference();
+        AtomicReference<Exception> errorRef = new AtomicReference();
+        HttpRequest request = module.newRequest();
+        request.get("http://does.not.exist.com")
+            .respondOn(Executors.newSingleThreadExecutor())
+            .respondWith(new Responder() {
+                @Override
+                public void onResult(Object value) {
+                    valueRef.set(value);
+                    //This won't actually stop the test because of threading, but it is helpful
+                    //to let us know what is expected
+                    fail("The success handler must not be called here");
+                }
 
-        response.waitForCompletionAndClose();
-        assertEquals(latch.getCount(), 0);
+                @Override
+                public void onException(Exception exception) {
+                    errorRef.set(exception);
+                    latch.countDown();
+                }
+            });
+
+        assertTrue(latch.await(200, TimeUnit.SECONDS));
+        assertNull(valueRef.get());
+        assertNotNull(errorRef.get());
     }
 
     @Test
-    public void testCompleteHandlerCalledInConnectionProblemCase() {
-        HttpServiceModule module = new OkHttpServiceModule();
-
-        HttpRequest request = module.newRequest();
-        request.get("http://does.not.exist.com");
-
-        final HttpResponse response = request.execute();
-        assertNotNull(response);
-
-        CountDownLatch latch = new CountDownLatch(1);
-        response.onComplete(() -> {
-            latch.countDown();
-        });
-
-        response.onError(() -> {
-            assertNotNull(response.getError());
-        });
-
-        response.waitForCompletionAndClose();
-        assertEquals(latch.getCount(), 0);
-    }
-
-    @Test
-    public void testCompleteHandlerCalledInHttpErrorCase() {
-        HttpServiceModule module = new OkHttpServiceModule();
-
-        HttpRequest request = module.newRequest();
-        request.get("http://www.mocky.io/v2/5ac5d8f74a000052007e04f5");
-
-        final HttpResponse response = request.execute();
-        assertNotNull(response);
-
-        CountDownLatch latch = new CountDownLatch(1);
-        response.onComplete(() -> {
-            latch.countDown();
-        });
-
-        response.onError(() -> {
-            assertNotNull(response.getError());
-        });
-
-        response.waitForCompletionAndClose();
-        assertEquals(latch.getCount(), 0);
-    }
-
-    @Test
-    public void testRedirectsShouldBeSuccessful() throws IOException {
+    public void testRedirectsShouldBeSuccessful() throws IOException, InterruptedException {
         MockWebServer server = new MockWebServer();
         MockResponse redirectResponse = new MockResponse();
 
@@ -163,28 +116,26 @@ public class OkHttpServiceModuleTest {
         HttpUrl url = server.url("/mockRequest");
         String urlString = url.toString();
 
+        AtomicReference<Exception> errorRef = new AtomicReference<>();
         HttpServiceModule module = new OkHttpServiceModule();
-
+        CountDownLatch latch = new CountDownLatch(1);
         HttpRequest request = module.newRequest();
-        request.get(urlString);
+        request.get(urlString)
+            .respondOn(Executors.newSingleThreadExecutor())
+            .respondWith(new Responder() {
+                @Override
+                public void onResult(Object value) {
+                    latch.countDown();
+                }
 
-        final HttpResponse response = request.execute();
-        assertNotNull(response);
+                @Override
+                public void onException(Exception exception) {
+                    errorRef.set(exception);
+                    latch.countDown();
+                }
+            });
 
-        CountDownLatch latch = new CountDownLatch(2);
-        response.onComplete(() -> {
-            latch.countDown();
-        });
-
-        response.onSuccess(() -> {
-            latch.countDown();
-        });
-
-        response.onError(() -> {
-            fail("Redirects must not be errors");
-        });
-
-        response.waitForCompletionAndClose();
-        assertEquals(latch.getCount(), 0);
+        assertTrue(latch.await(5, TimeUnit.SECONDS));
+        assertNull("Redirects should not be errors",errorRef.get());
     }
 }
