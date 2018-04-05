@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.aerogear.mobile.core.reactive.Responder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -137,34 +138,37 @@ public class PushService implements ServiceModule {
 
             final HttpRequest httpRequest = core.getHttpLayer().newRequest();
             httpRequest.addHeader("Authorization", authHash);
-            httpRequest.post(url + registryDeviceEndpoint, data.toString().getBytes());
+            httpRequest.post(url + registryDeviceEndpoint, data.toString().getBytes())
+            .respondWith(new Responder<HttpResponse>() {
+                @Override
+                public void onResult(HttpResponse httpResponse) {
+                    switch (httpResponse.getStatus()) {
+                        case HTTP_OK:
 
-            final HttpResponse httpResponse = httpRequest.execute();
-            httpResponse.onSuccess(() -> {
-                switch (httpResponse.getStatus()) {
-                    case HTTP_OK:
+                            FirebaseMessaging firebaseMessaging = FirebaseMessaging.getInstance();
 
-                        FirebaseMessaging firebaseMessaging = FirebaseMessaging.getInstance();
-
-                        if (categories != null) {
-                            for (String catgory : categories) {
-                                firebaseMessaging.subscribeToTopic(catgory);
+                            if (categories != null) {
+                                for (String catgory : categories) {
+                                    firebaseMessaging.subscribeToTopic(catgory);
+                                }
                             }
-                        }
 
-                        firebaseMessaging.subscribeToTopic(unifiedPushCredentials.getVariant());
+                            firebaseMessaging.subscribeToTopic(unifiedPushCredentials.getVariant());
 
-                        callback.onSuccess();
-                        break;
-                    default:
-                        callback.onError(new HttpException(httpResponse.getStatus()));
-                        break;
+
+                            callback.onSuccess();
+                            break;
+                        default:
+                            callback.onError(new HttpException(httpResponse.getStatus()));
+                            break;
+                    }
                 }
-            });
-            httpResponse.onError(() -> {
-                Exception error = httpResponse.getError();
-                MobileCore.getLogger().error(error.getMessage(), error);
-                callback.onError(error);
+
+                @Override
+                public void onException(Exception error) {
+                    MobileCore.getLogger().error(error.getMessage(), error);
+                    callback.onError(error);
+                }
             });
 
         } catch (JSONException e) {
@@ -198,32 +202,35 @@ public class PushService implements ServiceModule {
         final HttpRequest httpRequest = core.getHttpLayer().newRequest();
         httpRequest.addHeader("Authorization", authHash);
         httpRequest.delete(url + registryDeviceEndpoint + "/"
-                        + FirebaseInstanceId.getInstance().getToken());
+                        + FirebaseInstanceId.getInstance().getToken())
+        .respondWith(new Responder<HttpResponse>() {
+            @Override
+            public void onResult(HttpResponse httpResponse) {
+                switch (httpResponse.getStatus()) {
+                    case HTTP_NO_CONTENT:
 
-        final HttpResponse httpResponse = httpRequest.execute();
-        httpResponse.onSuccess(() -> {
-            switch (httpResponse.getStatus()) {
-                case HTTP_NO_CONTENT:
+                        FirebaseMessaging firebaseMessaging = FirebaseMessaging.getInstance();
 
-                    FirebaseMessaging firebaseMessaging = FirebaseMessaging.getInstance();
+                        for (String category : unifiedPushConfig.getCategories()) {
+                            firebaseMessaging.unsubscribeFromTopic(category);
+                        }
 
-                    for (String category : unifiedPushConfig.getCategories()) {
-                        firebaseMessaging.unsubscribeFromTopic(category);
-                    }
+                        firebaseMessaging.unsubscribeFromTopic(unifiedPushCredentials.getVariant());
 
-                    firebaseMessaging.unsubscribeFromTopic(unifiedPushCredentials.getVariant());
-
-                    callback.onSuccess();
-                    break;
-                default:
+                        callback.onSuccess();
+                        break;
+                    default:
                     callback.onError(new HttpException(httpResponse.getStatus()));
-                    break;
+                        break;
+                }
             }
-        });
-        httpResponse.onError(() -> {
-            Exception error = httpResponse.getError();
-            MobileCore.getLogger().error(error.getMessage(), error);
-            callback.onError(error);
+
+
+            @Override
+            public void onException(Exception error) {
+                MobileCore.getLogger().error(error.getMessage(), error);
+                callback.onError(error);
+            }
         });
 
     }
