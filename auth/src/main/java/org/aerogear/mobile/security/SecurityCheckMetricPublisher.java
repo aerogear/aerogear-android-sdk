@@ -33,6 +33,6 @@ class SecurityCheckMetricPublisher implements SecurityCheckExecutorListener {
     @Override
     public synchronized void onComplete() {
         metricsService.publish(SecurityService.SECURITY_METRICS_EVENT_TYPE,
-            new SecurityCheckResultMetric(metricResults));
+                        new SecurityCheckResultMetric(metricResults));
     }
 }

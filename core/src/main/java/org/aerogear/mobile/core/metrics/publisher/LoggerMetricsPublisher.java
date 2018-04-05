@@ -27,7 +27,8 @@ public final class LoggerMetricsPublisher implements MetricsPublisher {
     }
 
     @Override
-    public void publish(@NonNull String type, @NonNull final Metrics[] metrics, @Nullable final Callback callback) {
+    public void publish(@NonNull String type, @NonNull final Metrics[] metrics,
+                    @Nullable final Callback callback) {
         nonNull(type, "type");
         nonNull(metrics, "metrics");
         logger.debug("Metrics: " + type);

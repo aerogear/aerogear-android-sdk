@@ -32,7 +32,8 @@ public class NetworkMetricsPublisher implements MetricsPublisher {
     private final String url;
     private final Metrics[] defaultMetrics;
 
-    public NetworkMetricsPublisher(final Context context, final HttpRequest httpRequest, final String url) {
+    public NetworkMetricsPublisher(final Context context, final HttpRequest httpRequest,
+                    final String url) {
         this.context = context;
         this.httpRequest = httpRequest;
         this.url = url;
@@ -40,7 +41,8 @@ public class NetworkMetricsPublisher implements MetricsPublisher {
     }
 
     @Override
-    public void publish(@NonNull String type, @NonNull final Metrics[] metrics, @Nullable final Callback callback) {
+    public void publish(@NonNull String type, @NonNull final Metrics[] metrics,
+                    @Nullable final Callback callback) {
         nonNull(type, "type");
         nonNull(metrics, "metrics");
 
