@@ -7,7 +7,6 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.aerogear.mobile.core.reactive.Responder;
 import org.jose4j.jwk.JsonWebKeySet;
 
 import android.app.Activity;
@@ -34,6 +33,7 @@ import org.aerogear.mobile.core.http.HttpServiceModule;
 import org.aerogear.mobile.core.http.OkHttpServiceModule;
 import org.aerogear.mobile.core.http.pinning.CertificatePinningCheck;
 import org.aerogear.mobile.core.http.pinning.CertificatePinningCheckListener;
+import org.aerogear.mobile.core.reactive.Responder;
 
 import net.openid.appauth.AuthState;
 import net.openid.appauth.AuthorizationException;
@@ -211,29 +211,28 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
 
         // Creates the get request
         HttpRequest request = serviceModule.newRequest();
-        request.get(logoutUrl.toString())
-        .respondWith(new Responder<HttpResponse>() {
+        request.get(logoutUrl.toString()).respondWith(new Responder<HttpResponse>() {
             @Override
             public void onResult(HttpResponse httpResponse) {
                 if (httpResponse.getStatus() == HTTP_OK
-                    || httpResponse.getStatus() == HTTP_MOVED_TEMP) {
+                                || httpResponse.getStatus() == HTTP_MOVED_TEMP) {
                     // delete the local tokens when the session with the OIDC has been terminated
                     authStateManager.save(null);
                     logoutCallback.onSuccess();
                 } else {
                     // Non HTTP 200 or 302 Status Code Returned
                     Exception error = httpResponse.getError() != null ? httpResponse.getError()
-                        : new Exception("Non HTTP 200 or 302 Status Code.");
+                                    : new Exception("Non HTTP 200 or 302 Status Code.");
                     MobileCore.getLogger().error(
-                        "Error Performing a Logout on the Remote OIDC Server: ", error);
+                                    "Error Performing a Logout on the Remote OIDC Server: ", error);
                     logoutCallback.onError(error);
                 }
             }
 
             @Override
             public void onException(Exception exception) {
-                MobileCore.getLogger().error("Error Performing a Logout on the Remote OIDC Server: ",
-                    exception);
+                MobileCore.getLogger().error(
+                                "Error Performing a Logout on the Remote OIDC Server: ", exception);
                 logoutCallback.onError(exception);
             }
         });

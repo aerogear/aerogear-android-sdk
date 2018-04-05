@@ -45,7 +45,7 @@ abstract class AbstractRequest<T> implements Request<T> {
 
     @Override
     public final <R> Request<R> map(MapFunction<? super T, ? extends R> mapper) {
-        return new MapRequest<T,R>(this, mapper);
+        return new MapRequest<T, R>(this, mapper);
     }
 
     @Override
@@ -72,9 +72,9 @@ abstract class AbstractRequest<T> implements Request<T> {
     abstract Request<T> respondWithActual(@NonNull AtomicReference<Responder<T>> responderRef);
 
     /**
-     * This requester is being asked to give up its Cleanup action to be handled by a different AbstractRequest.
-     * Requests should set their cleanup action to an empty action.  They are allowed to modify or wrap their
-     * action as appropriate.  IE for thread scheduling, logging, etc
+     * This requester is being asked to give up its Cleanup action to be handled by a different
+     * AbstractRequest. Requests should set their cleanup action to an empty action. They are
+     * allowed to modify or wrap their action as appropriate. IE for thread scheduling, logging, etc
      *
      * @return an equivalent cleanup action
      */

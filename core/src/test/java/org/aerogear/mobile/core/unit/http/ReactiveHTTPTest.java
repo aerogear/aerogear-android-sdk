@@ -1,9 +1,22 @@
 package org.aerogear.mobile.core.unit.http;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RuntimeEnvironment;
+
 import android.app.Application;
 import android.support.test.filters.SmallTest;
 
-import java.io.InputStream;
 import org.aerogear.mobile.core.AeroGearTestRunner;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.executor.AppExecutors;
@@ -11,24 +24,9 @@ import org.aerogear.mobile.core.http.HttpResponse;
 import org.aerogear.mobile.core.http.OkHttpResponse;
 import org.aerogear.mobile.core.reactive.Request;
 import org.aerogear.mobile.core.reactive.Responder;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-
-import java.io.IOException;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  * This class contains tests for the reactive rewrite of Http Requests and responses.
@@ -48,11 +46,11 @@ public class ReactiveHTTPTest {
     }
 
     /**
-     * Test a basic HTTP Get request.  The Responder should be passed a string in this test
+     * Test a basic HTTP Get request. The Responder should be passed a string in this test
      */
     @Test
     public void httpGetStringValueTest() throws IOException, InterruptedException {
-        //Setup Test References
+        // Setup Test References
         final String expectedResponse = "Hello World!";
         StringBuilder responseString = new StringBuilder();
         CountDownLatch latch = new CountDownLatch(1);
@@ -66,28 +64,26 @@ public class ReactiveHTTPTest {
         response.setStatus("HTTP/1.1 200");
         webServer.enqueue(response);
 
-        //Actual test
-        core.getHttpLayer()
-            .newRequest()
-            .get(webServer.url("/test").toString())
-            .respondOn(executor.singleThreadService())
-            .respondWith(new Responder<HttpResponse>() {
-                @Override
-                public void onResult(HttpResponse value) {
-                    System.out.println("OnResult On" + Thread.currentThread());
-                    responseString.append(value.stringBody());
-                    latch.countDown();
-                }
+        // Actual test
+        core.getHttpLayer().newRequest().get(webServer.url("/test").toString())
+                        .respondOn(executor.singleThreadService())
+                        .respondWith(new Responder<HttpResponse>() {
+                            @Override
+                            public void onResult(HttpResponse value) {
+                                System.out.println("OnResult On" + Thread.currentThread());
+                                responseString.append(value.stringBody());
+                                latch.countDown();
+                            }
 
-                @Override
-                public void onException(Exception exception) {
-                    latch.countDown();
-                }
-            });
+                            @Override
+                            public void onException(Exception exception) {
+                                latch.countDown();
+                            }
+                        });
         System.out.println("test wait on " + Thread.currentThread());
         latch.await(10, TimeUnit.SECONDS);
 
-        //cleanupMocks
+        // cleanupMocks
         webServer.shutdown();
 
         assertEquals(expectedResponse, responseString.toString());
@@ -101,8 +97,9 @@ public class ReactiveHTTPTest {
      *
      */
     @Test
-    public void httpStringRequestsCloseAutomaticallyTest() throws IOException, InterruptedException {
-        //Setup Test References
+    public void httpStringRequestsCloseAutomaticallyTest()
+                    throws IOException, InterruptedException {
+        // Setup Test References
         final String expectedResponse = "Hello World!";
         CountDownLatch latch = new CountDownLatch(1);
         AtomicReference<HttpResponse> responseReference = new AtomicReference<>();
@@ -115,29 +112,27 @@ public class ReactiveHTTPTest {
         response.setStatus("HTTP/1.1 200");
         webServer.enqueue(response);
 
-        //Actual test
-        core.getHttpLayer()
-            .newRequest()
-            .get(webServer.url("/test").toString())
-            .respondWith(new Responder<HttpResponse>() {
-                @Override
-                public void onResult(HttpResponse value) {
-                    responseReference.set(value);
-                    latch.countDown();
-                }
+        // Actual test
+        core.getHttpLayer().newRequest().get(webServer.url("/test").toString())
+                        .respondWith(new Responder<HttpResponse>() {
+                            @Override
+                            public void onResult(HttpResponse value) {
+                                responseReference.set(value);
+                                latch.countDown();
+                            }
 
-                @Override
-                public void onException(Exception exception) {
-                    latch.countDown();
-                }
-            });
+                            @Override
+                            public void onException(Exception exception) {
+                                latch.countDown();
+                            }
+                        });
 
         latch.await(1, TimeUnit.SECONDS);
 
-        //cleanupMocks
+        // cleanupMocks
         webServer.shutdown();
 
-        assertTrue(((OkHttpResponse)responseReference.get()).isClosed());
+        assertTrue(((OkHttpResponse) responseReference.get()).isClosed());
     }
 
     /**
@@ -145,7 +140,7 @@ public class ReactiveHTTPTest {
      */
     @Test
     public void httpGetInputStreamValueTest() throws IOException, InterruptedException {
-        //Setup Test References
+        // Setup Test References
         final String expectedResponse = "Hello World!";
         StringBuilder responseString = new StringBuilder();
         CountDownLatch latch = new CountDownLatch(1);
@@ -159,35 +154,33 @@ public class ReactiveHTTPTest {
         response.setStatus("HTTP/1.1 200");
         webServer.enqueue(response);
 
-        //Actual test
-        core.getHttpLayer()
-            .newRequest()
-            .get(webServer.url("/test").toString())
-            .respondWith(new Responder<HttpResponse>() {
-                @Override
-                public void onResult(HttpResponse value) {
-                    try (InputStream bodyStream = value.streamBody()) {
-                        int readValue = bodyStream.read();
-                        while (readValue != -1) {
-                            responseString.append((char)readValue);
-                            readValue = bodyStream.read();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+        // Actual test
+        core.getHttpLayer().newRequest().get(webServer.url("/test").toString())
+                        .respondWith(new Responder<HttpResponse>() {
+                            @Override
+                            public void onResult(HttpResponse value) {
+                                try (InputStream bodyStream = value.streamBody()) {
+                                    int readValue = bodyStream.read();
+                                    while (readValue != -1) {
+                                        responseString.append((char) readValue);
+                                        readValue = bodyStream.read();
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
 
-                    latch.countDown();
-                }
+                                latch.countDown();
+                            }
 
-                @Override
-                public void onException(Exception exception) {
-                    latch.countDown();
-                }
-            });
+                            @Override
+                            public void onException(Exception exception) {
+                                latch.countDown();
+                            }
+                        });
 
         latch.await(1, TimeUnit.SECONDS);
 
-        //cleanupMocks
+        // cleanupMocks
         webServer.shutdown();
 
         assertEquals(expectedResponse, responseString.toString());
@@ -198,7 +191,7 @@ public class ReactiveHTTPTest {
      */
     @Test
     public void httpCancelTest() throws IOException, InterruptedException {
-        //Setup Test References
+        // Setup Test References
         final String expectedResponse = "Response is no expected";
         StringBuilder responseString = new StringBuilder();
         CountDownLatch latch = new CountDownLatch(1);
@@ -214,31 +207,29 @@ public class ReactiveHTTPTest {
         response.setStatus("HTTP/1.1 200");
         webServer.enqueue(response);
 
-        //Actual test
-        Request request = core.getHttpLayer()
-            .newRequest()
-            .get(webServer.url("/test").toString())
-            .respondWith(new Responder<HttpResponse>() {
-                @Override
-                public void onResult(HttpResponse value) {
-                    try (InputStream bodyStream = value.streamBody()) {
-                        int readValue = bodyStream.read();
-                        while (readValue != -1) {
-                            responseString.append((char) readValue);
-                            readValue = bodyStream.read();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+        // Actual test
+        Request request = core.getHttpLayer().newRequest().get(webServer.url("/test").toString())
+                        .respondWith(new Responder<HttpResponse>() {
+                            @Override
+                            public void onResult(HttpResponse value) {
+                                try (InputStream bodyStream = value.streamBody()) {
+                                    int readValue = bodyStream.read();
+                                    while (readValue != -1) {
+                                        responseString.append((char) readValue);
+                                        readValue = bodyStream.read();
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
 
-                    latch.countDown();
-                }
+                                latch.countDown();
+                            }
 
-                @Override
-                public void onException(Exception exception) {
-                    latch.countDown();
-                }
-            });
+                            @Override
+                            public void onException(Exception exception) {
+                                latch.countDown();
+                            }
+                        });
 
 
         latch.await(100, TimeUnit.MILLISECONDS);
@@ -246,18 +237,18 @@ public class ReactiveHTTPTest {
         assertTrue(latch.await(20, TimeUnit.SECONDS));
 
 
-        //cleanupMocks
+        // cleanupMocks
         webServer.shutdown();
 
         assertEquals("", responseString.toString());
     }
 
     /**
-     * Test a basic HTTP Get request.  The Responder should be passed a string in this test
+     * Test a basic HTTP Get request. The Responder should be passed a string in this test
      */
     @Test
     public void httpPostStringValueTest() throws IOException, InterruptedException {
-        //Setup Test References
+        // Setup Test References
         final String expectedResponse = "Hello World!";
         StringBuilder responseString = new StringBuilder();
         CountDownLatch latch = new CountDownLatch(1);
@@ -271,26 +262,24 @@ public class ReactiveHTTPTest {
         response.setStatus("HTTP/1.1 200");
         webServer.enqueue(response);
 
-        //Actual test
-        core.getHttpLayer()
-            .newRequest()
-            .get(webServer.url("/test").toString())
-            .respondWith(new Responder<HttpResponse>() {
-                @Override
-                public void onResult(HttpResponse value) {
-                    responseString.append(value.stringBody());
-                    latch.countDown();
-                }
+        // Actual test
+        core.getHttpLayer().newRequest().get(webServer.url("/test").toString())
+                        .respondWith(new Responder<HttpResponse>() {
+                            @Override
+                            public void onResult(HttpResponse value) {
+                                responseString.append(value.stringBody());
+                                latch.countDown();
+                            }
 
-                @Override
-                public void onException(Exception exception) {
-                    latch.countDown();
-                }
-            });
+                            @Override
+                            public void onException(Exception exception) {
+                                latch.countDown();
+                            }
+                        });
 
         latch.await(1, TimeUnit.SECONDS);
 
-        //cleanupMocks
+        // cleanupMocks
         webServer.shutdown();
 
         assertEquals(expectedResponse, responseString.toString());

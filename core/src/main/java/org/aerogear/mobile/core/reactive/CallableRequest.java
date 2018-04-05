@@ -121,14 +121,15 @@ public final class CallableRequest<T> extends AbstractRequest<T> {
     }
 
     @Override
-    public Request<T> cancelWith(@NonNull  Canceller canceller) {
+    public Request<T> cancelWith(@NonNull Canceller canceller) {
         cancellerRef.set(nonNull(canceller, "canceller"));
         return this;
     }
 
     @Override
     protected Cleaner liftCleanupAction() {
-        Cleaner oldCleaner = cleanerAtomicReference.getAndSet(()->{});
+        Cleaner oldCleaner = cleanerAtomicReference.getAndSet(() -> {
+        });
         return oldCleaner;
     }
 }

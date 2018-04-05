@@ -71,11 +71,11 @@ public interface Request<T> {
     Request<T> respondOn(ExecutorService executorService);
 
     /**
-     * This method will apply a transformation to a request using the request thread before it
-     * is passed to the request.  This function will be run 1:1 with responders in its branch of the
+     * This method will apply a transformation to a request using the request thread before it is
+     * passed to the request. This function will be run 1:1 with responders in its branch of the
      * train tree.
      *
-     * @param mapper  a function to transform the result of this request into a new type
+     * @param mapper a function to transform the result of this request into a new type
      * @param <R> the type to transform into
      * @return a chainable instance of Request, not guaranteed to be the this reference
      */

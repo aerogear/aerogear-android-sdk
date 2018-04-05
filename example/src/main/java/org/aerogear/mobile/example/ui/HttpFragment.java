@@ -47,25 +47,26 @@ public class HttpFragment extends BaseFragment {
 
         HttpRequest httpRequest = activity.mobileCore.getHttpLayer().newRequest();
         httpRequest.get("https://jsonplaceholder.typicode.com/users")
-            .map((response)-> ((HttpResponse)response).stringBody())
-            .respondOn(new AppExecutors().mainThread())
-            .respondWith(new Responder<String>() {
-                @Override
-                public void onResult(String jsonResponse) {
-                        List<User> retrievesUsers = new Gson().fromJson(jsonResponse,
-                            new TypeToken<List<User>>() {}.getType());
+                        .map((response) -> ((HttpResponse) response).stringBody())
+                        .respondOn(new AppExecutors().mainThread())
+                        .respondWith(new Responder<String>() {
+                            @Override
+                            public void onResult(String jsonResponse) {
+                                List<User> retrievesUsers = new Gson().fromJson(jsonResponse,
+                                                new TypeToken<List<User>>() {}.getType());
 
-                        activity.mobileCore.getLogger().info("Users: " + retrievesUsers.size());
+                                activity.mobileCore.getLogger()
+                                                .info("Users: " + retrievesUsers.size());
 
-                        users.addAll(retrievesUsers);
-                }
+                                users.addAll(retrievesUsers);
+                            }
 
-                @Override
-                public void onException(Exception exception) {
-                    Log.e(TAG, exception.toString());
-                }
+                            @Override
+                            public void onException(Exception exception) {
+                                Log.e(TAG, exception.toString());
+                            }
 
-            });
+                        });
     }
 
 }

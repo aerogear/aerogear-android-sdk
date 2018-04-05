@@ -66,7 +66,8 @@ public final class CacheRequest<T> extends AbstractRequest<T> implements Respond
     @Override
     public void onResult(T value) {
         cachedResult = value;
-        delegateTo.liftCleanupAction().cleanup();//We won't call the original request again, cleanup.
+        delegateTo.liftCleanupAction().cleanup();// We won't call the original request again,
+                                                 // cleanup.
         for (AtomicReference<Responder<T>> responderRef : awaitingResponders) {
             Responder<T> responder = responderRef.get();
             if (responder != null) {
@@ -93,6 +94,7 @@ public final class CacheRequest<T> extends AbstractRequest<T> implements Respond
      */
     @Override
     protected Cleaner liftCleanupAction() {
-        return ()->{};
+        return () -> {
+        };
     }
 }

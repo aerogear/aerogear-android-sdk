@@ -1,6 +1,5 @@
 package org.aerogear.mobile.core.http;
 
-import android.util.Log;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -52,13 +51,15 @@ public class OkHttpRequest implements HttpRequest {
             response.set(okHttpResponse);
             return okHttpResponse;
         }, () -> {
-            /*Cleaner*/
+            /* Cleaner */
             System.out.println("Cleanup call on " + Thread.currentThread());
             OkHttpResponse okHttpResponse = response.get();
             if (okHttpResponse != null && !okHttpResponse.isClosed()) {
                 okHttpResponse.waitForCompletionAndClose();
             }
-        }).cancelWith(()->{call.cancel();}).requestOn(appExecutors.networkThread());
+        }).cancelWith(() -> {
+            call.cancel();
+        }).requestOn(appExecutors.networkThread());
 
     }
 
@@ -68,8 +69,8 @@ public class OkHttpRequest implements HttpRequest {
 
         AtomicReference<OkHttpResponse> response = new AtomicReference<>();
         return Requester.call(() -> {
-            RequestBody requestBody =
-                RequestBody.create(MediaType.parse(headers.get(CONTENT_TYPE_HEADER)), body);
+            RequestBody requestBody = RequestBody
+                            .create(MediaType.parse(headers.get(CONTENT_TYPE_HEADER)), body);
             Request.Builder postRequestBuilder = requestBuilderWithUrl(url).post(requestBody);
             addHeaders(postRequestBuilder);
 
@@ -80,12 +81,14 @@ public class OkHttpRequest implements HttpRequest {
             response.set(okHttpResponse);
             return okHttpResponse;
         }, () -> {
-            /*Cleaner*/
+            /* Cleaner */
             OkHttpResponse okHttpResponse = response.get();
             if (okHttpResponse != null && !okHttpResponse.isClosed()) {
                 okHttpResponse.waitForCompletionAndClose();
             }
-        }).cancelWith(()->{call.cancel();}).requestOn(appExecutors.networkThread());
+        }).cancelWith(() -> {
+            call.cancel();
+        }).requestOn(appExecutors.networkThread());
     }
 
     @Override
@@ -94,8 +97,8 @@ public class OkHttpRequest implements HttpRequest {
 
         AtomicReference<OkHttpResponse> response = new AtomicReference<>();
         return Requester.call(() -> {
-            RequestBody requestBody =
-                RequestBody.create(MediaType.parse(headers.get(CONTENT_TYPE_HEADER)), body);
+            RequestBody requestBody = RequestBody
+                            .create(MediaType.parse(headers.get(CONTENT_TYPE_HEADER)), body);
             Request.Builder postRequestBuilder = requestBuilderWithUrl(url).put(requestBody);
             addHeaders(postRequestBuilder);
 
@@ -106,12 +109,14 @@ public class OkHttpRequest implements HttpRequest {
             response.set(okHttpResponse);
             return okHttpResponse;
         }, () -> {
-            /*Cleaner*/
+            /* Cleaner */
             OkHttpResponse okHttpResponse = response.get();
             if (okHttpResponse != null && !okHttpResponse.isClosed()) {
                 okHttpResponse.waitForCompletionAndClose();
             }
-        }).cancelWith(()->{call.cancel();}).requestOn(appExecutors.networkThread());
+        }).cancelWith(() -> {
+            call.cancel();
+        }).requestOn(appExecutors.networkThread());
 
     }
 
@@ -130,12 +135,14 @@ public class OkHttpRequest implements HttpRequest {
             response.set(okHttpResponse);
             return okHttpResponse;
         }, () -> {
-            /*Cleaner*/
+            /* Cleaner */
             OkHttpResponse okHttpResponse = response.get();
             if (okHttpResponse != null && !okHttpResponse.isClosed()) {
                 okHttpResponse.waitForCompletionAndClose();
             }
-        }).cancelWith(()->{call.cancel();}).requestOn(appExecutors.networkThread());
+        }).cancelWith(() -> {
+            call.cancel();
+        }).requestOn(appExecutors.networkThread());
     }
 
     private Request.Builder requestBuilderWithUrl(final String url) {

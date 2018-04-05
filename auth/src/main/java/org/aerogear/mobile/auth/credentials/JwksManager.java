@@ -4,7 +4,6 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 import java.util.Date;
 
-import org.aerogear.mobile.core.reactive.Responder;
 import org.jose4j.jwk.JsonWebKeySet;
 import org.jose4j.lang.JoseException;
 
@@ -21,6 +20,7 @@ import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpResponse;
 import org.aerogear.mobile.core.http.HttpServiceModule;
 import org.aerogear.mobile.core.logging.Logger;
+import org.aerogear.mobile.core.reactive.Responder;
 
 /**
  * A class that is responsible for manage the Json Web Key Set(JWKS).
@@ -105,8 +105,7 @@ public class JwksManager {
                     @Nullable final Callback<JsonWebKeySet> callback) {
         String jwksUrl = nonNull(keycloakConfiguration, "keycloakConfiguration").getJwksUrl();
         HttpRequest getRequest = httpModule.newRequest();
-        getRequest.get(jwksUrl)
-        .respondWith(new Responder<HttpResponse>() {
+        getRequest.get(jwksUrl).respondWith(new Responder<HttpResponse>() {
 
 
             @Override
@@ -121,14 +120,15 @@ public class JwksManager {
                     } catch (JoseException e) {
                         jwks = null;
                         error = new JwksException(e);
-                        LOGGER.warning("failed to parse JWKS key content. content = " + jwksContent);
+                        LOGGER.warning("failed to parse JWKS key content. content = "
+                                        + jwksContent);
                     }
                     if (jwks != null) {
                         persistJwksContent(keycloakConfiguration.getRealmName(), jwksContent);
                     }
                 } else {
                     LOGGER.warning("failed to fetch JWKS from server. url = " + jwksUrl
-                        + " statusCode = " + response.getStatus());
+                                    + " statusCode = " + response.getStatus());
                     error = new JwksException("failed to fetch JWKS from server");
                 }
                 if (callback != null) {

@@ -2,7 +2,6 @@ package org.aerogear.mobile.core.metrics.publisher;
 
 import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
-
 import org.aerogear.mobile.core.reactive.Responder;
 import org.json.JSONObject;
 
@@ -17,6 +16,8 @@ import org.aerogear.mobile.core.http.HttpResponse;
 import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.metrics.Metrics;
 import org.aerogear.mobile.core.metrics.MetricsPublisher;
+import org.aerogear.mobile.core.reactive.Responder;
+
 
 /**
  * Sends metrics data to the backend using the configuration in JSON config file
@@ -48,23 +49,23 @@ public final class NetworkMetricsPublisher extends MetricsPublisher {
 
 
             httpRequest.post(url, json.toString().getBytes())
-            .respondWith(new Responder<HttpResponse>() {
-                @Override
-                public void onResult(HttpResponse value) {
-                    if (callback != null) {
-                        callback.onSuccess();
-                    }
-                }
+                            .respondWith(new Responder<HttpResponse>() {
+                                @Override
+                                public void onResult(HttpResponse value) {
+                                    if (callback != null) {
+                                        callback.onSuccess();
+                                    }
+                                }
 
-                @Override
-                public void onException(Exception exception) {
-                    if (callback != null) {
-                        callback.onError(exception);
-                    } else {
-                        LOGGER.error(exception.getMessage());
-                    }
-                }
-            });
+                                @Override
+                                public void onException(Exception exception) {
+                                    if (callback != null) {
+                                        callback.onError(exception);
+                                    } else {
+                                        LOGGER.error(exception.getMessage());
+                                    }
+                                }
+                            });
 
             LOGGER.debug("Sending metrics");
 

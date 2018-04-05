@@ -37,7 +37,7 @@ class MapRequest<T, R> extends AbstractRequest<R> {
                         onException(exception);
                         return;
                     } finally {
-                        //We are done with the original value, it is safe to cleanup.
+                        // We are done with the original value, it is safe to cleanup.
                         delegateTo.liftCleanupAction().cleanup();
                     }
                     responder.onResult(mappedValue);
@@ -69,12 +69,14 @@ class MapRequest<T, R> extends AbstractRequest<R> {
 
     /**
      * As the Map is responsible for getting a value from the underlying system, it does not need to
-     * lift its delegate's cleanup.  Future versions may give map the ability to cleanup its own requests.
+     * lift its delegate's cleanup. Future versions may give map the ability to cleanup its own
+     * requests.
      *
      * @return an empty cleaner.
      */
     @Override
     protected Cleaner liftCleanupAction() {
-        return () ->{};
+        return () -> {
+        };
     }
 }
