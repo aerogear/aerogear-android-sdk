@@ -91,7 +91,7 @@ public class AuthorizationServiceFactory {
 
         AuthorizationService authService = new AuthorizationService(this.appContext, appAuthConfig);
         AuthorizationRequest authRequest = new AuthorizationRequest.Builder(authServiceConfig,
-                        keycloakConfiguration.getClientId(), ResponseTypeValues.CODE,
+                        keycloakConfiguration.getResourceId(), ResponseTypeValues.CODE,
                         authServiceConfiguration.getRedirectUri())
                                         .setScopes(authServiceConfiguration.getScopes()).build();
 

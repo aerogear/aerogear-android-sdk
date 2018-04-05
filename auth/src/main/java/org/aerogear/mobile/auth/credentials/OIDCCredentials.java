@@ -32,7 +32,7 @@ public class OIDCCredentials {
     /**
      * OpenID Connect credentials containing the identity, refresh and access tokens provided on a
      * successful authentication with OpenID Connect.
-     * 
+     *
      * @param serialisedCredential JSON string representation of the authState field produced by
      *        {@link #deserialize(String)}.
      * @throws IllegalArgumentException if deserializing fails
@@ -72,7 +72,7 @@ public class OIDCCredentials {
     public boolean verifyClaims(final JsonWebKeySet jwks,
                     final KeycloakConfiguration keycloakConfig) {
         final String issuer = keycloakConfig.getIssuer();
-        final String audience = keycloakConfig.getClientId();
+        final String audience = keycloakConfig.getResourceId();
         final JwksVerificationKeyResolver jwksKeyResolver =
                         new JwksVerificationKeyResolver(jwks.getJsonWebKeys());
 
@@ -125,7 +125,7 @@ public class OIDCCredentials {
 
     /**
      * Returns whether this token is expired or not.
-     * 
+     *
      * @return true if expired.
      */
     public boolean isExpired() {
@@ -134,7 +134,7 @@ public class OIDCCredentials {
 
     /**
      * Check whether new access token is needed.
-     * 
+     *
      * @return true if access token is needed
      */
     public boolean getNeedsRenewal() {
@@ -150,7 +150,7 @@ public class OIDCCredentials {
 
     /**
      * Check if the user is authenticated/authorized.
-     * 
+     *
      * @return <code>true</code> if the user is authenticated/authorized.
      */
     public boolean isAuthorized() {
@@ -159,7 +159,7 @@ public class OIDCCredentials {
 
     /**
      * Returns stringified JSON for the OIDCCredential.
-     * 
+     *
      * @return Stringified JSON OIDCCredential
      * @throws IllegalStateException if the auth state can not be serialized
      */
@@ -175,7 +175,7 @@ public class OIDCCredentials {
 
     /**
      * Return a new credential from the output of {@link #serialize()}
-     * 
+     *
      * @param serializedCredential serialized credential from {@link #serialize()}
      * @return new credential
      * @throws IllegalArgumentException if the serailized credentials can not be deserialized
@@ -194,7 +194,7 @@ public class OIDCCredentials {
 
     /**
      * Check whether the user is authorized and not expired.
-     * 
+     *
      * @return true if user is authorized and token is not expired.
      */
     public boolean checkValidAuth() {

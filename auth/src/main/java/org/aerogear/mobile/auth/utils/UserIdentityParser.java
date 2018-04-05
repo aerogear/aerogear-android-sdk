@@ -22,11 +22,10 @@ public class UserIdentityParser {
     private static final String USERNAME = "preferred_username";
     private static final String EMAIL = "email";
     private static final String REALM = "realm_access";
-    private static final String CLIENT = "resource_access";
+    private static final String RESOURCE = "resource_access";
     private static final String ROLES = "roles";
     private static final String FIRST_NAME = "given_name";
     private static final String LAST_NAME = "family_name";
-    private static final String RESOURCE = "resource";
     private static final String COMMA = ",";
 
     /**
@@ -130,9 +129,9 @@ public class UserIdentityParser {
             if (realmRoles != null) {
                 roles.addAll(realmRoles);
             }
-            Set<UserRole> clientRoles = parseClientRoles();
-            if (clientRoles != null) {
-                roles.addAll(clientRoles);
+            Set<UserRole> resourceRoles = parseResourceRoles();
+            if (resourceRoles != null) {
+                roles.addAll(resourceRoles);
             }
         }
         return roles;
@@ -175,35 +174,38 @@ public class UserIdentityParser {
     }
 
     /**
-     * Parses the user's initial client roles from the user identity {@link #userIdentity}
+     * Parses the user's initial resource roles from the user identity {@link #userIdentity}
      *
-     * @return user's client roles
-     * @throws JSONException if the CLIENT property is not in the userIdentity object or CLIENT does
-     *         not have a ROLES property
+     * @return user's resource roles
+     * @throws JSONException if the RESOURCE property is not in the userIdentity object or RESOURCE
+     *         does not have a ROLES property
      */
-    private Set<UserRole> parseClientRoles() throws JSONException {
-        Set<UserRole> clientRoles = new HashSet<>();
+    private Set<UserRole> parseResourceRoles() throws JSONException {
+        Set<UserRole> resourceRoles = new HashSet<>();
 
-        if (keycloakConfiguration.getClientId() != null) {
-            String initialClientID = keycloakConfiguration.getClientId(); // immediate client role
+        if (keycloakConfiguration.getResourceId() != null) {
+            String initialResourceID = keycloakConfiguration.getResourceId();
 
-            if (userIdentity.has(CLIENT) && userIdentity.getJSONObject(CLIENT).has(initialClientID)
-                            && userIdentity.getJSONObject(CLIENT).getJSONObject(initialClientID)
+            if (userIdentity.has(RESOURCE)
+                            && userIdentity.getJSONObject(RESOURCE).has(initialResourceID)
+                            && userIdentity.getJSONObject(RESOURCE).getJSONObject(initialResourceID)
                                             .has(ROLES)) {
-                String tokenClientRolesJSON = userIdentity.getJSONObject(CLIENT)
-                                .getJSONObject(initialClientID).getString(ROLES);
+                String tokenResourceRolesJSON = userIdentity.getJSONObject(RESOURCE)
+                                .getJSONObject(initialResourceID).getString(ROLES);
 
-                String clientRolesString = tokenClientRolesJSON
-                                .substring(1, tokenClientRolesJSON.length() - 1).replace("\"", "");
-                String roles[] = clientRolesString.split(COMMA);
+                String resourceRolesString = tokenResourceRolesJSON
+                                .substring(1, tokenResourceRolesJSON.length() - 1)
+                                .replace("\"", "");
+                String roles[] = resourceRolesString.split(COMMA);
 
                 for (String roleName : roles) {
-                    UserRole clientRole = new UserRole(roleName, RoleType.CLIENT, initialClientID);
-                    clientRoles.add(clientRole);
+                    UserRole resourceRole =
+                                    new UserRole(roleName, RoleType.RESOURCE, initialResourceID);
+                    resourceRoles.add(resourceRole);
                 }
             }
         }
-        return clientRoles;
+        return resourceRoles;
     }
 
     /**

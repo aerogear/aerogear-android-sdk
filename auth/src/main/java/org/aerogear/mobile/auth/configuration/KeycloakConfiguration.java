@@ -14,7 +14,7 @@ public class KeycloakConfiguration {
 
     private static final String SERVER_URL_NAME = "auth-server-url";
     private static final String REALM_ID_NAME = "realm";
-    private static final String CLIENT_ID_NAME = "resource";
+    private static final String RESOURCE_ID_NAME = "resource";
 
     private static final String TOKEN_HINT_FRAGMENT = "id_token_hint";
     private static final String REDIRECT_FRAGMENT = "redirect_uri";
@@ -24,13 +24,13 @@ public class KeycloakConfiguration {
 
     private final String serverUrl;
     private final String realmId;
-    private final String clientId;
+    private final String resourceId;
     private final String baseUrl;
 
     /**
      * Create a new instance of the Keycloak configuration from the given instance of
      * ServiceConfiguration.
-     * 
+     *
      * @param configuration the ServiceConfiguration instance for Keycloak
      */
     public KeycloakConfiguration(final ServiceConfiguration configuration) {
@@ -38,13 +38,13 @@ public class KeycloakConfiguration {
 
         this.serverUrl = nonEmpty(configuration.getProperty(SERVER_URL_NAME), SERVER_URL_NAME);
         this.realmId = nonEmpty(configuration.getProperty(REALM_ID_NAME), REALM_ID_NAME);
-        this.clientId = nonEmpty(configuration.getProperty(CLIENT_ID_NAME), CLIENT_ID_NAME);
+        this.resourceId = nonEmpty(configuration.getProperty(RESOURCE_ID_NAME), RESOURCE_ID_NAME);
         this.baseUrl = String.format(BASE_URL_TEMPLATE, serverUrl, realmId);
     }
 
     /**
      * Get the URI for the Keycloak authentication endpoint
-     * 
+     *
      * @return the authentication endpoint URI
      */
     public Uri getAuthenticationEndpoint() {
@@ -53,7 +53,7 @@ public class KeycloakConfiguration {
 
     /**
      * Get the URI for the token exchange endpoint
-     * 
+     *
      * @return the token exchange endpoint URI
      */
     public Uri getTokenEndpoint() {
@@ -61,17 +61,17 @@ public class KeycloakConfiguration {
     }
 
     /**
-     * Get the client id
-     * 
-     * @return the client id
+     * Get the resource id
+     *
+     * @return the resource id
      */
-    public String getClientId() {
-        return this.clientId;
+    public String getResourceId() {
+        return this.resourceId;
     }
 
     /**
      * Get the logout URL string
-     * 
+     *
      * @param identityToken the identity token
      * @param redirectUri the redirect uri
      * @return the full logout URL string
@@ -83,7 +83,7 @@ public class KeycloakConfiguration {
 
     /**
      * Get the URL string of the Keycloak singleThreadService
-     * 
+     *
      * @return the URL of the Keycloak singleThreadService
      */
     public String getHostUrl() {
@@ -92,7 +92,7 @@ public class KeycloakConfiguration {
 
     /**
      * Get the realm name of the Keycloak singleThreadService
-     * 
+     *
      * @return the realm name
      */
     public String getRealmName() {
@@ -101,7 +101,7 @@ public class KeycloakConfiguration {
 
     /**
      * Returns the URL where keys can be retrieved.
-     * 
+     *
      * @return the URL where keys can be retrieved.
      */
     public String getJwksUrl() {
@@ -110,7 +110,7 @@ public class KeycloakConfiguration {
 
     /**
      * Returns the JWT Issuer
-     * 
+     *
      * @return the JWT Issuer
      */
     public String getIssuer() {

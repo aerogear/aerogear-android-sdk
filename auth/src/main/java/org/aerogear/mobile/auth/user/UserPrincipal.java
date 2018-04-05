@@ -11,13 +11,13 @@ import java.util.Set;
 public interface UserPrincipal extends Serializable {
 
     /**
-     * Checks if the user has the specified Client role.
+     * Checks if the user has the specified Resource role.
      *
      * @param role role to be checked
-     * @param clientId clientID related to role
+     * @param resourceId resourceId related to role
      * @return true or false
      */
-    boolean hasClientRole(String role, String clientId);
+    boolean hasResourceRole(String role, String resourceId);
 
     /**
      * Checks if the user has the specified Realm role.
