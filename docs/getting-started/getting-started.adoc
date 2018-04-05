@@ -8,13 +8,43 @@ You will need the following installed on your system
 
  * Android SDK or Android Studio from https://developer.android.com/studio/index.html[Google]
 
-It is reccomended you have the following installed  
+It is recommended you have the following installed
 
  * The latest version of http://openjdk.java.net/install/index.html[OpenJDK]
 
-== Installing
+== Using a Published SDK
 
-As of the writing of this guide, the Aerogear Android SDK is not in jcenter and needs to be installed manually.
+=== jcenter()
+
+To use a published version of the SDK you have to add jcenter to the build.grade file in your project's root directory
+
+[source, groovy]
+----
+allprojects {
+    repositories {
+        jcenter() // <-- Add This line
+        google()
+    }
+}
+----
+
+=== Reference the Dependencies
+
+In the build.gradle file for your app you can begin adding dependencies provided by the sdk.
+
+----
+dependencies {
+    ...
+    implementation 'org.aerogear:core:0.1.0-2018-09'
+    implementation 'org.aerogear:auth:0.1.0-2018-09' // <- adjust to suit release version
+}
+----
+
+A full list of releases can be viewed https://github.com/aerogear/aerogear-android-sdk/releases[here]
+
+== Installing Local Build of SDK
+
+Alternatively the SDK can be installed manually instead of using a published version.
 
 === Clone and build the library
 
@@ -32,8 +62,6 @@ ls ~/.m2/repository/org/aerogear
 
 # Should output auth core
 ----
-
-== Using the SDK
 
 === MavenLocal()
 
@@ -62,7 +90,7 @@ dependencies {
 }
 ----
 
-=== Using the SDK
+== Using the SDK
 
 In an example you can use the SDK as follows
 
