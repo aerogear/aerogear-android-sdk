@@ -30,7 +30,7 @@ class OkHttpResponse implements HttpResponse {
                 response = okHttpCall.execute();
                 requestCompleteLatch.countDown();
 
-                if(response.isSuccessful()){
+                if(response.isSuccessful()) {
                     // status 200 or 300
                     runSuccessHandler();
                 } else {
