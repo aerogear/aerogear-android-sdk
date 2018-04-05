@@ -1,20 +1,21 @@
 package org.aerogear.mobile.auth.utils;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
+
+import java.util.Set;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+
 import org.aerogear.mobile.auth.AuthenticationException;
 import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
 import org.aerogear.mobile.auth.credentials.OIDCCredentials;
 import org.aerogear.mobile.auth.user.RoleType;
 import org.aerogear.mobile.auth.user.UserRole;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-
-import java.util.Set;
-
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
 
 @RunWith(RobolectricTestRunner.class)
 public class UserIdentityParserTest {
@@ -45,8 +46,7 @@ public class UserIdentityParserTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testUserIdentityParser_NullServiceConfig()
-                    throws AuthenticationException {
+    public void testUserIdentityParser_NullServiceConfig() throws AuthenticationException {
         parser = new UserIdentityParser(credential, null);
     }
 

@@ -1,11 +1,8 @@
 package org.aerogear.mobile.auth.credentials;
 
-import junit.framework.Assert;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
-import net.openid.appauth.AuthState;
-
-import org.aerogear.mobile.auth.AuthenticationException;
-import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
 import org.jose4j.jwk.JsonWebKeySet;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,8 +13,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
+import org.aerogear.mobile.auth.AuthenticationException;
+import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
+
+import junit.framework.Assert;
+import net.openid.appauth.AuthState;
 
 @RunWith(RobolectricTestRunner.class)
 public class OIDCCredentialsTest {

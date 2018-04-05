@@ -1,16 +1,5 @@
 package org.aerogear.mobile.auth;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-
-import org.aerogear.mobile.auth.credentials.OIDCCredentials;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.lang.reflect.Field;
-
 import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -18,6 +7,18 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.lang.reflect.Field;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+
+import org.aerogear.mobile.auth.credentials.OIDCCredentials;
 
 public class AuthStateManagerTest {
     @Mock
