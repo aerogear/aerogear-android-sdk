@@ -16,8 +16,13 @@ import org.aerogear.mobile.auth.credentials.OIDCCredentials;
 import org.aerogear.mobile.auth.user.RoleType;
 import org.aerogear.mobile.auth.user.UserPrincipalImpl;
 import org.aerogear.mobile.auth.user.UserRole;
+import org.aerogear.mobile.core.MobileCore;
+import org.aerogear.mobile.core.logging.Logger;
 
 public class UserIdentityParser {
+
+    private static final Logger LOG = MobileCore.getLogger();
+    private static final String TAG = "UserIdentityParser";
 
     private static final String USERNAME = "preferred_username";
     private static final String EMAIL = "email";
@@ -56,13 +61,15 @@ public class UserIdentityParser {
      * Parse the users first name from the {@link #userIdentity users identity}
      *
      * @return user's first name
-     * @throws JSONException if the {@link #FIRST_NAME} property cannot be retrieved from the user
-     *         identity.
      */
-    public String parseFirstName() throws JSONException {
+    public String parseFirstName() {
         String firstName = "";
         if (userIdentity != null && userIdentity.has(FIRST_NAME)) {
-            firstName = userIdentity.getString(FIRST_NAME);
+            try {
+                firstName = userIdentity.getString(FIRST_NAME);
+            } catch (JSONException e) {
+                LOG.debug(TAG, "Failed to get user first name from user identity", e);
+            }
         }
         return firstName;
     }
@@ -71,13 +78,15 @@ public class UserIdentityParser {
      * Parse the users last name from the {@link #userIdentity users identity}
      *
      * @return user's last name
-     * @throws JSONException if the {@link #LAST_NAME} property cannot be retrieved from the user
-     *         identity.
      */
-    public String parseLastName() throws JSONException {
+    public String parseLastName() {
         String lastName = "";
         if (userIdentity != null && userIdentity.has(LAST_NAME)) {
-            lastName = userIdentity.getString(LAST_NAME);
+            try {
+                lastName = userIdentity.getString(LAST_NAME);
+            } catch (JSONException e) {
+                LOG.debug(TAG, "Failed to get user last name from user identity", e);
+            }
         }
         return lastName;
     }
@@ -86,14 +95,17 @@ public class UserIdentityParser {
      * Parses the user's username from the user identity {@link #userIdentity}
      *
      * @return user's username
-     * @throws JSONException if the USERNAME property is not in the userIdentity object
      */
-    public String parseUsername() throws JSONException {
+    public String parseUsername() {
         String username = "Unknown Username";
         if (userIdentity != null) {
             // get the users username
-            if (userIdentity.has(USERNAME) && userIdentity.getString(USERNAME).length() > 0) {
-                username = userIdentity.getString(USERNAME);
+            try {
+                if (userIdentity.has(USERNAME) && userIdentity.getString(USERNAME).length() > 0) {
+                    username = userIdentity.getString(USERNAME);
+                }
+            } catch (JSONException e) {
+                LOG.debug(TAG, "Failed to get username from user identity", e);
             }
         }
         return username;
@@ -103,14 +115,17 @@ public class UserIdentityParser {
      * Parses the user's email address from the user identity {@link #userIdentity}
      *
      * @return user's email address
-     * @throws JSONException if the EMAIL property is not in the userIdentity object
      */
-    public String parseEmail() throws JSONException {
+    public String parseEmail() {
         String emailAddress = "Unknown Email";
         if (userIdentity != null) {
             // get the users email
-            if (userIdentity.has(EMAIL) && userIdentity.getString(EMAIL).length() > 0) {
-                emailAddress = userIdentity.getString(EMAIL);
+            try {
+                if (userIdentity.has(EMAIL) && userIdentity.getString(EMAIL).length() > 0) {
+                    emailAddress = userIdentity.getString(EMAIL);
+                }
+            } catch (JSONException e) {
+                LOG.debug(TAG, "Failed to get user email from user identity", e);
             }
         }
         return emailAddress;
@@ -120,9 +135,8 @@ public class UserIdentityParser {
      * Parses the user's roles from the user identity {@link #userIdentity}
      *
      * @return user's roles
-     * @throws JSONException if the REALM property is not in the userIdentity object
      */
-    public Set<UserRole> parseRoles() throws JSONException {
+    public Set<UserRole> parseRoles() {
         Set<UserRole> roles = new HashSet<>();
         if (userIdentity != null) {
             Set<UserRole> realmRoles = parseRealmRoles();
@@ -137,38 +151,36 @@ public class UserIdentityParser {
         return roles;
     }
 
-    public UserPrincipalImpl parseUser() throws AuthenticationException {
-        try {
-            return UserPrincipalImpl.newUser().withEmail(parseEmail())
-                            .withFirstName(parseFirstName()).withLastName(parseLastName())
-                            .withUsername(parseUsername()).withRoles(parseRoles())
-                            .withIdentityToken(credential.getIdentityToken())
-                            .withAccessToken(credential.getAccessToken())
-                            .withRefreshToken(credential.getRefreshToken()).build();
-        } catch (JSONException jsonEx) {
-            throw new AuthenticationException(jsonEx);
-        }
+    public UserPrincipalImpl parseUser() {
+        return UserPrincipalImpl.newUser().withEmail(parseEmail()).withFirstName(parseFirstName())
+                        .withLastName(parseLastName()).withUsername(parseUsername())
+                        .withRoles(parseRoles()).withIdentityToken(credential.getIdentityToken())
+                        .withAccessToken(credential.getAccessToken())
+                        .withRefreshToken(credential.getRefreshToken()).build();
     }
 
     /**
      * Parses the user's realm roles from the user identity {@link #userIdentity}
      *
      * @return user's realm roles
-     * @throws JSONException if the REALM property is not in the userIdentity object
      */
-    private Set<UserRole> parseRealmRoles() throws JSONException {
+    private Set<UserRole> parseRealmRoles() {
         Set<UserRole> realmRoles = new HashSet<>();
-        if (userIdentity.has(REALM) && userIdentity.getJSONObject(REALM).has(ROLES)) {
-            String tokenRealmRolesJSON = userIdentity.getJSONObject(REALM).getString(ROLES);
+        try {
+            if (userIdentity.has(REALM) && userIdentity.getJSONObject(REALM).has(ROLES)) {
+                String tokenRealmRolesJSON = userIdentity.getJSONObject(REALM).getString(ROLES);
 
-            String realmRolesString = tokenRealmRolesJSON
-                            .substring(1, tokenRealmRolesJSON.length() - 1).replace("\"", "");
-            String roles[] = realmRolesString.split(COMMA);
+                String realmRolesString = tokenRealmRolesJSON
+                                .substring(1, tokenRealmRolesJSON.length() - 1).replace("\"", "");
+                String roles[] = realmRolesString.split(COMMA);
 
-            for (String roleName : roles) {
-                UserRole realmRole = new UserRole(roleName, RoleType.REALM, null);
-                realmRoles.add(realmRole);
+                for (String roleName : roles) {
+                    UserRole realmRole = new UserRole(roleName, RoleType.REALM, null);
+                    realmRoles.add(realmRole);
+                }
             }
+        } catch (JSONException e) {
+            LOG.debug(TAG, "Failed to get user realm roles from user identity", e);
         }
         return realmRoles;
     }
@@ -177,32 +189,34 @@ public class UserIdentityParser {
      * Parses the user's initial resource roles from the user identity {@link #userIdentity}
      *
      * @return user's resource roles
-     * @throws JSONException if the RESOURCE property is not in the userIdentity object or RESOURCE
-     *         does not have a ROLES property
      */
-    private Set<UserRole> parseResourceRoles() throws JSONException {
+    private Set<UserRole> parseResourceRoles() {
         Set<UserRole> resourceRoles = new HashSet<>();
 
         if (keycloakConfiguration.getResourceId() != null) {
             String initialResourceID = keycloakConfiguration.getResourceId();
 
-            if (userIdentity.has(RESOURCE)
-                            && userIdentity.getJSONObject(RESOURCE).has(initialResourceID)
-                            && userIdentity.getJSONObject(RESOURCE).getJSONObject(initialResourceID)
-                                            .has(ROLES)) {
-                String tokenResourceRolesJSON = userIdentity.getJSONObject(RESOURCE)
-                                .getJSONObject(initialResourceID).getString(ROLES);
+            try {
+                if (userIdentity.has(RESOURCE)
+                                && userIdentity.getJSONObject(RESOURCE).has(initialResourceID)
+                                && userIdentity.getJSONObject(RESOURCE)
+                                                .getJSONObject(initialResourceID).has(ROLES)) {
+                    String tokenResourceRolesJSON = userIdentity.getJSONObject(RESOURCE)
+                                    .getJSONObject(initialResourceID).getString(ROLES);
 
-                String resourceRolesString = tokenResourceRolesJSON
-                                .substring(1, tokenResourceRolesJSON.length() - 1)
-                                .replace("\"", "");
-                String roles[] = resourceRolesString.split(COMMA);
+                    String resourceRolesString = tokenResourceRolesJSON
+                                    .substring(1, tokenResourceRolesJSON.length() - 1)
+                                    .replace("\"", "");
+                    String roles[] = resourceRolesString.split(COMMA);
 
-                for (String roleName : roles) {
-                    UserRole resourceRole =
-                                    new UserRole(roleName, RoleType.RESOURCE, initialResourceID);
-                    resourceRoles.add(resourceRole);
+                    for (String roleName : roles) {
+                        UserRole resourceRole = new UserRole(roleName, RoleType.RESOURCE,
+                                        initialResourceID);
+                        resourceRoles.add(resourceRole);
+                    }
                 }
+            } catch (JSONException e) {
+                LOG.debug(TAG, "Failed to get users resource roles from user identity", e);
             }
         }
         return resourceRoles;

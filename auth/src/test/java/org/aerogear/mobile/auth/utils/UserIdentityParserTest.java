@@ -1,22 +1,20 @@
 package org.aerogear.mobile.auth.utils;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
-
-import java.util.Set;
-
-import org.json.JSONException;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-
 import org.aerogear.mobile.auth.AuthenticationException;
 import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
 import org.aerogear.mobile.auth.credentials.OIDCCredentials;
 import org.aerogear.mobile.auth.user.RoleType;
 import org.aerogear.mobile.auth.user.UserRole;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+
+import java.util.Set;
+
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 
 @RunWith(RobolectricTestRunner.class)
 public class UserIdentityParserTest {
@@ -31,7 +29,7 @@ public class UserIdentityParserTest {
     private OIDCCredentials credential;
 
     @Before
-    public void setup() throws JSONException, AuthenticationException {
+    public void setup() throws AuthenticationException {
         ServiceConfiguration serviceConfig = ServiceConfiguration.newConfiguration()
                         .addProperty("resource", "client-app")
                         .addProperty("auth-server-url", "test.server.url")
@@ -48,12 +46,12 @@ public class UserIdentityParserTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testUserIdentityParser_NullServiceConfig()
-                    throws JSONException, AuthenticationException {
+                    throws AuthenticationException {
         parser = new UserIdentityParser(credential, null);
     }
 
     @Test
-    public void testParsers_NullCredentials() throws JSONException, AuthenticationException {
+    public void testParsers_NullCredentials() throws AuthenticationException {
         parser = new UserIdentityParser(null, keycloakConfiguration);
 
         String expectedUsername = "Unknown Username";
@@ -69,7 +67,7 @@ public class UserIdentityParserTest {
     }
 
     @Test
-    public void testParsers_WithCredentials() throws JSONException {
+    public void testParsers_WithCredentials() {
         String expectedUsername = "user1";
         String expectedEmail = "user1@feedhenry.org";
         UserRole expectedRealmRole = new UserRole("mobile-user", RoleType.REALM, null);
