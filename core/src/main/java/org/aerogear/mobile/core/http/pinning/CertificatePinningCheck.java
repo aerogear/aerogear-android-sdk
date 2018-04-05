@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpResponse;
 import org.aerogear.mobile.core.http.HttpServiceModule;
+import org.aerogear.mobile.core.reactive.Responder;
 
 
 /**
@@ -67,26 +68,26 @@ public class CertificatePinningCheck {
 
     /**
      * Perform a check and invoke a listener on response.
-     * 
+     *
      * @param url to which a request will be made
      */
     public void execute(@NonNull final String url) {
         HttpRequest request = this.httpModule.newRequest();
-        request.get(url);
-        HttpResponse httpResponse = request.execute();
+        request.get(url).respondWith(new Responder<HttpResponse>() {
+            @Override
+            public void onResult(HttpResponse httpResponse) {
+                CertificatePinningCheck.this.isSuccess = true;
+                if (CertificatePinningCheck.this.listener != null) {
+                    CertificatePinningCheck.this.listener.onSuccess();
+                }
+                CertificatePinningCheck.this.isComplete = true;
+            }
 
-        // Handle the success and error responses and set isComplete to allow for immediate
-        // invocation if a new listener is attached.
-        httpResponse.onSuccess(() -> {
-            this.isSuccess = true;
-            if (this.listener != null) {
-                this.listener.onSuccess();
+            @Override
+            public void onException(Exception exception) {
+                CertificatePinningCheck.this.listener.onFailure();
+
             }
         });
-        httpResponse.onError(() -> {
-            this.error = httpResponse.getError();
-            this.listener.onFailure();
-        });
-        httpResponse.onComplete(() -> this.isComplete = true);
     }
 }

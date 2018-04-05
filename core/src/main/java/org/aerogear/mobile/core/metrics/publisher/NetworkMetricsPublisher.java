@@ -2,6 +2,8 @@ package org.aerogear.mobile.core.metrics.publisher;
 
 import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
+
+import org.aerogear.mobile.core.reactive.Responder;
 import org.json.JSONObject;
 
 import android.content.Context;
@@ -44,20 +46,27 @@ public final class NetworkMetricsPublisher extends MetricsPublisher {
 
         httpRequest.post(url, json.toString().getBytes());
 
-        LOGGER.debug("Sending metrics");
 
-        final HttpResponse httpResponse = httpRequest.execute();
-        httpResponse.onSuccess(() -> {
-            if (callback != null) {
-                callback.onSuccess();
-            }
-        }).onError(() -> {
-            if (callback != null) {
-                callback.onError(httpResponse.getError());
-            } else {
-                LOGGER.error(httpResponse.getError().getMessage());
-            }
-        });
+            httpRequest.post(url, json.toString().getBytes())
+            .respondWith(new Responder<HttpResponse>() {
+                @Override
+                public void onResult(HttpResponse value) {
+                    if (callback != null) {
+                        callback.onSuccess();
+                    }
+                }
+
+                @Override
+                public void onException(Exception exception) {
+                    if (callback != null) {
+                        callback.onError(exception);
+                    } else {
+                        LOGGER.error(exception.getMessage());
+                    }
+                }
+            });
+
+            LOGGER.debug("Sending metrics");
 
     }
 }

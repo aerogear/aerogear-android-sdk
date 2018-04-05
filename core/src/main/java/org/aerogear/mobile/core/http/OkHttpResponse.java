@@ -1,6 +1,8 @@
 package org.aerogear.mobile.core.http;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -12,101 +14,35 @@ import org.aerogear.mobile.core.executor.AppExecutors;
 import okhttp3.Call;
 import okhttp3.Response;
 
-class OkHttpResponse implements HttpResponse {
+public class OkHttpResponse implements HttpResponse {
 
     private static final long DEFAULT_TIMEOUT = 30;
-    private final CountDownLatch requestCompleteLatch = new CountDownLatch(1);
-    private Response response;
-    private Runnable completionHandler;
-    private Runnable errorHandler;
-    private Runnable successHandler;
     private Exception error;
+    private Response response;
     private boolean closed = false;
 
-    public OkHttpResponse(final Call okHttpCall, AppExecutors appExecutors) {
-        appExecutors.networkThread().execute(() -> {
-            try {
-                // this call will throw an exception only when a connection problem occurs
-                // even when there is a 400 or 500 no exception thrown
-                response = okHttpCall.execute();
-                requestCompleteLatch.countDown();
-
-                if (response.isSuccessful() || response.isRedirect()) {
-                    // status 200 or 300
-                    runSuccessHandler();
-                } else {
-                    // status 400 or 500
-                    error = new HttpException(response.code(), response.message());
-                    runErrorHandler();
-                }
-            } catch (SSLPeerUnverifiedException e) {
-                error = e;
-                requestCompleteLatch.countDown();
-                runErrorHandler();
-            } catch (IOException e) {
-                error = e;
-                requestCompleteLatch.countDown();
-                runErrorHandler();
-            } finally {
-                runCompletionHandler();
-            }
-        });
-    }
-
     /**
-     * We have multiple checks to make sure that the completion handler is run. This means that this
-     * method may be called from multiple threads, using a synchronized and a null check makes sure
-     * that completion handler is only called once and then cleared.
+     * Basic constructor which will wrap a okHttp {@link Call} object
+     *
+     * @param okHttpCall the OKHTTP call to use to make this request
      */
-    private synchronized void runCompletionHandler() {
-        if (completionHandler != null) {
-            completionHandler.run();
-            completionHandler = null;
-        }
-    }
 
-    private synchronized void runErrorHandler() {
-        if (errorHandler != null) {
-            errorHandler.run();
-            errorHandler = null;
-        }
-    }
+    public OkHttpResponse(Call okHttpCall) throws IOException {
+        try {
+            response = okHttpCall.execute();
+            // this call will throw an exception only when a connection problem occurs
+            // even when there is a 400 or 500 no exception thrown
+            response = okHttpCall.execute();
+            requestCompleteLatch.countDown();
 
-    private synchronized void runSuccessHandler() {
-        if (successHandler != null) {
-            successHandler.run();
-            successHandler = null;
+            if (!(response.isSuccessful() || response.isRedirect()) {
+                // status 400 or 500
+                throw new HttpException(response.code(), response.message());
+            }
+        } catch (Exception exception) {
+            this.error = exception;
+            throw new RuntimeException(exception);
         }
-    }
-
-    @Override
-    public HttpResponse onComplete(Runnable completionHandler) {
-        this.completionHandler = completionHandler;
-        if (response != null) {
-            runCompletionHandler();
-        }
-        return this;
-    }
-
-    @Override
-    public HttpResponse onError(Runnable errorHandler) {
-        this.errorHandler = errorHandler;
-        // An exception occurred during the request
-        if (error != null) {
-            runErrorHandler();
-        }
-        return this;
-    }
-
-    @Override
-    public HttpResponse onSuccess(Runnable successHandler) {
-        this.successHandler = successHandler;
-        // If there is _any_ response and it is successful the success handler should run
-        // immediately
-        if (response != null && (response.isSuccessful() || response.isRedirect())) {
-            runSuccessHandler();
-        }
-        return this;
     }
 
     @Override
@@ -116,36 +52,9 @@ class OkHttpResponse implements HttpResponse {
 
     @Override
     public void waitForCompletionAndClose() {
-        try {
-            requestCompleteLatch.await(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
-            // If a success Handler was set before this wait then we need to make
-            // sure that gets called before we free these resources.
-            if (error == null && (response.isSuccessful() || response.isRedirect())) {
-                runSuccessHandler();
-            } else {
-                if (error == null) {
-                    this.error = new HttpException(response.code(), response.message());
-                }
-                runErrorHandler();
-            }
-        } catch (InterruptedException interruptedException) {
-            /*
-             * If we have an error the work of the thread is already done and the thread was exiting
-             * anyway. If we don't have en error then the thread may have exited improperly and the
-             * calling code should be able to inspect it.
-             */
-            if (error != null) {
-                error = interruptedException;
-            }
-        } finally {
-            if (response != null && !closed) {
-                closed = true;
-                response.close();
-            }
-
-            // Run the completion handler last so that even if an exception occurs
-            // the response will be closed
-            runCompletionHandler();
+        if (response != null && !closed) {
+            closed = true;
+            response.close();
         }
     }
 
@@ -169,7 +78,22 @@ class OkHttpResponse implements HttpResponse {
     }
 
     @Override
+    public InputStream streamBody() {
+        if (response != null) {
+            return response.body().byteStream();
+        } else {
+            return new ByteArrayInputStream(new byte[0]);
+        }
+    }
+
+    @Override
     public Exception getError() {
         return this.error;
     }
+
+
+    public boolean isClosed() {
+        return closed;
+    }
+
 }
