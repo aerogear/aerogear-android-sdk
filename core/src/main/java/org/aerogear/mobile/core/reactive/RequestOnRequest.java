@@ -31,4 +31,20 @@ public final class RequestOnRequest<T> extends AbstractRequest<T> {
         delegateTo.cancel();
     }
 
+    @Override
+    public Request<T> cancelWith(Canceller canceller) {
+        delegateTo.cancelWith(canceller);
+        return this;
+    }
+
+    /**
+     * Ne need to wrap the underlying cleaner in the thread that this request is run on to
+     * respect the developer's request thread preference.
+     * @return delegate cleaner wrapped in a executor
+     */
+    @Override
+    protected Cleaner liftCleanupAction() {
+        Cleaner delagateCleaner = delegateTo.liftCleanupAction();
+        return () -> executorService.submit(()->{delagateCleaner.cleanup();});
+    }
 }

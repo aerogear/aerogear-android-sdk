@@ -16,14 +16,15 @@ import android.support.annotation.NonNull;
  * @param <T> The result type of the underlying request
  */
 public final class CacheRequest<T> extends AbstractRequest<T> implements Responder<T> {
-    private final Request<T> delegateTo;
+    private final AbstractRequest<T> delegateTo;
 
     private T cachedResult;
     private Exception cachedException;
     private final List<AtomicReference<Responder<T>>> awaitingResponders =
                     Collections.synchronizedList(new ArrayList<>());
+    private boolean delegated = false;
 
-    public CacheRequest(Request<T> delegateTo) {
+    public CacheRequest(AbstractRequest<T> delegateTo) {
         this.delegateTo = nonNull(delegateTo, "delegateTo");
     }
 
@@ -41,7 +42,12 @@ public final class CacheRequest<T> extends AbstractRequest<T> implements Respond
             responder.onException(cachedException);
         } else {// We need to wait for the value to calculate and send out the result
             awaitingResponders.add(responderRef);
-            delegateTo.respondWith(this);
+            synchronized (this) {
+                if (!delegated) {
+                    delegated = true;
+                    delegateTo.respondWith(this);
+                }
+            }
         }
         return this;
     }
@@ -52,8 +58,15 @@ public final class CacheRequest<T> extends AbstractRequest<T> implements Respond
     }
 
     @Override
+    public Request<T> cancelWith(Canceller canceller) {
+        delegateTo.cancelWith(canceller);
+        return this;
+    }
+
+    @Override
     public void onResult(T value) {
         cachedResult = value;
+        delegateTo.liftCleanupAction().cleanup();//We won't call the original request again, cleanup.
         for (AtomicReference<Responder<T>> responderRef : awaitingResponders) {
             Responder<T> responder = responderRef.get();
             if (responder != null) {
@@ -71,5 +84,15 @@ public final class CacheRequest<T> extends AbstractRequest<T> implements Respond
                 responder.onException(cachedException);
             }
         }
+    }
+
+    /**
+     * Caches do not have a cleanup method as their delegates are what generate values.
+     *
+     * @return an empty cleanup
+     */
+    @Override
+    protected Cleaner liftCleanupAction() {
+        return ()->{};
     }
 }

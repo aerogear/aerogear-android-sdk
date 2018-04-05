@@ -35,12 +35,17 @@ abstract class AbstractRequest<T> implements Request<T> {
         nonNull(responder, "responder");
         connectedResponders.putIfAbsent(responder, new AtomicReference<>(responder));
         return respondWithActual(connectedResponders.get(responder));
-
     }
 
     @Override
     public final Request<T> cache() {
         return new CacheRequest<>(this);
+    }
+
+
+    @Override
+    public final <R> Request<R> map(MapFunction<? super T, ? extends R> mapper) {
+        return new MapRequest<T,R>(this, mapper);
     }
 
     @Override
@@ -65,5 +70,14 @@ abstract class AbstractRequest<T> implements Request<T> {
      * @return a chainable instance of Request, not guaranteed to be `this`
      */
     abstract Request<T> respondWithActual(@NonNull AtomicReference<Responder<T>> responderRef);
+
+    /**
+     * This requester is being asked to give up its Cleanup action to be handled by a different AbstractRequest.
+     * Requests should set their cleanup action to an empty action.  They are allowed to modify or wrap their
+     * action as appropriate.  IE for thread scheduling, logging, etc
+     *
+     * @return an equivalent cleanup action
+     */
+    protected abstract Cleaner liftCleanupAction();
 
 }
