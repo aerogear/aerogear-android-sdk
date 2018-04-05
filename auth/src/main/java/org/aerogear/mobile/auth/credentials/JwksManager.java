@@ -4,6 +4,7 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 import java.util.Date;
 
+import org.aerogear.mobile.core.reactive.Responder;
 import org.jose4j.jwk.JsonWebKeySet;
 import org.jose4j.lang.JoseException;
 
@@ -25,8 +26,8 @@ import org.aerogear.mobile.core.logging.Logger;
  * A class that is responsible for manage the Json Web Key Set(JWKS).
  */
 public class JwksManager {
-
-    private static final Logger logger = MobileCore.getLogger();
+    public static final String TAG = "JWKSMANAGER";
+    private static final Logger LOGGER = MobileCore.getLogger();
     private static final int MILLISECONDS_PER_MINUTE = 60 * 1000;
     private static final String STORE_NAME = "org.aerogear.mobile.auth.JwksStore";
     private static final String ENTRY_SUFFIX_FOR_KEY_CONTENT = "jwks_content";
@@ -66,7 +67,7 @@ public class JwksManager {
                 jwks = new JsonWebKeySet(keyContent);
                 needFetchNow = false;
             } catch (JoseException e) {
-                logger.error("failed to parse JsonWebKeySet content", e);
+                LOGGER.error("failed to parse JsonWebKeySet content", e);
             }
         }
         fetchJwksIfNeeded(keyCloakConfig, needFetchNow);
@@ -104,37 +105,47 @@ public class JwksManager {
                     @Nullable final Callback<JsonWebKeySet> callback) {
         String jwksUrl = nonNull(keycloakConfiguration, "keycloakConfiguration").getJwksUrl();
         HttpRequest getRequest = httpModule.newRequest();
-        getRequest.get(jwksUrl);
-        HttpResponse response = getRequest.execute();
-        response.onComplete(() -> {
-            JsonWebKeySet jwks = null;
-            JwksException error = null;
-            // this is invoked on a background thread.
-            if (response.getStatus() == 200) {
-                String jwksContent = response.stringBody();
-                try {
-                    jwks = new JsonWebKeySet(jwksContent);
-                } catch (JoseException e) {
-                    jwks = null;
-                    error = new JwksException(e);
-                    logger.warning("failed to parse JWKS key content. content = " + jwksContent);
-                }
-                if (jwks != null) {
-                    persistJwksContent(keycloakConfiguration.getRealmName(), jwksContent);
-                }
-            } else {
-                logger.warning("failed to fetch JWKS from server. url = " + jwksUrl
-                                + " statusCode = " + response.getStatus());
-                error = new JwksException("failed to fetch JWKS from server");
-            }
-            if (callback != null) {
-                if (jwks != null) {
-                    callback.onSuccess(jwks);
+        getRequest.get(jwksUrl)
+        .respondWith(new Responder<HttpResponse>() {
+
+
+            @Override
+            public void onResult(HttpResponse response) {
+                JsonWebKeySet jwks = null;
+                JwksException error = null;
+                // this is invoked on a background thread.
+                if (response.getStatus() == 200) {
+                    String jwksContent = response.stringBody();
+                    try {
+                        jwks = new JsonWebKeySet(jwksContent);
+                    } catch (JoseException e) {
+                        jwks = null;
+                        error = new JwksException(e);
+                        LOGGER.warning("failed to parse JWKS key content. content = " + jwksContent);
+                    }
+                    if (jwks != null) {
+                        persistJwksContent(keycloakConfiguration.getRealmName(), jwksContent);
+                    }
                 } else {
-                    callback.onError(error);
+                    LOGGER.warning("failed to fetch JWKS from server. url = " + jwksUrl
+                        + " statusCode = " + response.getStatus());
+                    error = new JwksException("failed to fetch JWKS from server");
                 }
+                if (callback != null) {
+                    if (jwks != null) {
+                        callback.onSuccess(jwks);
+                    } else {
+                        callback.onError(error);
+                    }
+                }
+            }
+
+            @Override
+            public void onException(Exception exception) {
+                LOGGER.error(TAG, exception.getMessage(), exception);
             }
         });
+
     }
 
     /**
@@ -170,7 +181,7 @@ public class JwksManager {
             editor.putString(buildEntryNameForKeyContent(namespace), jwksContent)
                             .putLong(buildEntryNameForQuestedDate(namespace), timeFetched);
             if (!editor.commit()) {
-                logger.warning("failed to persist JWKS content");
+                LOGGER.warning("failed to persist JWKS content");
             }
         }
     }

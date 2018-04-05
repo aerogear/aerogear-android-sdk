@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import org.aerogear.mobile.core.reactive.Request;
+import org.aerogear.mobile.core.reactive.Responder;
 import org.jose4j.jwk.JsonWebKey;
 import org.jose4j.jwk.JsonWebKeySet;
 import org.junit.Before;
@@ -56,6 +58,9 @@ public class JwksManagerTest {
     private HttpRequest httpRequest;
 
     @Mock
+    private Request<HttpRequest> rxHttpRequest;
+
+    @Mock
     private HttpResponse httpResponse;
 
     @Mock
@@ -94,12 +99,12 @@ public class JwksManagerTest {
 
         when(httpServiceModule.newRequest()).thenReturn(httpRequest);
 
-        when(httpRequest.execute()).thenReturn(httpResponse);
+        when(httpRequest.get(any())).thenReturn(rxHttpRequest);
 
-        when(httpResponse.onComplete(any(Runnable.class))).thenAnswer(new Answer<Object>() {
+        when(rxHttpRequest.respondWith(any(Responder.class))).thenAnswer(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
-                ((Runnable) invocation.getArguments()[0]).run();
+                ((Responder) invocation.getArguments()[0]).onResult(httpResponse);
                 return null;
             }
         });

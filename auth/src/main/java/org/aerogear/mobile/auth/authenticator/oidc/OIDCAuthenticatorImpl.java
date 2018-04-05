@@ -7,6 +7,7 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.aerogear.mobile.core.reactive.Responder;
 import org.jose4j.jwk.JsonWebKeySet;
 
 import android.app.Activity;
@@ -210,29 +211,33 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
 
         // Creates the get request
         HttpRequest request = serviceModule.newRequest();
-        request.get(logoutUrl.toString());
-
-        final HttpResponse httpResponse = request.execute();
-
-        httpResponse.onSuccess(() -> {
-            if (httpResponse.getStatus() == HTTP_OK
-                            || httpResponse.getStatus() == HTTP_MOVED_TEMP) {
-                // delete the local tokens when the session with the OIDC has been terminated
-                authStateManager.save(null);
-                logoutCallback.onSuccess();
-            } else {
-                // Non HTTP 200 or 302 Status Code Returned
-                Exception error = httpResponse.getError() != null ? httpResponse.getError()
-                                : new Exception("Non HTTP 200 or 302 Status Code.");
-                MobileCore.getLogger().error(
-                                "Error Performing a Logout on the Remote OIDC Server: ", error);
-                logoutCallback.onError(error);
+        request.get(logoutUrl.toString())
+        .respondWith(new Responder<HttpResponse>() {
+            @Override
+            public void onResult(HttpResponse httpResponse) {
+                if (httpResponse.getStatus() == HTTP_OK
+                    || httpResponse.getStatus() == HTTP_MOVED_TEMP) {
+                    // delete the local tokens when the session with the OIDC has been terminated
+                    authStateManager.save(null);
+                    logoutCallback.onSuccess();
+                } else {
+                    // Non HTTP 200 or 302 Status Code Returned
+                    Exception error = httpResponse.getError() != null ? httpResponse.getError()
+                        : new Exception("Non HTTP 200 or 302 Status Code.");
+                    MobileCore.getLogger().error(
+                        "Error Performing a Logout on the Remote OIDC Server: ", error);
+                    logoutCallback.onError(error);
+                }
             }
-        }).onError(() -> {
-            MobileCore.getLogger().error("Error Performing a Logout on the Remote OIDC Server: ",
-                            httpResponse.getError());
-            logoutCallback.onError(httpResponse.getError());
+
+            @Override
+            public void onException(Exception exception) {
+                MobileCore.getLogger().error("Error Performing a Logout on the Remote OIDC Server: ",
+                    exception);
+                logoutCallback.onError(exception);
+            }
         });
+
     }
 
     /**
