@@ -25,9 +25,19 @@ class OkHttpResponse implements HttpResponse {
     public OkHttpResponse(final Call okHttpCall, AppExecutors appExecutors) {
         appExecutors.networkThread().execute(() -> {
             try {
+                // this call will throw an exception only when a connection problem occurs
+                // even when there is a 400 or 500 no exception thrown
                 response = okHttpCall.execute();
                 requestCompleteLatch.countDown();
-                runSuccessHandler();
+
+                if(response.isSuccessful()){
+                    // status 200 or 300
+                    runSuccessHandler();
+                } else {
+                    // status 400 or 500
+                    error = new Exception(response.message());
+                    runErrorHandler();
+                }
             } catch (SSLPeerUnverifiedException e) {
                 error = e;
                 requestCompleteLatch.countDown();
