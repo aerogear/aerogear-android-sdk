@@ -27,11 +27,11 @@ in a project.
 To include the `https` section in configuration when generating it using the Mobile CLI use the
 `--include-cert-pins` flag when retrieving a client configuration. By default, self-signed or
 invalid certs will not be permitted to be included in the certificate pinning configuration. To
-allow these to be included use the `--allow-self-signed-certs` flag.
+allow these to be included use the `--insecure-skip-tls-verify` flag.
 
 [source, bash]
 ----
-./mobile get clientconfig <client name> --include-cert-pins --allow-self-signed-certs
+./mobile get clientconfig <client name> --include-cert-pins --insecure-skip-tls-verify
 ----
 
 === Using Pinning Configuration
