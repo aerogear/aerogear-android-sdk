@@ -13,7 +13,7 @@ public enum RoleType implements Serializable {
     REALM,
 
     /**
-     * Represents a Keycloak client.
+     * Represents a Keycloak resource.
      */
-    CLIENT
+    RESOURCE
 }

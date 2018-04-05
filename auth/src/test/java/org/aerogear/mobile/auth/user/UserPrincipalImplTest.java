@@ -36,7 +36,7 @@ public class UserPrincipalImplTest {
     @Before
     public void setUp() {
         ServiceConfiguration serviceConfig = ServiceConfiguration.newConfiguration().build();
-        UserRole cRole = new UserRole("cRole", RoleType.CLIENT, "ID-123456");
+        UserRole cRole = new UserRole("cRole", RoleType.RESOURCE, "ID-123456");
         UserRole rRole = new UserRole("rRole", RoleType.REALM, null);
         roles.add(cRole);
         roles.add(rRole);
@@ -66,15 +66,15 @@ public class UserPrincipalImplTest {
     }
 
     @Test
-    public void testHasClientRoleFails() {
-        assertEquals(userPrincipalImpl.hasClientRole("cRole", "notid"), false);
-        assertEquals(userPrincipalImpl.hasClientRole("notCRole", "ID-123456"), false);
-        assertEquals(userPrincipalImpl.hasClientRole("notCRole", "notid"), false);
+    public void testHasResourceRoleFails() {
+        assertEquals(userPrincipalImpl.hasResourceRole("cRole", "notid"), false);
+        assertEquals(userPrincipalImpl.hasResourceRole("notCRole", "ID-123456"), false);
+        assertEquals(userPrincipalImpl.hasResourceRole("notCRole", "notid"), false);
     }
 
     @Test
-    public void testHasClientRoleSucceeds() {
-        assertEquals(userPrincipalImpl.hasClientRole("cRole", "ID-123456"), true);
+    public void testHasResourceRoleSucceeds() {
+        assertEquals(userPrincipalImpl.hasResourceRole("cRole", "ID-123456"), true);
     }
 
     @Test

@@ -150,17 +150,17 @@ public class UserPrincipalImpl implements UserPrincipal {
     }
 
     /**
-     * Checks if the user has the specified Client role.
+     * Checks if the user has the specified Resource role.
      *
      * @param role role to be checked
-     * @param clientId clientID related to role
+     * @param resourceId resourceId related to role
      * @return <code>true</code> or <code>false</code>
      */
     @Override
-    public boolean hasClientRole(final String role, final String clientId) {
+    public boolean hasResourceRole(final String role, final String resourceId) {
         nonEmpty(role, "role");
 
-        return roles.contains(new UserRole(role, RoleType.CLIENT, clientId));
+        return roles.contains(new UserRole(role, RoleType.RESOURCE, resourceId));
     }
 
     /**

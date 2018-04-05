@@ -1,7 +1,7 @@
 package org.aerogear.mobile.auth.credentials;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 import org.jose4j.jwk.JsonWebKeySet;
 import org.json.JSONException;
@@ -66,7 +66,7 @@ public class OIDCCredentialsTest {
         MockitoAnnotations.initMocks(this);
 
         when(keycloakConfiguration.getHostUrl()).thenReturn(VALID_KEYCLOAK_HOST_URL);
-        when(keycloakConfiguration.getClientId()).thenReturn(VALID_AUDIENCE);
+        when(keycloakConfiguration.getResourceId()).thenReturn(VALID_AUDIENCE);
     }
 
     @Test

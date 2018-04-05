@@ -73,7 +73,7 @@ public class UserIdentityParserTest {
         String expectedUsername = "user1";
         String expectedEmail = "user1@feedhenry.org";
         UserRole expectedRealmRole = new UserRole("mobile-user", RoleType.REALM, null);
-        UserRole expectedClientRole = new UserRole("ios-access", RoleType.CLIENT, "client-app");
+        UserRole expectedResourceRole = new UserRole("ios-access", RoleType.RESOURCE, "client-app");
 
         String actualUsername = parser.parseUsername();
         String actualEmail = parser.parseEmail();
@@ -82,7 +82,7 @@ public class UserIdentityParserTest {
         assertEquals(expectedUsername, actualUsername);
         assertEquals(expectedEmail, actualEmail);
         assertTrue(actualRoles.contains(expectedRealmRole));
-        assertTrue(actualRoles.contains(expectedClientRole));
+        assertTrue(actualRoles.contains(expectedResourceRole));
     }
 
 }

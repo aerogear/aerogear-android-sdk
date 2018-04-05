@@ -79,7 +79,7 @@ public class UserRole implements Serializable {
         if (role == null || role.getClass() != getClass())
             return false;
         UserRole userRole = (UserRole) role;
-        if (userRole.type == RoleType.CLIENT) { // do a check on clientID
+        if (userRole.type == RoleType.RESOURCE) { // do a check on resourceID
             return userRole.name.equals(name) && userRole.type == type
                             && userRole.namespace == namespace;
         } else {
