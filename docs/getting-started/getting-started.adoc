@@ -30,7 +30,7 @@ allprojects {
 
 === Reference the Dependencies
 
-In the build.gradle file of your app you can begin adding dependencies provided by the sdk.
+In the build.gradle file of your app you can begin adding dependencies provided by the SDK.
 
 ----
 dependencies {
@@ -80,7 +80,7 @@ allprojects {
 
 === Reference the Dependencies
 
-In the build.gradle file of your app you can begin adding dependencies provided by the sdk.
+In the build.gradle file of your app you can begin adding dependencies provided by the SDK.
 
 ----
 dependencies {
