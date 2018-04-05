@@ -9,6 +9,7 @@ public interface MessageHandler {
     /**
      * Invoked when server delivered a message to the device.
      *
+     * @param context The application context
      * @param message A map containing the submitted key/value pairs
      */
     public void onMessage(Context context, Map<String, String> message);
