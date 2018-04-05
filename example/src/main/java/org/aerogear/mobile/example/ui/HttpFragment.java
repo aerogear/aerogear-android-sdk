@@ -15,7 +15,6 @@ import android.util.Log;
 
 import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.http.HttpRequest;
-import org.aerogear.mobile.core.http.HttpResponse;
 import org.aerogear.mobile.core.reactive.Responder;
 import org.aerogear.mobile.example.BR;
 import org.aerogear.mobile.example.R;
@@ -46,34 +45,31 @@ public class HttpFragment extends BaseFragment {
         new LastAdapter(users, BR.user).map(User.class, R.layout.item_http).into(userList);
 
         HttpRequest httpRequest = activity.mobileCore.getHttpLayer().newRequest();
-        httpRequest.get("https://jsonplaceholder.typicode.com/users")
-                        .map((response)-> {
-                            System.out.println("Mapping!");
-                            try {
-                                Thread.sleep(10000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            return response.stringBody();})
-                        .respondOn(new AppExecutors().mainThread())
-                        .respondWith(new Responder<String>() {
-                            @Override
-                            public void onResult(String jsonResponse) {
-                                List<User> retrievesUsers = new Gson().fromJson(jsonResponse,
-                                                new TypeToken<List<User>>() {}.getType());
+        httpRequest.get("https://jsonplaceholder.typicode.com/users").map((response) -> {
+            System.out.println("Mapping!");
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return response.stringBody();
+        }).respondOn(new AppExecutors().mainThread()).respondWith(new Responder<String>() {
+            @Override
+            public void onResult(String jsonResponse) {
+                List<User> retrievesUsers = new Gson().fromJson(jsonResponse,
+                                new TypeToken<List<User>>() {}.getType());
 
-                                activity.mobileCore.getLogger()
-                                                .info("Users: " + retrievesUsers.size());
+                activity.mobileCore.getLogger().info("Users: " + retrievesUsers.size());
 
-                                users.addAll(retrievesUsers);
-                            }
+                users.addAll(retrievesUsers);
+            }
 
-                            @Override
-                            public void onException(Exception exception) {
-                                Log.e(TAG, exception.toString());
-                            }
+            @Override
+            public void onException(Exception exception) {
+                Log.e(TAG, exception.toString());
+            }
 
-                        });
+        });
     }
 
 }

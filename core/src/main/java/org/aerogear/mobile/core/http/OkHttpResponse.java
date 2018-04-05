@@ -25,8 +25,8 @@ public class OkHttpResponse implements HttpResponse {
      *
      * @param okHttpCall the OKHTTP call to use to make this request
      */
+    public OkHttpResponse(Call okHttpCall) {
 
-    public OkHttpResponse(Call okHttpCall) throws IOException {
         try {
             // this call will throw an exception only when a connection problem occurs
             // even when there is a 400 or 500 no exception thrown

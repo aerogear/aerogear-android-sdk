@@ -17,6 +17,7 @@ public interface HttpRequest {
      * Prepares the request for an HTTP GET of the given URL.
      *
      * @param url a URL for a resource.
+     * @return a reactive request
      */
     Request<HttpResponse> get(String url);
 

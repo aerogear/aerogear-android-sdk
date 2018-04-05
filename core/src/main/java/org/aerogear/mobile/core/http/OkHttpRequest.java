@@ -49,7 +49,7 @@ public class OkHttpRequest implements HttpRequest {
 
             OkHttpResponse okHttpResponse = new OkHttpResponse(call);
             response.set(okHttpResponse);
-            return (HttpResponse) okHttpResponse;//cast to force generic type
+            return (HttpResponse) okHttpResponse;// cast to force generic type
         }, () -> {
             /* Cleaner */
             System.out.println("Cleanup call on " + Thread.currentThread());
@@ -79,7 +79,7 @@ public class OkHttpRequest implements HttpRequest {
 
             OkHttpResponse okHttpResponse = new OkHttpResponse(call);
             response.set(okHttpResponse);
-            return (HttpResponse) okHttpResponse;//cast to force generic type
+            return (HttpResponse) okHttpResponse;// cast to force generic type
         }, () -> {
             /* Cleaner */
             OkHttpResponse okHttpResponse = response.get();
@@ -107,7 +107,7 @@ public class OkHttpRequest implements HttpRequest {
 
             OkHttpResponse okHttpResponse = new OkHttpResponse(call);
             response.set(okHttpResponse);
-            return (HttpResponse) okHttpResponse;//cast to force generic type
+            return (HttpResponse) okHttpResponse;// cast to force generic type
         }, () -> {
             /* Cleaner */
             OkHttpResponse okHttpResponse = response.get();
@@ -133,7 +133,7 @@ public class OkHttpRequest implements HttpRequest {
 
             OkHttpResponse okHttpResponse = new OkHttpResponse(call);
             response.set(okHttpResponse);
-            return (HttpResponse) okHttpResponse;//cast to force generic type
+            return (HttpResponse) okHttpResponse;// cast to force generic type
         }, () -> {
             /* Cleaner */
             OkHttpResponse okHttpResponse = response.get();
