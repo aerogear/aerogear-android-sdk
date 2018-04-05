@@ -25,6 +25,14 @@ public class UnifiedPushConfigTest {
         assertSame(alias, unifiedPushConfig.getAlias());
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testNullableCheckForCategories() {
+        UnifiedPushConfig unifiedPushConfig = new UnifiedPushConfig();
+        unifiedPushConfig.setCategories(null);
+
+        fail("It should raise an IllegalArgumentException");
+    }
+
     @Test
     public void testCategoriesSeflDefenceCopy() {
         List<String> categories = new ArrayList<>();
