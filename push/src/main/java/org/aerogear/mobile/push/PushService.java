@@ -143,7 +143,7 @@ public class PushService implements ServiceModule {
                         callback.onSuccess();
                         break;
                     default:
-                        callback.onError(new HttpException());
+                        callback.onError(new HttpException(httpResponse.getStatus()));
                         break;
                 }
             });
@@ -191,7 +191,7 @@ public class PushService implements ServiceModule {
                     callback.onSuccess();
                     break;
                 default:
-                    callback.onError(new HttpException());
+                    callback.onError(new HttpException(httpResponse.getStatus()));
                     break;
             }
         });
