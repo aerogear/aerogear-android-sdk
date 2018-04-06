@@ -44,28 +44,27 @@ public class AuthFragment extends BaseFragment {
                         new DefaultAuthenticateOptions(this.getActivity(), LOGIN_RESULT_CODE);
         authService.login(authOptions, new Callback<UserPrincipal>() {
             @Override
-            public void onSuccess(UserPrincipal models) {
+            public void onSuccess(final UserPrincipal models) {
                 // user logged in, continue on..
-                Log.i(TAG, "user logged in " + models.toString());
+                Log.i(TAG, "user logged in " + models);
                 ((MainActivity) getActivity()).navigateToAuthDetailsView(models);
             }
 
             @Override
-            public void onError(Throwable error) {
+            public void onError(final Throwable error) {
                 // there is an error during the login
                 Log.e(TAG, "login failed due to error " + error.getLocalizedMessage());
-                failureDialog(error.getLocalizedMessage());
+                messageDialog("Failed to Authenticate" , error.getLocalizedMessage());
             }
         });
     }
 
-    public void failureDialog(String e) {
-        String error = e;
+    public void messageDialog(final String title, final String message) {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 AlertDialog.Builder certPinningErrorBuilder = new AlertDialog.Builder(activity);
-                certPinningErrorBuilder.setTitle("Failed to Authenticate").setMessage(error).show()
+                certPinningErrorBuilder.setTitle(title).setMessage(message).show()
                                 .create();
             }
         });
