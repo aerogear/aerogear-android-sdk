@@ -61,8 +61,8 @@ public class AuthFragment extends BaseFragment {
 
     public void messageDialog(final String title, final String message) {
         activity.runOnUiThread(() -> {
-            AlertDialog.Builder certPinningErrorBuilder = new AlertDialog.Builder(activity);
-            certPinningErrorBuilder.setTitle(title).setMessage(message).show().create();
+            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
+            dialogBuilder.setTitle(title).setMessage(message).show().create();
         });
     }
 }
