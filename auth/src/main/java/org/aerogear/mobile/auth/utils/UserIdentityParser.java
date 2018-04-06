@@ -81,7 +81,7 @@ public class UserIdentityParser {
      * @return user's username
      */
     public String parseUsername() {
-        return userIdentity == null ? "" : userIdentity.optString(USERNAME, "");
+        return userIdentity == null ? "" : userIdentity.optString(USERNAME, "").trim();
     }
 
     /**
@@ -90,7 +90,7 @@ public class UserIdentityParser {
      * @return user's email address
      */
     public String parseEmail() {
-        return userIdentity == null ? "" : userIdentity.optString(EMAIL, "");
+        return userIdentity == null ? "" : userIdentity.optString(EMAIL, "").trim();
     }
 
     /**
@@ -134,8 +134,7 @@ public class UserIdentityParser {
                 String roles[] = realmRolesString.split(COMMA);
 
                 for (String roleName : roles) {
-                    UserRole realmRole = new UserRole(roleName, RoleType.REALM, null);
-                    realmRoles.add(realmRole);
+                    realmRoles.add(new UserRole(roleName, RoleType.REALM, null));
                 }
             }
         } catch (JSONException e) {
@@ -169,9 +168,8 @@ public class UserIdentityParser {
                     String roles[] = resourceRolesString.split(COMMA);
 
                     for (String roleName : roles) {
-                        UserRole resourceRole = new UserRole(roleName, RoleType.RESOURCE,
-                                        initialResourceID);
-                        resourceRoles.add(resourceRole);
+                        resourceRoles.add(new UserRole(roleName, RoleType.RESOURCE,
+                                        initialResourceID));
                     }
                 }
             } catch (JSONException e) {
