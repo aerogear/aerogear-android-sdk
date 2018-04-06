@@ -1,5 +1,6 @@
 package org.aerogear.mobile.example.ui;
 
+import android.app.AlertDialog;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -41,23 +42,27 @@ public class AuthFragment extends BaseFragment {
         AuthService authService = ((MainActivity) getActivity()).getAuthService();
         DefaultAuthenticateOptions authOptions =
                         new DefaultAuthenticateOptions(this.getActivity(), LOGIN_RESULT_CODE);
-        try {
-            authService.login(authOptions, new Callback<UserPrincipal>() {
-                @Override
-                public void onSuccess(UserPrincipal models) {
-                    // user logged in, continue on..
-                    Log.i(TAG, "user logged in " + models.toString());
-                    ((MainActivity) getActivity()).navigateToAuthDetailsView(models);
-                }
+        authService.login(authOptions, new Callback<UserPrincipal>() {
+            @Override
+            public void onSuccess(final UserPrincipal models) {
+                // user logged in, continue on..
+                Log.i(TAG, "user logged in " + models);
+                ((MainActivity) getActivity()).navigateToAuthDetailsView(models);
+            }
 
-                @Override
-                public void onError(Throwable error) {
-                    // there is an error during the login
-                    Log.e(TAG, "login failed due to error " + error.getLocalizedMessage());
-                }
-            });
-        } catch (IllegalStateException e) {
-            Log.e("Pinning Error", e.getMessage());
-        }
+            @Override
+            public void onError(final Throwable error) {
+                // there is an error during the login
+                Log.e(TAG, "login failed due to error " + error.getLocalizedMessage());
+                messageDialog("Failed to Authenticate", error.getLocalizedMessage());
+            }
+        });
+    }
+
+    public void messageDialog(final String title, final String message) {
+        activity.runOnUiThread(() -> {
+            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
+            dialogBuilder.setTitle(title).setMessage(message).show().create();
+        });
     }
 }
