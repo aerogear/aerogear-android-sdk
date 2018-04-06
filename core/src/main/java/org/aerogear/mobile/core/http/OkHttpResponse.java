@@ -101,7 +101,8 @@ class OkHttpResponse implements HttpResponse {
     @Override
     public HttpResponse onSuccess(Runnable successHandler) {
         this.successHandler = successHandler;
-        // If there is _any_ response and it is successful the success handler should run immediately
+        // If there is _any_ response and it is successful the success handler should run
+        // immediately
         if (response != null && (response.isSuccessful() || response.isRedirect())) {
             runSuccessHandler();
         }
