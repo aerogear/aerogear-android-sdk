@@ -79,7 +79,7 @@ public class PushService implements ServiceModule {
             unifiedPushCredentials = new UnifiedPushCredentials();
             unifiedPushCredentials.setVariant(android.getString(JSON_VARIANT_ID_KEY));
             unifiedPushCredentials.setSecret(android.getString(JSON_VARIANT_SECRET_KEY));
-            unifiedPushCredentials.setSender(android.getString(JSON_SENDER_ID_KEY));
+            unifiedPushCredentials.setSenderId(android.getString(JSON_SENDER_ID_KEY));
 
         } catch (JSONException e) {
             MobileCore.getLogger().error(e.getMessage(), e);

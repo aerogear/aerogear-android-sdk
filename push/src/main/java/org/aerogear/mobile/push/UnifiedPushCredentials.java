@@ -4,7 +4,7 @@ public final class UnifiedPushCredentials {
 
     private String variant;
     private String secret;
-    private String sender;
+    private String senderId;
 
     /**
      * ID of the Variant from the AeroGear UnifiedPush Server.
@@ -43,19 +43,19 @@ public final class UnifiedPushCredentials {
     }
 
     /**
-     * Firebase sender Id registered for this application.
+     * Firebase senderId registered for this application.
      */
-    public String getSender() {
-        return sender;
+    public String getSenderId() {
+        return senderId;
     }
 
     /**
-     * Firebase sender Id registered for this application.
+     * Firebase senderId registered for this application.
      *
-     * @param sender the new senderId
+     * @param senderId the new senderId
      */
-    public void setSender(String sender) {
-        this.sender = sender;
+    public void setSenderId(String senderId) {
+        this.senderId = senderId;
     }
 
 }
