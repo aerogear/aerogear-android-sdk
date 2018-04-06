@@ -83,7 +83,7 @@ public class OIDCCredentialsTest {
     }
 
     @Test
-    public void testDeserialize() throws JSONException {
+    public void testDeserialize() {
         OIDCCredentials testCredential = new OIDCCredentials(CREDENTIAL_AUTH_STATE);
         String serialized = testCredential.serialize();
 

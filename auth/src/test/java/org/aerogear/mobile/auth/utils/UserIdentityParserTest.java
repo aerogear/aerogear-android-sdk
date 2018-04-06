@@ -5,7 +5,6 @@ import static junit.framework.Assert.assertTrue;
 
 import java.util.Set;
 
-import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,6 +14,7 @@ import org.aerogear.mobile.auth.AuthenticationException;
 import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
 import org.aerogear.mobile.auth.credentials.OIDCCredentials;
 import org.aerogear.mobile.auth.user.RoleType;
+import org.aerogear.mobile.auth.user.UserPrincipal;
 import org.aerogear.mobile.auth.user.UserRole;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 
@@ -31,7 +31,7 @@ public class UserIdentityParserTest {
     private OIDCCredentials credential;
 
     @Before
-    public void setup() throws JSONException, AuthenticationException {
+    public void setup() throws AuthenticationException {
         ServiceConfiguration serviceConfig = ServiceConfiguration.newConfiguration()
                         .addProperty("resource", "client-app")
                         .addProperty("auth-server-url", "test.server.url")
@@ -47,37 +47,26 @@ public class UserIdentityParserTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testUserIdentityParser_NullServiceConfig()
-                    throws JSONException, AuthenticationException {
+    public void testUserIdentityParser_NullServiceConfig() throws AuthenticationException {
         parser = new UserIdentityParser(credential, null);
     }
 
-    @Test
-    public void testParsers_NullCredentials() throws JSONException, AuthenticationException {
+    @Test(expected = IllegalArgumentException.class)
+    public void testParsers_NullCredentials() throws AuthenticationException {
         parser = new UserIdentityParser(null, keycloakConfiguration);
-
-        String expectedUsername = "Unknown Username";
-        String expectedEmail = "Unknown Email";
-
-
-        String actualUsername = parser.parseUsername();
-        String actualEmail = parser.parseEmail();
-
-        assertEquals(expectedUsername, actualUsername);
-        assertEquals(expectedEmail, actualEmail);
-        assertTrue(parser.parseRoles().isEmpty());
     }
 
     @Test
-    public void testParsers_WithCredentials() throws JSONException {
+    public void testParsers_WithCredentials() {
         String expectedUsername = "user1";
         String expectedEmail = "user1@feedhenry.org";
         UserRole expectedRealmRole = new UserRole("mobile-user", RoleType.REALM, null);
         UserRole expectedResourceRole = new UserRole("ios-access", RoleType.RESOURCE, "client-app");
 
-        String actualUsername = parser.parseUsername();
-        String actualEmail = parser.parseEmail();
-        Set<UserRole> actualRoles = parser.parseRoles();
+        UserPrincipal user = parser.parseUser();
+        String actualUsername = user.getUsername();
+        String actualEmail = user.getEmail();
+        Set<UserRole> actualRoles = user.getRoles();
 
         assertEquals(expectedUsername, actualUsername);
         assertEquals(expectedEmail, actualEmail);
