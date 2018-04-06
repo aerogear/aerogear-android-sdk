@@ -106,7 +106,10 @@ public class JwksManager {
         HttpRequest getRequest = httpModule.newRequest();
         getRequest.get(jwksUrl);
         HttpResponse response = getRequest.execute();
-        response.onComplete(() -> {
+        response.onError(() -> {
+            logger.error("fetchJwksError", response.getError().getLocalizedMessage());
+        });
+        response.onSuccess(() -> {
             JsonWebKeySet jwks = null;
             JwksException error = null;
             // this is invoked on a background thread.
