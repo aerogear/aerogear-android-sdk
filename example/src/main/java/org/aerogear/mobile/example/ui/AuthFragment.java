@@ -1,21 +1,15 @@
 package org.aerogear.mobile.example.ui;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.aerogear.mobile.auth.AuthService;
 import org.aerogear.mobile.auth.authenticator.DefaultAuthenticateOptions;
 import org.aerogear.mobile.auth.user.UserPrincipal;
 import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.example.R;
-import org.aerogear.mobile.security.SecurityService;
 
 import butterknife.BindView;
 import butterknife.OnClick;
