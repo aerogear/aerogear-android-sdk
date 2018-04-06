@@ -54,7 +54,7 @@ public class AuthFragment extends BaseFragment {
             public void onError(final Throwable error) {
                 // there is an error during the login
                 Log.e(TAG, "login failed due to error " + error.getLocalizedMessage());
-                messageDialog("Failed to Authenticate" , error.getLocalizedMessage());
+                messageDialog("Failed to Authenticate", error.getLocalizedMessage());
             }
         });
     }
@@ -64,8 +64,7 @@ public class AuthFragment extends BaseFragment {
             @Override
             public void run() {
                 AlertDialog.Builder certPinningErrorBuilder = new AlertDialog.Builder(activity);
-                certPinningErrorBuilder.setTitle(title).setMessage(message).show()
-                                .create();
+                certPinningErrorBuilder.setTitle(title).setMessage(message).show().create();
             }
         });
     }
