@@ -54,8 +54,8 @@ public class UserIdentityParserTest {
     public void testParsers_NullCredentials() throws AuthenticationException {
         parser = new UserIdentityParser(null, keycloakConfiguration);
 
-        String expectedUsername = "Unknown Username";
-        String expectedEmail = "Unknown Email";
+        String expectedUsername = "";
+        String expectedEmail = "";
 
 
         String actualUsername = parser.parseUsername();

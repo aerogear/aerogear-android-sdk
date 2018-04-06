@@ -63,15 +63,7 @@ public class UserIdentityParser {
      * @return user's first name
      */
     public String parseFirstName() {
-        String firstName = "";
-        if (userIdentity != null && userIdentity.has(FIRST_NAME)) {
-            try {
-                firstName = userIdentity.getString(FIRST_NAME);
-            } catch (JSONException e) {
-                LOG.debug(TAG, "Failed to get user first name from user identity", e);
-            }
-        }
-        return firstName;
+        return userIdentity == null ? "" : userIdentity.optString(FIRST_NAME, "");
     }
 
     /**
@@ -80,15 +72,7 @@ public class UserIdentityParser {
      * @return user's last name
      */
     public String parseLastName() {
-        String lastName = "";
-        if (userIdentity != null && userIdentity.has(LAST_NAME)) {
-            try {
-                lastName = userIdentity.getString(LAST_NAME);
-            } catch (JSONException e) {
-                LOG.debug(TAG, "Failed to get user last name from user identity", e);
-            }
-        }
-        return lastName;
+        return userIdentity == null ? "" : userIdentity.optString(LAST_NAME, "");
     }
 
     /**
@@ -97,18 +81,7 @@ public class UserIdentityParser {
      * @return user's username
      */
     public String parseUsername() {
-        String username = "Unknown Username";
-        if (userIdentity != null) {
-            // get the users username
-            try {
-                if (userIdentity.has(USERNAME) && userIdentity.getString(USERNAME).length() > 0) {
-                    username = userIdentity.getString(USERNAME);
-                }
-            } catch (JSONException e) {
-                LOG.debug(TAG, "Failed to get username from user identity", e);
-            }
-        }
-        return username;
+        return userIdentity == null ? "" : userIdentity.optString(USERNAME, "");
     }
 
     /**
@@ -117,18 +90,7 @@ public class UserIdentityParser {
      * @return user's email address
      */
     public String parseEmail() {
-        String emailAddress = "Unknown Email";
-        if (userIdentity != null) {
-            // get the users email
-            try {
-                if (userIdentity.has(EMAIL) && userIdentity.getString(EMAIL).length() > 0) {
-                    emailAddress = userIdentity.getString(EMAIL);
-                }
-            } catch (JSONException e) {
-                LOG.debug(TAG, "Failed to get user email from user identity", e);
-            }
-        }
-        return emailAddress;
+        return userIdentity == null ? "" : userIdentity.optString(EMAIL, "");
     }
 
     /**
@@ -138,16 +100,13 @@ public class UserIdentityParser {
      */
     public Set<UserRole> parseRoles() {
         Set<UserRole> roles = new HashSet<>();
-        if (userIdentity != null) {
-            Set<UserRole> realmRoles = parseRealmRoles();
-            if (realmRoles != null) {
-                roles.addAll(realmRoles);
-            }
-            Set<UserRole> resourceRoles = parseResourceRoles();
-            if (resourceRoles != null) {
-                roles.addAll(resourceRoles);
-            }
-        }
+
+        Set<UserRole> realmRoles = userIdentity == null ? null : parseRealmRoles();
+        roles.addAll(realmRoles);
+
+        Set<UserRole> resourceRoles = userIdentity == null ? null : parseResourceRoles();
+        roles.addAll(resourceRoles);
+
         return roles;
     }
 
