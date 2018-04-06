@@ -99,7 +99,7 @@ public class PushService implements ServiceModule {
     /**
      * Register the device on Unified Push Server
      *
-     * @param callback A callback to handler success or fail registration
+     * @param callback A callback to handle successful or failed registration
      */
     public void registerDevice(final Callback callback) {
         registerDevice(new UnifiedPushConfig(), callback);
@@ -109,7 +109,7 @@ public class PushService implements ServiceModule {
      * Register the device on Unified Push Server
      *
      * @param unifiedPushConfig Unified Push configuration to be send to the Unified Push Server
-     * @param callback A callback to handler success or fail registration
+     * @param callback A callback to handle successful or failed registration
      */
     public void registerDevice(final UnifiedPushConfig unifiedPushConfig, final Callback callback) {
 
@@ -177,7 +177,7 @@ public class PushService implements ServiceModule {
     /**
      * Unregister the device on Unified Push Server
      *
-     * @param callback A callback to handler success or fail unregister
+     * @param callback A callback to handle successful or failed unregistration
      */
     public void unregisterDevice(final Callback callback) {
         unregisterDevice(new UnifiedPushConfig(), callback);
@@ -187,7 +187,7 @@ public class PushService implements ServiceModule {
      * Unregister the device on Unified Push Server
      *
      * @param unifiedPushConfig Unified Push configuration to be send to the Unified Push Server
-     * @param callback A callback to handler success or fail unregister
+     * @param callback A callback to handle successful or failed unregistration
      */
     public void unregisterDevice(final UnifiedPushConfig unifiedPushConfig,
                     final Callback callback) {
