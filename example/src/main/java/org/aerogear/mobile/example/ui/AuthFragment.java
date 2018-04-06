@@ -41,7 +41,7 @@ public class AuthFragment extends BaseFragment {
     public void doLogin() {
         AuthService authService = ((MainActivity) getActivity()).getAuthService();
         DefaultAuthenticateOptions authOptions =
-            new DefaultAuthenticateOptions(this.getActivity(), LOGIN_RESULT_CODE);
+                        new DefaultAuthenticateOptions(this.getActivity(), LOGIN_RESULT_CODE);
         authService.login(authOptions, new Callback<UserPrincipal>() {
             @Override
             public void onSuccess(UserPrincipal models) {
@@ -65,7 +65,8 @@ public class AuthFragment extends BaseFragment {
             @Override
             public void run() {
                 AlertDialog.Builder certPinningErrorBuilder = new AlertDialog.Builder(activity);
-                certPinningErrorBuilder.setTitle("Failed to Authenticate").setMessage(error).show().create();
+                certPinningErrorBuilder.setTitle("Failed to Authenticate").setMessage(error).show()
+                                .create();
             }
         });
     }
