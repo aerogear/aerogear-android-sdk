@@ -50,11 +50,9 @@ public class UserIdentityParser {
     public UserIdentityParser(final OIDCCredentials credential,
                     final KeycloakConfiguration keycloakConfiguration)
                     throws AuthenticationException {
-        this.credential = credential;
-        if (credential != null) {
-            decodeUserIdentity();
-        }
+        this.credential = nonNull(credential, "credential");
         this.keycloakConfiguration = nonNull(keycloakConfiguration, "keycloakConfiguration");
+        decodeUserIdentity();
     }
 
     /**
@@ -62,7 +60,7 @@ public class UserIdentityParser {
      *
      * @return user's first name
      */
-    public String parseFirstName() {
+    private String parseFirstName() {
         return userIdentity == null ? "" : userIdentity.optString(FIRST_NAME, "");
     }
 
@@ -71,7 +69,7 @@ public class UserIdentityParser {
      *
      * @return user's last name
      */
-    public String parseLastName() {
+    private String parseLastName() {
         return userIdentity == null ? "" : userIdentity.optString(LAST_NAME, "");
     }
 
@@ -80,8 +78,9 @@ public class UserIdentityParser {
      *
      * @return user's username
      */
-    public String parseUsername() {
-        return userIdentity == null ? "" : userIdentity.optString(USERNAME, "").trim();
+    private String parseUsername() {
+        return userIdentity == null ? "unknown_username"
+                        : userIdentity.optString(USERNAME, "unknown_username").trim();
     }
 
     /**
@@ -89,7 +88,7 @@ public class UserIdentityParser {
      *
      * @return user's email address
      */
-    public String parseEmail() {
+    private String parseEmail() {
         return userIdentity == null ? "" : userIdentity.optString(EMAIL, "").trim();
     }
 
@@ -98,7 +97,7 @@ public class UserIdentityParser {
      *
      * @return user's roles
      */
-    public Set<UserRole> parseRoles() {
+    private Set<UserRole> parseRoles() {
         Set<UserRole> roles = new HashSet<>();
 
         Set<UserRole> realmRoles = userIdentity == null ? null : parseRealmRoles();

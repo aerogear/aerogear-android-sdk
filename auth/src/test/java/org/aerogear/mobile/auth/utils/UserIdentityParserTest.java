@@ -14,6 +14,7 @@ import org.aerogear.mobile.auth.AuthenticationException;
 import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
 import org.aerogear.mobile.auth.credentials.OIDCCredentials;
 import org.aerogear.mobile.auth.user.RoleType;
+import org.aerogear.mobile.auth.user.UserPrincipal;
 import org.aerogear.mobile.auth.user.UserRole;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 
@@ -50,20 +51,9 @@ public class UserIdentityParserTest {
         parser = new UserIdentityParser(credential, null);
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testParsers_NullCredentials() throws AuthenticationException {
         parser = new UserIdentityParser(null, keycloakConfiguration);
-
-        String expectedUsername = "";
-        String expectedEmail = "";
-
-
-        String actualUsername = parser.parseUsername();
-        String actualEmail = parser.parseEmail();
-
-        assertEquals(expectedUsername, actualUsername);
-        assertEquals(expectedEmail, actualEmail);
-        assertTrue(parser.parseRoles().isEmpty());
     }
 
     @Test
@@ -73,9 +63,10 @@ public class UserIdentityParserTest {
         UserRole expectedRealmRole = new UserRole("mobile-user", RoleType.REALM, null);
         UserRole expectedResourceRole = new UserRole("ios-access", RoleType.RESOURCE, "client-app");
 
-        String actualUsername = parser.parseUsername();
-        String actualEmail = parser.parseEmail();
-        Set<UserRole> actualRoles = parser.parseRoles();
+        UserPrincipal user = parser.parseUser();
+        String actualUsername = user.getUsername();
+        String actualEmail = user.getEmail();
+        Set<UserRole> actualRoles = user.getRoles();
 
         assertEquals(expectedUsername, actualUsername);
         assertEquals(expectedEmail, actualEmail);
