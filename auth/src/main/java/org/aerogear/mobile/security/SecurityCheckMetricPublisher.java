@@ -2,6 +2,7 @@ package org.aerogear.mobile.security;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.aerogear.mobile.core.metrics.MetricsService;
@@ -14,7 +15,8 @@ import org.aerogear.mobile.security.metrics.SecurityCheckResultMetric;
 class SecurityCheckMetricPublisher implements SecurityCheckExecutorListener {
 
     private final MetricsService metricsService;
-    private final List<SecurityCheckResult> metricResults = new ArrayList<>();
+    private final List<SecurityCheckResult> metricResults =
+                    Collections.synchronizedList(new ArrayList<>());
 
     /**
      * Builds the object.
@@ -26,12 +28,12 @@ class SecurityCheckMetricPublisher implements SecurityCheckExecutorListener {
     }
 
     @Override
-    public synchronized void onExecuted(SecurityCheckResult result) {
+    public void onExecuted(SecurityCheckResult result) {
         metricResults.add(result);
     }
 
     @Override
-    public synchronized void onComplete() {
+    public void onComplete() {
         metricsService.publish(SecurityService.SECURITY_METRICS_EVENT_TYPE,
                         new SecurityCheckResultMetric(metricResults));
     }

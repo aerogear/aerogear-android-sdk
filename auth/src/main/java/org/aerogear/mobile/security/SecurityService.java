@@ -22,8 +22,9 @@ import org.aerogear.mobile.security.metrics.SecurityCheckResultMetric;
  */
 public class SecurityService implements ServiceModule {
 
-    public static final String SECURITY_METRICS_EVENT_TYPE = "security";
-    private final static String TYPE = "security";
+    static final String SECURITY_METRICS_EVENT_TYPE = "security";
+
+    private static final String TYPE = "security";
 
     private MobileCore core;
 

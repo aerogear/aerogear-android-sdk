@@ -15,6 +15,8 @@ public class MetricsService implements ServiceModule {
 
     private static final String INIT_METRICS_TYPE = "init";
 
+    private static final Metrics[] EMPTY_METRICS = new Metrics[0];
+
     private MetricsPublisher publisher;
 
     public MetricsPublisher getPublisher() {
@@ -58,7 +60,9 @@ public class MetricsService implements ServiceModule {
      * Send default metrics
      */
     public void sendAppAndDeviceMetrics() {
-        this.publish(INIT_METRICS_TYPE, new Metrics[0], null);
+        // as app and device metrics are added by the publisher
+        // to the payload, we only pass empty metrics to publisher
+        this.publish(INIT_METRICS_TYPE, EMPTY_METRICS, null);
     }
 
     /**
@@ -67,7 +71,9 @@ public class MetricsService implements ServiceModule {
      * @param callback callback of the publication
      */
     public void sendAppAndDeviceMetrics(final Callback callback) {
-        this.publish(INIT_METRICS_TYPE, new Metrics[0], callback);
+        // as app and device metrics are added by the publisher
+        // to the payload, we only pass empty metrics to publisher
+        this.publish(INIT_METRICS_TYPE, EMPTY_METRICS, callback);
     }
 
     /**
@@ -93,9 +99,8 @@ public class MetricsService implements ServiceModule {
             throw new IllegalStateException(
                             "Make sure you have called configure or get this instance from MobileCore.getInstance()");
         }
-        nonNull(type, "type");
-        nonNull(metrics, "metrics");
-        publisher.publish(type, metrics, callback);
+
+        publisher.publish(nonNull(type, "type"), nonNull(metrics, "metrics"), callback);
     }
 
 }

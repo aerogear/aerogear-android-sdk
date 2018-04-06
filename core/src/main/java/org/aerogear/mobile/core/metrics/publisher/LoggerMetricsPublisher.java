@@ -34,11 +34,11 @@ public final class LoggerMetricsPublisher implements MetricsPublisher {
         logger.debug("Metrics: " + type);
         // first log the default metrics (app and device info)
         for (final Metrics m : defaultMetrics) {
-            logger.debug("-> [" + m.identifier() + "]:" + m.data().toString());
+            logger.debug("-> [" + m.identifier() + "]:" + m.data());
         }
         // then log the specific metrics
         for (final Metrics m : metrics) {
-            logger.debug("-> [" + m.identifier() + "]:" + m.data().toString());
+            logger.debug("-> [" + m.identifier() + "]:" + m.data());
         }
         if (callback != null) {
             callback.onSuccess();
