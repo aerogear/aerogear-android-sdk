@@ -47,7 +47,6 @@ public class AuthServiceTest {
         when(serviceConfiguration.getProperty(anyString())).thenReturn("dummyvalue");
         when(mobileCore.getHttpLayer()).thenReturn(httpServiceModule);
         when(httpServiceModule.newRequest()).thenReturn(httpRequest);
-        when(httpRequest.execute()).thenReturn(httpResponse);
     }
 
     @Test

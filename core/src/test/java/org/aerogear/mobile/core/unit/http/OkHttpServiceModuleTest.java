@@ -72,13 +72,13 @@ public class OkHttpServiceModuleTest {
     public void testSuccessHandlerNotCalledInErrorCase() throws InterruptedException {
         HttpServiceModule module = new OkHttpServiceModule();
         CountDownLatch latch = new CountDownLatch(1);
-        AtomicReference valueRef = new AtomicReference();
-        AtomicReference<Exception> errorRef = new AtomicReference();
+        AtomicReference<HttpResponse> valueRef = new AtomicReference<>();
+        AtomicReference<Exception> errorRef = new AtomicReference<>();
         HttpRequest request = module.newRequest();
         request.get("http://does.not.exist.com").respondOn(Executors.newSingleThreadExecutor())
-                        .respondWith(new Responder() {
+                        .respondWith(new Responder<HttpResponse>() {
                             @Override
-                            public void onResult(Object value) {
+                            public void onResult(HttpResponse value) {
                                 valueRef.set(value);
                                 // This won't actually stop the test because of threading, but it is
                                 // helpful
@@ -116,9 +116,9 @@ public class OkHttpServiceModuleTest {
         CountDownLatch latch = new CountDownLatch(1);
         HttpRequest request = module.newRequest();
         request.get(urlString).respondOn(Executors.newSingleThreadExecutor())
-                        .respondWith(new Responder() {
+                        .respondWith(new Responder<HttpResponse>() {
                             @Override
-                            public void onResult(Object value) {
+                            public void onResult(HttpResponse value) {
                                 latch.countDown();
                             }
 

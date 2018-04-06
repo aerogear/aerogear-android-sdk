@@ -58,7 +58,7 @@ public class JwksManagerTest {
     private HttpRequest httpRequest;
 
     @Mock
-    private Request<HttpRequest> rxHttpRequest;
+    private Request<HttpResponse> rxHttpRequest;
 
     @Mock
     private HttpResponse httpResponse;
