@@ -229,7 +229,7 @@ public class PushService implements ServiceModule {
     }
 
     /**
-     * Provide an Auth hash to be used to authenticate in Unified Push Service
+     * Provide an auth hash to be used to authenticate in Unified Push Service
      *
      * @param variant Unified Push variant id
      * @param secret Unified Push variant secret

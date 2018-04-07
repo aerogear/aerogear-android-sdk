@@ -18,7 +18,7 @@ public final class UnifiedPushConfig {
     private List<String> categories = Collections.emptyList();
 
     /**
-     * The Alias is an identifier of the user of the system.
+     * The alias is an identifier of the user of the system.
      *
      * @return alias
      *
@@ -28,7 +28,7 @@ public final class UnifiedPushConfig {
     }
 
     /**
-     * The Alias is an identifier of the user of the system.
+     * The alias is an identifier of the user of the system.
      *
      * @param alias the new alias
      *

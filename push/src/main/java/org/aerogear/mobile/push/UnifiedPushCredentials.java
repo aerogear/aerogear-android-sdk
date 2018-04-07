@@ -7,7 +7,7 @@ public final class UnifiedPushCredentials {
     private String senderId;
 
     /**
-     * ID of the Variant from the AeroGear UnifiedPush Server.
+     * ID of the variant from the AeroGear UnifiedPush Server.
      *
      * @return the current variant id
      */
@@ -16,7 +16,7 @@ public final class UnifiedPushCredentials {
     }
 
     /**
-     * ID of the Variant from the AeroGear UnifiedPush Server.
+     * ID of the variant from the AeroGear UnifiedPush Server.
      *
      * @param variant the new variantID
      */
@@ -25,7 +25,7 @@ public final class UnifiedPushCredentials {
     }
 
     /**
-     * Secret of the Variant from the AeroGear UnifiedPush Server.
+     * Secret for the variant from the AeroGear UnifiedPush Server.
      *
      * @return the current Secret
      */
@@ -34,7 +34,7 @@ public final class UnifiedPushCredentials {
     }
 
     /**
-     * Secret of the Variant from the AeroGear UnifiedPush Server.
+     * Secret for the variant from the AeroGear UnifiedPush Server.
      *
      * @param secret the new secret
      */
