@@ -21,6 +21,13 @@ import org.aerogear.mobile.core.reactive.Responder;
  * invoked immediately with the result of the request being provided.
  */
 public class CertificatePinningCheck {
+    private static final CertificatePinningCheckListener DEFAULT_LISTENER =
+                    new CertificatePinningCheckListener() {
+                        public void onSuccess() {}
+
+                        public void onFailure() {}
+                    };
+
     private final HttpServiceModule httpModule;
     private CertificatePinningCheckListener listener;
     private Exception error;
@@ -29,6 +36,7 @@ public class CertificatePinningCheck {
 
     public CertificatePinningCheck(final HttpServiceModule httpModule) {
         this.httpModule = nonNull(httpModule, "httpModule");
+        this.listener = DEFAULT_LISTENER;
     }
 
     /**
@@ -47,7 +55,7 @@ public class CertificatePinningCheck {
      * @param listener The listener to be invoked on completion of the check.
      */
     public void attachListener(@NonNull final CertificatePinningCheckListener listener) {
-        this.listener = listener;
+        this.listener = nonNull(listener, "listener");
 
         // Invoke the attached listener immediately if we've already completed the the check.
         if (this.isComplete) {
@@ -63,7 +71,7 @@ public class CertificatePinningCheck {
      * Remove the currently attached listener, if there is one attached.
      */
     public void detachListener() {
-        this.listener = null;
+        this.listener = DEFAULT_LISTENER;
     }
 
     /**

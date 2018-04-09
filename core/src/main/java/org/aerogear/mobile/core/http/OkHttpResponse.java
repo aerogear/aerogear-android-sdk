@@ -10,6 +10,8 @@ import okhttp3.Call;
 import okhttp3.Response;
 
 public class OkHttpResponse implements HttpResponse {
+    private static final ByteArrayInputStream EMPTY_RESPONSE =
+                    new ByteArrayInputStream(new byte[0]);
 
     private static final long DEFAULT_TIMEOUT = 30;
     private Exception error;
@@ -75,7 +77,7 @@ public class OkHttpResponse implements HttpResponse {
         if (response != null) {
             return response.body().byteStream();
         } else {
-            return new ByteArrayInputStream(new byte[0]);
+            return EMPTY_RESPONSE;
         }
     }
 
