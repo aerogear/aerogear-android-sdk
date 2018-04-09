@@ -36,7 +36,7 @@ public abstract class MetricsPublisher {
      * @param metrics metrics
      * @return a JSONObject
      */
-    protected JSONObject parseMetrics(final String type, final Metrics[] metrics) {
+    protected JSONObject createMetricsJSONObject(final String type, final Metrics[] metrics) {
         nonNull(type, "type");
         nonNull(metrics, "metrics");
 

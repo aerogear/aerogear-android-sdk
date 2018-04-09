@@ -40,7 +40,7 @@ public final class NetworkMetricsPublisher extends MetricsPublisher {
         nonNull(type, "type");
         nonNull(metrics, "metrics");
 
-        final JSONObject json = parseMetrics(type, metrics);
+        final JSONObject json = createMetricsJSONObject(type, metrics);
 
         httpRequest.post(url, json.toString().getBytes());
 
