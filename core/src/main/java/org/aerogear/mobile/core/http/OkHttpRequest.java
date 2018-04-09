@@ -41,7 +41,6 @@ public class OkHttpRequest implements HttpRequest {
     public org.aerogear.mobile.core.reactive.Request<HttpResponse> get(final String url) {
         AtomicReference<OkHttpResponse> response = new AtomicReference<>();
         return Requester.call(() -> {
-            System.out.println("Http call on" + Thread.currentThread());
             Builder getRequestBuilder = requestBuilderWithUrl(url);
             addHeaders(getRequestBuilder);
             Request getRequest = getRequestBuilder.build();
@@ -52,7 +51,6 @@ public class OkHttpRequest implements HttpRequest {
             return (HttpResponse) okHttpResponse;// cast to force generic type
         }, () -> {
             /* Cleaner */
-            System.out.println("Cleanup call on " + Thread.currentThread());
             OkHttpResponse okHttpResponse = response.get();
             if (okHttpResponse != null && !okHttpResponse.isClosed()) {
                 okHttpResponse.waitForCompletionAndClose();

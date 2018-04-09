@@ -427,10 +427,8 @@ public class ReactiveCaseTest {
         HangsAfterCleanup closeThis = new HangsAfterCleanup();
         CountDownLatch latch = new CountDownLatch(2);
         Requester.call(() -> {
-            System.out.println("Request Called on " + Thread.currentThread());
             return closeThis;
         }, () -> {
-            System.out.println("Cleanup Called on " + Thread.currentThread());
             closeThis.close();
             latch.countDown();
         }).respondOn(Executors.newSingleThreadExecutor())
@@ -438,7 +436,6 @@ public class ReactiveCaseTest {
                         .respondWith(new Responder<HangsAfterCleanup>() {
                             @Override
                             public void onResult(HangsAfterCleanup value) {
-                                System.out.println("Result Called on " + Thread.currentThread());
                                 value.get();
                                 latch.countDown();
                             }
@@ -449,7 +446,6 @@ public class ReactiveCaseTest {
                             }
                         });
 
-        System.out.println("Await Called on " + Thread.currentThread());
         assertTrue(latch.await(2, TimeUnit.SECONDS));
         assertTrue(closeThis.closed);
     }
@@ -484,10 +480,8 @@ public class ReactiveCaseTest {
         CountDownLatch latch = new CountDownLatch(3);
 
         Requester.call(() -> {
-            System.out.println("Request Called on " + Thread.currentThread());
             return closeThis;
         }, () -> {
-            System.out.println("Cleanup Called on " + Thread.currentThread());
             closeThis.close();
             latch.countDown();
         }).requestOn(Executors.newSingleThreadExecutor()).map((value) -> value.get()).cache()
@@ -495,7 +489,6 @@ public class ReactiveCaseTest {
                         .respondWith(new Responder<String>() {
                             @Override
                             public void onResult(String value) {
-                                System.out.println("Result Called on " + Thread.currentThread());
                                 latch.countDown();
                             }
 
@@ -506,7 +499,6 @@ public class ReactiveCaseTest {
                         }).respondWith(new Responder<String>() {
                             @Override
                             public void onResult(String value) {
-                                System.out.println("Result Called on " + Thread.currentThread());
                                 latch.countDown();
                             }
 
@@ -516,7 +508,6 @@ public class ReactiveCaseTest {
                             }
                         });
 
-        System.out.println("Await Called on " + Thread.currentThread());
         assertTrue(latch.await(50, TimeUnit.SECONDS));
         assertTrue(closeThis.closed);
     }

@@ -3,12 +3,8 @@ package org.aerogear.mobile.core.http;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.concurrent.TimeUnit;
-
-import javax.net.ssl.SSLPeerUnverifiedException;
 
 import org.aerogear.mobile.core.exception.HttpException;
-import org.aerogear.mobile.core.executor.AppExecutors;
 
 import okhttp3.Call;
 import okhttp3.Response;
@@ -31,7 +27,7 @@ public class OkHttpResponse implements HttpResponse {
             // this call will throw an exception only when a connection problem occurs
             // even when there is a 400 or 500 no exception thrown
             response = okHttpCall.execute();
-            
+
             if (!(response.isSuccessful() || response.isRedirect())) {
                 // status 400 or 500
                 throw new HttpException(response.code(), response.message());

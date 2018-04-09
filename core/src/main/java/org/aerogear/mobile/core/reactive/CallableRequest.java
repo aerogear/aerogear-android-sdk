@@ -76,7 +76,6 @@ public final class CallableRequest<T> extends AbstractRequest<T> {
                 callableThread = null;
             }
         } catch (Exception e) {
-            System.out.println("Exception in callableRequest.call" + e.getMessage());
             exception = e;
         }
 
@@ -105,8 +104,6 @@ public final class CallableRequest<T> extends AbstractRequest<T> {
                  * Responders with uncaught exceptions should not blow up the reactive stack. For
                  * now we will log them, but one day a RxPlugin style mechanism may be appropriate.
                  */
-                System.out.println("Exception  thrown in responderThrowable"
-                                + responderThrowable.getMessage());
                 Log.e(ERROR_TAG, responderThrowable.getMessage(), responderThrowable);
             }
         } finally {
