@@ -2,7 +2,6 @@ package org.aerogear.mobile.core.metrics.publisher;
 
 import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
@@ -16,28 +15,23 @@ import org.aerogear.mobile.core.http.HttpResponse;
 import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.metrics.Metrics;
 import org.aerogear.mobile.core.metrics.MetricsPublisher;
-import org.aerogear.mobile.core.metrics.impl.AppMetrics;
-import org.aerogear.mobile.core.metrics.impl.DeviceMetrics;
-import org.aerogear.mobile.core.utils.ClientIdGenerator;
 
 /**
  * Sends metrics data to the backend using the configuration in JSON config file
  */
-public class NetworkMetricsPublisher implements MetricsPublisher {
+public final class NetworkMetricsPublisher extends MetricsPublisher {
 
-    public static final Logger LOGGER = MobileCore.getLogger();
+    private static final Logger LOGGER = MobileCore.getLogger();
 
-    private final Context context;
     private final HttpRequest httpRequest;
     private final String url;
-    private final Metrics[] defaultMetrics;
 
     public NetworkMetricsPublisher(final Context context, final HttpRequest httpRequest,
                     final String url) {
-        this.context = context;
+        super(context);
+
         this.httpRequest = httpRequest;
         this.url = url;
-        this.defaultMetrics = new Metrics[] {new AppMetrics(context), new DeviceMetrics(context)};
     }
 
     @Override
@@ -46,46 +40,24 @@ public class NetworkMetricsPublisher implements MetricsPublisher {
         nonNull(type, "type");
         nonNull(metrics, "metrics");
 
-        try {
-            final JSONObject json = new JSONObject();
+        final JSONObject json = parseMetrics(type, metrics);
 
-            json.put("clientId", ClientIdGenerator.getOrCreateClientId(context));
-            json.put("timestamp", System.currentTimeMillis());
-            json.put("type", type);
+        httpRequest.post(url, json.toString().getBytes());
 
-            final JSONObject data = new JSONObject();
+        LOGGER.debug("Sending metrics");
 
-            // first put the default metrics (app and device info)
-            for (final Metrics m : defaultMetrics) {
-                data.put(m.identifier(), m.data());
+        final HttpResponse httpResponse = httpRequest.execute();
+        httpResponse.onSuccess(() -> {
+            if (callback != null) {
+                callback.onSuccess();
             }
-
-            // then put the specific ones
-            for (final Metrics m : metrics) {
-                data.put(m.identifier(), m.data());
+        }).onError(() -> {
+            if (callback != null) {
+                callback.onError(httpResponse.getError());
+            } else {
+                LOGGER.error(httpResponse.getError().getMessage());
             }
+        });
 
-            json.put("data", data);
-
-            httpRequest.post(url, json.toString().getBytes());
-
-            LOGGER.debug("Sending metrics");
-
-            final HttpResponse httpResponse = httpRequest.execute();
-            httpResponse.onSuccess(() -> {
-                if (callback != null) {
-                    callback.onSuccess();
-                }
-            }).onError(() -> {
-                if (callback != null) {
-                    callback.onError(httpResponse.getError());
-                } else {
-                    LOGGER.error(httpResponse.getError().getMessage());
-                }
-            });
-
-        } catch (JSONException e) {
-            LOGGER.error(e.getMessage(), e);
-        }
     }
 }
