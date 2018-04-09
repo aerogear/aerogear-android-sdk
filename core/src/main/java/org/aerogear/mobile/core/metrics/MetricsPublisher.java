@@ -30,9 +30,7 @@ public abstract class MetricsPublisher {
     }
 
     /**
-     * Parse metrics into a JSONObject and add communs information for all metrics requests:
-     *
-     * - clientId - timestamp - type - app - device
+     * Parse metrics into a JSONObject and add common information for all metrics requests:
      *
      * @param type the type of metrics
      * @param metrics metrics
