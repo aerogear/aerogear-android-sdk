@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLPeerUnverifiedException;
 
+import org.aerogear.mobile.core.exception.HttpException;
 import org.aerogear.mobile.core.executor.AppExecutors;
 
 import okhttp3.Call;
@@ -25,9 +26,19 @@ class OkHttpResponse implements HttpResponse {
     public OkHttpResponse(final Call okHttpCall, AppExecutors appExecutors) {
         appExecutors.networkThread().execute(() -> {
             try {
+                // this call will throw an exception only when a connection problem occurs
+                // even when there is a 400 or 500 no exception thrown
                 response = okHttpCall.execute();
                 requestCompleteLatch.countDown();
-                runSuccessHandler();
+
+                if (response.isSuccessful() || response.isRedirect()) {
+                    // status 200 or 300
+                    runSuccessHandler();
+                } else {
+                    // status 400 or 500
+                    error = new HttpException(response.code(), response.message());
+                    runErrorHandler();
+                }
             } catch (SSLPeerUnverifiedException e) {
                 error = e;
                 requestCompleteLatch.countDown();
@@ -90,8 +101,9 @@ class OkHttpResponse implements HttpResponse {
     @Override
     public HttpResponse onSuccess(Runnable successHandler) {
         this.successHandler = successHandler;
-        // If there is _any_ response the success handler should run
-        if (response != null) {
+        // If there is _any_ response and it is successful the success handler should run
+        // immediately
+        if (response != null && (response.isSuccessful() || response.isRedirect())) {
             runSuccessHandler();
         }
         return this;
@@ -108,9 +120,12 @@ class OkHttpResponse implements HttpResponse {
             requestCompleteLatch.await(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
             // If a success Handler was set before this wait then we need to make
             // sure that gets called before we free these resources.
-            if (error == null) {
+            if (error == null && (response.isSuccessful() || response.isRedirect())) {
                 runSuccessHandler();
             } else {
+                if (error == null) {
+                    this.error = new HttpException(response.code(), response.message());
+                }
                 runErrorHandler();
             }
         } catch (InterruptedException interruptedException) {

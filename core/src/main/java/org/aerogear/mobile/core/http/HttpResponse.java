@@ -62,7 +62,7 @@ public interface HttpResponse {
 
     /**
      * Returns the request error if it failed
-     * 
+     *
      * @return Exception request error or null
      */
     Exception getError();

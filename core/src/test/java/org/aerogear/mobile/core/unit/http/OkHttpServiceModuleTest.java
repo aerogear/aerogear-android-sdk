@@ -57,7 +57,7 @@ public class OkHttpServiceModuleTest {
     }
 
     @Test
-    public void testSuccessHandlerNotCalledInErrorCase() {
+    public void testSuccessHandlerNotCalledInConnectionProblemCase() {
         HttpServiceModule module = new OkHttpServiceModule();
 
         HttpRequest request = module.newRequest();
@@ -81,11 +81,58 @@ public class OkHttpServiceModuleTest {
     }
 
     @Test
-    public void testCompleteHandlerCalledInErrorCase() {
+    public void testSuccessHandlerNotCalledInHttpErrorCase() {
+        HttpServiceModule module = new OkHttpServiceModule();
+
+        HttpRequest request = module.newRequest();
+        request.get("http://www.mocky.io/v2/5ac5d8f74a000052007e04f5");
+
+        final HttpResponse response = request.execute();
+        assertNotNull(response);
+
+        response.onSuccess(() -> {
+            fail("The success handler must not be called here");
+        });
+
+        CountDownLatch latch = new CountDownLatch(1);
+        response.onError(() -> {
+            assertNotNull(response.getError());
+            latch.countDown();
+        });
+
+        response.waitForCompletionAndClose();
+        assertEquals(latch.getCount(), 0);
+    }
+
+    @Test
+    public void testCompleteHandlerCalledInConnectionProblemCase() {
         HttpServiceModule module = new OkHttpServiceModule();
 
         HttpRequest request = module.newRequest();
         request.get("http://does.not.exist.com");
+
+        final HttpResponse response = request.execute();
+        assertNotNull(response);
+
+        CountDownLatch latch = new CountDownLatch(1);
+        response.onComplete(() -> {
+            latch.countDown();
+        });
+
+        response.onError(() -> {
+            assertNotNull(response.getError());
+        });
+
+        response.waitForCompletionAndClose();
+        assertEquals(latch.getCount(), 0);
+    }
+
+    @Test
+    public void testCompleteHandlerCalledInHttpErrorCase() {
+        HttpServiceModule module = new OkHttpServiceModule();
+
+        HttpRequest request = module.newRequest();
+        request.get("http://www.mocky.io/v2/5ac5d8f74a000052007e04f5");
 
         final HttpResponse response = request.execute();
         assertNotNull(response);
