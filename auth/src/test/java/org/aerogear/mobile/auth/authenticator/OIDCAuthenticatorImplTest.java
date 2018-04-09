@@ -4,10 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
-
 import org.jose4j.jwk.JsonWebKeySet;
-import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,7 +17,6 @@ import android.content.Context;
 import android.content.Intent;
 
 import org.aerogear.mobile.auth.AuthStateManager;
-import org.aerogear.mobile.auth.AuthenticationException;
 import org.aerogear.mobile.auth.authenticator.oidc.OIDCAuthenticatorImpl;
 import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
 import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
@@ -247,7 +243,7 @@ public class OIDCAuthenticatorImplTest {
     }
 
     @Test
-    public void testAuthenticate() throws AuthenticationException, IOException, JSONException {
+    public void testAuthenticate() {
         DefaultAuthenticateOptions opts = DefaultAuthenticateOptions.newBuilder()
                         .setFromActivity(activity).setResultCode(0)
                         .setSkipCertificatePinningChecks(true).build();

@@ -10,7 +10,6 @@ import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
 
-import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -58,7 +57,7 @@ public class AuthStateManagerTest {
     }
 
     @Test
-    public void testSaveNull() throws JSONException {
+    public void testSaveNull() {
         when(mockSharedPreferencesEditor.remove(anyString()))
                         .thenReturn(mockSharedPreferencesEditor);
         when(mockSharedPreferencesEditor.commit()).thenReturn(true);
@@ -69,7 +68,7 @@ public class AuthStateManagerTest {
     }
 
     @Test
-    public void testSaveWithState() throws JSONException {
+    public void testSaveWithState() {
         when(mockOIDCCredentials.serialize()).thenReturn("TEST");
         when(mockSharedPreferencesEditor.putString(anyString(), anyString()))
                         .thenReturn(mockSharedPreferencesEditor);
