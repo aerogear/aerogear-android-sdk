@@ -34,3 +34,5 @@ dependencies {
     testImplementation "com.android.support.test:rules:${project.ext.android_support_test_rules_version}"
 
 }
+apply from: "../gradle-mvn-push.gradle"
+

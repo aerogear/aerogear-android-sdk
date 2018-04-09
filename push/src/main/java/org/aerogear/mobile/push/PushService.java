@@ -255,6 +255,7 @@ public class PushService implements ServiceModule {
     /**
      * This will deliver an message to all registered handlers.
      *
+     * @param context the Android context
      * @param message the message to pass
      */
     public static void notifyHandlers(final Context context, final Map<String, String> message) {
