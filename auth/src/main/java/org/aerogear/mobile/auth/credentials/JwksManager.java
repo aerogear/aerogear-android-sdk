@@ -108,30 +108,35 @@ public class JwksManager {
         HttpResponse response = getRequest.execute();
         response.onComplete(() -> {
             JsonWebKeySet jwks = null;
-            JwksException error = null;
             // this is invoked on a background thread.
-            if (response.getStatus() == 200) {
-                String jwksContent = response.stringBody();
-                try {
-                    jwks = new JsonWebKeySet(jwksContent);
-                } catch (JoseException e) {
-                    jwks = null;
-                    error = new JwksException(e);
-                    logger.warning("failed to parse JWKS key content. content = " + jwksContent);
-                }
-                if (jwks != null) {
-                    persistJwksContent(keycloakConfiguration.getRealmName(), jwksContent);
-                }
-            } else {
-                logger.warning("failed to fetch JWKS from server. url = " + jwksUrl
-                                + " statusCode = " + response.getStatus());
-                error = new JwksException("failed to fetch JWKS from server");
-            }
-            if (callback != null) {
-                if (jwks != null) {
-                    callback.onSuccess(jwks);
+            try {
+                if (response.getStatus() == 200) {
+                    String jwksContent = response.stringBody();
+                    try {
+                        jwks = new JsonWebKeySet(jwksContent);
+                    } catch (JoseException e) {
+                        logger.warning("failed to parse JWKS key content. content = "
+                            + jwksContent);
+                        if(callback != null) {
+                            callback.onError(new JwksException(e));
+                        }
+                    }
+                    if (jwks != null) {
+                        persistJwksContent(keycloakConfiguration.getRealmName(), jwksContent);
+                    }
                 } else {
-                    callback.onError(error);
+                    logger.warning("failed to fetch JWKS from server. url = " + jwksUrl
+                                    + " statusCode = " + response.getStatus());
+                    throw new JwksException("failed to fetch JWKS from server");
+                }
+                if (callback != null) {
+                    if (jwks != null) {
+                        callback.onSuccess(jwks);
+                    }
+                }
+            } catch (Exception e) {
+                if (callback != null) {
+                    callback.onError(e);
                 }
             }
         });
