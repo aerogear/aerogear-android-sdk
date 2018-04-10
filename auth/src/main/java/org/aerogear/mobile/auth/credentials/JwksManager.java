@@ -102,14 +102,12 @@ public class JwksManager {
      */
     public void fetchJwks(@NonNull final KeycloakConfiguration keycloakConfiguration,
                     @Nullable final Callback<JsonWebKeySet> callback) {
-        JwksException jwksException = new JwksException("failed to fetch JWKS from server");
         String jwksUrl = nonNull(keycloakConfiguration, "keycloakConfiguration").getJwksUrl();
         HttpRequest getRequest = httpModule.newRequest();
         getRequest.get(jwksUrl);
         HttpResponse response = getRequest.execute();
         response.onComplete(() -> {
             JsonWebKeySet jwks = null;
-            JwksException error = null;
             // this is invoked on a background thread.
             try {
                 if (response.getStatus() == 200) {
@@ -117,10 +115,11 @@ public class JwksManager {
                     try {
                         jwks = new JsonWebKeySet(jwksContent);
                     } catch (JoseException e) {
-                        jwks = null;
-                        error = new JwksException(e);
                         logger.warning("failed to parse JWKS key content. content = "
-                                        + jwksContent);
+                            + jwksContent);
+                        if(callback != null) {
+                            callback.onError(new JwksException(e));
+                        }
                     }
                     if (jwks != null) {
                         persistJwksContent(keycloakConfiguration.getRealmName(), jwksContent);
@@ -128,13 +127,11 @@ public class JwksManager {
                 } else {
                     logger.warning("failed to fetch JWKS from server. url = " + jwksUrl
                                     + " statusCode = " + response.getStatus());
-                    error = new JwksException(jwksException);
+                    throw new JwksException("failed to fetch JWKS from server");
                 }
                 if (callback != null) {
                     if (jwks != null) {
                         callback.onSuccess(jwks);
-                    } else {
-                        callback.onError(error);
                     }
                 }
             } catch (Exception e) {
