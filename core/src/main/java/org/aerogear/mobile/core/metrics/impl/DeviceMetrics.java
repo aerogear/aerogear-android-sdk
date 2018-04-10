@@ -3,7 +3,6 @@ package org.aerogear.mobile.core.metrics.impl;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.Context;
 import android.os.Build;
 
 import org.aerogear.mobile.core.MobileCore;
@@ -18,7 +17,7 @@ public class DeviceMetrics implements Metrics<JSONObject> {
     private final String platform;
     private final String platformVersion;
 
-    public DeviceMetrics(final Context context) {
+    public DeviceMetrics() {
         this.platform = "android";
         this.platformVersion = String.valueOf(Build.VERSION.SDK_INT);
     }

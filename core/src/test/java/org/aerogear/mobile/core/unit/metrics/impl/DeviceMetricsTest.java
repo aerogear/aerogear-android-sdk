@@ -8,9 +8,7 @@ import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 
-import android.app.Application;
 import android.support.test.filters.SmallTest;
 
 import org.aerogear.mobile.core.metrics.impl.DeviceMetrics;
@@ -21,17 +19,13 @@ public class DeviceMetricsTest {
 
     @Test
     public void testType() {
-        Application context = RuntimeEnvironment.application;
-
-        DeviceMetrics deviceMetrics = new DeviceMetrics(context);
+        DeviceMetrics deviceMetrics = new DeviceMetrics();
         assertEquals("device", deviceMetrics.identifier());
     }
 
     @Test
     public void testData() throws JSONException {
-        Application context = RuntimeEnvironment.application;
-
-        DeviceMetrics deviceMetrics = new DeviceMetrics(context);
+        DeviceMetrics deviceMetrics = new DeviceMetrics();
         JSONObject result = deviceMetrics.data();
 
         assertNotNull(result.getString("platform"));

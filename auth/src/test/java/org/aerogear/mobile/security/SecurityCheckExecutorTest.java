@@ -3,6 +3,7 @@ package org.aerogear.mobile.security;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -57,7 +58,7 @@ public class SecurityCheckExecutorTest {
         SecurityCheckExecutor.Builder.newSyncExecutor(context).withSecurityCheck(securityCheckType)
                         .withMetricsService(metricsService).build().execute();
 
-        verify(metricsService, times(1)).publish(any());
+        verify(metricsService, times(1)).publish(eq("security"), any());
     }
 
     @Test
@@ -101,7 +102,7 @@ public class SecurityCheckExecutorTest {
         ExecutorService executorService = (new AppExecutors()).networkThread();
         executorService.submit(() -> {
             try {
-                verify(metricsService, times(1)).publish(any());
+                verify(metricsService, times(1)).publish(eq("security"), any());
             } finally {
                 latch.countDown();
             }
