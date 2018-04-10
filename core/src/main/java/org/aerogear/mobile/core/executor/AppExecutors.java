@@ -53,14 +53,6 @@ public final class AppExecutors {
         }
     };
 
-    // Executors.newSingleThreadExecutor(new ThreadFactory() {
-    // @Override
-    // public Thread newThread(@NonNull Runnable r) {
-    // return Looper.getMainLooper().getThread();
-    // }
-    // });
-
-
     private static final ExecutorService serviceThreadExecutor =
                     Executors.newSingleThreadExecutor();
 
