@@ -17,6 +17,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -40,6 +41,9 @@ public class PushService implements ServiceModule {
 
     private static final String DEFAULT_MESSAGE_HANDLER_KEY = "DEFAULT_MESSAGE_HANDLER_KEY";
 
+    private static final String SHARED_PREFERENCE_PUSH_NAME = "UnifiedPushServer";
+    private static final String SHARED_PREFERENCE_PUSH_KEY = "UnifiedPushServer_Cache";
+
     private static final String registryDeviceEndpoint = "rest/registry/device";
     private static final String JSON_ANDROID_CONFIG_KEY = "android";
     private static final String JSON_VARIANT_ID_KEY = "variantId";
@@ -59,6 +63,7 @@ public class PushService implements ServiceModule {
     private MobileCore core;
     private String url;
     private UnifiedPushCredentials unifiedPushCredentials;
+    private SharedPreferences sharedPreferences;
 
     private static MessageHandler defaultHandler;
 
@@ -87,6 +92,10 @@ public class PushService implements ServiceModule {
             throw new ConfigurationNotFoundException(
                             "An error occurred while trying to load the push config");
         }
+
+        sharedPreferences = core.getContext().getSharedPreferences(SHARED_PREFERENCE_PUSH_NAME,
+                        Context.MODE_PRIVATE);
+
     }
 
     @Override
@@ -113,19 +122,20 @@ public class PushService implements ServiceModule {
      * @param callback A callback to handle successful or failed registration
      */
     public void registerDevice(final UnifiedPushConfig unifiedPushConfig, final Callback callback) {
+        nonNull(unifiedPushConfig, "unifiedPushConfig");
+        nonNull(callback, "callback");
 
         try {
 
             JSONObject data = new JSONObject();
 
-            data.put("deviceToken", FirebaseInstanceId.getInstance().getToken());
             data.put("deviceType", deviceType);
             data.put("operatingSystem", operatingSystem);
             data.put("osVersion", osVersion);
             data.put("alias", unifiedPushConfig.getAlias());
 
             final List<String> categories = unifiedPushConfig.getCategories();
-            if (categories != null && !categories.isEmpty()) {
+            if (!categories.isEmpty()) {
                 JSONArray jsonCategories = new JSONArray();
                 for (String category : categories) {
                     jsonCategories.put(category);
@@ -133,11 +143,41 @@ public class PushService implements ServiceModule {
                 data.put("categories", jsonCategories);
             }
 
+            registerDevice(data, callback);
+
+        } catch (JSONException e) {
+            MobileCore.getLogger().error(e.getMessage(), e);
+            callback.onError(e);
+        }
+
+    }
+
+    /**
+     * Register the device on Unified Push Server
+     *
+     * @param data Unified Push data to be send to the Unified Push Server
+     * @param callback A callback to handle successful or failed registration
+     */
+    private void registerDevice(JSONObject data, Callback callback) {
+        nonNull(data, "data");
+        nonNull(callback, "callback");
+
+        try {
+
+            data.put("deviceToken", FirebaseInstanceId.getInstance().getToken());
+
             String authHash = getHashedAuth(unifiedPushCredentials.getVariant(),
                             unifiedPushCredentials.getSecret().toCharArray());
 
             final HttpRequest httpRequest = core.getHttpLayer().newRequest();
             httpRequest.addHeader("Authorization", authHash);
+
+            // Invalidate old on Unified Push Server
+            String oldDeviceToken = retrieveOldDeviceToken();
+            if (oldDeviceToken != null) {
+                httpRequest.addHeader("x-ag-old-token", oldDeviceToken);
+            }
+
             httpRequest.post(url + registryDeviceEndpoint, data.toString().getBytes())
                             .respondWith(new Responder<HttpResponse>() {
                                 @Override
@@ -148,14 +188,22 @@ public class PushService implements ServiceModule {
                                             FirebaseMessaging firebaseMessaging =
                                                             FirebaseMessaging.getInstance();
 
-                                            if (categories != null) {
-                                                for (String catgory : categories) {
-                                                    firebaseMessaging.subscribeToTopic(catgory);
+                                            try {
+                                                JSONArray categories =
+                                                                data.getJSONArray("categories");
+                                                for (int i = 0; i < categories.length(); i++) {
+                                                    String category = categories.getJSONObject(i)
+                                                                    .toString();
+                                                    firebaseMessaging.subscribeToTopic(category);
                                                 }
+                                            } catch (JSONException e) {
+                                                // ignore
                                             }
 
                                             firebaseMessaging.subscribeToTopic(
                                                             unifiedPushCredentials.getVariant());
+
+                                            saveCache(data);
 
                                             callback.onSuccess();
                                             break;
@@ -165,7 +213,6 @@ public class PushService implements ServiceModule {
                                             break;
                                     }
                                 }
-
 
                                 @Override
                                 public void onException(Exception error) {
@@ -187,17 +234,7 @@ public class PushService implements ServiceModule {
      * @param callback A callback to handle successful or failed unregistration
      */
     public void unregisterDevice(final Callback callback) {
-        unregisterDevice(new UnifiedPushConfig(), callback);
-    }
-
-    /**
-     * Unregister the device on Unified Push Server
-     *
-     * @param unifiedPushConfig Unified Push configuration to be send to the Unified Push Server
-     * @param callback A callback to handle successful or failed unregistration
-     */
-    public void unregisterDevice(final UnifiedPushConfig unifiedPushConfig,
-                    final Callback callback) {
+        nonNull(callback, "callback");
 
         String authHash = getHashedAuth(unifiedPushCredentials.getVariant(),
                         unifiedPushCredentials.getSecret().toCharArray());
@@ -215,12 +252,25 @@ public class PushService implements ServiceModule {
                                         FirebaseMessaging firebaseMessaging =
                                                         FirebaseMessaging.getInstance();
 
-                                        for (String category : unifiedPushConfig.getCategories()) {
-                                            firebaseMessaging.unsubscribeFromTopic(category);
+                                        try {
+                                            JSONObject data = retrieveCache();
+                                            if (data != null) {
+                                                JSONArray categories =
+                                                                data.getJSONArray("categories");
+                                                for (int i = 0; i < categories.length(); i++) {
+                                                    String category = categories.getString(i);
+                                                    firebaseMessaging
+                                                                    .unsubscribeFromTopic(category);
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            // ignore
                                         }
 
                                         firebaseMessaging.unsubscribeFromTopic(
                                                         unifiedPushCredentials.getVariant());
+
+                                        clearCache();
 
                                         callback.onSuccess();
                                         break;
@@ -231,14 +281,12 @@ public class PushService implements ServiceModule {
                                 }
                             }
 
-
                             @Override
                             public void onException(Exception error) {
                                 MobileCore.getLogger().error(error.getMessage(), error);
                                 callback.onError(error);
                             }
                         });
-
     }
 
     /**
@@ -256,6 +304,62 @@ public class PushService implements ServiceModule {
         return headerValueBuilder.append(hashedCrentials).toString();
     }
 
+    /**
+     * Update the device token on Unified Push Server
+     */
+    public void refreshToken() {
+        JSONObject jsonObject = retrieveCache();
+        nonNull(jsonObject, "jsonObject");
+
+        this.registerDevice(jsonObject,
+                        error -> MobileCore.getLogger().error(error.getMessage(), error));
+    }
+
+    /**
+     * Save info sent to the Unified Push Server
+     *
+     * @param data JSONObject sent to Unified Push Server
+     */
+    private void saveCache(JSONObject data) {
+        sharedPreferences.edit().putString(SHARED_PREFERENCE_PUSH_KEY, data.toString()).apply();
+    }
+
+    /**
+     * Retrieve info sent to the Unified Push Server
+     *
+     * @return JSONObject sent to Unified Push Server
+     */
+    private JSONObject retrieveCache() {
+        try {
+            String jsonString = sharedPreferences.getString(SHARED_PREFERENCE_PUSH_KEY, "");
+            return (!jsonString.isEmpty()) ? new JSONObject(jsonString) : null;
+        } catch (JSONException e) {
+            MobileCore.getLogger().error(e.getMessage(), e);
+            return null;
+        }
+    }
+
+    /**
+     * Retrive the last device token sent to the Unified Push Server
+     *
+     * @return Device Token
+     */
+    private String retrieveOldDeviceToken() {
+        JSONObject data = retrieveCache();
+        try {
+            return (data == null) ? null : data.getString("deviceToken");
+        } catch (JSONException e) {
+            MobileCore.getLogger().error(e.getMessage(), e);
+            return null;
+        }
+    }
+
+    /**
+     * Clear cache of info sent to the Unified Push Server
+     */
+    private void clearCache() {
+        sharedPreferences.edit().remove(SHARED_PREFERENCE_PUSH_KEY).apply();
+    }
 
     /**
      * When a push message is received, all main thread handlers will be notified on the main(UI)
@@ -332,12 +436,11 @@ public class PushService implements ServiceModule {
 
     /**
      * Get a default handler from AndroidManifest.xml if exists
-     *
+     * <p>
      * <code>
      * <meta-data
-     *   android:name="DEFAULT_MESSAGE_HANDLER_KEY" android:value="my.package.HandlerClassName" />
+     * android:name="DEFAULT_MESSAGE_HANDLER_KEY" android:value="my.package.HandlerClassName" />
      * </code>
-     *
      */
     @SuppressWarnings("unchecked")
     private static void getDefaultHandler(final Context context) {
