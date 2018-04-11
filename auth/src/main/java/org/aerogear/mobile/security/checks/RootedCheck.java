@@ -11,14 +11,16 @@ import android.support.annotation.NonNull;
 public class RootedCheck extends AbstractSecurityCheck {
 
     /**
-     * Check whether the device is rooted or not.
+     * Check whether the device is rooted or not. An attacker running the application on a rooted
+     * device can have direct access to its data storage and also has many more tools to eavesdrop
+     * on networked communications
      *
      * @param context {@link Context} to be used by the check
-     * @return <code>true</code> if the device is rooted
+     * @return <code>false</code> if the device is rooted
      */
     @Override
     protected boolean execute(@NonNull Context context) {
-        return getRootBeer(context).isRooted();
+        return !getRootBeer(context).isRooted();
     }
 
     /**

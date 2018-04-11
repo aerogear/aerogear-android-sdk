@@ -16,7 +16,7 @@ public class AllowBackupFlagCheck extends AbstractSecurityCheck {
      * Check whether the allowBackup flag is enabled.
      *
      * @param context Context to be used by the check.
-     * @return true if allowBackup is enabled.
+     * @return <code>true</code> if allowBackup is false.
      * @throws IllegalStateException Will be thrown if package information can not be found.
      */
     @Override
@@ -28,7 +28,7 @@ public class AllowBackupFlagCheck extends AbstractSecurityCheck {
             throw new IllegalStateException(
                             "Could not retrieve package information from provided context", e);
         }
-        return (packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_ALLOW_BACKUP) != 0;
+        return (packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_ALLOW_BACKUP) == 0;
     }
 
     @Override

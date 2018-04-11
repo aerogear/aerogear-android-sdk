@@ -11,16 +11,17 @@ import android.support.annotation.NonNull;
 public class DeveloperModeCheck extends AbstractSecurityCheck {
 
     /**
-     * Check if developer mode has been enabled in the device.
+     * Check if developer mode has been enabled in the device. Developer mode can allow an attacker
+     * to spoof GPS and other forms of data entry.
      *
      * @param context {@link Context} to be used by the check
-     * @return <code>true</code> if the developer options have been enabled on the device
+     * @return <code>true</code> if the developer options have not been enabled on the device
      */
     @Override
     protected boolean execute(@NonNull Context context) {
         int devOptions = Settings.Secure.getInt(context.getContentResolver(),
                         Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0);
-        return devOptions > 0;
+        return devOptions == 0;
     }
 
     @Override
