@@ -43,14 +43,14 @@ public class RootedCheckTest {
     public void testIsRooted() {
         when(rootBeer.isRooted()).thenReturn(true);
         SecurityCheckResult result = check.test(RuntimeEnvironment.application);
-        assertTrue(result.passed());
+        assertFalse(result.passed());
     }
 
     @Test
     public void testNotRooted() {
         when(rootBeer.isRooted()).thenReturn(false);
         SecurityCheckResult result = check.test(RuntimeEnvironment.application);
-        assertFalse(result.passed());
+        assertTrue(result.passed());
     }
 
     @Test(expected = IllegalArgumentException.class)

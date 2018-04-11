@@ -1,6 +1,6 @@
 package org.aerogear.mobile.security.checks;
 
-import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -22,6 +22,6 @@ public class DebuggerCheckTest {
     @Test
     public void testDebugIsEnabled() {
         SecurityCheckResult result = check.test(RuntimeEnvironment.application);
-        assertFalse(result.passed());
+        assertTrue(result.passed());
     }
 }

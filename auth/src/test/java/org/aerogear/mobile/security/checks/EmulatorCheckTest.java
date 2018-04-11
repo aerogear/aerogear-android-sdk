@@ -1,6 +1,6 @@
 package org.aerogear.mobile.security.checks;
 
-import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +24,7 @@ public class EmulatorCheckTest {
     @Test
     public void testCheck() {
         SecurityCheckResult result = check.test(new MockContext());
-        assertFalse(result.passed());
+        assertTrue(result.passed());
     }
 
 }

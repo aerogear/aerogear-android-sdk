@@ -37,7 +37,7 @@ public class DeveloperModeCheckTest {
 
         DeveloperModeCheck developerModeCheck = new DeveloperModeCheck();
 
-        SecurityCheckResult expected = new SecurityCheckResultImpl(developerModeCheck, true);
+        SecurityCheckResult expected = new SecurityCheckResultImpl(developerModeCheck, false);
         SecurityCheckResult actual = developerModeCheck.test(context);
 
         assertEquals(expected.getId(), actual.getId());
@@ -52,7 +52,7 @@ public class DeveloperModeCheckTest {
 
         DeveloperModeCheck developerModeCheck = new DeveloperModeCheck();
 
-        SecurityCheckResult expected = new SecurityCheckResultImpl(developerModeCheck, false);
+        SecurityCheckResult expected = new SecurityCheckResultImpl(developerModeCheck, true);
         SecurityCheckResult actual = developerModeCheck.test(context);
 
         assertEquals(expected.getId(), actual.getId());
