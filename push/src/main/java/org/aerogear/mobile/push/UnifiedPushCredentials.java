@@ -44,6 +44,8 @@ public final class UnifiedPushCredentials {
 
     /**
      * Firebase senderId registered for this application.
+     * 
+     * @return senderId
      */
     public String getSenderId() {
         return senderId;
