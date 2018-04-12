@@ -1,6 +1,6 @@
 = Self Defence Checks
 
-As part of the Auth SDK module, there is a self defence check feature.  This feature offers multiple security checks that can be used to analyse the secuirty of the device.  This can be useful for apps to detect vulnerablities and react accordingly.  For example, if the app detects security issue *X* then do *Y*, where *X* could be no lock screen is set and *Y* is show a system prompt to setup the lock screen.
+As part of the Auth SDK module, there is a self defence check feature.  This feature offers multiple security checks that can be used to analyse the security of the device.  This can be useful for apps to detect vulnerablities and react accordingly.  For example, if the app detects security issue *X* then do *Y*, where *X* could be no lock screen is set and *Y* is show a system prompt to setup the lock screen.
 
 This module offers:
 
@@ -27,6 +27,10 @@ There are two ways to implement self defence checks: <<Provided Self Defence Che
 === Provided Self Defence Checks
 
 These are self defence checks provided by the SDK in link:javadoc[`SecurityCheckType`].
+
+A successful Check means that the environment the application is running in is more secure than otherwise, as opposed to signalling if a certain feature is enabled.
+
+For example, a check for whether the device is Rooted should return `true` when it is *not* rooted, since this would be the more secure condition.
 
 ==== Root Access Detection (IS_ROOTED)
 
