@@ -32,29 +32,29 @@ A successful Check means that the environment the application is running in is m
 
 For example, a check for whether the device is Rooted should return `true` when it is *not* rooted, since this would be the more secure condition.
 
-==== Root Access Detection (IS_ROOTED)
+==== Root Access Detection (NOT_ROOTED)
 
-To detect if a device has been rooted (jailbreak) the `SecurityCheckType#IS_ROOTED` function can be used.  This function uses the link:https://github.com/scottyab/rootbeer[Rootbeer] library to check if root access is present on the device.
+To help prevent your app running in a device that has been rooted/jailbroken the `SecurityCheckType#NOT_ROOTED` function can be used.  This function uses the link:https://github.com/scottyab/rootbeer[Rootbeer] library to check if root access is present on the device.
 
-==== Developer Mode Detection (IS_DEVELOPER_MODE)
+==== Developer Mode Detection (NO_DEVELOPER_MODE)
 
-To detect if Developer Mode has been enabled on the device the `SecurityCheckType#IS_DEVELOPER_MODE` function can be used.  This function uses Android's link:https://developer.android.com/reference/android/provider/Settings.html[Settings] class.
+To detect if Developer Mode has been enabled on the device the `SecurityCheckType#NO_DEVELOPER_MODE` function can be used.  This function uses Android's link:https://developer.android.com/reference/android/provider/Settings.html[Settings] class.
 
-==== Debugger Detection (IS_DEBUGGER)
+==== Debugger Detection (NO_DEBUGGER)
 
-To detect if an Android debugger is attached to the app the `SecurityCheckType#IS_DEBUGGER` function can be used.  This function uses Android's link:https://developer.android.com/reference/android/os/Debug.html[Debug] class.
+To detect if an Android debugger is attached to the app the `SecurityCheckType#NO_DEBUGGER` function can be used.  This function uses Android's link:https://developer.android.com/reference/android/os/Debug.html[Debug] class.
 
-==== Emulator Detection (IS_EMULATOR)
+==== Emulator Detection (NOT_IN_EMULATOR)
 
-To detect if the app is being run on an emulator the `SecurityCheckType#IS_EMULATOR` function can be used.  This function uses Android's link:https://developer.android.com/reference/android/os/Build.html[Build] class.
+To detect if the app is being run on an emulator the `SecurityCheckType#NOT_IN_EMULATOR` function can be used.  This function uses Android's link:https://developer.android.com/reference/android/os/Build.html[Build] class.
 
 ==== Device Lock Detection (SCREEN_LOCK_ENABLED)
 
-To detect if a device has a lock screen set (with pin, fingerprint, pattern) the `SecurityCheckType#HAS_SCREENLOCK` function can be used.  This function uses Android's link:https://developer.android.com/reference/android/app/KeyguardManager.html[KeyguardManager] class.
+To detect if a device has a lock screen set (with pin, fingerprint, pattern) the `SecurityCheckType#SCREEN_LOCK_ENABLED` function can be used.  This function uses Android's link:https://developer.android.com/reference/android/app/KeyguardManager.html[KeyguardManager] class.
 
-==== App Data Backup Detection (ALLOW_BACKUP_ENABLED)
+==== App Data Backup Detection (ALLOW_BACKUP_DISABLED)
 
-To detect whether the allowBackup flag is enabled for the application the `SecurityCheckType#ALLOW_BACKUP_ENABLED` function can be used. The link:https://developer.android.com/guide/topics/manifest/application-element.html[allowBackup] flag determines whether to allow the application to participate in the backup and restore infrastructure.
+To detect whether the application's data is configured to be synchronized accross devices the `SecurityCheckType#ALLOW_BACKUP_DISABLED` function can be used. The link:https://developer.android.com/guide/topics/manifest/application-element.html[allowBackup] flag determines whether to allow the application to participate in the backup and restore infrastructure, which might be interesting to avoid depending on your app's needs.
 
 ==== Device Encryption Detection (HAS_ENCRYPTION_ENABLED)
 
