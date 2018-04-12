@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.json.JSONException;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -37,18 +38,20 @@ public final class MobileCore {
 
     public static final String DEFAULT_CONFIG_FILE_NAME = "mobile-services.json";
 
-    private static final String TAG = "AEROGEAR/CORE";
     private static final int DEFAULT_READ_TIMEOUT = 30;
     private static final int DEFAULT_CONNECT_TIMEOUT = 10;
     private static final int DEFAULT_WRITE_TIMEOUT = 10;
+
+    @SuppressLint("StaticFieldLeak")
+    private static MobileCore instance;
+    // TODO Move to instance
     private static Logger logger = new LoggerAdapter();
-    private static String appVersion;
 
     private final Context context;
+    private final String appVersion;
     private final String configFileName;
     private final HttpServiceModule httpLayer;
     private final Map<String, ServiceConfiguration> servicesConfig;
-    private final HttpsConfiguration httpsConfig;
     private final Map<Class<? extends ServiceModule>, ServiceModule> services = new HashMap<>();
 
     /**
@@ -59,12 +62,13 @@ public final class MobileCore {
     private MobileCore(final Context context, final Options options)
                     throws InitializationException, IllegalStateException {
         this.context = nonNull(context, "context").getApplicationContext();
-        this.configFileName = nonNull(options, "options").configFileName;
 
-        // -- Allow to override the default logger
-        if (options.logger != null) {
-            logger = options.logger;
-        }
+        this.appVersion = getAppVersion(context);
+        this.configFileName = options.configFileName;
+        logger = options.logger;
+
+
+        HttpsConfiguration httpsConfig;
 
         // -- Parse JSON config file
         try (final InputStream configStream = context.getAssets().open(configFileName)) {
@@ -76,42 +80,35 @@ public final class MobileCore {
             throw new InitializationException(message, exception);
         }
 
-        // -- Set the app version variable
-        appVersion = getAppVersion(context);
+        // Setup HTTP layer
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
 
-        // -- Setting default http layer
-        if (options.httpServiceModule == null) {
-            OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        OkHttpCertificatePinningParser certificatePinning =
+                        new OkHttpCertificatePinningParser(httpsConfig.getCertPinningConfig());
+        builder.certificatePinner(certificatePinning.parse());
 
-            OkHttpCertificatePinningParser certificatePinning =
-                            new OkHttpCertificatePinningParser(httpsConfig.getCertPinningConfig());
-            builder.certificatePinner(certificatePinning.parse());
-
-            builder.connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
-                            .writeTimeout(DEFAULT_WRITE_TIMEOUT, TimeUnit.SECONDS)
-                            .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS);
-            final OkHttpServiceModule httpServiceModule = new OkHttpServiceModule(builder.build());
-            ServiceConfiguration configuration = this.servicesConfig.get(httpServiceModule.type());
-            if (configuration == null) {
-                configuration = new ServiceConfiguration.Builder().build();
-            }
-
-            httpServiceModule.configure(this, configuration);
-
-            this.httpLayer = httpServiceModule;
-        } else {
-            this.httpLayer = options.httpServiceModule;
+        builder.connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
+                        .writeTimeout(DEFAULT_WRITE_TIMEOUT, TimeUnit.SECONDS)
+                        .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS);
+        final OkHttpServiceModule httpServiceModule = new OkHttpServiceModule(builder.build());
+        ServiceConfiguration configuration = this.servicesConfig.get(httpServiceModule.type());
+        if (configuration == null) {
+            configuration = new ServiceConfiguration.Builder().build();
         }
+
+        httpServiceModule.configure(this, configuration);
+
+        this.httpLayer = httpServiceModule;
+
     }
 
     /**
      * Initialize the AeroGear system
      *
      * @param context Application context
-     * @return MobileCore instance
      */
-    public static MobileCore init(final Context context) throws InitializationException {
-        return init(context, new Options());
+    public static void init(final Context context) throws InitializationException {
+        init(context, new Options());
     }
 
     /**
@@ -119,26 +116,29 @@ public final class MobileCore {
      *
      * @param context Application context
      * @param options AeroGear initialization options
-     * @return MobileCore instance
      */
-    public static MobileCore init(final Context context, final Options options)
+    public static void init(final Context context, final Options options)
                     throws InitializationException {
-        return new MobileCore(context, options);
+        instance = new MobileCore(context, options);
+    }
+
+    public static MobileCore getInstance() {
+        return instance;
     }
 
     /**
      * Called when mobile core instance needs to be destroyed
      */
-    public void destroy() {
-        for (Class<? extends ServiceModule> serviceKey : services.keySet()) {
-            ServiceModule serviceModule = services.get(serviceKey);
+    public static void destroy() {
+        for (Class<? extends ServiceModule> serviceKey : instance.services.keySet()) {
+            ServiceModule serviceModule = instance.services.get(serviceKey);
             serviceModule.destroy();
         }
     }
 
     @SuppressWarnings("unchecked")
     public <T extends ServiceModule> T getInstance(final Class<T> serviceClass) {
-        return (T) getInstance(serviceClass, null);
+        return getInstance(serviceClass, null);
     }
 
     @SuppressWarnings("unchecked")
@@ -162,7 +162,7 @@ public final class MobileCore {
 
             if (serviceCfg == null && serviceModule.requiresConfiguration()) {
                 throw new ConfigurationNotFoundException(
-                                serviceModule.type() + " not found on " + this.configFileName);
+                                serviceModule.type() + " not found on " + configFileName);
             }
 
             serviceModule.configure(this, serviceCfg);
@@ -193,7 +193,7 @@ public final class MobileCore {
      * @return the configuration for this singleThreadService from the JSON config file
      */
     public ServiceConfiguration getServiceConfiguration(final String type) {
-        return this.servicesConfig.get(type);
+        return servicesConfig.get(type);
     }
 
     /**
@@ -214,7 +214,7 @@ public final class MobileCore {
     }
 
     public HttpServiceModule getHttpLayer() {
-        return this.httpLayer;
+        return httpLayer;
     }
 
     public static Logger getLogger() {
@@ -231,7 +231,7 @@ public final class MobileCore {
      *
      * @return String SDK version
      */
-    public static String getSdkVersion() {
+    public String getSdkVersion() {
         return BuildConfig.VERSION_NAME;
     }
 
@@ -240,27 +240,23 @@ public final class MobileCore {
      *
      * @return String App version name
      */
-    public static String getAppVersion() {
+    public String getAppVersion() {
         return appVersion;
     }
 
     @SuppressWarnings({"UnusedReturnValue", "WeakerAccess"})
     public static final class Options {
 
-        private String configFileName = DEFAULT_CONFIG_FILE_NAME;
-        // Don't have a default implementation because it should use configuration
-        private HttpServiceModule httpServiceModule;
-        private Logger logger = new LoggerAdapter();
+        private String configFileName;
+        private Logger logger;
 
-        public Options() {}
+        public Options() {
+            this.configFileName = DEFAULT_CONFIG_FILE_NAME;
+            this.logger = new LoggerAdapter();
+        }
 
         public Options setConfigFileName(@NonNull final String configFileName) {
             this.configFileName = nonNull(configFileName, "configFileName");
-            return this;
-        }
-
-        public Options setHttpServiceModule(@NonNull final HttpServiceModule httpServiceModule) {
-            this.httpServiceModule = nonNull(httpServiceModule, "httpServiceModule");
             return this;
         }
 

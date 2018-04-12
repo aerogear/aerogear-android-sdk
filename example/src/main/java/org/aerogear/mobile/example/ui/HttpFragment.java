@@ -46,7 +46,7 @@ public class HttpFragment extends BaseFragment {
 
         new LastAdapter(users, BR.user).map(User.class, R.layout.item_http).into(userList);
 
-        HttpRequest httpRequest = activity.mobileCore.getHttpLayer().newRequest();
+        HttpRequest httpRequest = MobileCore.getInstance().getHttpLayer().newRequest();
 
         httpRequest.get("https://jsonplaceholder.typicode.com/users").map((response) -> {
             String stringBody = response.stringBody();

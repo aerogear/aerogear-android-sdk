@@ -36,13 +36,12 @@ import okhttp3.mockwebserver.MockWebServer;
 @SmallTest
 public class ReactiveHTTPTest {
 
-    private MobileCore core;
     private AppExecutors executor = new AppExecutors();
 
     @Before
     public void setUp() {
         Application context = RuntimeEnvironment.application;
-        core = MobileCore.init(context);
+        MobileCore.init(context);
     }
 
     /**
@@ -65,7 +64,7 @@ public class ReactiveHTTPTest {
         webServer.enqueue(response);
 
         // Actual test
-        core.getHttpLayer().newRequest().get(webServer.url("/test").toString())
+        MobileCore.getInstance().getHttpLayer().newRequest().get(webServer.url("/test").toString())
                         .respondOn(executor.singleThreadService())
                         .respondWith(new Responder<HttpResponse>() {
                             @Override
@@ -92,9 +91,8 @@ public class ReactiveHTTPTest {
 
     /**
      * A HTTP String response should close itself.
-     *
+     * <p>
      * This means that calls to {@link HttpResponse#waitForCompletionAndClose()} are automatic
-     *
      */
     @Test
     public void httpStringRequestsCloseAutomaticallyTest()
@@ -113,7 +111,7 @@ public class ReactiveHTTPTest {
         webServer.enqueue(response);
 
         // Actual test
-        core.getHttpLayer().newRequest().get(webServer.url("/test").toString())
+        MobileCore.getInstance().getHttpLayer().newRequest().get(webServer.url("/test").toString())
                         .respondWith(new Responder<HttpResponse>() {
                             @Override
                             public void onResult(HttpResponse value) {
@@ -155,7 +153,7 @@ public class ReactiveHTTPTest {
         webServer.enqueue(response);
 
         // Actual test
-        core.getHttpLayer().newRequest().get(webServer.url("/test").toString())
+        MobileCore.getInstance().getHttpLayer().newRequest().get(webServer.url("/test").toString())
                         .respondWith(new Responder<HttpResponse>() {
                             @Override
                             public void onResult(HttpResponse value) {
@@ -208,7 +206,8 @@ public class ReactiveHTTPTest {
         webServer.enqueue(response);
 
         // Actual test
-        Request request = core.getHttpLayer().newRequest().get(webServer.url("/test").toString())
+        Request request = MobileCore.getInstance().getHttpLayer().newRequest()
+                        .get(webServer.url("/test").toString())
                         .respondWith(new Responder<HttpResponse>() {
                             @Override
                             public void onResult(HttpResponse value) {
@@ -263,7 +262,7 @@ public class ReactiveHTTPTest {
         webServer.enqueue(response);
 
         // Actual test
-        core.getHttpLayer().newRequest().get(webServer.url("/test").toString())
+        MobileCore.getInstance().getHttpLayer().newRequest().get(webServer.url("/test").toString())
                         .respondWith(new Responder<HttpResponse>() {
                             @Override
                             public void onResult(HttpResponse value) {

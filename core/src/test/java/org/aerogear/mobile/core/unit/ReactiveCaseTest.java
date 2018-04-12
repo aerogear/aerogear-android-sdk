@@ -33,14 +33,13 @@ import org.aerogear.mobile.core.reactive.Responder;
 @SmallTest
 public class ReactiveCaseTest {
 
-    private MobileCore core;
     private AppExecutors executor = new AppExecutors();
 
     @Before
     public void setUp() {
         Application context = RuntimeEnvironment.application;
 
-        core = MobileCore.init(context);
+        MobileCore.init(context);
     }
 
     /**
