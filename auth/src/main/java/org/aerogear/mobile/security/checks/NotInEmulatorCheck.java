@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 /**
  * A check for whether the device the application is running on an emulator
  */
-public class EmulatorCheck extends AbstractSecurityCheck {
+public class NotInEmulatorCheck extends AbstractSecurityCheck {
 
     /**
      * Checks if device is an emulator by looking at the following: Fingerprint starts with

@@ -6,25 +6,22 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
-
-import android.test.mock.MockContext;
+import org.robolectric.RuntimeEnvironment;
 
 import org.aerogear.mobile.security.SecurityCheckResult;
 
 @RunWith(RobolectricTestRunner.class)
-public class EmulatorCheckTest {
-
-    EmulatorCheck check;
+public class NoDebuggerCheckTest {
+    NoDebuggerCheck check;
 
     @Before
     public void setup() {
-        check = new EmulatorCheck();
+        check = new NoDebuggerCheck();
     }
 
     @Test
-    public void testCheck() {
-        SecurityCheckResult result = check.test(new MockContext());
+    public void testDebugIsEnabled() {
+        SecurityCheckResult result = check.test(RuntimeEnvironment.application);
         assertTrue(result.passed());
     }
-
 }

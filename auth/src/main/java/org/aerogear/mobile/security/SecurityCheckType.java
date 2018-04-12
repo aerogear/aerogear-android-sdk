@@ -1,12 +1,12 @@
 package org.aerogear.mobile.security;
 
 
-import org.aerogear.mobile.security.checks.AllowBackupFlagCheck;
-import org.aerogear.mobile.security.checks.DebuggerCheck;
-import org.aerogear.mobile.security.checks.DeveloperModeCheck;
-import org.aerogear.mobile.security.checks.EmulatorCheck;
+import org.aerogear.mobile.security.checks.BackupDisallowedCheck;
+import org.aerogear.mobile.security.checks.DeveloperModeDisabledCheck;
 import org.aerogear.mobile.security.checks.EncryptionCheck;
-import org.aerogear.mobile.security.checks.RootedCheck;
+import org.aerogear.mobile.security.checks.NoDebuggerCheck;
+import org.aerogear.mobile.security.checks.NonRootedCheck;
+import org.aerogear.mobile.security.checks.NotInEmulatorCheck;
 import org.aerogear.mobile.security.checks.ScreenLockCheck;
 
 /**
@@ -15,24 +15,24 @@ import org.aerogear.mobile.security.checks.ScreenLockCheck;
 public enum SecurityCheckType {
 
     /**
-     * Detect whether the device is rooted. See {@link RootedCheck}
+     * Detect whether the device is rooted. See {@link NonRootedCheck}
      */
-    IS_ROOTED(new RootedCheck()),
+    NOT_ROOTED(new NonRootedCheck()),
 
     /**
-     * Detect if developer mode is enabled in the device. See {@link DeveloperModeCheck}
+     * Detect if developer mode is enabled in the device. See {@link DeveloperModeDisabledCheck}
      */
-    IS_DEVELOPER_MODE(new DeveloperModeCheck()),
+    NO_DEVELOPER_MODE(new DeveloperModeDisabledCheck()),
 
     /**
-     * Detect if a device is in debug mode See {@link DebuggerCheck}
+     * Detect if a device is in debug mode See {@link NoDebuggerCheck}
      */
-    IS_DEBUGGER(new DebuggerCheck()),
+    NO_DEBUGGER(new NoDebuggerCheck()),
 
     /**
-     * Detect whether the device is emulated. See {@link EmulatorCheck}
+     * Detect whether the device is emulated. See {@link NotInEmulatorCheck}
      */
-    IS_EMULATOR(new EmulatorCheck()),
+    NOT_IN_EMULATOR(new NotInEmulatorCheck()),
 
     /**
      * Detect whether a screen lock is enabled (PIN, Password etc). See {@link ScreenLockCheck}
@@ -40,9 +40,9 @@ public enum SecurityCheckType {
     SCREEN_LOCK_ENABLED(new ScreenLockCheck()),
     /**
      * Detect whether the allowBackup flag is enabled for the application. See
-     * {@link AllowBackupFlagCheck}
+     * {@link BackupDisallowedCheck}
      */
-    ALLOW_BACKUP_ENABLED(new AllowBackupFlagCheck()),
+    ALLOW_BACKUP_DISABLED(new BackupDisallowedCheck()),
     /**
      * Detect whether a devices filesystem is encrypted. See {@link EncryptionCheck}
      */

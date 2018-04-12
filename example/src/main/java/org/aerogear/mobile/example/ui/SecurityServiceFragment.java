@@ -83,11 +83,11 @@ public class SecurityServiceFragment extends BaseFragment {
 
         Map<String, SecurityCheckResult> results = SecurityCheckExecutor.Builder
                         .newSyncExecutor(this.getContext())
-                        .withSecurityCheck(SecurityCheckType.IS_ROOTED)
+                        .withSecurityCheck(SecurityCheckType.NOT_ROOTED)
                         .withSecurityCheck(SecurityCheckType.SCREEN_LOCK_ENABLED)
-                        .withSecurityCheck(SecurityCheckType.IS_EMULATOR)
-                        .withSecurityCheck(SecurityCheckType.IS_DEBUGGER)
-                        .withSecurityCheck(SecurityCheckType.IS_DEVELOPER_MODE)
+                        .withSecurityCheck(SecurityCheckType.NOT_IN_EMULATOR)
+                        .withSecurityCheck(SecurityCheckType.NO_DEBUGGER)
+                        .withSecurityCheck(SecurityCheckType.NO_DEVELOPER_MODE)
                         .withMetricsService(activity.mobileCore.getInstance(MetricsService.class))
                         .build().execute();
 
@@ -109,7 +109,7 @@ public class SecurityServiceFragment extends BaseFragment {
      */
     public void detectRoot(Map<String, SecurityCheckResult> results) {
         totalTests++;
-        SecurityCheckResult result = results.get(SecurityCheckType.IS_ROOTED.getType());
+        SecurityCheckResult result = results.get(SecurityCheckType.NOT_ROOTED.getType());
         if (result != null && !result.passed()) {
             setCheckFailed(rootAccess, R.string.root_detected_positive);
         }
@@ -131,7 +131,7 @@ public class SecurityServiceFragment extends BaseFragment {
      */
     public void debuggerDetected(Map<String, SecurityCheckResult> results) {
         totalTests++;
-        SecurityCheckResult result = results.get(SecurityCheckType.IS_DEBUGGER.getType());
+        SecurityCheckResult result = results.get(SecurityCheckType.NO_DEBUGGER.getType());
         if (result != null && !result.passed()) {
             setCheckFailed(debuggerAccess, R.string.debugger_detected_positive);
         }
@@ -142,7 +142,7 @@ public class SecurityServiceFragment extends BaseFragment {
      */
     public void detectEmulator(Map<String, SecurityCheckResult> results) {
         totalTests++;
-        SecurityCheckResult result = results.get(SecurityCheckType.IS_EMULATOR.getType());
+        SecurityCheckResult result = results.get(SecurityCheckType.NOT_IN_EMULATOR.getType());
         if (result != null && !result.passed()) {
             setCheckFailed(emulatorAccess, R.string.emulator_detected_positive);
         }
@@ -153,7 +153,7 @@ public class SecurityServiceFragment extends BaseFragment {
      */
     public void detectBackupEnabled(Map<String, SecurityCheckResult> results) {
         totalTests++;
-        SecurityCheckResult result = securityService.check(SecurityCheckType.ALLOW_BACKUP_ENABLED);
+        SecurityCheckResult result = securityService.check(SecurityCheckType.ALLOW_BACKUP_DISABLED);
         if (result != null && !result.passed()) {
             setCheckFailed(allowBackup, R.string.allow_backup_detected_positive);
         }
@@ -176,7 +176,7 @@ public class SecurityServiceFragment extends BaseFragment {
      */
     public void detectDeveloperOptions(Map<String, SecurityCheckResult> results) {
         totalTests++;
-        SecurityCheckResult result = results.get(SecurityCheckType.IS_DEVELOPER_MODE.getType());
+        SecurityCheckResult result = results.get(SecurityCheckType.NO_DEVELOPER_MODE.getType());
         if (result != null && !result.passed()) {
             setCheckFailed(developerOptions, R.string.developer_options_positive);
         }

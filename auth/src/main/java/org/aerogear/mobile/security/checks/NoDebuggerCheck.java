@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 /**
  * A check for whether a debugger is attached to the current application.
  */
-public class DebuggerCheck extends AbstractSecurityCheck {
+public class NoDebuggerCheck extends AbstractSecurityCheck {
 
     /**
      * Check whether a debugger is attached to the current application. An application running with
