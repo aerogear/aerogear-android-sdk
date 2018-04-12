@@ -4,6 +4,12 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import android.support.annotation.NonNull;
 
+/**
+ * This class implements {@link Request#map(MapFunction)} support for the reactive APIs.
+ *
+ * @param <T> The type of the request before the map operation
+ * @param <R> The type of the request after the map operation.
+ */
 class MapRequest<T, R> extends AbstractRequest<R> {
 
     private final AbstractRequest<T> delegateTo;

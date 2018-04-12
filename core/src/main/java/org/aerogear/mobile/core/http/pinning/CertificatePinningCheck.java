@@ -85,9 +85,8 @@ public class CertificatePinningCheck {
             @Override
             public void onResult(HttpResponse httpResponse) {
                 CertificatePinningCheck.this.isSuccess = true;
-                if (CertificatePinningCheck.this.listener != null) {
-                    CertificatePinningCheck.this.listener.onSuccess();
-                }
+                // We have refactored listener so it no longer will be null.
+                CertificatePinningCheck.this.listener.onSuccess();
                 CertificatePinningCheck.this.isComplete = true;
             }
 
