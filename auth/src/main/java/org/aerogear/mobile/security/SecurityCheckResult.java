@@ -21,7 +21,12 @@ public interface SecurityCheckResult {
     String getName();
 
     /**
-     * Whether the check was successful.
+     * Whether the check was successful. A successful check means that the environment this
+     * application is running in is more secure than otherwise, as opposed to signalling if a
+     * certain feature was enabled
+     *
+     * For example, a check for whether the device is Rooted should return <code>true</code> when it
+     * is *not* rooted, since this would be the more secure condition.
      *
      * @return <code>true</code> if the check was successful
      */

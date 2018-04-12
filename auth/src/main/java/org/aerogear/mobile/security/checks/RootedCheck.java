@@ -16,7 +16,7 @@ public class RootedCheck extends AbstractSecurityCheck {
      * on networked communications
      *
      * @param context {@link Context} to be used by the check
-     * @return <code>false</code> if the device is rooted
+     * @return <code>true</code> if the device is *not* rooted
      */
     @Override
     protected boolean execute(@NonNull Context context) {
