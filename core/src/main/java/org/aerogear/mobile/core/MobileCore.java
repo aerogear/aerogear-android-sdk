@@ -67,7 +67,6 @@ public final class MobileCore {
         this.configFileName = options.configFileName;
         logger = options.logger;
 
-
         HttpsConfiguration httpsConfig;
 
         // -- Parse JSON config file
@@ -137,12 +136,12 @@ public final class MobileCore {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends ServiceModule> T getInstance(final Class<T> serviceClass) {
-        return getInstance(serviceClass, null);
+    public <T extends ServiceModule> T getService(final Class<T> serviceClass) {
+        return getService(serviceClass, null);
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends ServiceModule> T getInstance(final Class<T> serviceClass,
+    public <T extends ServiceModule> T getService(final Class<T> serviceClass,
                     final ServiceConfiguration serviceConfiguration)
                     throws InitializationException {
         nonNull(serviceClass, "serviceClass");

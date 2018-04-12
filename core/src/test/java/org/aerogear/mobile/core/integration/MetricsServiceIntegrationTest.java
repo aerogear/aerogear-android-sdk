@@ -34,7 +34,7 @@ public class MetricsServiceIntegrationTest {
         options.setConfigFileName(MOBILE_SERVICES_JSON);
 
         MobileCore.init(RuntimeEnvironment.application, options);
-        metricsService = MobileCore.getInstance().getInstance(MetricsService.class);
+        metricsService = MobileCore.getInstance().getService(MetricsService.class);
 
         error = null;
     }

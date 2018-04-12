@@ -11,7 +11,7 @@ public class ExampleApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        MetricsService metricsService = MobileCore.getInstance().getInstance(MetricsService.class);
+        MetricsService metricsService = MobileCore.getInstance().getService(MetricsService.class);
 
         metricsService.sendAppAndDeviceMetrics(
                         error -> MobileCore.getLogger().error(error.getMessage()));

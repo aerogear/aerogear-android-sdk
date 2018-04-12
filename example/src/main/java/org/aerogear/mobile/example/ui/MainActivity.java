@@ -48,7 +48,7 @@ public class MainActivity extends BaseActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        authService = MobileCore.getInstance().getInstance(AuthService.class);
+        authService = MobileCore.getInstance().getService(AuthService.class);
         AuthServiceConfiguration authServiceConfiguration =
                         new AuthServiceConfiguration.AuthConfigurationBuilder()
                                         .withRedirectUri("org.aerogear.mobile.example:/callback")

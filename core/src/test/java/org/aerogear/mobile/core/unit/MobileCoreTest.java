@@ -86,7 +86,7 @@ public class MobileCoreTest {
 
     @Test
     public void testConfigurationNotRequiredDoesNotThrowException() {
-        MobileCore.getInstance().getInstance(DummyServiceModule.class);
+        MobileCore.getInstance().getService(DummyServiceModule.class);
     }
 
     @Test(expected = ConfigurationNotFoundException.class)
@@ -96,7 +96,7 @@ public class MobileCoreTest {
 
         MobileCore.init(context, options);
 
-        MobileCore.getInstance().getInstance(DummyHttpServiceModule.class);
+        MobileCore.getInstance().getService(DummyHttpServiceModule.class);
     }
 
     @Test
@@ -114,7 +114,7 @@ public class MobileCoreTest {
         MobileCore.init(context, options);
 
         DummyHttpServiceModule service =
-                        MobileCore.getInstance().getInstance(DummyHttpServiceModule.class);
+                        MobileCore.getInstance().getService(DummyHttpServiceModule.class);
 
         assertNotNull(service);
     }
@@ -126,9 +126,9 @@ public class MobileCoreTest {
         MobileCore.init(context, options);
 
         DummyHttpServiceModule service1 =
-                        MobileCore.getInstance().getInstance(DummyHttpServiceModule.class);
+                        MobileCore.getInstance().getService(DummyHttpServiceModule.class);
         DummyHttpServiceModule service2 =
-                        MobileCore.getInstance().getInstance(DummyHttpServiceModule.class);
+                        MobileCore.getInstance().getService(DummyHttpServiceModule.class);
 
         assertNotNull(service1);
         assertNotNull(service2);
@@ -139,10 +139,8 @@ public class MobileCoreTest {
     public void testAllServicesAreDestroyed() {
         MobileCore.init(context);
 
-        DummyServiceModule service1 =
-                        MobileCore.getInstance().getInstance(DummyServiceModule.class);
-        DummyServiceModule service2 =
-                        MobileCore.getInstance().getInstance(DummyServiceModule.class);
+        DummyServiceModule service1 = MobileCore.getInstance().getService(DummyServiceModule.class);
+        DummyServiceModule service2 = MobileCore.getInstance().getService(DummyServiceModule.class);
 
         Assert.assertFalse(service1.isDestroyed());
         Assert.assertFalse(service2.isDestroyed());
