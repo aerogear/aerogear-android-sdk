@@ -13,9 +13,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.http.HttpRequest;
-import org.aerogear.mobile.core.http.HttpResponse;
+import org.aerogear.mobile.core.reactive.Responder;
 import org.aerogear.mobile.example.BR;
 import org.aerogear.mobile.example.R;
 import org.aerogear.mobile.example.model.User;
@@ -37,6 +38,7 @@ public class HttpFragment extends BaseFragment {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
@@ -45,22 +47,24 @@ public class HttpFragment extends BaseFragment {
         new LastAdapter(users, BR.user).map(User.class, R.layout.item_http).into(userList);
 
         HttpRequest httpRequest = activity.mobileCore.getHttpLayer().newRequest();
-        httpRequest.get("https://jsonplaceholder.typicode.com/users");
-        HttpResponse httpResponse = httpRequest.execute();
-        httpResponse.onError(() -> {
-            Log.e(TAG, httpResponse.getError().toString());
-        });
-        httpResponse.onSuccess(() -> {
-            String jsonResponse = httpResponse.stringBody();
-            new AppExecutors().mainThread().execute(() -> {
 
-                List<User> retrievesUsers = new Gson().fromJson(jsonResponse,
-                                new TypeToken<List<User>>() {}.getType());
+        httpRequest.get("https://jsonplaceholder.typicode.com/users").map((response) -> {
+            String stringBody = response.stringBody();
+            List<User> retrievedUsers = new Gson().fromJson(stringBody,
+                            new TypeToken<List<User>>() {}.getType());
+            return retrievedUsers;
+        }).respondOn(new AppExecutors().mainThread()).respondWith(new Responder<List<User>>() {
+            @Override
+            public void onResult(List<User> retrievedUsers) {
+                MobileCore.getLogger().info("Users: " + retrievedUsers.size());
+                users.addAll(retrievedUsers);
+            }
 
-                activity.mobileCore.getLogger().info("Users: " + retrievesUsers.size());
+            @Override
+            public void onException(Exception exception) {
+                Log.e(TAG, exception.toString());
+            }
 
-                users.addAll(retrievesUsers);
-            });
         });
     }
 

@@ -15,6 +15,8 @@ import org.aerogear.mobile.core.http.HttpResponse;
 import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.metrics.Metrics;
 import org.aerogear.mobile.core.metrics.MetricsPublisher;
+import org.aerogear.mobile.core.reactive.Responder;
+
 
 /**
  * Sends metrics data to the backend using the configuration in JSON config file
@@ -44,20 +46,27 @@ public final class NetworkMetricsPublisher extends MetricsPublisher {
 
         httpRequest.post(url, json.toString().getBytes());
 
-        LOGGER.debug("Sending metrics");
 
-        final HttpResponse httpResponse = httpRequest.execute();
-        httpResponse.onSuccess(() -> {
-            if (callback != null) {
-                callback.onSuccess();
-            }
-        }).onError(() -> {
-            if (callback != null) {
-                callback.onError(httpResponse.getError());
-            } else {
-                LOGGER.error(httpResponse.getError().getMessage());
-            }
-        });
+        httpRequest.post(url, json.toString().getBytes())
+                        .respondWith(new Responder<HttpResponse>() {
+                            @Override
+                            public void onResult(HttpResponse value) {
+                                if (callback != null) {
+                                    callback.onSuccess();
+                                }
+                            }
+
+                            @Override
+                            public void onException(Exception exception) {
+                                if (callback != null) {
+                                    callback.onError(exception);
+                                } else {
+                                    LOGGER.error(exception.getMessage());
+                                }
+                            }
+                        });
+
+        LOGGER.debug("Sending metrics");
 
     }
 }

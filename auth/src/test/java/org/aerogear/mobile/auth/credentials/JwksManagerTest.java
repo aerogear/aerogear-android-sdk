@@ -31,6 +31,8 @@ import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpResponse;
 import org.aerogear.mobile.core.http.HttpServiceModule;
+import org.aerogear.mobile.core.reactive.Request;
+import org.aerogear.mobile.core.reactive.Responder;
 
 import junit.framework.Assert;
 
@@ -54,6 +56,9 @@ public class JwksManagerTest {
 
     @Mock
     private HttpRequest httpRequest;
+
+    @Mock
+    private Request<HttpResponse> rxHttpRequest;
 
     @Mock
     private HttpResponse httpResponse;
@@ -94,12 +99,12 @@ public class JwksManagerTest {
 
         when(httpServiceModule.newRequest()).thenReturn(httpRequest);
 
-        when(httpRequest.execute()).thenReturn(httpResponse);
+        when(httpRequest.get(any())).thenReturn(rxHttpRequest);
 
-        when(httpResponse.onComplete(any(Runnable.class))).thenAnswer(new Answer<Object>() {
+        when(rxHttpRequest.respondWith(any(Responder.class))).thenAnswer(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
-                ((Runnable) invocation.getArguments()[0]).run();
+                ((Responder) invocation.getArguments()[0]).onResult(httpResponse);
                 return null;
             }
         });

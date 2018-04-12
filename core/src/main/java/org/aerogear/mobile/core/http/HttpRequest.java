@@ -1,5 +1,7 @@
 package org.aerogear.mobile.core.http;
 
+import org.aerogear.mobile.core.reactive.Request;
+
 /**
  * Generic interface for requests to HTTP Services.
  */
@@ -13,22 +15,16 @@ public interface HttpRequest {
 
     /**
      * Prepares the request for an HTTP GET of the given URL.
-     * 
+     *
      * @param url a URL for a resource.
+     * @return a reactive request
      */
-    void get(String url);
+    Request<HttpResponse> get(String url);
 
-    void post(String url, byte[] body);
+    Request<HttpResponse> post(String url, byte[] body);
 
-    void put(String url, byte[] body);
+    Request<HttpResponse> put(String url, byte[] body);
 
-    void delete(String url);
+    Request<HttpResponse> delete(String url);
 
-    /**
-     * Create a HTTPResponse and begin executing the request. The request will be executed on a
-     * background thread.
-     * 
-     * @return an HTTPResponse instance that is executing the HttpRequest
-     */
-    HttpResponse execute();
 }

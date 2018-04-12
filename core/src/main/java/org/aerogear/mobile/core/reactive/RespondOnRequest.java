@@ -6,20 +6,28 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import android.support.annotation.NonNull;
 
+
 public class RespondOnRequest<T> extends AbstractRequest<T> {
     private final AbstractRequest<T> delegateTo;
     private final ExecutorService executorService;
-
+    private final AtomicReference<Cleaner> cleanerRef;
 
     public RespondOnRequest(AbstractRequest<T> delegateTo, ExecutorService executorService) {
         this.delegateTo = delegateTo;
         this.executorService = executorService;
+        cleanerRef = new AtomicReference<>(delegateTo.liftCleanupAction());
     }
 
     @Override
     public void cancel() {
         delegateTo.cancel();
 
+    }
+
+    @Override
+    public Request<T> cancelWith(Canceller canceller) {
+        delegateTo.cancelWith(canceller);
+        return this;
     }
 
     @Override
@@ -41,8 +49,12 @@ public class RespondOnRequest<T> extends AbstractRequest<T> {
             public void onResult(T value) {
                 executorService.submit(() -> {
                     Responder<T> originalResponder = originalResponderRef.get();
-                    if (originalResponder != null) {
-                        originalResponder.onResult(value);
+                    try {
+                        if (originalResponder != null) {
+                            originalResponder.onResult(value);
+                        }
+                    } finally {
+                        cleanerRef.get().cleanup();
                     }
                 });
             }
@@ -51,8 +63,12 @@ public class RespondOnRequest<T> extends AbstractRequest<T> {
             public void onException(Exception exception) {
                 executorService.submit(() -> {
                     Responder<T> originalResponder = originalResponderRef.get();
-                    if (originalResponder != null) {
-                        originalResponder.onException(exception);
+                    try {
+                        if (originalResponder != null) {
+                            originalResponder.onException(exception);
+                        }
+                    } finally {
+                        cleanerRef.get().cleanup();
                     }
                 });
             }
@@ -62,5 +78,11 @@ public class RespondOnRequest<T> extends AbstractRequest<T> {
         delegateTo.respondWithActual(proxiedResponderRef);
 
         return this;
+    }
+
+    @Override
+    protected Cleaner liftCleanupAction() {
+        return cleanerRef.getAndSet(() -> {
+        });
     }
 }

@@ -1,6 +1,5 @@
 package org.aerogear.mobile.core.unit;
 
-import static java.net.HttpURLConnection.HTTP_OK;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -26,6 +25,7 @@ import org.aerogear.mobile.core.http.OkHttpServiceModule;
 import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.logging.LoggerAdapter;
 import org.aerogear.mobile.core.metrics.MetricsService;
+import org.aerogear.mobile.core.reactive.Request;
 
 @RunWith(AeroGearTestRunner.class)
 @SmallTest
@@ -222,54 +222,25 @@ public class MobileCoreTest {
                 }
 
                 @Override
-                public void get(String url) {}
-
-                @Override
-                public void post(String url, byte[] body) {}
-
-                @Override
-                public void put(String url, byte[] body) {}
-
-                @Override
-                public void delete(String url) {}
-
-                @Override
-                public HttpResponse execute() {
-                    return new HttpResponse() {
-                        @Override
-                        public HttpResponse onComplete(Runnable runnable) {
-                            return this;
-                        }
-
-                        @Override
-                        public HttpResponse onError(Runnable runnable) {
-                            return this;
-                        }
-
-                        @Override
-                        public HttpResponse onSuccess(Runnable runnable) {
-                            return this;
-                        }
-
-                        @Override
-                        public int getStatus() {
-                            return HTTP_OK;
-                        }
-
-                        @Override
-                        public void waitForCompletionAndClose() {}
-
-                        @Override
-                        public String stringBody() {
-                            return "";
-                        }
-
-                        @Override
-                        public Exception getError() {
-                            return null;
-                        }
-                    };
+                public Request<HttpResponse> get(String url) {
+                    return null;
                 }
+
+                @Override
+                public Request<HttpResponse> post(String url, byte[] body) {
+                    return null;
+                }
+
+                @Override
+                public Request<HttpResponse> put(String url, byte[] body) {
+                    return null;
+                }
+
+                @Override
+                public Request<HttpResponse> delete(String url) {
+                    return null;
+                }
+
             };
         }
 

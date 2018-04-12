@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpResponse;
 import org.aerogear.mobile.core.http.HttpServiceModule;
+import org.aerogear.mobile.core.reactive.Responder;
 
 
 /**
@@ -20,6 +21,13 @@ import org.aerogear.mobile.core.http.HttpServiceModule;
  * invoked immediately with the result of the request being provided.
  */
 public class CertificatePinningCheck {
+    private static final CertificatePinningCheckListener DEFAULT_LISTENER =
+                    new CertificatePinningCheckListener() {
+                        public void onSuccess() {}
+
+                        public void onFailure() {}
+                    };
+
     private final HttpServiceModule httpModule;
     private CertificatePinningCheckListener listener;
     private Exception error;
@@ -28,6 +36,7 @@ public class CertificatePinningCheck {
 
     public CertificatePinningCheck(final HttpServiceModule httpModule) {
         this.httpModule = nonNull(httpModule, "httpModule");
+        this.listener = DEFAULT_LISTENER;
     }
 
     /**
@@ -46,7 +55,7 @@ public class CertificatePinningCheck {
      * @param listener The listener to be invoked on completion of the check.
      */
     public void attachListener(@NonNull final CertificatePinningCheckListener listener) {
-        this.listener = listener;
+        this.listener = nonNull(listener, "listener");
 
         // Invoke the attached listener immediately if we've already completed the the check.
         if (this.isComplete) {
@@ -62,31 +71,30 @@ public class CertificatePinningCheck {
      * Remove the currently attached listener, if there is one attached.
      */
     public void detachListener() {
-        this.listener = null;
+        this.listener = DEFAULT_LISTENER;
     }
 
     /**
      * Perform a check and invoke a listener on response.
-     * 
+     *
      * @param url to which a request will be made
      */
     public void execute(@NonNull final String url) {
         HttpRequest request = this.httpModule.newRequest();
-        request.get(url);
-        HttpResponse httpResponse = request.execute();
+        request.get(url).respondWith(new Responder<HttpResponse>() {
+            @Override
+            public void onResult(HttpResponse httpResponse) {
+                CertificatePinningCheck.this.isSuccess = true;
+                // We have refactored listener so it no longer will be null.
+                CertificatePinningCheck.this.listener.onSuccess();
+                CertificatePinningCheck.this.isComplete = true;
+            }
 
-        // Handle the success and error responses and set isComplete to allow for immediate
-        // invocation if a new listener is attached.
-        httpResponse.onSuccess(() -> {
-            this.isSuccess = true;
-            if (this.listener != null) {
-                this.listener.onSuccess();
+            @Override
+            public void onException(Exception exception) {
+                CertificatePinningCheck.this.listener.onFailure();
+
             }
         });
-        httpResponse.onError(() -> {
-            this.error = httpResponse.getError();
-            this.listener.onFailure();
-        });
-        httpResponse.onComplete(() -> this.isComplete = true);
     }
 }

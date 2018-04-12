@@ -19,10 +19,34 @@ public final class CallableRequest<T> extends AbstractRequest<T> {
 
     private static final String ERROR_TAG = "UNCAUGHT_EXCEPTION";
     private final Callable<T> callable;
+    private final AtomicReference<Cleaner> cleanerAtomicReference;
+    private final AtomicReference<Canceller> cancellerRef;
     private Thread callableThread = null;
 
     public CallableRequest(Callable<T> callable) {
         this.callable = nonNull(callable, "callable");
+        this.cleanerAtomicReference = new AtomicReference<>(() -> {
+        });
+        cancellerRef = new AtomicReference<>(() -> {
+            synchronized (callable) {
+                if (callableThread != null) {
+                    callableThread.interrupt();
+                }
+            }
+        });
+
+    }
+
+    public CallableRequest(Callable<T> callable, Cleaner cleanupAction) {
+        this.callable = callable;
+        this.cleanerAtomicReference = new AtomicReference<>(cleanupAction);
+        cancellerRef = new AtomicReference<>(() -> {
+            synchronized (callable) {
+                if (callableThread != null) {
+                    callableThread.interrupt();
+                }
+            }
+        });
     }
 
     @Override
@@ -82,16 +106,27 @@ public final class CallableRequest<T> extends AbstractRequest<T> {
                  */
                 Log.e(ERROR_TAG, responderThrowable.getMessage(), responderThrowable);
             }
+        } finally {
+            cleanerAtomicReference.get().cleanup();
         }
         return this;
     }
 
     @Override
     public void cancel() {
-        synchronized (callable) {
-            if (callableThread != null) {
-                callableThread.interrupt();
-            }
-        }
+        cancellerRef.get().doCancel();
+    }
+
+    @Override
+    public Request<T> cancelWith(@NonNull Canceller canceller) {
+        cancellerRef.set(nonNull(canceller, "canceller"));
+        return this;
+    }
+
+    @Override
+    protected Cleaner liftCleanupAction() {
+        Cleaner oldCleaner = cleanerAtomicReference.getAndSet(() -> {
+        });
+        return oldCleaner;
     }
 }

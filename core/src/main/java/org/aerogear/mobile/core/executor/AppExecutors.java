@@ -1,8 +1,11 @@
 package org.aerogear.mobile.core.executor;
 
-import java.util.concurrent.Executor;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.AbstractExecutorService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -16,12 +19,37 @@ public final class AppExecutors {
 
     private static final ExecutorService networkExecutor = Executors.newSingleThreadExecutor();
 
-    private static final Executor mainThreadExecutor = new Executor() {
-        private Handler mainThreadHandler = new Handler(Looper.getMainLooper());
+    private static final ExecutorService mainThreadExecutor = new AbstractExecutorService() {
+        private final Handler handler = new Handler(Looper.getMainLooper());
 
         @Override
-        public void execute(@NonNull Runnable command) {
-            mainThreadHandler.post(command);
+        public void shutdown() {}
+
+        @NonNull
+        @Override
+        public List<Runnable> shutdownNow() {
+            return new ArrayList<>();
+        }
+
+        @Override
+        public boolean isShutdown() {
+            return false;
+        }
+
+        @Override
+        public boolean isTerminated() {
+            return false;
+        }
+
+        @Override
+        public boolean awaitTermination(long l, @NonNull TimeUnit timeUnit)
+                        throws InterruptedException {
+            return false;
+        }
+
+        @Override
+        public void execute(@NonNull Runnable runnable) {
+            handler.post(runnable);
         }
     };
 
@@ -30,8 +58,7 @@ public final class AppExecutors {
 
     public AppExecutors() {}
 
-
-    public Executor mainThread() {
+    public ExecutorService mainThread() {
         return mainThreadExecutor;
     }
 
