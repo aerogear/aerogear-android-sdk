@@ -1,6 +1,6 @@
 package org.aerogear.mobile.security.checks;
 
-import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -11,17 +11,17 @@ import org.robolectric.RuntimeEnvironment;
 import org.aerogear.mobile.security.SecurityCheckResult;
 
 @RunWith(RobolectricTestRunner.class)
-public class DebuggerCheckTest {
-    DebuggerCheck check;
+public class NoDebuggerCheckTest {
+    NoDebuggerCheck check;
 
     @Before
     public void setup() {
-        check = new DebuggerCheck();
+        check = new NoDebuggerCheck();
     }
 
     @Test
     public void testDebugIsEnabled() {
         SecurityCheckResult result = check.test(RuntimeEnvironment.application);
-        assertFalse(result.passed());
+        assertTrue(result.passed());
     }
 }

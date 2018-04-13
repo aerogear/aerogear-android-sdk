@@ -83,11 +83,11 @@ public class SecurityServiceFragment extends BaseFragment {
 
         Map<String, SecurityCheckResult> results = SecurityCheckExecutor.Builder
                         .newSyncExecutor(this.getContext())
-                        .withSecurityCheck(SecurityCheckType.IS_ROOTED)
+                        .withSecurityCheck(SecurityCheckType.NOT_ROOTED)
                         .withSecurityCheck(SecurityCheckType.SCREEN_LOCK_ENABLED)
-                        .withSecurityCheck(SecurityCheckType.IS_EMULATOR)
-                        .withSecurityCheck(SecurityCheckType.IS_DEBUGGER)
-                        .withSecurityCheck(SecurityCheckType.IS_DEVELOPER_MODE)
+                        .withSecurityCheck(SecurityCheckType.NOT_IN_EMULATOR)
+                        .withSecurityCheck(SecurityCheckType.NO_DEBUGGER)
+                        .withSecurityCheck(SecurityCheckType.NO_DEVELOPER_MODE)
                         .withMetricsService(activity.mobileCore.getInstance(MetricsService.class))
                         .build().execute();
 
@@ -109,9 +109,9 @@ public class SecurityServiceFragment extends BaseFragment {
      */
     public void detectRoot(Map<String, SecurityCheckResult> results) {
         totalTests++;
-        SecurityCheckResult result = results.get(SecurityCheckType.IS_ROOTED.getType());
-        if (result != null && result.passed()) {
-            setDetected(rootAccess, R.string.root_detected_positive);
+        SecurityCheckResult result = results.get(SecurityCheckType.NOT_ROOTED.getType());
+        if (result != null && !result.passed()) {
+            setCheckFailed(rootAccess, R.string.root_detected_positive);
         }
     }
 
@@ -121,8 +121,8 @@ public class SecurityServiceFragment extends BaseFragment {
     public void detectDeviceLock(Map<String, SecurityCheckResult> results) {
         totalTests++;
         SecurityCheckResult result = results.get(SecurityCheckType.SCREEN_LOCK_ENABLED.getType());
-        if (result != null && result.passed()) {
-            setDetected(lockScreenSetup, R.string.device_lock_detected_negative);
+        if (result != null && !result.passed()) {
+            setCheckFailed(lockScreenSetup, R.string.device_lock_detected_negative);
         }
     }
 
@@ -131,9 +131,9 @@ public class SecurityServiceFragment extends BaseFragment {
      */
     public void debuggerDetected(Map<String, SecurityCheckResult> results) {
         totalTests++;
-        SecurityCheckResult result = results.get(SecurityCheckType.IS_DEBUGGER.getType());
-        if (result != null && result.passed()) {
-            setDetected(debuggerAccess, R.string.debugger_detected_positive);
+        SecurityCheckResult result = results.get(SecurityCheckType.NO_DEBUGGER.getType());
+        if (result != null && !result.passed()) {
+            setCheckFailed(debuggerAccess, R.string.debugger_detected_positive);
         }
     }
 
@@ -142,9 +142,9 @@ public class SecurityServiceFragment extends BaseFragment {
      */
     public void detectEmulator(Map<String, SecurityCheckResult> results) {
         totalTests++;
-        SecurityCheckResult result = results.get(SecurityCheckType.IS_EMULATOR.getType());
-        if (result != null && result.passed()) {
-            setDetected(emulatorAccess, R.string.emulator_detected_positive);
+        SecurityCheckResult result = results.get(SecurityCheckType.NOT_IN_EMULATOR.getType());
+        if (result != null && !result.passed()) {
+            setCheckFailed(emulatorAccess, R.string.emulator_detected_positive);
         }
     }
 
@@ -153,9 +153,9 @@ public class SecurityServiceFragment extends BaseFragment {
      */
     public void detectBackupEnabled(Map<String, SecurityCheckResult> results) {
         totalTests++;
-        SecurityCheckResult result = securityService.check(SecurityCheckType.ALLOW_BACKUP_ENABLED);
-        if (result.passed()) {
-            setDetected(allowBackup, R.string.allow_backup_detected_positive);
+        SecurityCheckResult result = securityService.check(SecurityCheckType.ALLOW_BACKUP_DISABLED);
+        if (result != null && !result.passed()) {
+            setCheckFailed(allowBackup, R.string.allow_backup_detected_positive);
         }
     }
 
@@ -166,8 +166,8 @@ public class SecurityServiceFragment extends BaseFragment {
         totalTests++;
         SecurityCheckResult result =
                         securityService.check(SecurityCheckType.HAS_ENCRYPTION_ENABLED);
-        if (!result.passed()) {
-            setDetected(deviceEncrypted, R.string.device_encrypted_negative);
+        if (result != null && !result.passed()) {
+            setCheckFailed(deviceEncrypted, R.string.device_encrypted_negative);
         }
     }
 
@@ -176,19 +176,20 @@ public class SecurityServiceFragment extends BaseFragment {
      */
     public void detectDeveloperOptions(Map<String, SecurityCheckResult> results) {
         totalTests++;
-        SecurityCheckResult result = results.get(SecurityCheckType.IS_DEVELOPER_MODE.getType());
-        if (result != null && result.passed()) {
-            setDetected(developerOptions, R.string.developer_options_positive);
+        SecurityCheckResult result = results.get(SecurityCheckType.NO_DEVELOPER_MODE.getType());
+        if (result != null && !result.passed()) {
+            setCheckFailed(developerOptions, R.string.developer_options_positive);
         }
     }
 
     /**
-     * Function to allow updates to the radio buttons UI
+     * Function to allow updates to the radio buttons UI when a security check has failed Passed
+     * tests do not need updating due to being the default UI state
      *
      * @param uiElement - the UI element to update
      * @param textResource - the text resource to set the updates text for
      */
-    public void setDetected(RadioButton uiElement, int textResource) {
+    public void setCheckFailed(RadioButton uiElement, int textResource) {
         totalTestFailures++;
         uiElement.setText(textResource);
         uiElement.setTextColor(getResources().getColor(R.color.primary));

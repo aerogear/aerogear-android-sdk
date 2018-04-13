@@ -16,14 +16,14 @@ import android.content.pm.PackageManager;
 import org.aerogear.mobile.security.SecurityCheckResult;
 
 @RunWith(RobolectricTestRunner.class)
-public class AllowBackupFlagCheckTest {
+public class BackupDisallowedCheckTest {
 
-    AllowBackupFlagCheck check;
+    BackupDisallowedCheck check;
     PackageInfo packageInfo;
 
     @Before
     public void setup() throws PackageManager.NameNotFoundException {
-        check = new AllowBackupFlagCheck();
+        check = new BackupDisallowedCheck();
         packageInfo = application.getPackageManager().getPackageInfo(application.getPackageName(),
                         0);
     }
@@ -35,7 +35,7 @@ public class AllowBackupFlagCheckTest {
                         packageInfo.applicationInfo.flags | ApplicationInfo.FLAG_ALLOW_BACKUP;
 
         SecurityCheckResult result = check.test(application);
-        assertTrue(result.passed());
+        assertFalse(result.passed());
     }
 
     @Test
@@ -45,7 +45,7 @@ public class AllowBackupFlagCheckTest {
                         packageInfo.applicationInfo.flags & ~ApplicationInfo.FLAG_ALLOW_BACKUP;
 
         SecurityCheckResult result = check.test(application);
-        assertFalse(result.passed());
+        assertTrue(result.passed());
     }
 
     @Test(expected = IllegalArgumentException.class)

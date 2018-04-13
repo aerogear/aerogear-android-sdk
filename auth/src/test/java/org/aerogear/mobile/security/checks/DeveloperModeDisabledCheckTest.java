@@ -18,7 +18,7 @@ import org.aerogear.mobile.security.SecurityCheckResult;
 import org.aerogear.mobile.security.impl.SecurityCheckResultImpl;
 
 @RunWith(RobolectricTestRunner.class)
-public class DeveloperModeCheckTest {
+public class DeveloperModeDisabledCheckTest {
     @Mock
     Context context;
 
@@ -35,10 +35,11 @@ public class DeveloperModeCheckTest {
                         1);
         when(context.getContentResolver()).thenReturn(mockContentResolver);
 
-        DeveloperModeCheck developerModeCheck = new DeveloperModeCheck();
+        DeveloperModeDisabledCheck developerModeDisabledCheck = new DeveloperModeDisabledCheck();
 
-        SecurityCheckResult expected = new SecurityCheckResultImpl(developerModeCheck, true);
-        SecurityCheckResult actual = developerModeCheck.test(context);
+        SecurityCheckResult expected =
+                        new SecurityCheckResultImpl(developerModeDisabledCheck, false);
+        SecurityCheckResult actual = developerModeDisabledCheck.test(context);
 
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.passed(), actual.passed());
@@ -50,10 +51,11 @@ public class DeveloperModeCheckTest {
                         0);
         when(context.getContentResolver()).thenReturn(mockContentResolver);
 
-        DeveloperModeCheck developerModeCheck = new DeveloperModeCheck();
+        DeveloperModeDisabledCheck developerModeDisabledCheck = new DeveloperModeDisabledCheck();
 
-        SecurityCheckResult expected = new SecurityCheckResultImpl(developerModeCheck, false);
-        SecurityCheckResult actual = developerModeCheck.test(context);
+        SecurityCheckResult expected =
+                        new SecurityCheckResultImpl(developerModeDisabledCheck, true);
+        SecurityCheckResult actual = developerModeDisabledCheck.test(context);
 
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.passed(), actual.passed());
@@ -61,7 +63,7 @@ public class DeveloperModeCheckTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void nullContextTest() {
-        DeveloperModeCheck developerModeCheck = new DeveloperModeCheck();
-        developerModeCheck.test(null);
+        DeveloperModeDisabledCheck developerModeDisabledCheck = new DeveloperModeDisabledCheck();
+        developerModeDisabledCheck.test(null);
     }
 }

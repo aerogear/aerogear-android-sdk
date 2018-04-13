@@ -28,9 +28,10 @@ public abstract class AbstractSecurityCheck implements SecurityCheck {
 
     /**
      * Executes the check. Context is guaranteed to be non null.
-     * 
+     *
      * @param context context to be used to perform the check
-     * @return <code>true</code> if the check has passed, <code>false</code> otherwise
+     * @return <code>true</code> if the check has passed, <code>false</code> otherwise. i.e. A
+     *         <code>true</code> value implies a more secure environment for the application
      */
     protected abstract boolean execute(@NonNull final Context context);
 }
