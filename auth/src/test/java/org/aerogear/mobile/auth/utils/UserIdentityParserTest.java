@@ -33,9 +33,10 @@ public class UserIdentityParserTest {
     @Before
     public void setup() throws AuthenticationException {
         ServiceConfiguration serviceConfig = ServiceConfiguration.newConfiguration()
-                        .addProperty("resource", "client-app")
-                        .addProperty("auth-server-url", "test.server.url")
-                        .addProperty("realm", "test-realm").build();
+            .addProperty("public_installation", "{" +
+                "\"auth-server-url\":\"test.server.url\"," +
+                "\"realm\": \"test-realm\"," +
+                "\"resource\": \"client-app\"}").build();
         keycloakConfiguration = new KeycloakConfiguration(serviceConfig);
         credential = new OIDCCredentials() {
             @Override
