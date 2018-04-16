@@ -308,7 +308,7 @@ public class PushService implements ServiceModule {
 
         if (BACKGROUND_THREAD_HANDLERS.isEmpty() && MAIN_THREAD_HANDLERS.isEmpty()
                         && defaultHandler != null) {
-            new AppExecutors().mainThread().execute(() -> defaultHandler.onMessage(context,
+            new AppExecutors().singleThreadService().execute(() -> defaultHandler.onMessage(context,
                             Collections.unmodifiableMap(message)));
         } else {
 
