@@ -1,7 +1,3 @@
 = Documentation for AeroGear Android SDK
 
-To learn how to build the link:http://asciibinder.org/[asciibinder] website, see https://github.com/aerogear/mobile-docs/blob/master/README.adoc#remote-repos.
-
-To contribute to the documentation, see link:./contributing-guide.adoc[].
-
 NOTE: This documentation will be published at http://docs.aerogear.com/.
