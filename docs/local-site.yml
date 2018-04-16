@@ -13,5 +13,5 @@ asciidoc:
     toc: ~
 ui:
   bundle:
-    url: ../antora-ui/build/ui-bundle.zip
+    url: ../../antora-ui/build/ui-bundle.zip
     snapshot: true
