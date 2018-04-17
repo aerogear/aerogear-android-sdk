@@ -6,6 +6,8 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 import android.net.Uri;
 
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * A class to represent the configuration options of the Keycloak singleThreadService
@@ -22,6 +24,8 @@ public class KeycloakConfiguration {
     private static final String BASE_URL_TEMPLATE = "%s/realms/%s/protocol/openid-connect";
     private static final String LOGOUT_URL_TEMPLATE = "%s/logout?%s=%s&%s=%s";
 
+    private static final String PUBLIC_INSTALLATION_KEY = "public_installation";
+
     private final String serverUrl;
     private final String realmId;
     private final String resourceId;
@@ -36,10 +40,19 @@ public class KeycloakConfiguration {
     public KeycloakConfiguration(final ServiceConfiguration configuration) {
         nonNull(configuration, "configuration");
 
-        this.serverUrl = nonEmpty(configuration.getProperty(SERVER_URL_NAME), SERVER_URL_NAME);
-        this.realmId = nonEmpty(configuration.getProperty(REALM_ID_NAME), REALM_ID_NAME);
-        this.resourceId = nonEmpty(configuration.getProperty(RESOURCE_ID_NAME), RESOURCE_ID_NAME);
-        this.baseUrl = String.format(BASE_URL_TEMPLATE, serverUrl, realmId);
+        final String publicConfig = configuration.getProperty(PUBLIC_INSTALLATION_KEY);
+        nonNull(publicConfig, PUBLIC_INSTALLATION_KEY);
+
+        try {
+            final JSONObject publicConfigJSON = new JSONObject(publicConfig);
+
+            this.serverUrl = nonEmpty(publicConfigJSON.getString(SERVER_URL_NAME), SERVER_URL_NAME);
+            this.realmId = nonEmpty(publicConfigJSON.getString(REALM_ID_NAME), REALM_ID_NAME);
+            this.resourceId = nonEmpty(publicConfigJSON.getString(RESOURCE_ID_NAME), RESOURCE_ID_NAME);
+            this.baseUrl = String.format(BASE_URL_TEMPLATE, serverUrl, realmId);
+        } catch (JSONException e) {
+            throw new IllegalArgumentException("Unable to read and/or parse Keycloak configuration", e);
+        }
     }
 
     /**

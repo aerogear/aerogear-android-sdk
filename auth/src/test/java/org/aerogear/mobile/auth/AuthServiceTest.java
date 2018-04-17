@@ -1,6 +1,7 @@
 package org.aerogear.mobile.auth;
 
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 import org.junit.Assert;
@@ -44,7 +45,13 @@ public class AuthServiceTest {
     @Before
     public void setup() throws NoSuchFieldException, IllegalAccessException {
         MockitoAnnotations.initMocks(this);
-        when(serviceConfiguration.getProperty(anyString())).thenReturn("dummyvalue");
+        when(serviceConfiguration.getProperty("public_installation")).thenReturn("{\n" +
+            "    \"ssl-required\": \"external\",\n" +
+            "    \"realm\": \"dummy.project\",\n" +
+            "    \"resource\": \"dummy.resource\",\n" +
+            "    \"url\": \"dummy.url\",\n" +
+            "    \"auth-server-url\": \"dummy.auth.server.url\"\n" +
+            "}");
         when(mobileCore.getHttpLayer()).thenReturn(httpServiceModule);
         when(httpServiceModule.newRequest()).thenReturn(httpRequest);
     }

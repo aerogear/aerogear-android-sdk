@@ -18,11 +18,11 @@
             "type": "keycloak",
             "url": "https://www.mocky.io/v2/5a6b59fb31000088191b8ac6",
             "config": {
-                "auth-server-url": "https://keycloak-myproject.192.168.64.74.nip.io/auth",
-                "realm": "myproject",
-                "resource": "juYAlRlhTyYYmOyszFa",
-                "ssl-required": "external",
-                "url": "https://keycloak-myproject.192.168.64.74.nip.io/auth"
+                "name": "keycloak",
+                "public_installation": "{\"ssl-required\": \"external\", \"realm\": \"myproject\", \"resource\": \"juYAlRlhTyYYmOyszFa\", \"url\": \"https://keycloak-myproject.192.168.64.74.nip.io/auth\", \"auth-server-url\": \"https://keycloak-myproject.192.168.64.74.nip.io/auth\"}",
+                "realm": "project2",
+                "type": "keycloak",
+                "uri": "https://keycloak-myproject.192.168.64.74.nip.io"
             }
         },
         {
