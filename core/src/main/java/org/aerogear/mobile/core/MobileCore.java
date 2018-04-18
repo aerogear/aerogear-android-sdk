@@ -13,8 +13,6 @@ import org.json.JSONException;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
 
 import org.aerogear.android.core.BuildConfig;
 import org.aerogear.mobile.core.configuration.MobileCoreConfiguration;
@@ -36,8 +34,6 @@ import okhttp3.OkHttpClient;
  */
 public final class MobileCore {
 
-    public static final String DEFAULT_CONFIG_FILE_NAME = "mobile-services.json";
-
     private static final int DEFAULT_READ_TIMEOUT = 30;
     private static final int DEFAULT_CONNECT_TIMEOUT = 10;
     private static final int DEFAULT_WRITE_TIMEOUT = 10;
@@ -49,23 +45,37 @@ public final class MobileCore {
 
     private final Context context;
     private final String appVersion;
-    private final String configFileName;
+    private final String configFileName = "mobile-services.json";
     private final HttpServiceModule httpLayer;
     private final Map<String, ServiceConfiguration> servicesConfig;
     private final Map<Class<? extends ServiceModule>, ServiceModule> services = new HashMap<>();
+
+    /**
+     * Get the user app version from the package manager
+     *
+     * @param context Android application context
+     * @return String app version name
+     */
+    private String readAppVersion(final Context context) throws InitializationException {
+        nonNull(context, "context");
+        try {
+            return context.getPackageManager().getPackageInfo(context.getPackageName(),
+                            0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            // Wrap in Initialization exception
+            throw new InitializationException("Failed to read app version", e);
+        }
+    }
 
     /**
      * Creates a MobileCore instance
      *
      * @param context Application context
      */
-    private MobileCore(final Context context, final Options options)
+    private MobileCore(final Context context)
                     throws InitializationException, IllegalStateException {
         this.context = nonNull(context, "context").getApplicationContext();
-
-        this.appVersion = getAppVersion(context);
-        this.configFileName = options.configFileName;
-        logger = options.logger;
+        this.appVersion = readAppVersion(context);
 
         HttpsConfiguration httpsConfig;
 
@@ -107,18 +117,10 @@ public final class MobileCore {
      * @param context Application context
      */
     public static void init(final Context context) throws InitializationException {
-        init(context, new Options());
-    }
-
-    /**
-     * Initialize the AeroGear system
-     *
-     * @param context Application context
-     * @param options AeroGear initialization options
-     */
-    public static void init(final Context context, final Options options)
-                    throws InitializationException {
-        instance = new MobileCore(context, options);
+        nonNull(context, "context");
+        if (instance == null) {
+            instance = new MobileCore(context);
+        }
     }
 
     public static MobileCore getInstance() {
@@ -176,53 +178,25 @@ public final class MobileCore {
     }
 
     /**
-     * Get application context
+     * Get the logger
      *
-     * @return Application context
+     * @return Logger
      */
-
-    public Context getContext() {
-        return context;
-    }
-
-    /**
-     * Returns the configuration for this singleThreadService from the JSON config file
-     *
-     * @param type Service type/name
-     * @return the configuration for this singleThreadService from the JSON config file
-     */
-    public ServiceConfiguration getServiceConfiguration(final String type) {
-        return servicesConfig.get(type);
-    }
-
-    /**
-     * Get the user app version from the package manager
-     *
-     * @param context Android application context
-     * @return String app version name
-     */
-    private String getAppVersion(final Context context) throws InitializationException {
-        nonNull(context, "context");
-        try {
-            return context.getPackageManager().getPackageInfo(context.getPackageName(),
-                            0).versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            // Wrap in Initialization exception
-            throw new InitializationException("Failed to read app version", e);
-        }
-    }
-
-    public HttpServiceModule getHttpLayer() {
-        return httpLayer;
-    }
-
     public static Logger getLogger() {
         return logger;
     }
 
-    @VisibleForTesting()
-    public String getConfigFileName() {
-        return configFileName;
+    public static void setLogger(Logger logger) {
+        MobileCore.logger = logger;
+    }
+
+    /**
+     * Get application context
+     *
+     * @return Application context
+     */
+    public Context getContext() {
+        return context;
     }
 
     /**
@@ -243,25 +217,23 @@ public final class MobileCore {
         return appVersion;
     }
 
-    @SuppressWarnings({"UnusedReturnValue", "WeakerAccess"})
-    public static final class Options {
-
-        private String configFileName;
-        private Logger logger;
-
-        public Options() {
-            this.configFileName = DEFAULT_CONFIG_FILE_NAME;
-            this.logger = new LoggerAdapter();
-        }
-
-        public Options setConfigFileName(@NonNull final String configFileName) {
-            this.configFileName = nonNull(configFileName, "configFileName");
-            return this;
-        }
-
-        public Options setLogger(final Logger logger) {
-            this.logger = logger;
-            return this;
-        }
+    /**
+     * Get the HTTP service module
+     *
+     * @return HTTP service module
+     */
+    public HttpServiceModule getHttpLayer() {
+        return httpLayer;
     }
+
+    /**
+     * Returns the configuration for this singleThreadService from the JSON config file
+     *
+     * @param type Service type/name
+     * @return the configuration for this singleThreadService from the JSON config file
+     */
+    public ServiceConfiguration getServiceConfiguration(final String type) {
+        return servicesConfig.get(type);
+    }
+
 }

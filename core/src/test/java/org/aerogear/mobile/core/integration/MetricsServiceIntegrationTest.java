@@ -23,17 +23,12 @@ import org.aerogear.mobile.core.unit.metrics.MetricsServiceTest;
 @SmallTest
 public class MetricsServiceIntegrationTest {
 
-    private static final String MOBILE_SERVICES_JSON = "integration-test-mobile-services.json";
-
     private MetricsService metricsService;
     private Throwable error;
 
     @Before
-    public void setUp() throws Exception {
-        MobileCore.Options options = new MobileCore.Options();
-        options.setConfigFileName(MOBILE_SERVICES_JSON);
-
-        MobileCore.init(RuntimeEnvironment.application, options);
+    public void setUp() {
+        MobileCore.init(RuntimeEnvironment.application);
         metricsService = MobileCore.getInstance().getService(MetricsService.class);
 
         error = null;

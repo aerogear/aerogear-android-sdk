@@ -16,21 +16,12 @@ import org.aerogear.mobile.core.AeroGearTestRunner;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.ServiceModule;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
-import org.aerogear.mobile.core.exception.ConfigurationNotFoundException;
-import org.aerogear.mobile.core.exception.InitializationException;
-import org.aerogear.mobile.core.http.HttpRequest;
-import org.aerogear.mobile.core.http.HttpResponse;
-import org.aerogear.mobile.core.http.HttpServiceModule;
 import org.aerogear.mobile.core.logging.Logger;
-import org.aerogear.mobile.core.logging.LoggerAdapter;
-import org.aerogear.mobile.core.reactive.Request;
+import org.aerogear.mobile.core.metrics.MetricsService;
 
 @RunWith(AeroGearTestRunner.class)
 @SmallTest
 public class MobileCoreTest {
-
-    private static final String DUMMY_MOBILE_SERVICES_JSON = "dummy-mobile-services.json";
-    private static final String EMPTY_MOBILE_SERVICES_JSON = "empty-mobile-services.json";
 
     private Context context = RuntimeEnvironment.application;
 
@@ -39,49 +30,16 @@ public class MobileCoreTest {
         MobileCore.init(context);
     }
 
-    @Test
-    public void testDefaultOptions() {
-        assertEquals(MobileCore.DEFAULT_CONFIG_FILE_NAME,
-                        MobileCore.getInstance().getConfigFileName());
-        assertEquals(LoggerAdapter.class, MobileCore.getLogger().getClass());
-    }
-
     @Test(expected = RuntimeException.class)
     public void testInitWithNullContext() {
         MobileCore.init(null);
     }
 
-    @Test(expected = RuntimeException.class)
-    public void testInitWithNullOptions() {
-        MobileCore.init(null, null);
-    }
-
-    @Test
-    public void testInitWithDifferentConfigFile() {
-        MobileCore.Options options = new MobileCore.Options();
-        options.setConfigFileName(DUMMY_MOBILE_SERVICES_JSON);
-
-        MobileCore.init(context, options);
-
-        // assertEquals("http://dummy.net", service.getUrl());
-    }
-
     @Test
     public void testInitWithDifferentLogger() {
-        MobileCore.Options options = new MobileCore.Options();
-        options.setLogger(new DummyLogger());
-
-        MobileCore.init(context, options);
+        MobileCore.setLogger(new DummyLogger());
 
         assertEquals(DummyLogger.class, MobileCore.getLogger().getClass());
-    }
-
-    @Test(expected = InitializationException.class)
-    public void testInitWithNonExistentConfigFile() {
-        MobileCore.Options options = new MobileCore.Options();
-        options.setConfigFileName("wrong-file-name.json");
-
-        MobileCore.init(context, options);
     }
 
     @Test
@@ -89,46 +47,21 @@ public class MobileCoreTest {
         MobileCore.getInstance().getService(DummyServiceModule.class);
     }
 
-    @Test(expected = ConfigurationNotFoundException.class)
-    public void testUnregisteredServiceThrowsException() {
-        MobileCore.Options options = new MobileCore.Options();
-        options.setConfigFileName(EMPTY_MOBILE_SERVICES_JSON);
-
-        MobileCore.init(context, options);
-
-        MobileCore.getInstance().getService(DummyHttpServiceModule.class);
-    }
-
-    @Test
-    public void testInitDoesNotThrowIfMetricsNotRegistered() {
-        MobileCore.Options options = new MobileCore.Options();
-        options.setConfigFileName(EMPTY_MOBILE_SERVICES_JSON);
-
-        MobileCore.init(context, options);
-    }
-
     @Test
     public void testGetInstance() {
-        MobileCore.Options options = new MobileCore.Options();
-        options.setConfigFileName(DUMMY_MOBILE_SERVICES_JSON);
-        MobileCore.init(context, options);
+        MobileCore.init(context);
 
-        DummyHttpServiceModule service =
-                        MobileCore.getInstance().getService(DummyHttpServiceModule.class);
+        MetricsService service = MobileCore.getInstance().getService(MetricsService.class);
 
         assertNotNull(service);
     }
 
     @Test
     public void testGetCachedInstance() {
-        MobileCore.Options options = new MobileCore.Options();
-        options.setConfigFileName(DUMMY_MOBILE_SERVICES_JSON);
-        MobileCore.init(context, options);
+        MobileCore.init(context);
 
-        DummyHttpServiceModule service1 =
-                        MobileCore.getInstance().getService(DummyHttpServiceModule.class);
-        DummyHttpServiceModule service2 =
-                        MobileCore.getInstance().getService(DummyHttpServiceModule.class);
+        MetricsService service1 = MobileCore.getInstance().getService(MetricsService.class);
+        MetricsService service2 = MobileCore.getInstance().getService(MetricsService.class);
 
         assertNotNull(service1);
         assertNotNull(service2);
@@ -189,65 +122,6 @@ public class MobileCoreTest {
         public boolean isDestroyed() {
             return destroyed;
         }
-    }
-
-    public static final class DummyHttpServiceModule implements HttpServiceModule {
-
-        private String uri;
-
-        @Override
-        public HttpRequest newRequest() {
-            return new HttpRequest() {
-                @Override
-                public HttpRequest addHeader(String key, String value) {
-                    return this;
-                }
-
-                @Override
-                public Request<HttpResponse> get(String url) {
-                    return null;
-                }
-
-                @Override
-                public Request<HttpResponse> post(String url, byte[] body) {
-                    return null;
-                }
-
-                @Override
-                public Request<HttpResponse> put(String url, byte[] body) {
-                    return null;
-                }
-
-                @Override
-                public Request<HttpResponse> delete(String url) {
-                    return null;
-                }
-
-            };
-        }
-
-        @Override
-        public String type() {
-            return "dummy";
-        }
-
-        @Override
-        public void configure(MobileCore core, ServiceConfiguration serviceConfiguration) {
-            uri = serviceConfiguration.getUrl();
-        }
-
-        @Override
-        public boolean requiresConfiguration() {
-            return true;
-        }
-
-        @Override
-        public void destroy() {}
-
-        public String getUrl() {
-            return this.uri;
-        }
-
     }
 
     public static final class DummyLogger implements Logger {
