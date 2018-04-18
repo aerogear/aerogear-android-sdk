@@ -21,8 +21,8 @@ public class AppMetrics implements Metrics<JSONObject> {
 
     public AppMetrics(final Context context) {
         this.appId = nonNull(context, "context").getPackageName();
-        this.appVersion = MobileCore.getAppVersion();
-        this.sdkVersion = MobileCore.getSdkVersion();
+        this.appVersion = MobileCore.getInstance().getAppVersion();
+        this.sdkVersion = MobileCore.getInstance().getSdkVersion();
     }
 
     @Override

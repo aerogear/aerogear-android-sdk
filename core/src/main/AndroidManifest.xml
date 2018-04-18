@@ -1,2 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.aerogear.android.core" />
+    package="org.aerogear.android.core">
+    <application>
+        <provider
+            android:name="org.aerogear.mobile.core.bootstrap.AeroGearBootstrap"
+            android:authorities="${applicationId}.AeroGearBootstrap"
+            android:exported="false" />
+    </application>
+</manifest>

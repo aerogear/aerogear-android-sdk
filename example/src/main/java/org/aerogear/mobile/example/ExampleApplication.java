@@ -7,15 +7,11 @@ import org.aerogear.mobile.core.metrics.MetricsService;
 
 public class ExampleApplication extends Application {
 
-    private MobileCore mobileCore;
-    private MetricsService metricsService;
-
     @Override
     public void onCreate() {
         super.onCreate();
 
-        mobileCore = MobileCore.init(this);
-        metricsService = mobileCore.getInstance(MetricsService.class);
+        MetricsService metricsService = MobileCore.getInstance().getService(MetricsService.class);
 
         metricsService.sendAppAndDeviceMetrics(
                         error -> MobileCore.getLogger().error(error.getMessage()));
@@ -25,15 +21,7 @@ public class ExampleApplication extends Application {
     public void onTerminate() {
         super.onTerminate();
 
-        mobileCore.destroy();
-    }
-
-    public MobileCore getMobileCore() {
-        return mobileCore;
-    }
-
-    public MetricsService getMetricsService() {
-        return metricsService;
+        MobileCore.destroy();
     }
 
 }

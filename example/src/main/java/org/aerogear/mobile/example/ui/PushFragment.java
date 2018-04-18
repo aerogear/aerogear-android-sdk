@@ -74,7 +74,7 @@ public class PushFragment extends BaseFragment implements MessageHandler {
     void register() {
         register.setEnabled(false);
 
-        PushService pushService = activity.mobileCore.getInstance(PushService.class);
+        PushService pushService = MobileCore.getInstance().getService(PushService.class);
         pushService.registerDevice(new Callback() {
             @Override
             public void onSuccess() {
@@ -98,7 +98,7 @@ public class PushFragment extends BaseFragment implements MessageHandler {
     void unregister() {
         unregister.setEnabled(false);
 
-        PushService pushService = activity.mobileCore.getInstance(PushService.class);
+        PushService pushService = MobileCore.getInstance().getService(PushService.class);
         pushService.unregisterDevice(new Callback() {
             @Override
             public void onSuccess() {

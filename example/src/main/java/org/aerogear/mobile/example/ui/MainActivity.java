@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import org.aerogear.mobile.auth.AuthService;
 import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
 import org.aerogear.mobile.auth.user.UserPrincipal;
+import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.example.R;
 
 import butterknife.BindView;
@@ -47,7 +48,7 @@ public class MainActivity extends BaseActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        authService = (AuthService) mobileCore.getInstance(AuthService.class);
+        authService = MobileCore.getInstance().getService(AuthService.class);
         AuthServiceConfiguration authServiceConfiguration =
                         new AuthServiceConfiguration.AuthConfigurationBuilder()
                                         .withRedirectUri("org.aerogear.mobile.example:/callback")

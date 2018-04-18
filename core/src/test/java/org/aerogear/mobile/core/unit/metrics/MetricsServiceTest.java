@@ -27,12 +27,11 @@ import org.aerogear.mobile.core.metrics.publisher.NetworkMetricsPublisher;
 @SmallTest
 public class MetricsServiceTest {
 
-    MobileCore mobileCore;
-    MetricsService metricsService;
+    private MetricsService metricsService;
 
     @Before
-    public void setUp() throws Exception {
-        mobileCore = MobileCore.init(RuntimeEnvironment.application);
+    public void setUp() {
+        MobileCore.init(RuntimeEnvironment.application);
         metricsService = new MetricsService();
     }
 
@@ -46,7 +45,7 @@ public class MetricsServiceTest {
     public void defaultPublisherWithoutConfigUrl() {
         ServiceConfiguration serviceConfiguration = new ServiceConfiguration.Builder().build();
 
-        metricsService.configure(mobileCore, serviceConfiguration);
+        metricsService.configure(MobileCore.getInstance(), serviceConfiguration);
 
         assertEquals(LoggerMetricsPublisher.class, metricsService.getPublisher().getClass());
     }
@@ -56,7 +55,7 @@ public class MetricsServiceTest {
         ServiceConfiguration serviceConfiguration =
                         new ServiceConfiguration.Builder().setUrl("http://dummy.url").build();
 
-        metricsService.configure(mobileCore, serviceConfiguration);
+        metricsService.configure(MobileCore.getInstance(), serviceConfiguration);
 
         assertEquals(NetworkMetricsPublisher.class, metricsService.getPublisher().getClass());
     }
@@ -72,8 +71,9 @@ public class MetricsServiceTest {
     }
 
     @Test
-    public void testCallbackSuccessMethodIsCalled() throws Exception {
-        metricsService.configure(mobileCore, new ServiceConfiguration.Builder().build());
+    public void testCallbackSuccessMethodIsCalled() {
+        metricsService.configure(MobileCore.getInstance(),
+                        new ServiceConfiguration.Builder().build());
 
         final Callback testCallback = new Callback() {
             @Override
@@ -92,10 +92,10 @@ public class MetricsServiceTest {
     }
 
     @Test
-    public void testCallbackErrorMethodIsCalled() throws Exception {
+    public void testCallbackErrorMethodIsCalled() {
         ServiceConfiguration serviceConfiguration =
                         new ServiceConfiguration.Builder().setUrl("http://dummy").build();
-        metricsService.configure(mobileCore, serviceConfiguration);
+        metricsService.configure(MobileCore.getInstance(), serviceConfiguration);
 
         final Callback testCallback = new Callback() {
             @Override
