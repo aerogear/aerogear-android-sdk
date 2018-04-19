@@ -14,9 +14,9 @@
 
 ## Documentation
 
-1. [End User Getting Started Guide](./docs/getting-started/getting-started.adoc)
-1. [Self Defence Checks](./docs/getting-started/auth-self-defence-checks.adoc)
-1. [Certificate Pinning](./docs/getting-started/certificate-pinning.adoc)
+1. [End User Getting Started Guide](./docs/modules/getting-started/pages/getting-started.adoc)
+1. [Self Defence Checks](./docs/modules/getting-started/pages/auth-self-defence-checks.adoc)
+1. [Certificate Pinning](./docs/modules/getting-started/pages/certificate-pinning.adoc)
 1. [Troubleshooting](./docs/troubleshooting.adoc)
 1. [Service Contributor Guide](./docs/contributing-guide.adoc)
 
@@ -24,8 +24,8 @@
 
 AeroGear Services SDK consist of set of separate SDKs
 
-- [Core](./docs/getting-started/core.adoc): Common base for all SDKs
-- [Auth](./docs/getting-started/auth.adoc):  Mobile authentication SDK
+- [Core](./docs/modules/getting-started/pages/core.adoc): Common base for all SDKs
+- [Auth](./docs/modules/getting-started/pages/auth.adoc):  Mobile authentication SDK
 
 ## License 
 
