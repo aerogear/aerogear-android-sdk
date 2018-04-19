@@ -53,7 +53,7 @@ unifiedPushConfig.setCategories(Arrays.asList("Android", "OpenShift"));
 pushService.registerDevice(unifiedPushConfig, yourCallback);
 ----
 
-If you no longer wish to receive Push notifications, you may unregister.
+If you want to add option for user to stop receiving notifications.
 
 [source,java]
 ----
