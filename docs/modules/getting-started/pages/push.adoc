@@ -37,7 +37,7 @@ pushService.registerDevice(new Callback() {
 
     @Override
     public void onError(Throwable error) {
-        // Ops!
+        // Oops!
     }
 });
 ----
@@ -66,16 +66,16 @@ pushService.unregisterDevice(new Callback() {
 
     @Override
     public void onError(Throwable error) {
-        // Ops!
+        // Oops!
     }
 });
 ----
 
 == Handling messages
 
-`MessageHandler` is responsable for handling the messages received from the FCM. It will give you total flexibility to decide what to do with the message recieved.
+`MessageHandler` is responsable for handling the messages received from FCM. It will give you total flexibility to decide what to do with the message recieved.
 
-## Receiving Background and Foreground messages
+## Receiving Background and Foreground Messages
 
 Currently, push messages are received by an instance of  `AeroGearFirebaseMessagingService`. The messages are processed and passed to `PushService.notifyHandlers`.
 
@@ -104,9 +104,15 @@ public void onStop() {
 
 Unfortunately when you close or kill the app the Android system can destroy the `PushService` instance and we will lose the handler you have added there. To solve this we provide a way to register a default handler, it will be used when app is not running (actually running in background) and there are no others handlers registered.
 
+_AndroidManifest.xml_
 [source,xml]
 ----
-<meta-data
-    android:name="DEFAULT_MESSAGE_HANDLER_KEY"
-    android:value="package.ClassName" />
+<?xml version="1.0" encoding="utf-8"?>
+<manifest>
+    <application>
+        <meta-data
+            android:name="DEFAULT_MESSAGE_HANDLER_KEY"
+            android:value="package.ClassName" />
+    </application>
+</manifest>
 ----
