@@ -83,6 +83,16 @@ public class UserPrincipalImplTest {
     }
 
     @Test
+    public void testGetRealmRoles() {
+        assertEquals(userPrincipalImpl.getRealmRoles().size(), 1);
+    }
+
+    @Test
+    public void testGetResourceRoles() {
+        assertEquals(userPrincipalImpl.getResourceRoles().size(), 1);
+    }
+
+    @Test
     public void testGetCustomStringAttributes() {
         assertEquals("string", userPrincipalImpl.getCustomStringAttribute("string"));
         assertEquals(null,

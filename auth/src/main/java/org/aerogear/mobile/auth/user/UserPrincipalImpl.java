@@ -206,6 +206,44 @@ public class UserPrincipalImpl implements UserPrincipal {
         return roles;
     }
 
+    /**
+     * Get's the user realm roles
+     *
+     * @return user's realm roles
+     */
+    @Override
+    public Set<UserRole> getRealmRoles() {
+        return getSpecificRoles(RoleType.REALM);
+    }
+
+    /**
+     * Get's the user resource roles
+     *
+     * @return user's resource roles
+     */
+    @Override
+    public Set<UserRole> getResourceRoles() {
+        return getSpecificRoles(RoleType.RESOURCE);
+    }
+
+    /**
+     * Get' specific user roles
+     *
+     * @param roleType the type of roles to get. Can be either realm or resource
+     * @return the requested user roles
+     */
+    private Set<UserRole> getSpecificRoles(final RoleType roleType) {
+        Set<UserRole> specificRoles = new HashSet<>();
+        Iterator<UserRole> itr = roles.iterator();
+        while (itr.hasNext()) {
+            UserRole role = itr.next();
+            if (role.getType().equals(roleType)) {
+                specificRoles.add(role);
+            }
+        }
+        return specificRoles;
+    }
+
     @Override
     public String getEmail() {
         return email;
