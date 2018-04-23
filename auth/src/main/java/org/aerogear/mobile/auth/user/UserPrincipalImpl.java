@@ -44,6 +44,16 @@ public class UserPrincipalImpl implements UserPrincipal {
     private final Set<UserRole> roles;
 
     /**
+     * Realm roles associated with this principal.
+     */
+    private final Set<UserRole> realmRoles;
+
+    /**
+     * Resource roles associated with principal.
+     */
+    private final Set<UserRole> resourceRoles;
+
+    /**
      * Identity token. It is used for logout
      */
     private final String identityToken;
@@ -66,6 +76,8 @@ public class UserPrincipalImpl implements UserPrincipal {
      * @param lastName the last name of the authenticated user
      * @param email the email of the authenticated user
      * @param roles roles assigned to the user
+     * @param realmRoles the realm roles assigned to the user
+     * @param resourceRoles the resource roles assigned to the user
      * @param identityToken the identity token
      * @param accessToken the access token
      * @param refreshToken the refresh token
@@ -73,6 +85,7 @@ public class UserPrincipalImpl implements UserPrincipal {
      */
     protected UserPrincipalImpl(final String username, final String firstName,
                     final String lastName, final String email, final Set<UserRole> roles,
+                    final Set<UserRole> realmRoles, final Set<UserRole> resourceRoles,
                     final String identityToken, final String accessToken,
                     final String refreshToken) {
         this.username = nonEmpty(username, "username");
@@ -80,6 +93,8 @@ public class UserPrincipalImpl implements UserPrincipal {
         this.lastName = lastName;
         this.email = email;
         this.roles = new HashSet(roles);
+        this.realmRoles = new HashSet<>(realmRoles);
+        this.resourceRoles = new HashSet<>(resourceRoles);
         this.identityToken = identityToken;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
@@ -92,6 +107,8 @@ public class UserPrincipalImpl implements UserPrincipal {
         protected String username;
         protected String email;
         protected Set<UserRole> roles = new HashSet();
+        protected Set<UserRole> realmRoles = new HashSet<>();
+        protected Set<UserRole> resourceRoles = new HashSet<>();
         protected String idToken;
         protected String accessToken;
         protected String refreshToken;
@@ -128,6 +145,20 @@ public class UserPrincipalImpl implements UserPrincipal {
             return this;
         }
 
+        public Builder withRealmRoles(final Set<UserRole> realmRoles) {
+            if (realmRoles != null) {
+                this.realmRoles.addAll(realmRoles);
+            }
+            return this;
+        }
+
+        public Builder withResourceRoles(final Set<UserRole> resourceRoles) {
+            if (resourceRoles != null) {
+                this.resourceRoles.addAll(resourceRoles);
+            }
+            return this;
+        }
+
         public Builder withIdentityToken(final String idToken) {
             this.idToken = idToken;
             return this;
@@ -145,7 +176,8 @@ public class UserPrincipalImpl implements UserPrincipal {
 
         public UserPrincipalImpl build() {
             return new UserPrincipalImpl(this.username, this.firstName, this.lastName, this.email,
-                            this.roles, this.idToken, this.accessToken, this.refreshToken);
+                            this.roles, this.realmRoles, this.resourceRoles, this.idToken,
+                            this.accessToken, this.refreshToken);
         }
     }
 
@@ -160,7 +192,7 @@ public class UserPrincipalImpl implements UserPrincipal {
     public boolean hasResourceRole(final String role, final String resourceId) {
         nonEmpty(role, "role");
 
-        return roles.contains(new UserRole(role, RoleType.RESOURCE, resourceId));
+        return resourceRoles.contains(new UserRole(role, RoleType.RESOURCE, resourceId));
     }
 
     /**
@@ -173,7 +205,7 @@ public class UserPrincipalImpl implements UserPrincipal {
     public boolean hasRealmRole(final String role) {
         nonEmpty(role, "role");
 
-        return roles.contains(new UserRole(role, RoleType.REALM, null));
+        return realmRoles.contains(new UserRole(role, RoleType.REALM, null));
     }
 
     @Override
@@ -204,6 +236,26 @@ public class UserPrincipalImpl implements UserPrincipal {
     @Override
     public Set<UserRole> getRoles() {
         return roles;
+    }
+
+    /**
+     * Get's the user realm roles
+     *
+     * @return user's realm roles
+     */
+    @Override
+    public Set<UserRole> getRealmRoles() {
+        return realmRoles;
+    }
+
+    /**
+     * Get's the user resource roles
+     *
+     * @return user's resource roles
+     */
+    @Override
+    public Set<UserRole> getResourceRoles() {
+        return resourceRoles;
     }
 
     @Override

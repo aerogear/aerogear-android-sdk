@@ -112,7 +112,9 @@ public class UserIdentityParser {
     public UserPrincipalImpl parseUser() {
         return UserPrincipalImpl.newUser().withEmail(parseEmail()).withFirstName(parseFirstName())
                         .withLastName(parseLastName()).withUsername(parseUsername())
-                        .withRoles(parseRoles()).withIdentityToken(credential.getIdentityToken())
+                        .withRoles(parseRoles()).withRealmRoles(parseRealmRoles())
+                        .withResourceRoles(parseResourceRoles())
+                        .withIdentityToken(credential.getIdentityToken())
                         .withAccessToken(credential.getAccessToken())
                         .withRefreshToken(credential.getRefreshToken()).build();
     }

@@ -200,6 +200,9 @@ To list a users roles the `UserPrincipal#getRoles` method can be invoked.
 Roles are divided into two types. Resource roles which belong to the client the user has
 authenticated against, and Realm roles which belong to the realm the client is in.
 
+To list a users realm roles  the `UserPrincipal#getRealmRoles` method can be invoked and 
+to list a users resource roles the `UserPrincipal#getResourceRoles` can be invoked.
+
 In order to check if a user has a specific role you can invoke the `UserPrincipal#hasResourceRole`
 and `UserPrincipal#hasRealmRole` methods and provide the role name to check for.
 

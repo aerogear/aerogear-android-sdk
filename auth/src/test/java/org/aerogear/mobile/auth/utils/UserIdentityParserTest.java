@@ -67,9 +67,13 @@ public class UserIdentityParserTest {
         String actualUsername = user.getUsername();
         String actualEmail = user.getEmail();
         Set<UserRole> actualRoles = user.getRoles();
+        Set<UserRole> realmRoles = user.getRealmRoles();
+        Set<UserRole> resourceRoles = user.getResourceRoles();
 
         assertEquals(expectedUsername, actualUsername);
         assertEquals(expectedEmail, actualEmail);
+        assertEquals(1, realmRoles.size());
+        assertEquals(1, resourceRoles.size());
         assertTrue(actualRoles.contains(expectedRealmRole));
         assertTrue(actualRoles.contains(expectedResourceRole));
     }

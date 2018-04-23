@@ -19,6 +19,8 @@ public class UserPrincipalImplTest {
 
     private UserPrincipalImpl userPrincipalImpl;
     private Set<UserRole> roles = new HashSet<>();
+    private Set<UserRole> realmRoles = new HashSet<>();
+    private Set<UserRole> resourceRoles = new HashSet<>();
     private String identityToken = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJhZFNveVhOQW"
                     + "dReFY0M2VxSFNpUlpmNmhOOXl0dkJOUXliMmZGU2RDVFZNIn0.eyJqdGkiOiI4OGQ2MDY0Ni00YzA4LTQwYmMtYTh"
                     + "jMy00MzA3MmI4N2ZmMGQiLCJleHAiOjE1MjA5NjA5OTAsIm5iZiI6MCwiaWF0IjoxNTIwOTU5MTkwLCJpc3MiOiJo"
@@ -40,7 +42,10 @@ public class UserPrincipalImplTest {
         UserRole rRole = new UserRole("rRole", RoleType.REALM, null);
         roles.add(cRole);
         roles.add(rRole);
-        userPrincipalImpl = UserPrincipalImpl.newUser().withRoles(roles).withUsername("test-user")
+        realmRoles.add(rRole);
+        resourceRoles.add(cRole);
+        userPrincipalImpl = UserPrincipalImpl.newUser().withRoles(roles).withRealmRoles(realmRoles)
+                        .withResourceRoles(resourceRoles).withUsername("test-user")
                         .withIdentityToken(identityToken).build();
     }
 
@@ -80,6 +85,16 @@ public class UserPrincipalImplTest {
     @Test
     public void testGetRoles() {
         assertEquals(userPrincipalImpl.getRoles().size(), 2);
+    }
+
+    @Test
+    public void testGetRealmRoles() {
+        assertEquals(userPrincipalImpl.getRealmRoles().size(), 1);
+    }
+
+    @Test
+    public void testGetResourceRoles() {
+        assertEquals(userPrincipalImpl.getResourceRoles().size(), 1);
     }
 
     @Test

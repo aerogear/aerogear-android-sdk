@@ -70,6 +70,20 @@ public interface UserPrincipal extends Serializable {
     Set<UserRole> getRoles();
 
     /**
+     * Returns the realm roles associated with this principal
+     *
+     * @return the realm roles associated with this principal
+     */
+    Set<UserRole> getRealmRoles();
+
+    /**
+     * Returns the resource roles associated with this principal
+     *
+     * @return the resource roles associated with this principal
+     */
+    Set<UserRole> getResourceRoles();
+
+    /**
      * Returns the token that will allow access to other services.
      *
      * @return the access token.
