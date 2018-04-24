@@ -101,7 +101,7 @@ pushService.unregisterDevice(new Callback() {
 
 `MessageHandler` is responsable for handling the messages received from FCM. It will give you total flexibility to decide what to do with the message recieved.
 
-## Receiving Background and Foreground Messages
+== Receiving Background and Foreground Messages
 
 Currently, push messages are received by an instance of  `AeroGearFirebaseMessagingService`. The messages are processed and passed to `PushService.notifyHandlers`.
 
