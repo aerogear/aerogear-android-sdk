@@ -1,5 +1,6 @@
 
-* xref:getting-started.adoc[Getting Started with AeroGear Android SDK]
-** xref:core.adoc[Using the AeroGear Android SDK]
-**  xref:metrics.adoc[Using the Android SDK with the Metrics Service]
-** xref:auth.adoc[Using the Android SDK with the Auth Service]
+* xref:getting-started.adoc[Getting Started]
+** xref:core.adoc[Core]
+** xref:metrics.adoc[Metrics]
+** xref:auth.adoc[Auth]
+** xref:push.adoc[Push]
