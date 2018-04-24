@@ -99,7 +99,7 @@ pushService.unregisterDevice(new Callback() {
 
 == Handling messages
 
-`MessageHandler` is responsable for handling the messages received from FCM. It will give you total flexibility to decide what to do with the message recieved.
+`MessageHandler` is responsible for handling the messages received from FCM. It will give you total flexibility to decide what to do with the message recieved.
 
 == Receiving Background and Foreground Messages
 
