@@ -20,7 +20,7 @@ import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpResponse;
 import org.aerogear.mobile.core.http.HttpServiceModule;
 import org.aerogear.mobile.core.logging.Logger;
-import org.aerogear.mobile.core.reactive.Responder;
+import org.aerogear.mobile.reactive.Responder;
 
 /**
  * A class that is responsible for manage the Json Web Key Set(JWKS).

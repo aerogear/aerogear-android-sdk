@@ -1,1 +1,1 @@
-include ':core', ':auth', ':example', ':push'
+include ':core', ':auth', ':example', ':push', ':reactive'

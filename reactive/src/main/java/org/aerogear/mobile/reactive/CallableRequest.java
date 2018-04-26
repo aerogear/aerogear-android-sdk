@@ -1,12 +1,8 @@
-package org.aerogear.mobile.core.reactive;
-
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+package org.aerogear.mobile.reactive;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicReference;
 
-import android.support.annotation.NonNull;
-import android.util.Log;
 
 
 /**
@@ -24,7 +20,8 @@ public final class CallableRequest<T> extends AbstractRequest<T> {
     private Thread callableThread = null;
 
     public CallableRequest(Callable<T> callable) {
-        this.callable = nonNull(callable, "callable");
+        //this.callable = nonNull(callable, "callable");
+        this.callable = callable;
         this.cleanerAtomicReference = new AtomicReference<>(() -> {
         });
         cancellerRef = new AtomicReference<>(() -> {
@@ -50,7 +47,7 @@ public final class CallableRequest<T> extends AbstractRequest<T> {
     }
 
     @Override
-    public Request<T> respondWithActual(@NonNull AtomicReference<Responder<T>> responderRef) {
+    public Request<T> respondWithActual(AtomicReference<Responder<T>> responderRef) {
 
         if (responderRef.get() == null) { // responder may have been disconnected.
             return this;
@@ -104,7 +101,7 @@ public final class CallableRequest<T> extends AbstractRequest<T> {
                  * Responders with uncaught exceptions should not blow up the reactive stack. For
                  * now we will log them, but one day a RxPlugin style mechanism may be appropriate.
                  */
-                Log.e(ERROR_TAG, responderThrowable.getMessage(), responderThrowable);
+                //Log.e(ERROR_TAG, responderThrowable.getMessage(), responderThrowable);
             }
         } finally {
             cleanerAtomicReference.get().cleanup();
@@ -118,8 +115,8 @@ public final class CallableRequest<T> extends AbstractRequest<T> {
     }
 
     @Override
-    public Request<T> cancelWith(@NonNull Canceller canceller) {
-        cancellerRef.set(nonNull(canceller, "canceller"));
+    public Request<T> cancelWith(Canceller canceller) {
+        //cancellerRef.set(nonNull(canceller, "canceller"));
         return this;
     }
 

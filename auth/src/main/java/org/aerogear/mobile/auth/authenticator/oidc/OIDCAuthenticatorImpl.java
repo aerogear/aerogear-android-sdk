@@ -33,7 +33,7 @@ import org.aerogear.mobile.core.http.HttpServiceModule;
 import org.aerogear.mobile.core.http.OkHttpServiceModule;
 import org.aerogear.mobile.core.http.pinning.CertificatePinningCheck;
 import org.aerogear.mobile.core.http.pinning.CertificatePinningCheckListener;
-import org.aerogear.mobile.core.reactive.Responder;
+import org.aerogear.mobile.reactive.Responder;
 
 import net.openid.appauth.AuthState;
 import net.openid.appauth.AuthorizationException;

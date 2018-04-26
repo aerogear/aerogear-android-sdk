@@ -1,6 +1,6 @@
 package org.aerogear.mobile.core.http;
 
-import org.aerogear.mobile.core.reactive.Request;
+import org.aerogear.mobile.reactive.Request;
 
 /**
  * Generic interface for requests to HTTP Services.

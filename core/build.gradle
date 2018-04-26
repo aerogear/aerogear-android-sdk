@@ -37,7 +37,7 @@ tasks.withType(JavaCompile) {
 dependencies {
     implementation "com.android.support:appcompat-v7:${project.ext.android_support_version}"
     implementation "com.squareup.okhttp3:okhttp:${project.ext.okhttp_version}"
-
+    api project(":reactive")
     testImplementation "junit:junit:${project.ext.junit_version}"
     testImplementation "com.android.support.test:runner:${project.ext.android_support_test_runner_version}"
     testImplementation "com.android.support.test:rules:${project.ext.android_support_test_rules_version}"

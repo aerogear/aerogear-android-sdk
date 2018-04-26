@@ -1,4 +1,4 @@
-package org.aerogear.mobile.core.reactive;
+package org.aerogear.mobile.reactive;
 
 
 /**

@@ -1,12 +1,10 @@
-package org.aerogear.mobile.core.reactive;
+package org.aerogear.mobile.reactive;
 
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicReference;
 
-import android.support.annotation.NonNull;
 
 
 /**
@@ -20,19 +18,19 @@ abstract class AbstractRequest<T> implements Request<T> {
 
     @Override
     public final Request<T> requestOn(ExecutorService executorService) {
-        nonNull(executorService, "executorService");
+        //nonNull(executorService, "executorService");
         return new RequestOnRequest<>(this, executorService);
     }
 
     @Override
     public final Request<T> respondOn(ExecutorService executorService) {
-        nonNull(executorService, "executorService");
+        //nonNull(executorService, "executorService");
         return new RespondOnRequest<>(this, executorService);
     }
 
     @Override
-    public final Request<T> respondWith(@NonNull Responder<T> responder) {
-        nonNull(responder, "responder");
+    public final Request<T> respondWith(Responder<T> responder) {
+        //nonNull(responder, "responder");
         connectedResponders.putIfAbsent(responder, new AtomicReference<>(responder));
         return respondWithActual(connectedResponders.get(responder));
     }
@@ -47,6 +45,12 @@ abstract class AbstractRequest<T> implements Request<T> {
     public final <R> Request<R> map(MapFunction<? super T, ? extends R> mapper) {
         return new MapRequest<T, R>(this, mapper);
     }
+
+    @Override
+    public <R> Request<R> mapRequest(MapFunction<? super T, Request<? extends R>> mapper) {
+        return new MapRequestRequest<T, R>(this, mapper);
+    }
+
 
     @Override
     public final Request<T> disconnect(Responder<T> responderToDisconnect) {
@@ -69,7 +73,7 @@ abstract class AbstractRequest<T> implements Request<T> {
      *        responder is disconnected.
      * @return a chainable instance of Request, not guaranteed to be `this`
      */
-    abstract Request<T> respondWithActual(@NonNull AtomicReference<Responder<T>> responderRef);
+    abstract Request<T> respondWithActual(AtomicReference<Responder<T>> responderRef);
 
     /**
      * This requester is being asked to give up its Cleanup action to be handled by a different

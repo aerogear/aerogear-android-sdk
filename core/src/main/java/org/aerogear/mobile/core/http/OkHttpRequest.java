@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.aerogear.mobile.core.executor.AppExecutors;
-import org.aerogear.mobile.core.reactive.Requester;
+import org.aerogear.mobile.reactive.Requester;
 
 import okhttp3.Call;
 import okhttp3.MediaType;
@@ -38,7 +38,7 @@ public class OkHttpRequest implements HttpRequest {
     }
 
     @Override
-    public org.aerogear.mobile.core.reactive.Request<HttpResponse> get(final String url) {
+    public org.aerogear.mobile.reactive.Request<HttpResponse> get(final String url) {
         AtomicReference<OkHttpResponse> response = new AtomicReference<>();
         return Requester.call(() -> {
             Builder getRequestBuilder = requestBuilderWithUrl(url);
@@ -62,8 +62,8 @@ public class OkHttpRequest implements HttpRequest {
     }
 
     @Override
-    public org.aerogear.mobile.core.reactive.Request<HttpResponse> post(final String url,
-                    final byte[] body) {
+    public org.aerogear.mobile.reactive.Request<HttpResponse> post(final String url,
+                                                                   final byte[] body) {
 
         AtomicReference<OkHttpResponse> response = new AtomicReference<>();
         return Requester.call(() -> {
@@ -90,8 +90,8 @@ public class OkHttpRequest implements HttpRequest {
     }
 
     @Override
-    public org.aerogear.mobile.core.reactive.Request<HttpResponse> put(final String url,
-                    final byte[] body) {
+    public org.aerogear.mobile.reactive.Request<HttpResponse> put(final String url,
+                                                                  final byte[] body) {
 
         AtomicReference<OkHttpResponse> response = new AtomicReference<>();
         return Requester.call(() -> {
@@ -119,7 +119,7 @@ public class OkHttpRequest implements HttpRequest {
     }
 
     @Override
-    public org.aerogear.mobile.core.reactive.Request<HttpResponse> delete(final String url) {
+    public org.aerogear.mobile.reactive.Request<HttpResponse> delete(final String url) {
 
         AtomicReference<OkHttpResponse> response = new AtomicReference<>();
         return Requester.call(() -> {

@@ -33,6 +33,7 @@ dependencies {
     testImplementation "com.android.support.test:runner:${project.ext.android_support_test_runner_version}"
     testImplementation "com.android.support.test:rules:${project.ext.android_support_test_rules_version}"
 
+    compile project(path: ':reactive')
 }
 apply from: "../gradle-mvn-push.gradle"
 

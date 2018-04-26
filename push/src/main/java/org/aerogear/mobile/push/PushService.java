@@ -9,6 +9,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.aerogear.mobile.reactive.MapRequestFunction;
+import org.aerogear.mobile.reactive.Request;
+import org.aerogear.mobile.reactive.Requester;
+import org.aerogear.mobile.reactive.Responder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,7 +36,7 @@ import org.aerogear.mobile.core.exception.HttpException;
 import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpResponse;
-import org.aerogear.mobile.core.reactive.Responder;
+
 
 /**
  * The entry point for communication with Unified Push Server
@@ -52,9 +56,10 @@ public class PushService implements ServiceModule {
 
 
     private static final List<MessageHandler> MAIN_THREAD_HANDLERS =
-                    Collections.synchronizedList(new ArrayList<>());
+        Collections.synchronizedList(new ArrayList<>());
     private static final List<MessageHandler> BACKGROUND_THREAD_HANDLERS =
-                    Collections.synchronizedList(new ArrayList<>());
+        Collections.synchronizedList(new ArrayList<>());
+    private static final String TAG = "PUSH_SERVICE";
 
     private final String deviceType = "ANDROID";
     private final String operatingSystem = "android";
@@ -80,7 +85,7 @@ public class PushService implements ServiceModule {
 
         try {
             JSONObject android = new JSONObject(
-                            serviceConfiguration.getProperties().get(JSON_ANDROID_CONFIG_KEY));
+                serviceConfiguration.getProperties().get(JSON_ANDROID_CONFIG_KEY));
 
             unifiedPushCredentials = new UnifiedPushCredentials();
             unifiedPushCredentials.setVariant(android.getString(JSON_VARIANT_ID_KEY));
@@ -90,11 +95,11 @@ public class PushService implements ServiceModule {
         } catch (JSONException e) {
             MobileCore.getLogger().error(e.getMessage(), e);
             throw new ConfigurationNotFoundException(
-                            "An error occurred while trying to load the push config");
+                "An error occurred while trying to load the push config");
         }
 
         sharedPreferences = core.getContext().getSharedPreferences(SHARED_PREFERENCE_PUSH_NAME,
-                        Context.MODE_PRIVATE);
+            Context.MODE_PRIVATE);
 
     }
 
@@ -106,65 +111,30 @@ public class PushService implements ServiceModule {
     /**
      * Register the device on Unified Push Server
      *
-     * @param callback A callback to handle successful or failed registration
+     * @return a request for a device registration
      */
-    public void registerDevice(final Callback callback) {
-        registerDevice(new UnifiedPushConfig(), callback);
+    public Request<Boolean> registerDevice() {
+        return registerDevice(new UnifiedPushConfig());
     }
 
     /**
      * Register the device on Unified Push Server
      *
      * @param unifiedPushConfig Unified Push configuration to be send to the Unified Push Server
-     * @param callback A callback to handle successful or failed registration
      */
-    public void registerDevice(final UnifiedPushConfig unifiedPushConfig, final Callback callback) {
+    public Request<Boolean> registerDevice(final UnifiedPushConfig unifiedPushConfig) {
         nonNull(unifiedPushConfig, "unifiedPushConfig");
-        nonNull(callback, "callback");
 
-        try {
-
-            JSONObject data = new JSONObject();
-
-            data.put("deviceType", deviceType);
-            data.put("operatingSystem", operatingSystem);
-            data.put("osVersion", osVersion);
-            data.put("alias", unifiedPushConfig.getAlias());
-
-            final List<String> categories = unifiedPushConfig.getCategories();
-            if (!categories.isEmpty()) {
-                JSONArray jsonCategories = new JSONArray();
-                for (String category : categories) {
-                    jsonCategories.put(category);
-                }
-                data.put("categories", jsonCategories);
-            }
-
-            registerDevice(data, callback);
-
-        } catch (JSONException e) {
-            MobileCore.getLogger().error(e.getMessage(), e);
-            callback.onError(e);
-        }
-
+        return registerDevice(asJson(unifiedPushConfig));
     }
 
-    /**
-     * Register the device on Unified Push Server
-     *
-     * @param data Unified Push data to be send to the Unified Push Server
-     * @param callback A callback to handle successful or failed registration
-     */
-    private void registerDevice(JSONObject data, Callback callback) {
-        nonNull(data, "data");
-        nonNull(callback, "callback");
+    private Request<Boolean> registerDevice(final JSONObject data) {
 
-        try {
-
+        return Requester.call(() -> {
             data.put("deviceToken", FirebaseInstanceId.getInstance().getToken());
 
             String authHash = getHashedAuth(unifiedPushCredentials.getVariant(),
-                            unifiedPushCredentials.getSecret().toCharArray());
+                unifiedPushCredentials.getSecret().toCharArray());
 
             final HttpRequest httpRequest = core.getHttpLayer().newRequest();
             httpRequest.addHeader("Authorization", authHash);
@@ -175,53 +145,37 @@ public class PushService implements ServiceModule {
                 httpRequest.addHeader("x-ag-old-token", oldDeviceToken);
             }
 
-            httpRequest.post(url + registryDeviceEndpoint, data.toString().getBytes())
-                            .respondWith(new Responder<HttpResponse>() {
-                                @Override
-                                public void onResult(HttpResponse httpResponse) {
-                                    switch (httpResponse.getStatus()) {
-                                        case HTTP_OK:
+            return httpRequest.post(url + registryDeviceEndpoint, data.toString().getBytes());
+        }).mapRequest(httpResponse -> {
+            switch (httpResponse.getStatus()) {
+                case HTTP_OK:
 
-                                            FirebaseMessaging firebaseMessaging =
-                                                            FirebaseMessaging.getInstance();
+                    FirebaseMessaging firebaseMessaging =
+                        FirebaseMessaging.getInstance();
 
-                                            try {
-                                                JSONArray categories =
-                                                                data.getJSONArray("categories");
-                                                for (int i = 0; i < categories.length(); i++) {
-                                                    String category = categories.getJSONObject(i)
-                                                                    .toString();
-                                                    firebaseMessaging.subscribeToTopic(category);
-                                                }
-                                            } catch (JSONException e) {
-                                                // ignore
-                                            }
+                    try {
+                        JSONArray categories =
+                            data.getJSONArray("categories");
+                        for (int i = 0; i < categories.length(); i++) {
+                            String category = categories.getJSONObject(i)
+                                .toString();
+                            firebaseMessaging.subscribeToTopic(category);
+                        }
+                    } catch (JSONException e) {
+                        // ignore
+                    }
 
-                                            firebaseMessaging.subscribeToTopic(
-                                                            unifiedPushCredentials.getVariant());
+                    firebaseMessaging.subscribeToTopic(
+                        unifiedPushCredentials.getVariant());
 
-                                            saveCache(data);
+                    saveCache(data);
 
-                                            callback.onSuccess();
-                                            break;
-                                        default:
-                                            callback.onError(new HttpException(
-                                                            httpResponse.getStatus()));
-                                            break;
-                                    }
-                                }
-
-                                @Override
-                                public void onException(Exception error) {
-                                    MobileCore.getLogger().error(error.getMessage(), error);
-                                    callback.onError(error);
-                                }
-                            });
-
-        } catch (JSONException e) {
-            MobileCore.getLogger().error(e.getMessage(), e);
-            callback.onError(e);
-        }
+                    return true;
+                default:
+                    throw (new HttpException(
+                        httpResponse.getStatus()));
+            }
+        }).requestOn(new AppExecutors().networkThread());
 
     }
 
@@ -234,70 +188,70 @@ public class PushService implements ServiceModule {
         nonNull(callback, "callback");
 
         String authHash = getHashedAuth(unifiedPushCredentials.getVariant(),
-                        unifiedPushCredentials.getSecret().toCharArray());
+            unifiedPushCredentials.getSecret().toCharArray());
 
         final HttpRequest httpRequest = core.getHttpLayer().newRequest();
         httpRequest.addHeader("Authorization", authHash);
         httpRequest.delete(url + registryDeviceEndpoint + "/"
-                        + FirebaseInstanceId.getInstance().getToken())
-                        .respondWith(new Responder<HttpResponse>() {
-                            @Override
-                            public void onResult(HttpResponse httpResponse) {
-                                switch (httpResponse.getStatus()) {
-                                    case HTTP_NO_CONTENT:
+            + FirebaseInstanceId.getInstance().getToken())
+            .respondWith(new Responder<HttpResponse>() {
+                @Override
+                public void onResult(HttpResponse httpResponse) {
+                    switch (httpResponse.getStatus()) {
+                        case HTTP_NO_CONTENT:
 
-                                        FirebaseMessaging firebaseMessaging =
-                                                        FirebaseMessaging.getInstance();
+                            FirebaseMessaging firebaseMessaging =
+                                FirebaseMessaging.getInstance();
 
-                                        try {
-                                            JSONObject data = retrieveCache();
-                                            if (data != null) {
-                                                JSONArray categories =
-                                                                data.getJSONArray("categories");
-                                                for (int i = 0; i < categories.length(); i++) {
-                                                    String category = categories.getString(i);
-                                                    firebaseMessaging
-                                                                    .unsubscribeFromTopic(category);
-                                                }
-                                            }
-                                        } catch (JSONException e) {
-                                            // ignore
-                                        }
-
-                                        firebaseMessaging.unsubscribeFromTopic(
-                                                        unifiedPushCredentials.getVariant());
-
-                                        clearCache();
-
-                                        callback.onSuccess();
-                                        break;
-                                    default:
-                                        callback.onError(new HttpException(
-                                                        httpResponse.getStatus()));
-                                        break;
+                            try {
+                                JSONObject data = retrieveCache();
+                                if (data != null) {
+                                    JSONArray categories =
+                                        data.getJSONArray("categories");
+                                    for (int i = 0; i < categories.length(); i++) {
+                                        String category = categories.getString(i);
+                                        firebaseMessaging
+                                            .unsubscribeFromTopic(category);
+                                    }
                                 }
+                            } catch (JSONException e) {
+                                // ignore
                             }
 
-                            @Override
-                            public void onException(Exception error) {
-                                MobileCore.getLogger().error(error.getMessage(), error);
-                                callback.onError(error);
-                            }
-                        });
+                            firebaseMessaging.unsubscribeFromTopic(
+                                unifiedPushCredentials.getVariant());
+
+                            clearCache();
+
+                            callback.onSuccess();
+                            break;
+                        default:
+                            callback.onError(new HttpException(
+                                httpResponse.getStatus()));
+                            break;
+                    }
+                }
+
+                @Override
+                public void onException(Exception error) {
+                    MobileCore.getLogger().error(error.getMessage(), error);
+                    callback.onError(error);
+                }
+            });
     }
 
     /**
      * Provide an auth hash to be used to authenticate in Unified Push Service
      *
      * @param variant Unified Push variant id
-     * @param secret Unified Push variant secret
+     * @param secret  Unified Push variant secret
      * @return Auth hash
      */
     private String getHashedAuth(final String variant, final char[] secret) {
         StringBuilder headerValueBuilder = new StringBuilder("Basic").append(" ");
         String unhashedCredentials = variant + ":" + String.valueOf(secret);
         String hashedCrentials =
-                        Base64.encodeToString(unhashedCredentials.getBytes(), Base64.NO_WRAP);
+            Base64.encodeToString(unhashedCredentials.getBytes(), Base64.NO_WRAP);
         return headerValueBuilder.append(hashedCrentials).toString();
     }
 
@@ -306,10 +260,22 @@ public class PushService implements ServiceModule {
      */
     public void refreshToken() {
         JSONObject jsonObject = retrieveCache();
+
         if (jsonObject != null) {
-            this.registerDevice(jsonObject,
-                            error -> MobileCore.getLogger().error(error.getMessage(), error));
+            this.registerDevice(jsonObject).respondWith(new Responder<Boolean>() {
+                @Override
+                public void onResult(Boolean value) {
+                    MobileCore.getLogger().debug(TAG, "Token Refresh Successful");
+                }
+
+                @Override
+                public void onException(Exception error) {
+                    MobileCore.getLogger().error(error.getMessage(), error));
+                }
+            });
+
         }
+
     }
 
     /**
@@ -412,19 +378,19 @@ public class PushService implements ServiceModule {
         }
 
         if (BACKGROUND_THREAD_HANDLERS.isEmpty() && MAIN_THREAD_HANDLERS.isEmpty()
-                        && defaultHandler != null) {
+            && defaultHandler != null) {
             new AppExecutors().singleThreadService().execute(() -> defaultHandler.onMessage(context,
-                            Collections.unmodifiableMap(message)));
+                Collections.unmodifiableMap(message)));
         } else {
 
             for (final MessageHandler handler : BACKGROUND_THREAD_HANDLERS) {
                 new AppExecutors().singleThreadService().execute(() -> handler.onMessage(context,
-                                Collections.unmodifiableMap(message)));
+                    Collections.unmodifiableMap(message)));
             }
 
             for (final MessageHandler handler : MAIN_THREAD_HANDLERS) {
                 new AppExecutors().mainThread().execute(() -> handler.onMessage(context,
-                                Collections.unmodifiableMap(message)));
+                    Collections.unmodifiableMap(message)));
             }
 
         }
@@ -446,7 +412,7 @@ public class PushService implements ServiceModule {
         try {
 
             ApplicationInfo applicationInfo = context.getPackageManager().getApplicationInfo(
-                            context.getPackageName(), PackageManager.GET_META_DATA);
+                context.getPackageName(), PackageManager.GET_META_DATA);
 
             Bundle metaData = applicationInfo.metaData;
 
@@ -456,8 +422,8 @@ public class PushService implements ServiceModule {
                 if (defaultHandlerClassName != null) {
                     try {
                         Class<? extends MessageHandler> defaultHandlerClass =
-                                        (Class<? extends MessageHandler>) Class
-                                                        .forName(defaultHandlerClassName);
+                            (Class<? extends MessageHandler>) Class
+                                .forName(defaultHandlerClassName);
                         defaultHandler = defaultHandlerClass.newInstance();
                     } catch (Exception ex) {
                         MobileCore.getLogger().error(ex.getMessage(), ex);
@@ -470,6 +436,30 @@ public class PushService implements ServiceModule {
             MobileCore.getLogger().warning(e.getMessage(), e);
         }
 
+    }
+
+    private JSONObject asJson(UnifiedPushConfig unifiedPushConfig) {
+        final JSONObject data = new JSONObject();
+        try {
+            data.put("deviceType", deviceType);
+
+            data.put("operatingSystem", operatingSystem);
+            data.put("osVersion", osVersion);
+            data.put("alias", unifiedPushConfig.getAlias());
+
+            final List<String> categories = unifiedPushConfig.getCategories();
+            if (!categories.isEmpty()) {
+                JSONArray jsonCategories = new JSONArray();
+                for (String category : categories) {
+                    jsonCategories.put(category);
+                }
+                data.put("categories", jsonCategories);
+            }
+            return data;
+        } catch (JSONException e) {
+            MobileCore.getLogger().error(TAG, e);
+            throw new IllegalArgumentException("UnifiedPushConfig could not be expressed as json");
+        }
     }
 
 }

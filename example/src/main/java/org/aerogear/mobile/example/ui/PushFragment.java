@@ -21,6 +21,7 @@ import org.aerogear.mobile.push.MessageHandler;
 import org.aerogear.mobile.push.PushService;
 import org.aerogear.mobile.push.UnifiedPushConfig;
 import org.aerogear.mobile.push.UnifiedPushMessage;
+import org.aerogear.mobile.reactive.Responder;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -90,22 +91,23 @@ public class PushFragment extends BaseFragment implements MessageHandler {
         unifiedPushConfig.setCategories(Arrays.asList("Android", "Example"));
 
         PushService pushService = MobileCore.getInstance().getService(PushService.class);
-        pushService.registerDevice(unifiedPushConfig, new Callback() {
+        pushService.registerDevice()
+            .respondOn(new AppExecutors().mainThread()).respondWith(new Responder<Boolean>() {
+
             @Override
-            public void onSuccess() {
-                new AppExecutors().mainThread().execute(() -> registered(true));
+            public void onResult(Boolean value) {
+                registered(value);
             }
 
             @Override
-            public void onError(Throwable error) {
-                new AppExecutors().mainThread().execute(() -> {
-                    register.setEnabled(true);
-                    MobileCore.getLogger().error(TAG, error.getMessage(), error);
-                    registered(false);
-                    Toast.makeText(getContext(), R.string.device_register_error, Toast.LENGTH_LONG)
-                                    .show();
-                });
+            public void onException(Exception error) {
+                register.setEnabled(true);
+                MobileCore.getLogger().error(TAG, error.getMessage(), error);
+                registered(false);
+                Toast.makeText(getContext(), R.string.device_register_error, Toast.LENGTH_LONG)
+                    .show();
             }
+
         });
     }
 

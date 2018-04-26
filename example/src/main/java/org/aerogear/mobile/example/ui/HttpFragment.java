@@ -16,7 +16,7 @@ import android.util.Log;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.http.HttpRequest;
-import org.aerogear.mobile.core.reactive.Responder;
+import org.aerogear.mobile.reactive.Responder;
 import org.aerogear.mobile.example.BR;
 import org.aerogear.mobile.example.R;
 import org.aerogear.mobile.example.model.User;

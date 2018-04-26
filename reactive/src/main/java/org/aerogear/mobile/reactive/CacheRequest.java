@@ -1,13 +1,10 @@
-package org.aerogear.mobile.core.reactive;
-
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+package org.aerogear.mobile.reactive;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-import android.support.annotation.NonNull;
 
 /**
  * This class wraps a request and subscribes itself. When the request returns a value this request
@@ -25,11 +22,11 @@ public final class CacheRequest<T> extends AbstractRequest<T> implements Respond
     private boolean delegated = false;
 
     public CacheRequest(AbstractRequest<T> delegateTo) {
-        this.delegateTo = nonNull(delegateTo, "delegateTo");
+        this.delegateTo = delegateTo;
     }
 
     @Override
-    public Request<T> respondWithActual(@NonNull AtomicReference<Responder<T>> responderRef) {
+    public Request<T> respondWithActual(AtomicReference<Responder<T>> responderRef) {
         Responder<T> responder = responderRef.get();
 
         if (responder == null) {// responder was disconnected, short circuit.

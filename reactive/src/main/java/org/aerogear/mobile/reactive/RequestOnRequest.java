@@ -1,9 +1,8 @@
-package org.aerogear.mobile.core.reactive;
+package org.aerogear.mobile.reactive;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicReference;
 
-import android.support.annotation.NonNull;
 
 /**
  * This request will run a Request on a thread provided by RunOn.
@@ -21,7 +20,7 @@ public final class RequestOnRequest<T> extends AbstractRequest<T> {
     }
 
     @Override
-    public Request<T> respondWithActual(@NonNull final AtomicReference<Responder<T>> responderRef) {
+    public Request<T> respondWithActual(final AtomicReference<Responder<T>> responderRef) {
         executorService.submit(() -> delegateTo.respondWithActual(responderRef));
         return this;
     }
@@ -40,7 +39,7 @@ public final class RequestOnRequest<T> extends AbstractRequest<T> {
     /**
      * Ne need to wrap the underlying cleaner in the thread that this request is run on to respect
      * the developer's request thread preference.
-     * 
+     *
      * @return delegate cleaner wrapped in a executor
      */
     @Override

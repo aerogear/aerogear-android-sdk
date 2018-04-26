@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpResponse;
 import org.aerogear.mobile.core.http.HttpServiceModule;
-import org.aerogear.mobile.core.reactive.Responder;
+import org.aerogear.mobile.reactive.Responder;
 
 
 /**

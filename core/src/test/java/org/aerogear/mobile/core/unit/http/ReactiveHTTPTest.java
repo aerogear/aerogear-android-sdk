@@ -22,8 +22,8 @@ import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.http.HttpResponse;
 import org.aerogear.mobile.core.http.OkHttpResponse;
-import org.aerogear.mobile.core.reactive.Request;
-import org.aerogear.mobile.core.reactive.Responder;
+import org.aerogear.mobile.reactive.Request;
+import org.aerogear.mobile.reactive.Responder;
 
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;

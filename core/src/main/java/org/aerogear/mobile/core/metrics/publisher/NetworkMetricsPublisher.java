@@ -15,7 +15,7 @@ import org.aerogear.mobile.core.http.HttpResponse;
 import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.metrics.Metrics;
 import org.aerogear.mobile.core.metrics.MetricsPublisher;
-import org.aerogear.mobile.core.reactive.Responder;
+import org.aerogear.mobile.reactive.Responder;
 
 
 /**
