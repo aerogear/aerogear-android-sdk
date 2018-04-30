@@ -35,7 +35,7 @@ public final class NetworkMetricsPublisher extends MetricsPublisher {
     }
 
     @Override
-    protected void publish(@NonNull String type, @NonNull final Metrics[] metrics,
+    void publish(@NonNull String type, @NonNull final Metrics[] metrics,
                     @Nullable final Callback callback) {
         nonNull(type, "type");
         nonNull(metrics, "metrics");

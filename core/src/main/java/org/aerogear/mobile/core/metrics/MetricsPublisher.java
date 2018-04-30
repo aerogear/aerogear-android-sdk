@@ -77,7 +77,7 @@ public abstract class MetricsPublisher {
      * @param metrics a array of metrics objects to publish
      * @param callback callback of the publication
      */
-    protected abstract void publish(@NonNull String type, @NonNull final Metrics[] metrics,
+    abstract void publish(@NonNull String type, @NonNull final Metrics[] metrics,
                     @Nullable final Callback callback);
 
 }
