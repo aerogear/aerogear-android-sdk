@@ -309,10 +309,10 @@ public class PushService implements ServiceModule {
      */
     public void refreshToken() {
         JSONObject jsonObject = retrieveCache();
-        nonNull(jsonObject, "jsonObject");
-
-        this.registerDevice(jsonObject,
-                        error -> MobileCore.getLogger().error(error.getMessage(), error));
+        if (jsonObject != null) {
+            this.registerDevice(jsonObject,
+                            error -> MobileCore.getLogger().error(error.getMessage(), error));
+        }
     }
 
     /**

@@ -1,6 +1,7 @@
 package org.aerogear.mobile.example.ui;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 
 import android.content.Context;
@@ -18,6 +19,7 @@ import org.aerogear.mobile.example.R;
 import org.aerogear.mobile.example.handler.NotificationBarMessageHandler;
 import org.aerogear.mobile.push.MessageHandler;
 import org.aerogear.mobile.push.PushService;
+import org.aerogear.mobile.push.UnifiedPushConfig;
 import org.aerogear.mobile.push.UnifiedPushMessage;
 
 import butterknife.BindView;
@@ -27,6 +29,9 @@ public class PushFragment extends BaseFragment implements MessageHandler {
 
     @BindView(R.id.messages)
     ListView messageList;
+
+    @BindView(R.id.refreshToken)
+    Button refreshToken;
 
     @BindView(R.id.register)
     Button register;
@@ -70,12 +75,22 @@ public class PushFragment extends BaseFragment implements MessageHandler {
         adapter.add(message.get(UnifiedPushMessage.MESSAGE));
     }
 
+    @OnClick(R.id.refreshToken)
+    void refreshToken() {
+        PushService pushService = MobileCore.getInstance().getService(PushService.class);
+        pushService.refreshToken();
+    }
+
     @OnClick(R.id.register)
     void register() {
         register.setEnabled(false);
 
+        UnifiedPushConfig unifiedPushConfig = new UnifiedPushConfig();
+        unifiedPushConfig.setAlias("AeroGear");
+        unifiedPushConfig.setCategories(Arrays.asList("Android", "Example"));
+
         PushService pushService = MobileCore.getInstance().getService(PushService.class);
-        pushService.registerDevice(new Callback() {
+        pushService.registerDevice(unifiedPushConfig, new Callback() {
             @Override
             public void onSuccess() {
                 new AppExecutors().mainThread().execute(() -> registered(true));
@@ -96,6 +111,7 @@ public class PushFragment extends BaseFragment implements MessageHandler {
 
     @OnClick(R.id.unregister)
     void unregister() {
+        refreshToken.setEnabled(false);
         unregister.setEnabled(false);
 
         PushService pushService = MobileCore.getInstance().getService(PushService.class);
@@ -108,6 +124,7 @@ public class PushFragment extends BaseFragment implements MessageHandler {
 
             @Override
             public void onError(Throwable error) {
+                refreshToken.setEnabled(false);
                 register.setEnabled(false);
                 MobileCore.getLogger().error(error.getMessage(), error);
                 new AppExecutors().mainThread().execute(() -> {
@@ -121,6 +138,7 @@ public class PushFragment extends BaseFragment implements MessageHandler {
 
     private void registered(boolean registered) {
         register.setEnabled(!registered);
+        refreshToken.setEnabled(registered);
         unregister.setEnabled(registered);
     }
 
