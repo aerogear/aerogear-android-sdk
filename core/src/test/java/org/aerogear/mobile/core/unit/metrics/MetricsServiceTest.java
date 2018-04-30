@@ -20,7 +20,6 @@ import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.metrics.Metrics;
 import org.aerogear.mobile.core.metrics.MetricsService;
-import org.aerogear.mobile.core.metrics.publisher.LoggerMetricsPublisher;
 import org.aerogear.mobile.core.metrics.publisher.NetworkMetricsPublisher;
 
 @RunWith(AeroGearTestRunner.class)
@@ -39,15 +38,6 @@ public class MetricsServiceTest {
     public void type() {
         MetricsService metricsService = new MetricsService();
         assertEquals("metrics", metricsService.type());
-    }
-
-    @Test
-    public void defaultPublisherWithoutConfigUrl() {
-        ServiceConfiguration serviceConfiguration = new ServiceConfiguration.Builder().build();
-
-        metricsService.configure(MobileCore.getInstance(), serviceConfiguration);
-
-        assertEquals(LoggerMetricsPublisher.class, metricsService.getPublisher().getClass());
     }
 
     @Test
