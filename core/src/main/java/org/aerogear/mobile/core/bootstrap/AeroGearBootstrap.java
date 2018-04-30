@@ -8,12 +8,24 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.aerogear.mobile.core.MobileCore;
+import org.aerogear.mobile.core.exception.ConfigurationNotFoundException;
+import org.aerogear.mobile.core.metrics.MetricsService;
 
 public class AeroGearBootstrap extends ContentProvider {
 
     @Override
     public boolean onCreate() {
         MobileCore.init(getContext());
+
+        try {
+            MetricsService metricsService =
+                            MobileCore.getInstance().getService(MetricsService.class);
+            metricsService.sendAppAndDeviceMetrics(
+                            error -> MobileCore.getLogger().error(error.getMessage()));
+        } catch (ConfigurationNotFoundException e) {
+            MobileCore.getLogger().debug("Metrics SDK is not enabled");
+        }
+
         return false;
     }
 
