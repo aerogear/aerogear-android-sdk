@@ -20,8 +20,8 @@ import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.metrics.Metrics;
 import org.aerogear.mobile.core.metrics.MetricsService;
-import org.aerogear.mobile.core.metrics.publisher.LoggerMetricsPublisher;
-import org.aerogear.mobile.core.metrics.publisher.NetworkMetricsPublisher;
+import org.aerogear.mobile.core.metrics.NetworkMetricsPublisher;
+import org.aerogear.mobile.core.metrics.LoggerMetricsPublisher;
 
 @RunWith(AeroGearTestRunner.class)
 @SmallTest
@@ -113,15 +113,15 @@ public class MetricsServiceTest {
         metricsService.publish("init", new DummyMetrics[] {new DummyMetrics()}, testCallback);
     }
 
-    public static class DummyMetrics implements Metrics<Map<String, String>> {
+    public static class DummyMetrics extends Metrics<Map<String, String>> {
 
         @Override
-        public String identifier() {
+        public String getIdentifier() {
             return "dummy";
         }
 
         @Override
-        public Map<String, String> data() {
+        public Map<String, String> getData() {
             return new HashMap<>();
         }
 

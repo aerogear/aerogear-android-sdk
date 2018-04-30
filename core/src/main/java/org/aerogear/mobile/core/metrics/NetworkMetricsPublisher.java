@@ -1,4 +1,4 @@
-package org.aerogear.mobile.core.metrics.publisher;
+package org.aerogear.mobile.core.metrics;
 
 import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
@@ -37,7 +37,7 @@ public final class NetworkMetricsPublisher extends MetricsPublisher {
     }
 
     @Override
-    public void publish(@NonNull String type, @NonNull final Metrics[] metrics,
+    protected void publish(@NonNull String type, @NonNull final Metrics[] metrics,
                     @Nullable final Callback callback) {
         nonNull(type, "type");
         nonNull(metrics, "metrics");

@@ -31,7 +31,7 @@ public class AppMetricsTest {
         Application context = RuntimeEnvironment.application;
 
         AppMetrics appMetrics = new AppMetrics(context);
-        assertEquals("app", appMetrics.identifier());
+        assertEquals("app", appMetrics.getIdentifier());
     }
 
     @Test
@@ -39,7 +39,7 @@ public class AppMetricsTest {
         Application context = RuntimeEnvironment.application;
 
         AppMetrics appMetrics = new AppMetrics(context);
-        JSONObject result = appMetrics.data();
+        JSONObject result = appMetrics.getData();
 
         assertNotNull(result.getString("appId"));
         assertNotNull(result.getString("appVersion"));

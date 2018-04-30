@@ -38,9 +38,9 @@ public class SecurityCheckResultMetricTest {
     @Test
     public void testConversion() throws JSONException {
         SecurityCheckResultMetric metric = new SecurityCheckResultMetric(okResult, failedResult);
-        assertEquals(SecurityCheckResultMetric.IDENTIFIER, metric.identifier());
+        assertEquals(SecurityCheckResultMetric.IDENTIFIER, metric.getIdentifier());
 
-        JSONArray data = metric.data();
+        JSONArray data = metric.getData();
         JSONObject okResultJson = data.getJSONObject(0);
         JSONObject failedResultJson = data.getJSONObject(1);
 

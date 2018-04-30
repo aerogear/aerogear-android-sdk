@@ -17,16 +17,16 @@ import org.aerogear.mobile.security.SecurityCheckResult;
  * Metric representation of {@link SecurityCheckResult}. This is intended to be used with the
  * {@link org.aerogear.mobile.core.metrics.MetricsService}.
  */
-public class SecurityCheckResultMetric implements Metrics<JSONArray> {
+public class SecurityCheckResultMetric extends Metrics<JSONArray> {
 
     private final JSONArray data;
     private final Logger LOG = MobileCore.getLogger();
     private final String TAG = "SecurityCheckResultMetric";
 
-    public static final String IDENTIFIER = "security";
-    public static final String KEY_ID = "id";
-    public static final String KEY_NAME = "name";
-    public static final String KEY_VALUE = "passed";
+    static final String IDENTIFIER = "security";
+    static final String KEY_ID = "id";
+    static final String KEY_NAME = "name";
+    static final String KEY_VALUE = "passed";
 
     /**
      * Creates a SecurityCheckResultMetric object.
@@ -56,7 +56,7 @@ public class SecurityCheckResultMetric implements Metrics<JSONArray> {
      * @return {@link String} name of security check
      */
     @Override
-    public String identifier() {
+    protected String getIdentifier() {
         return IDENTIFIER;
     }
 
@@ -66,7 +66,7 @@ public class SecurityCheckResultMetric implements Metrics<JSONArray> {
      * @return {@link JSONArray} containing the results for self-defence checks
      */
     @Override
-    public JSONArray data() {
+    protected JSONArray getData() {
         // TODO: consider returning a deep clone
         return data;
     }

@@ -12,7 +12,7 @@ import org.aerogear.mobile.core.metrics.Metrics;
 /**
  * Collects device metrics
  */
-public class DeviceMetrics implements Metrics<JSONObject> {
+public final class DeviceMetrics extends Metrics<JSONObject> {
 
     private final String platform;
     private final String platformVersion;
@@ -23,12 +23,12 @@ public class DeviceMetrics implements Metrics<JSONObject> {
     }
 
     @Override
-    public String identifier() {
+    public String getIdentifier() {
         return "device";
     }
 
     @Override
-    public JSONObject data() {
+    public JSONObject getData() {
         final JSONObject data = new JSONObject();
         try {
             data.put("platform", platform);

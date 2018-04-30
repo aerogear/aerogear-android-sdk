@@ -23,7 +23,7 @@ public abstract class MetricsPublisher {
     private final Context context;
     private final Metrics[] defaultMetrics;
 
-    public MetricsPublisher(final Context context) {
+    MetricsPublisher(final Context context) {
         this.context = context;
 
         defaultMetrics = new Metrics[] {new AppMetrics(context), new DeviceMetrics()};
@@ -36,7 +36,7 @@ public abstract class MetricsPublisher {
      * @param metrics metrics
      * @return a JSONObject
      */
-    protected JSONObject createMetricsJSONObject(final String type, final Metrics[] metrics) {
+    JSONObject createMetricsJSONObject(final String type, final Metrics[] metrics) {
         nonNull(type, "type");
         nonNull(metrics, "metrics");
 
@@ -52,12 +52,12 @@ public abstract class MetricsPublisher {
 
             // first put the default metrics (app and device info)
             for (final Metrics m : defaultMetrics) {
-                data.put(m.identifier(), m.data());
+                data.put(m.getIdentifier(), m.getData());
             }
 
             // then put the specific ones
             for (final Metrics m : metrics) {
-                data.put(m.identifier(), m.data());
+                data.put(m.getIdentifier(), m.getData());
             }
 
             json.put("data", data);

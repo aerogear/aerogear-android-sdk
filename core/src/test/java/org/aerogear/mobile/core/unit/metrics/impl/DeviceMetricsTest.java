@@ -20,13 +20,13 @@ public class DeviceMetricsTest {
     @Test
     public void testType() {
         DeviceMetrics deviceMetrics = new DeviceMetrics();
-        assertEquals("device", deviceMetrics.identifier());
+        assertEquals("device", deviceMetrics.getIdentifier());
     }
 
     @Test
     public void testData() throws JSONException {
         DeviceMetrics deviceMetrics = new DeviceMetrics();
-        JSONObject result = deviceMetrics.data();
+        JSONObject result = deviceMetrics.getData();
 
         assertNotNull(result.getString("platform"));
         assertNotNull(result.getString("platformVersion"));
