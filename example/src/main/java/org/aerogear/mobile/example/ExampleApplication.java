@@ -10,7 +10,7 @@ public class ExampleApplication extends Application {
     public void onTerminate() {
         super.onTerminate();
 
-        MobileCore.destroy();
+        MobileCore.getInstance().destroy();
     }
 
 }

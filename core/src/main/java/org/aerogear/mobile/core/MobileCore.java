@@ -130,9 +130,9 @@ public final class MobileCore {
     /**
      * Called when mobile core instance needs to be destroyed
      */
-    public static void destroy() {
-        for (Class<? extends ServiceModule> serviceKey : instance.services.keySet()) {
-            ServiceModule serviceModule = instance.services.get(serviceKey);
+    public void destroy() {
+        for (Class<? extends ServiceModule> serviceKey : services.keySet()) {
+            ServiceModule serviceModule = services.get(serviceKey);
             serviceModule.destroy();
         }
     }

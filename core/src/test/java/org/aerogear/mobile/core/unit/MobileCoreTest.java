@@ -78,7 +78,7 @@ public class MobileCoreTest {
         Assert.assertFalse(service1.isDestroyed());
         Assert.assertFalse(service2.isDestroyed());
 
-        MobileCore.destroy();
+        MobileCore.getInstance().destroy();
 
         Assert.assertTrue(service1.isDestroyed());
         Assert.assertTrue(service2.isDestroyed());
