@@ -11,8 +11,6 @@ import android.support.annotation.Nullable;
 import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.logging.Logger;
-import org.aerogear.mobile.core.metrics.Metrics;
-import org.aerogear.mobile.core.metrics.MetricsPublisher;
 
 /**
  * All metrics data will be logged only

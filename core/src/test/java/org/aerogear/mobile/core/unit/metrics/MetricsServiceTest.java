@@ -18,10 +18,10 @@ import org.aerogear.mobile.core.AeroGearTestRunner;
 import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
+import org.aerogear.mobile.core.metrics.LoggerMetricsPublisher;
 import org.aerogear.mobile.core.metrics.Metrics;
 import org.aerogear.mobile.core.metrics.MetricsService;
 import org.aerogear.mobile.core.metrics.NetworkMetricsPublisher;
-import org.aerogear.mobile.core.metrics.LoggerMetricsPublisher;
 
 @RunWith(AeroGearTestRunner.class)
 @SmallTest
