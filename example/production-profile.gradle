@@ -31,7 +31,7 @@ android {
 }
 
 dependencies {
-    implementation 'org.aerogear:core:0.1.0-2018-09'
+    implementation project(path: ":core")
     implementation 'org.aerogear:auth:0.1.0-2018-09'
     implementation project(path: ":push")
 
