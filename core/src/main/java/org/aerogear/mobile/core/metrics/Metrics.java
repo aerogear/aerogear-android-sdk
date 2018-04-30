@@ -5,7 +5,7 @@ import org.json.JSONObject;
 /**
  * Interface for a record to be published to the metrics service
  *
- * @apiNote Not intended by direct usage outside of the SDK
+ * WARN: Not intended by direct usage outside of the SDK
  *
  * @param <T> A type that can be serialized into a {@link JSONObject} value
  */
