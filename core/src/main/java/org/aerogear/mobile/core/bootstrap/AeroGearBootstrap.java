@@ -23,7 +23,7 @@ public class AeroGearBootstrap extends ContentProvider {
             metricsService.sendAppAndDeviceMetrics(
                             error -> MobileCore.getLogger().error(error.getMessage()));
         } catch (ConfigurationNotFoundException e) {
-            // Metrics is not enable and should be ignored
+            MobileCore.getLogger().debug("Metrics SDK is not enabled");
         }
 
         return false;
