@@ -24,7 +24,7 @@ public abstract class MetricsPublisher {
     private final Metrics[] defaultMetrics;
 
     public MetricsPublisher(final Context context) {
-        this.context = context;
+        this.context = nonNull(context, "context");
 
         defaultMetrics = new Metrics[] {new AppMetrics(context), new DeviceMetrics()};
     }

@@ -63,7 +63,7 @@ public class MetricsServiceTest {
     @Test
     public void testCallbackSuccessMethodIsCalled() {
         metricsService.configure(MobileCore.getInstance(),
-                        new ServiceConfiguration.Builder().build());
+                        new ServiceConfiguration.Builder().setUrl("dummy").build());
 
         final Callback testCallback = new Callback() {
             @Override
