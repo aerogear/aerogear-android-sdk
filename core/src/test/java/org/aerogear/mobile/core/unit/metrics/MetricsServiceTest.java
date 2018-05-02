@@ -113,7 +113,7 @@ public class MetricsServiceTest {
         metricsService.publish("init", new DummyMetrics[] {new DummyMetrics()}, testCallback);
     }
 
-    public static class DummyMetrics extends Metrics<Map<String, String>> {
+    public static class DummyMetrics implements Metrics<Map<String, String>> {
 
         @Override
         public String identifier() {
