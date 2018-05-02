@@ -3,7 +3,7 @@ package org.aerogear.mobile.core.metrics;
 import org.json.JSONObject;
 
 /**
- * Interface for a record to be published to the metrics service
+ * Record to be published to the metrics service
  *
  * WARN: Not intended by direct usage outside of the SDK
  *
