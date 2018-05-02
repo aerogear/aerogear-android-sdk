@@ -52,12 +52,12 @@ public abstract class MetricsPublisher {
 
             // first put the default metrics (app and device info)
             for (final Metrics m : defaultMetrics) {
-                data.put(m.getIdentifier(), m.getData());
+                data.put(m.identifier(), m.data());
             }
 
             // then put the specific ones
             for (final Metrics m : metrics) {
-                data.put(m.getIdentifier(), m.getData());
+                data.put(m.identifier(), m.data());
             }
 
             json.put("data", data);

@@ -13,7 +13,7 @@ import org.aerogear.mobile.core.metrics.Metrics;
 /**
  * Collects app metrics
  */
-public final class AppMetrics extends Metrics<JSONObject> {
+public final class AppMetrics implements Metrics<JSONObject> {
 
     private final String appId;
     private final String appVersion;
@@ -26,7 +26,7 @@ public final class AppMetrics extends Metrics<JSONObject> {
     }
 
     @Override
-    public String getIdentifier() {
+    public String identifier() {
         return "app";
     }
 
@@ -36,7 +36,7 @@ public final class AppMetrics extends Metrics<JSONObject> {
      * @return Map of app info
      */
     @Override
-    public JSONObject getData() {
+    public JSONObject data() {
         JSONObject data = new JSONObject();
         try {
             data.put("appId", appId);

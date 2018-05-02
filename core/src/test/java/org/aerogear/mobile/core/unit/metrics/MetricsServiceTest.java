@@ -116,12 +116,12 @@ public class MetricsServiceTest {
     public static class DummyMetrics extends Metrics<Map<String, String>> {
 
         @Override
-        public String getIdentifier() {
+        public String identifier() {
             return "dummy";
         }
 
         @Override
-        public Map<String, String> getData() {
+        public Map<String, String> data() {
             return new HashMap<>();
         }
 
