@@ -11,9 +11,6 @@ import org.junit.Test;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Custom Metrics implementations should not
- */
 public class CustomMetricsDetectorTest extends LintDetectorTest {
 
     private static final TestFile METRICS_INTERFACE = java(
@@ -22,13 +19,27 @@ public class CustomMetricsDetectorTest extends LintDetectorTest {
     );
 
     @Test
+    public void testSDKMetric() {
+        final TestLintResult result = lint().files(
+                METRICS_INTERFACE,
+                java("package org.aerogear.mobile.some.module;\n" +
+                        "import org.aerogear.mobile.core.metrics.Metrics;\n" +
+                        "public class SDKModuleMetric implements Metrics<String> {}")
+        ).run().expectClean();
+    }
+
+    @Test
     public void testCustomMetricWarn() {
-        final TestLintResult result = lint().allowCompilationErrors(false).files(
+        final TestLintResult result = lint().files(
             METRICS_INTERFACE,
-            java("package test.pkg; public class CustomMetric implements Metrics {}"),
-            java("package test.pkg; this should not compile")
-        ).run();
-        result.expectCount(1, Severity.ERROR);
+            java("package test.pkg;\n" +
+            "import org.aerogear.mobile.core.metrics.Metrics;\n" +
+            "public class CustomMetric implements Metrics<String> {}")
+        ).run().expectCount(1, Severity.ERROR)
+        .expect("src/test/pkg/CustomMetric.java:3: Error: Custom Metrics records are not supported [CustomMetric]\n" +
+                "public class CustomMetric implements Metrics<String> {}\n" +
+                "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" +
+                "1 errors, 0 warnings\n");
     }
 
     @Override
