@@ -10,6 +10,9 @@ import com.android.tools.lint.detector.api.Severity;
 
 import org.objectweb.asm.tree.ClassNode;
 
+import java.util.Collections;
+import java.util.List;
+
 public class CustomMetricsDetector extends Detector implements Detector.ClassScanner  {
 
     private static final String ISSUE_MESSAGE = "Custom Metrics records are not supported";
@@ -19,9 +22,10 @@ public class CustomMetricsDetector extends Detector implements Detector.ClassSca
             ISSUE_MESSAGE,
             Category.CORRECTNESS,
             6,
-            Severity.WARNING,new Implementation(
-                    CustomMetricsDetector.class,
-                    Scope.JAVA_FILE_SCOPE)
+            Severity.ERROR,
+            new Implementation(
+            CustomMetricsDetector.class,
+            Scope.CLASS_FILE_SCOPE)
     );
 
     private static final String METRICS_INTERFACE = "org/aerogear/mobile/core/metrics/Metrics";
