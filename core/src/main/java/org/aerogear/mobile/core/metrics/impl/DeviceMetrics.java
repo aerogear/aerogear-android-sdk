@@ -12,7 +12,7 @@ import org.aerogear.mobile.core.metrics.Metrics;
 /**
  * Collects device metrics
  */
-public class DeviceMetrics implements Metrics<JSONObject> {
+public final class DeviceMetrics implements Metrics<JSONObject> {
 
     private final String platform;
     private final String platformVersion;

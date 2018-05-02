@@ -13,7 +13,7 @@ import org.aerogear.mobile.core.metrics.Metrics;
 /**
  * Collects app metrics
  */
-public class AppMetrics implements Metrics<JSONObject> {
+public final class AppMetrics implements Metrics<JSONObject> {
 
     private final String appId;
     private final String appVersion;

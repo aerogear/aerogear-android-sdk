@@ -21,6 +21,8 @@ The default metrics contain App metrics, Device metrics and possibly other types
 A Client ID and a timestamp are added to the top level of the Metrics object for categorization and visualization purposes.
 The Client ID will be generated and stored on the device when the App is started the first time.
 
+It is currently not possible to record custom metrics data.
+
 === App metrics
 
 - *App ID*: The package name of your App

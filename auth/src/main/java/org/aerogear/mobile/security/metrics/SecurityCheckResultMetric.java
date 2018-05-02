@@ -23,10 +23,10 @@ public class SecurityCheckResultMetric implements Metrics<JSONArray> {
     private final Logger LOG = MobileCore.getLogger();
     private final String TAG = "SecurityCheckResultMetric";
 
-    public static final String IDENTIFIER = "security";
-    public static final String KEY_ID = "id";
-    public static final String KEY_NAME = "name";
-    public static final String KEY_VALUE = "passed";
+    static final String IDENTIFIER = "security";
+    static final String KEY_ID = "id";
+    static final String KEY_NAME = "name";
+    static final String KEY_VALUE = "passed";
 
     /**
      * Creates a SecurityCheckResultMetric object.

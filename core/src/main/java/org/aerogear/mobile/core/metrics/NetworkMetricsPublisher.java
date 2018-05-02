@@ -1,4 +1,4 @@
-package org.aerogear.mobile.core.metrics.publisher;
+package org.aerogear.mobile.core.metrics;
 
 import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
@@ -13,8 +13,6 @@ import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpResponse;
 import org.aerogear.mobile.core.logging.Logger;
-import org.aerogear.mobile.core.metrics.Metrics;
-import org.aerogear.mobile.core.metrics.MetricsPublisher;
 import org.aerogear.mobile.core.reactive.Responder;
 
 
@@ -37,7 +35,7 @@ public final class NetworkMetricsPublisher extends MetricsPublisher {
     }
 
     @Override
-    public void publish(@NonNull String type, @NonNull final Metrics[] metrics,
+    void publish(@NonNull String type, @NonNull final Metrics[] metrics,
                     @Nullable final Callback callback) {
         nonNull(type, "type");
         nonNull(metrics, "metrics");

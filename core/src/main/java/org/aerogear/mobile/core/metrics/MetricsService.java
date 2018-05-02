@@ -8,8 +8,6 @@ import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.ServiceModule;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
-import org.aerogear.mobile.core.metrics.publisher.LoggerMetricsPublisher;
-import org.aerogear.mobile.core.metrics.publisher.NetworkMetricsPublisher;
 
 public class MetricsService implements ServiceModule {
 
@@ -79,6 +77,8 @@ public class MetricsService implements ServiceModule {
     /**
      * Send metrics
      *
+     * WARN: Not intended by direct usage outside of the SDK
+     *
      * @param type type of the enclosing metrics event
      * @param metrics Metrics to send
      */
@@ -88,6 +88,8 @@ public class MetricsService implements ServiceModule {
 
     /**
      * Send metrics
+     *
+     * WARN: Not intended by direct usage outside of the SDK
      *
      * @param type type of the enclosing metrics event
      * @param metrics Metrics to send

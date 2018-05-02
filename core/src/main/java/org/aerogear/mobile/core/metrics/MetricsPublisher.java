@@ -23,7 +23,7 @@ public abstract class MetricsPublisher {
     private final Context context;
     private final Metrics[] defaultMetrics;
 
-    public MetricsPublisher(final Context context) {
+    MetricsPublisher(final Context context) {
         this.context = context;
 
         defaultMetrics = new Metrics[] {new AppMetrics(context), new DeviceMetrics()};
@@ -36,7 +36,7 @@ public abstract class MetricsPublisher {
      * @param metrics metrics
      * @return a JSONObject
      */
-    protected JSONObject createMetricsJSONObject(final String type, final Metrics[] metrics) {
+    JSONObject createMetricsJSONObject(final String type, final Metrics[] metrics) {
         nonNull(type, "type");
         nonNull(metrics, "metrics");
 
@@ -77,7 +77,7 @@ public abstract class MetricsPublisher {
      * @param metrics a array of metrics objects to publish
      * @param callback callback of the publication
      */
-    protected abstract void publish(@NonNull String type, @NonNull final Metrics[] metrics,
+    abstract void publish(@NonNull String type, @NonNull final Metrics[] metrics,
                     @Nullable final Callback callback);
 
 }
