@@ -44,9 +44,6 @@ public final class NetworkMetricsPublisher extends MetricsPublisher {
 
         final JSONObject json = createMetricsJSONObject(type, metrics);
 
-        httpRequest.post(url, json.toString().getBytes());
-
-
         httpRequest.post(url, json.toString().getBytes())
                         .respondWith(new Responder<HttpResponse>() {
                             @Override
