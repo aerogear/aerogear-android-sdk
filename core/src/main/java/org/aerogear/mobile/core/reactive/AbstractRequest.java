@@ -1,10 +1,11 @@
-package org.aerogear.mobile.reactive;
+package org.aerogear.mobile.core.reactive;
 
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 
 /**
@@ -18,19 +19,19 @@ abstract class AbstractRequest<T> implements Request<T> {
 
     @Override
     public final Request<T> requestOn(ExecutorService executorService) {
-        //nonNull(executorService, "executorService");
+        nonNull(executorService, "executorService");
         return new RequestOnRequest<>(this, executorService);
     }
 
     @Override
     public final Request<T> respondOn(ExecutorService executorService) {
-        //nonNull(executorService, "executorService");
+        nonNull(executorService, "executorService");
         return new RespondOnRequest<>(this, executorService);
     }
 
     @Override
     public final Request<T> respondWith(Responder<T> responder) {
-        //nonNull(responder, "responder");
+        nonNull(responder, "responder");
         connectedResponders.putIfAbsent(responder, new AtomicReference<>(responder));
         return respondWithActual(connectedResponders.get(responder));
     }
@@ -47,10 +48,9 @@ abstract class AbstractRequest<T> implements Request<T> {
     }
 
     @Override
-    public <R> Request<R> mapRequest(MapFunction<? super T, Request<? extends R>> mapper) {
+    public final <R> Request<R> requestMap(MapFunction<? super T, Request<? extends R>> mapper) {
         return new MapRequestRequest<T, R>(this, mapper);
     }
-
 
     @Override
     public final Request<T> disconnect(Responder<T> responderToDisconnect) {

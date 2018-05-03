@@ -1,8 +1,11 @@
-package org.aerogear.mobile.reactive;
+package org.aerogear.mobile.core.reactive;
+
+import android.util.Log;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 
 /**
@@ -20,8 +23,8 @@ public final class CallableRequest<T> extends AbstractRequest<T> {
     private Thread callableThread = null;
 
     public CallableRequest(Callable<T> callable) {
-        //this.callable = nonNull(callable, "callable");
-        this.callable = callable;
+        this.callable = nonNull(callable, "callable");
+
         this.cleanerAtomicReference = new AtomicReference<>(() -> {
         });
         cancellerRef = new AtomicReference<>(() -> {
@@ -101,7 +104,7 @@ public final class CallableRequest<T> extends AbstractRequest<T> {
                  * Responders with uncaught exceptions should not blow up the reactive stack. For
                  * now we will log them, but one day a RxPlugin style mechanism may be appropriate.
                  */
-                //Log.e(ERROR_TAG, responderThrowable.getMessage(), responderThrowable);
+                Log.e(ERROR_TAG, responderThrowable.getMessage(), responderThrowable);
             }
         } finally {
             cleanerAtomicReference.get().cleanup();
@@ -116,7 +119,7 @@ public final class CallableRequest<T> extends AbstractRequest<T> {
 
     @Override
     public Request<T> cancelWith(Canceller canceller) {
-        //cancellerRef.set(nonNull(canceller, "canceller"));
+        cancellerRef.set(nonNull(canceller, "canceller"));
         return this;
     }
 

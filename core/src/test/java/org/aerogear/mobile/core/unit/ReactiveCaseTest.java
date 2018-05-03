@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -22,9 +23,9 @@ import android.support.test.filters.SmallTest;
 import org.aerogear.mobile.core.AeroGearTestRunner;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.executor.AppExecutors;
-import org.aerogear.mobile.reactive.Request;
-import org.aerogear.mobile.reactive.Requester;
-import org.aerogear.mobile.reactive.Responder;
+import org.aerogear.mobile.core.reactive.Request;
+import org.aerogear.mobile.core.reactive.Requester;
+import org.aerogear.mobile.core.reactive.Responder;
 
 /**
  * This package exists to test reactive patterns as we accomplish AG-2333.
@@ -106,7 +107,7 @@ public class ReactiveCaseTest {
         TestResponder<Boolean> responder = new TestResponder<>(latch);
 
         Requester.call(() -> Thread.currentThread() != testThread)
-                        .requestOn(executor.singleThreadService()).respondWith(responder);
+            .requestOn(executor.singleThreadService()).respondWith(responder);
 
         latch.await(1, TimeUnit.SECONDS);
 
@@ -147,7 +148,7 @@ public class ReactiveCaseTest {
         TestResponder<Integer> responder2 = new TestResponder<>();
 
         Requester.call(() -> counter.getAndIncrement()).respondWith(responder)
-                        .respondWith(responder2);
+            .respondWith(responder2);
 
         assertTrue(responder2.passed);
         assertEquals(0, (int) responder.resultValue);
@@ -171,8 +172,8 @@ public class ReactiveCaseTest {
             latch.countDown();
             return counter.getAndIncrement();
         }).requestOn(Executors.newSingleThreadExecutor())
-                        .respondOn(Executors.newSingleThreadExecutor()).cache()
-                        .respondWith(responder).respondWith(responder2);
+            .respondOn(Executors.newSingleThreadExecutor()).cache()
+            .respondWith(responder).respondWith(responder2);
 
         assertTrue(latch.await(4, TimeUnit.SECONDS));
         assertTrue(responder2.passed);
@@ -190,8 +191,8 @@ public class ReactiveCaseTest {
         TestResponder<Integer> second = new TestResponder<>(latch);
 
         Requester.call(() -> counter.getAndIncrement()).cache().cache().cache().cache()
-                        .requestOn(executor.singleThreadService()).cache().cache().cache().cache()
-                        .respondWith(first).respondWith(second);
+            .requestOn(executor.singleThreadService()).cache().cache().cache().cache()
+            .respondWith(first).respondWith(second);
 
         latch.await(2000, TimeUnit.MILLISECONDS);
         assertTrue(second.passed);
@@ -231,7 +232,7 @@ public class ReactiveCaseTest {
             Thread.sleep(1000);
             return counter.getAndIncrement();
         }).requestOn(executor.singleThreadService()).respondWith(stayConnectedResponder)
-                        .respondWith(disconnectResponder);
+            .respondWith(disconnectResponder);
 
         request.disconnect(disconnectResponder);
 
@@ -269,7 +270,7 @@ public class ReactiveCaseTest {
         };
 
         Requester.call(() -> Thread.currentThread()).respondOn(executor.singleThreadService())
-                        .respondWith(responder);
+            .respondWith(responder);
 
         latch.await(1, TimeUnit.SECONDS);
 
@@ -298,12 +299,12 @@ public class ReactiveCaseTest {
             Thread.sleep(1000); // $DELAY
             return counter.getAndIncrement();
         }).respondWith(getsValue0OnThisThread).respondWith(getsValue1OnThisThread).cache()
-                        .respondWith(getsValue2OnThisThreadAfterCache)
-                        .requestOn(executor.singleThreadService())
-                        .respondOn(Executors.newSingleThreadExecutor())
-                        .respondWith(getsValue2OnAnotherThreadAfterCache)
+            .respondWith(getsValue2OnThisThreadAfterCache)
+            .requestOn(executor.singleThreadService())
+            .respondOn(Executors.newSingleThreadExecutor())
+            .respondWith(getsValue2OnAnotherThreadAfterCache)
 
-                        .respondWith(getsDisconnected);
+            .respondWith(getsDisconnected);
 
         request.disconnect(getsDisconnected);
 
@@ -348,7 +349,7 @@ public class ReactiveCaseTest {
         TestResponder<String> responder1 = new TestResponder<>();
         TestResponder<String> responder2 = new TestResponder<>();
         Requester.call(() -> counter.incrementAndGet()).map((val) -> val.toString())
-                        .respondWith(responder1).respondWith(responder2);
+            .respondWith(responder1).respondWith(responder2);
 
         assertEquals(expectedValue1, responder1.resultValue);
         assertEquals(expectedValue2, responder2.resultValue);
@@ -377,7 +378,7 @@ public class ReactiveCaseTest {
             mappingRunOnThreadReference.set(Thread.currentThread());
             return val.toString();
         }).requestOn(executor.networkThread()).respondOn(executor.singleThreadService())
-                        .respondWith(responder1).respondWith(responder2);
+            .respondWith(responder1).respondWith(responder2);
 
         latch.await();
 
@@ -400,18 +401,18 @@ public class ReactiveCaseTest {
             closeThis.close();
             latch.countDown();
         }).requestOn(Executors.newSingleThreadExecutor())
-                        .respondWith(new Responder<HangsAfterCleanup>() {
-                            @Override
-                            public void onResult(HangsAfterCleanup value) {
-                                value.get();
-                                latch.countDown();
-                            }
+            .respondWith(new Responder<HangsAfterCleanup>() {
+                @Override
+                public void onResult(HangsAfterCleanup value) {
+                    value.get();
+                    latch.countDown();
+                }
 
-                            @Override
-                            public void onException(Exception exception) {
-                                latch.countDown();
-                            }
-                        });
+                @Override
+                public void onException(Exception exception) {
+                    latch.countDown();
+                }
+            });
 
         assertTrue(latch.await(2, TimeUnit.SECONDS));
         assertTrue(closeThis.closed);
@@ -431,19 +432,19 @@ public class ReactiveCaseTest {
             closeThis.close();
             latch.countDown();
         }).respondOn(Executors.newSingleThreadExecutor())
-                        .requestOn(Executors.newSingleThreadExecutor())
-                        .respondWith(new Responder<HangsAfterCleanup>() {
-                            @Override
-                            public void onResult(HangsAfterCleanup value) {
-                                value.get();
-                                latch.countDown();
-                            }
+            .requestOn(Executors.newSingleThreadExecutor())
+            .respondWith(new Responder<HangsAfterCleanup>() {
+                @Override
+                public void onResult(HangsAfterCleanup value) {
+                    value.get();
+                    latch.countDown();
+                }
 
-                            @Override
-                            public void onException(Exception exception) {
-                                latch.countDown();
-                            }
-                        });
+                @Override
+                public void onException(Exception exception) {
+                    latch.countDown();
+                }
+            });
 
         assertTrue(latch.await(2, TimeUnit.SECONDS));
         assertTrue(closeThis.closed);
@@ -462,9 +463,9 @@ public class ReactiveCaseTest {
             counter.incrementAndGet();
             latch.countDown();
         }).requestOn(Executors.newSingleThreadExecutor()).cache()
-                        .respondOn(Executors.newSingleThreadExecutor())
-                        .respondWith(new TestResponder<>(latch))
-                        .respondWith(new TestResponder<>(latch));
+            .respondOn(Executors.newSingleThreadExecutor())
+            .respondWith(new TestResponder<>(latch))
+            .respondWith(new TestResponder<>(latch));
 
         assertTrue(latch.await(5, TimeUnit.SECONDS));
         assertEquals(1, counter.get());
@@ -484,28 +485,28 @@ public class ReactiveCaseTest {
             closeThis.close();
             latch.countDown();
         }).requestOn(Executors.newSingleThreadExecutor()).map((value) -> value.get()).cache()
-                        .respondOn(Executors.newSingleThreadExecutor())
-                        .respondWith(new Responder<String>() {
-                            @Override
-                            public void onResult(String value) {
-                                latch.countDown();
-                            }
+            .respondOn(Executors.newSingleThreadExecutor())
+            .respondWith(new Responder<String>() {
+                @Override
+                public void onResult(String value) {
+                    latch.countDown();
+                }
 
-                            @Override
-                            public void onException(Exception exception) {
-                                latch.countDown();
-                            }
-                        }).respondWith(new Responder<String>() {
-                            @Override
-                            public void onResult(String value) {
-                                latch.countDown();
-                            }
+                @Override
+                public void onException(Exception exception) {
+                    latch.countDown();
+                }
+            }).respondWith(new Responder<String>() {
+            @Override
+            public void onResult(String value) {
+                latch.countDown();
+            }
 
-                            @Override
-                            public void onException(Exception exception) {
-                                latch.countDown();
-                            }
-                        });
+            @Override
+            public void onException(Exception exception) {
+                latch.countDown();
+            }
+        });
 
         assertTrue(latch.await(50, TimeUnit.SECONDS));
         assertTrue(closeThis.closed);
@@ -524,7 +525,7 @@ public class ReactiveCaseTest {
         TestResponder<String> responder1 = new TestResponder<>();
         TestResponder<String> responder2 = new TestResponder<>();
         Requester.call(() -> counter.incrementAndGet()).map((val) -> val.toString()).cache()
-                        .respondWith(responder1).respondWith(responder2);
+            .respondWith(responder1).respondWith(responder2);
 
         assertEquals(expectedValue1, responder1.resultValue);
         assertEquals(expectedValue2, responder2.resultValue);
@@ -592,6 +593,91 @@ public class ReactiveCaseTest {
         public void close() {
             closed = true;
         }
+    }
+
+
+    /**
+     * Cancelling a request that has a flat map should cancel the original request if it hasn't finished
+     */
+    @Test
+    public void testFlatMapCancel() throws InterruptedException {
+
+        final String firstResponse = "Hello";
+        final String secondResponse = " World!";
+        final StringBuilder responseString = new StringBuilder();
+        CountDownLatch latch = new CountDownLatch(1);
+        AtomicBoolean running = new AtomicBoolean(true);
+        AtomicBoolean failed = new AtomicBoolean(false);
+
+        Request<String> request = Requester.call(() -> {
+            while (running.get()) {
+            }
+            return firstResponse;
+        })
+            .cancelWith(() ->
+                running.set(false))
+            .requestOn(Executors.newSingleThreadExecutor())
+            .requestMap(string -> Requester.call(() -> string + secondResponse))
+            .respondOn(Executors.newSingleThreadExecutor())
+            .respondWith(new Responder<String>() {
+                @Override
+                public void onResult(String value) {
+                    responseString.append(value);
+                    latch.countDown();
+                }
+
+                @Override
+                public void onException(Exception exception) {
+                    failed.set(true);
+                    latch.countDown();
+                }
+            });
+
+        assertFalse(latch.await(2, TimeUnit.SECONDS));
+        request.cancel();
+        assertTrue(latch.await(2, TimeUnit.SECONDS));//Responder fail should be called
+        assertFalse(running.get());
+        assertEquals("", responseString.toString());//This should not be called, the request should be cancelled.
+    }
+
+
+    @Test
+    public void testCancelCancelsInnerRequest() throws InterruptedException {
+        final String expectedResponse = "Hello World!";
+        final String firstResponse = "Hello";
+        final String secondResponse = " World!";
+        final StringBuilder responseString = new StringBuilder();
+        CountDownLatch latch = new CountDownLatch(1);
+
+        AtomicBoolean running2 = new AtomicBoolean(true);
+
+        Request<String> request = Requester.call(() -> firstResponse)
+            .requestOn(Executors.newSingleThreadExecutor())
+            .requestMap(string -> Requester.call(() -> {
+                while (running2.get()) {
+                }
+                return string + secondResponse;
+            }))
+            .cancelWith(() -> running2.set(false))
+            .respondOn(Executors.newSingleThreadExecutor())
+            .respondWith(new Responder<String>() {
+                @Override
+                public void onResult(String value) {
+                    responseString.append(value);
+                    latch.countDown();
+                }
+
+                @Override
+                public void onException(Exception exception) {
+                    latch.countDown();
+                }
+            });
+
+        assertFalse(latch.await(2, TimeUnit.SECONDS));
+        request.cancel();
+        assertTrue(latch.await(2, TimeUnit.SECONDS));
+        assertEquals("", responseString.toString());//This should not be called, the request should be cancelled.
+
     }
 
 }

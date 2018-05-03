@@ -1,4 +1,4 @@
-package org.aerogear.mobile.reactive;
+package org.aerogear.mobile.core.reactive;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -8,24 +8,25 @@ import java.util.concurrent.atomic.AtomicReference;
  * @param <T> The type of the request before the map operation
  * @param <R> The type of the request after the map operation.
  */
-class MapRequest<T, R> extends AbstractRequest<R> {
+class MapRequestRequest<T, R> extends AbstractRequest<R> {
 
     private final AbstractRequest<T> delegateTo;
-    private final MapFunction<? super T, ? extends R> mapper;
+    private final MapFunction<? super T, Request<? extends R>> mapper;
 
-    public MapRequest(AbstractRequest<T> delegateTo, MapFunction<? super T, ? extends R> mapper) {
+    public MapRequestRequest(AbstractRequest<T> delegateTo, MapFunction<? super T, Request<? extends R>> mapper) {
         this.mapper = mapper;
         this.delegateTo = delegateTo;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Request<R> respondWithActual(AtomicReference<Responder<R>> responderRef) {
         delegateTo.respondWithActual(new AtomicReference<>(new Responder<T>() {
             @Override
             public void onResult(T value) {
                 Responder<R> responder = responderRef.get();
                 if (responder != null) {
-                    R mappedValue = null;
+                    Request<R> mappedValue = null;
                     /*
                      * This may look weird but we are keeping the exception handling contract in
                      * mind. Mapper is *technically* part of the request so exceptions should be
@@ -36,7 +37,7 @@ class MapRequest<T, R> extends AbstractRequest<R> {
                      * mapper.
                      */
                     try {
-                        mappedValue = mapper.map(value);
+                        mappedValue = (Request <R>) mapper.map(value);
                     } catch (Exception exception) {
                         onException(exception);
                         return;
@@ -45,8 +46,7 @@ class MapRequest<T, R> extends AbstractRequest<R> {
                         delegateTo.liftCleanupAction().cleanup();
                     }
 
-                    responder.onResult(mappedValue);
-
+                    mappedValue.respondWith(responder);
 
                 }
             }

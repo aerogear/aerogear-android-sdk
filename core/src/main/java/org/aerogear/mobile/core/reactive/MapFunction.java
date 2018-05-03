@@ -1,4 +1,4 @@
-package org.aerogear.mobile.reactive;
+package org.aerogear.mobile.core.reactive;
 
 @FunctionalInterface
 /**
@@ -6,6 +6,6 @@ package org.aerogear.mobile.reactive;
  * same as the Java Function interface, but is necessary to be compatible with more versions of
  * Android
  */
-public interface MapRequestFunction<T, R, REQUEST extends Request<R>> {
-    REQUEST map(T value)  throws Exception;
+public interface MapFunction<T, R> {
+    R map(T value)  throws Exception;
 }

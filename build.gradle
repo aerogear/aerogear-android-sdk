@@ -37,8 +37,6 @@ subprojects {
 
 
     afterEvaluate { project ->
-        if (!project.name == 'reactive') {
-
             dependencies {
                 lintChecks files('libs/checks.jar')
             }
@@ -46,8 +44,6 @@ subprojects {
             android.buildTypes.each { type ->
                 type.buildConfigField 'String', 'PROJECT_ROOT', "\"" + project.projectDir.absolutePath.replace("\\", "\\\\") + "/\""
             }
-        }
-
     }
 }
 

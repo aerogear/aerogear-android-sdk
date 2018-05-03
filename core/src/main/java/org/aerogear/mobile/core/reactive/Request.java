@@ -1,4 +1,4 @@
-package org.aerogear.mobile.reactive;
+package org.aerogear.mobile.core.reactive;
 
 import java.util.concurrent.ExecutorService;
 
@@ -83,13 +83,14 @@ public interface Request<T> {
     <R> Request<R> map(MapFunction<? super T, ? extends R> mapper);
 
     /**
-     * This method will apply a transformation to a request which emits a request using the request
-     * thread before it is passed to the request. This function will be run 1:1 with responders in
-     * its branch of the train tree.
+     * This method is meant to be called if the type of a Request is itself a request.  In the event
+     * that it isn't a request then {@link #map(MapFunction)} should be used instead, but the method
+     * should work normally.
      *
      * @param mapper a function to transform the result of this request into a new type
      * @param <R> the type to transform into
      * @return a chainable instance of Request, not guaranteed to be the this reference
      */
-    <R> Request<R> mapRequest(MapFunction<? super T, Request<? extends R>> mapper);
+    <R> Request<R> requestMap(MapFunction<? super T, Request<? extends R>> mapper);
+
 }

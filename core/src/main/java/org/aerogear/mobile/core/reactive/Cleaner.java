@@ -1,4 +1,4 @@
-package org.aerogear.mobile.reactive;
+package org.aerogear.mobile.core.reactive;
 
 /**
  * This interface is used by a {@link Request} to cleanup any resources used by a request. This is

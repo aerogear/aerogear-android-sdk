@@ -1,31 +1,14 @@
 package org.aerogear.mobile.push;
 
-import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
-import static java.net.HttpURLConnection.HTTP_OK;
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import org.aerogear.mobile.reactive.MapRequestFunction;
-import org.aerogear.mobile.reactive.Request;
-import org.aerogear.mobile.reactive.Requester;
-import org.aerogear.mobile.reactive.Responder;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.messaging.FirebaseMessaging;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Base64;
+
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.MobileCore;
@@ -36,6 +19,22 @@ import org.aerogear.mobile.core.exception.HttpException;
 import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpResponse;
+import org.aerogear.mobile.core.reactive.MapFunction;
+import org.aerogear.mobile.core.reactive.Request;
+import org.aerogear.mobile.core.reactive.Requester;
+import org.aerogear.mobile.core.reactive.Responder;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 
 /**
@@ -146,34 +145,39 @@ public class PushService implements ServiceModule {
             }
 
             return httpRequest.post(url + registryDeviceEndpoint, data.toString().getBytes());
-        }).mapRequest(httpResponse -> {
-            switch (httpResponse.getStatus()) {
-                case HTTP_OK:
+        }).map(new MapFunction<HttpResponse, Boolean>(){
 
-                    FirebaseMessaging firebaseMessaging =
-                        FirebaseMessaging.getInstance();
+            @Override
+            public Boolean map(HttpResponse httpResponse) throws Exception {
+                    switch (httpResponse.getStatus()) {
+                        case HTTP_OK:
 
-                    try {
-                        JSONArray categories =
-                            data.getJSONArray("categories");
-                        for (int i = 0; i < categories.length(); i++) {
-                            String category = categories.getJSONObject(i)
-                                .toString();
-                            firebaseMessaging.subscribeToTopic(category);
-                        }
-                    } catch (JSONException e) {
-                        // ignore
+                            FirebaseMessaging firebaseMessaging =
+                                FirebaseMessaging.getInstance();
+
+                            try {
+                                JSONArray categories =
+                                    data.getJSONArray("categories");
+                                for (int i = 0; i < categories.length(); i++) {
+                                    String category = categories.getJSONObject(i)
+                                        .toString();
+                                    firebaseMessaging.subscribeToTopic(category);
+                                }
+                            } catch (JSONException e) {
+                                // ignore
+                            }
+
+                            firebaseMessaging.subscribeToTopic(
+                                unifiedPushCredentials.getVariant());
+
+                            saveCache(data);
+
+                            return Boolean.TRUE;
+                        default:
+                            throw (new HttpException(
+                                httpResponse.getStatus()));
                     }
 
-                    firebaseMessaging.subscribeToTopic(
-                        unifiedPushCredentials.getVariant());
-
-                    saveCache(data);
-
-                    return true;
-                default:
-                    throw (new HttpException(
-                        httpResponse.getStatus()));
             }
         }).requestOn(new AppExecutors().networkThread());
 

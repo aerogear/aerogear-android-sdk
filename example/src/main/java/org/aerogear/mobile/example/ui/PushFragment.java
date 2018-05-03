@@ -21,7 +21,7 @@ import org.aerogear.mobile.push.MessageHandler;
 import org.aerogear.mobile.push.PushService;
 import org.aerogear.mobile.push.UnifiedPushConfig;
 import org.aerogear.mobile.push.UnifiedPushMessage;
-import org.aerogear.mobile.reactive.Responder;
+import org.aerogear.mobile.core.reactive.Responder;
 
 import butterknife.BindView;
 import butterknife.OnClick;

@@ -1,4 +1,4 @@
-package org.aerogear.mobile.reactive;
+package org.aerogear.mobile.core.reactive;
 
 /**
  * This method provides a function which will actually cancel a request. The default function is to
