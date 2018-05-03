@@ -49,7 +49,7 @@ public final class MobileCoreJsonParser {
         Map<String, ServiceConfiguration> serviceConfigs = new HashMap<>();
         for (int i = 0; i < length; i++) {
             ServiceConfiguration serviceConfig = parseConfigObject(array.getJSONObject(i));
-            serviceConfigs.put(serviceConfig.getName(), serviceConfig);
+            serviceConfigs.put(serviceConfig.getType(), serviceConfig);
         }
         return serviceConfigs;
     }
