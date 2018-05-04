@@ -49,9 +49,6 @@ public class OkHttpServiceModule implements HttpServiceModule {
     }
 
     @Override
-    public void destroy() {}
-
-    @Override
     public HttpRequest newRequest() {
         return new OkHttpRequest(client, new AppExecutors());
     }

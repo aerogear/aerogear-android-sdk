@@ -4,7 +4,7 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -38,6 +38,8 @@ public final class MobileCore {
     private static final int DEFAULT_CONNECT_TIMEOUT = 10;
     private static final int DEFAULT_WRITE_TIMEOUT = 10;
 
+    private static final String TAG = "MobileCore";
+
     @SuppressLint("StaticFieldLeak")
     private static MobileCore instance;
     // TODO Move to instance
@@ -47,8 +49,8 @@ public final class MobileCore {
     private final String appVersion;
     private final String configFileName = "mobile-services.json";
     private final HttpServiceModule httpLayer;
-    private final Map<String, ServiceConfiguration> servicesConfig;
-    private final Map<Class<? extends ServiceModule>, ServiceModule> services = new HashMap<>();
+    private final Map<String, ServiceConfiguration> serviceConfigById;
+    private final Map<String, List<ServiceConfiguration>> serviceConfigsByType;
 
     /**
      * Get the user app version from the package manager
@@ -83,7 +85,8 @@ public final class MobileCore {
         try (final InputStream configStream = context.getAssets().open(configFileName)) {
             MobileCoreConfiguration jsonConfig = new MobileCoreJsonParser(configStream).parse();
             httpsConfig = jsonConfig.getHttpsConfig();
-            servicesConfig = jsonConfig.getServicesConfig();
+            serviceConfigById = jsonConfig.getServicesConfigPerId();
+            serviceConfigsByType = jsonConfig.getServiceConfigsPerType();
         } catch (JSONException | IOException exception) {
             String message = String.format("%s could not be loaded", configFileName);
             throw new InitializationException(message, exception);
@@ -100,7 +103,8 @@ public final class MobileCore {
                         .writeTimeout(DEFAULT_WRITE_TIMEOUT, TimeUnit.SECONDS)
                         .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS);
         final OkHttpServiceModule httpServiceModule = new OkHttpServiceModule(builder.build());
-        ServiceConfiguration configuration = this.servicesConfig.get(httpServiceModule.type());
+        ServiceConfiguration configuration =
+                        this.getServiceConfigurationByType(httpServiceModule.type());
         if (configuration == null) {
             configuration = new ServiceConfiguration.Builder().build();
         }
@@ -127,16 +131,6 @@ public final class MobileCore {
         return instance;
     }
 
-    /**
-     * Called when mobile core instance needs to be destroyed
-     */
-    public void destroy() {
-        for (Class<? extends ServiceModule> serviceKey : services.keySet()) {
-            ServiceModule serviceModule = services.get(serviceKey);
-            serviceModule.destroy();
-        }
-    }
-
     @SuppressWarnings("unchecked")
     public <T extends ServiceModule> T getService(final Class<T> serviceClass) {
         return getService(serviceClass, null);
@@ -148,17 +142,13 @@ public final class MobileCore {
                     throws InitializationException {
         nonNull(serviceClass, "serviceClass");
 
-        if (services.containsKey(serviceClass)) {
-            return (T) services.get(serviceClass);
-        }
-
         try {
             final ServiceModule serviceModule = serviceClass.newInstance();
 
             ServiceConfiguration serviceCfg = serviceConfiguration;
 
             if (serviceCfg == null) {
-                serviceCfg = getServiceConfiguration(serviceModule.type());
+                serviceCfg = this.getServiceConfigurationByType(serviceModule.type());
             }
 
             if (serviceCfg == null && serviceModule.requiresConfiguration()) {
@@ -167,8 +157,6 @@ public final class MobileCore {
             }
 
             serviceModule.configure(this, serviceCfg);
-
-            services.put(serviceClass, serviceModule);
 
             return (T) serviceModule;
 
@@ -227,13 +215,43 @@ public final class MobileCore {
     }
 
     /**
-     * Returns the configuration for this singleThreadService from the JSON config file
+     * Returns the configurations for this service type from the JSON config file.
      *
-     * @param type Service type/name
-     * @return the configuration for this singleThreadService from the JSON config file
+     * @param type Service type
+     * @return the configurations for this service type from the JSON config file
      */
-    public ServiceConfiguration getServiceConfiguration(final String type) {
-        return servicesConfig.get(type);
+    public List<ServiceConfiguration> getServiceConfigurationsByType(final String type) {
+        return serviceConfigsByType.get(type);
+    }
+
+    /**
+     * Returns the configuration for this service type from the JSON config file.
+     *
+     * If there are multiple configs for the type, the first one will be returned.
+     *
+     * @param type Service type
+     * @return the first configuration for this service type from the JSON config file
+     */
+    public ServiceConfiguration getServiceConfigurationByType(final String type) {
+        final List<ServiceConfiguration> configs = serviceConfigsByType.get(type);
+        if (configs == null || configs.isEmpty()) {
+            return null;
+        }
+        if (configs.size() > 1) {
+            logger.warning(TAG, "There are multiple configs for the service type " + type
+                            + ". Using the first one found.");
+        }
+        return configs.get(0);
+    }
+
+    /**
+     * Returns the configuration for this service from the JSON config file by the service id.
+     *
+     * @param id Service id
+     * @return the configuration for this service id from the JSON config file
+     */
+    public ServiceConfiguration getServiceConfigurationById(final String id) {
+        return serviceConfigById.get(id);
     }
 
 }

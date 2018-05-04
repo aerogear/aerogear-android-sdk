@@ -103,9 +103,6 @@ public class PushService implements ServiceModule {
         return true;
     }
 
-    @Override
-    public void destroy() {}
-
     /**
      * Register the device on Unified Push Server
      *

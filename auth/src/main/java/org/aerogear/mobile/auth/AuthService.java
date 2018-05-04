@@ -221,8 +221,4 @@ public class AuthService implements ServiceModule {
         return true;
     }
 
-    @Override
-    public void destroy() {
-
-    }
 }

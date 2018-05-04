@@ -3,7 +3,6 @@ package org.aerogear.mobile.core.unit;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,39 +56,11 @@ public class MobileCoreTest {
     }
 
     @Test
-    public void testGetCachedInstance() {
-        MobileCore.init(context);
-
-        MetricsService service1 = MobileCore.getInstance().getService(MetricsService.class);
-        MetricsService service2 = MobileCore.getInstance().getService(MetricsService.class);
-
-        assertNotNull(service1);
-        assertNotNull(service2);
-        assertEquals(service1, service2);
-    }
-
-    @Test
-    public void testAllServicesAreDestroyed() {
-        MobileCore.init(context);
-
-        DummyServiceModule service1 = MobileCore.getInstance().getService(DummyServiceModule.class);
-        DummyServiceModule service2 = MobileCore.getInstance().getService(DummyServiceModule.class);
-
-        Assert.assertFalse(service1.isDestroyed());
-        Assert.assertFalse(service2.isDestroyed());
-
-        MobileCore.getInstance().destroy();
-
-        Assert.assertTrue(service1.isDestroyed());
-        Assert.assertTrue(service2.isDestroyed());
-    }
-
-    @Test
     public void testGetServiceConfiguration() {
         MobileCore.init(context);
 
         ServiceConfiguration serviceConfiguration =
-                        MobileCore.getInstance().getServiceConfiguration("keycloak");
+                        MobileCore.getInstance().getServiceConfigurationByType("keycloak");
 
         String url = "https://www.mocky.io/v2/5a6b59fb31000088191b8ac6";
         assertEquals(url, serviceConfiguration.getUrl());
@@ -98,8 +69,6 @@ public class MobileCoreTest {
     // -- Helpers ---------------------------------------------------------------------------------
 
     public static final class DummyServiceModule implements ServiceModule {
-
-        private boolean destroyed = false;
 
         @Override
         public String type() {
@@ -112,15 +81,6 @@ public class MobileCoreTest {
         @Override
         public boolean requiresConfiguration() {
             return false;
-        }
-
-        @Override
-        public void destroy() {
-            destroyed = true;
-        }
-
-        public boolean isDestroyed() {
-            return destroyed;
         }
     }
 

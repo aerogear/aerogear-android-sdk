@@ -53,9 +53,6 @@ public class MetricsService implements ServiceModule {
         return true;
     }
 
-    @Override
-    public void destroy() {}
-
     /**
      * Send default metrics
      */
