@@ -5,8 +5,8 @@ As part of the Auth SDK module, there is a self defence check feature.  This fea
 This module offers:
 
 1. A suite of self-defence checks to detect a compromised enviroment.
-1. Integration with the AeroGear Services Metrics SDK to report self-defence checks data.
-1. Interfaces to access the results of self-defence checks and take appropriate action in application code.
+2. Integration with the AeroGear Services Metrics SDK to report self-defence checks data.
+3. Interfaces to access the results of self-defence checks and take appropriate action in application code.
 
 == Prequisite's
 

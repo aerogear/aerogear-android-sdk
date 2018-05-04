@@ -6,8 +6,8 @@ Core can be also used to extract common implementations from SDK's.
 Main responsibilities:
 
 1. Configuration parser
-1. Network library 
-1. Default logger shared between SDK.
+2. Network library 
+3. Default logger shared between SDK.
 
 == Adding dependency
 
