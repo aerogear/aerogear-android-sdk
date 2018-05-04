@@ -22,20 +22,16 @@ In order to receive push messages you need to setup the Firebase in your project
 
 1. Create a new project in link:https://console.firebase.google.com[Firebase console]
 2. Add link:https://developers.google.com/android/guides/google-services-plugin[The Google Services Gradle Plugin] in your root `build.gradle` file
-  [source,groovy]
-  ----
+[source,groovy]
   buildscript {   
       dependencies {
           classpath 'com.google.gms:google-services:[version]'
       }
-  }
-  ----
+  } 
 3. Apply the plugin in your app `build.gradle` file
-  [source,groovy]
-  ----
+[source,groovy]
   // ADD THIS AT THE BOTTOM
   apply plugin: 'com.google.gms.google-services'
-  ---- 
 4. Download the `google-services.json` from link:https://console.firebase.google.com[Firebase console] and drop it into your app folder
 
 See the complete guide in the link:https://firebase.google.com/docs/android/setup[Firebase website]
