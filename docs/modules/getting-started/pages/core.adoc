@@ -6,8 +6,8 @@ Core can be also used to extract common implementations from SDK's.
 Main responsibilities:
 
 1. Configuration parser
-1. Network library 
-1. Default logger shared between SDK.
+2. Network layer
+3. Logger
 
 == Adding dependency
 
@@ -22,59 +22,51 @@ dependencies {
 
 [source,java]
 ----
-Context context = this;
-mobileCore = MobileCore.init(context);
+MobileCore.getInstance();
 ----
 
-For full usage see link:../../example[example] application
-
-== Core api
+== Core API
 
 Core SDK supports currently following helpers
 
 === Logger
 
-Logger is initialized automatically and available as static member of AgsCore.
-Example:
+Logger is initialized automatically and available as static member of MobileCore.
 
 [source,java]
 ----
- AgsCore.logger.debug("Message")
-----
-
-End users can change or disable logger in top level application by providing empty implementation.
-
-[source,java]
-----
-activity.mobileCore.getLogger().info("Users: " + retrievesUsers.size());
+MobileCore.getLogger().debug(Message");
 ----
  
 === Network library
 
-Network library offers common wrapper for making any networking requests.
-Wrapper by default works with popular OkHttp library.
+Network library offers common wrapper for making any networking requests. Wrapper by default works with popular OkHttp library.
 
 ==== Usage
 
 [source,java]
 ----
-   HttpRequest httpRequest = activity.mobileCore.getHttpLayer().newRequest();
-        httpRequest.get("https://jsonplaceholder.typicode.com/users");
-        HttpResponse httpResponse = httpRequest.execute();
-        httpResponse.onComplete(() -> {
-            String jsonResponse = httpResponse.stringBody();
-            new AppExecutors().mainThread().execute(() -> {
+HttpRequest httpRequest = MobileCore.getInstance().getHttpLayer().newRequest();
 
-                List<User> retrievesUsers = new Gson()
-                    .fromJson(jsonResponse, new TypeToken<List<User>>() {
-                    }.getType());
+httpRequest.get("https://jsonplaceholder.typicode.com/users")
+    .map((response) -> {
+        String stringBody = response.stringBody();
+        List<User> retrievedUsers = new Gson().fromJson(stringBody,
+            new TypeToken<List<User>>() {
+            }.getType());
+        return retrievedUsers;
+    })
+    .respondOn(new AppExecutors().mainThread())
+    .respondWith(new Responder<List<User>>() {
+        @Override
+        public void onResult(List<User> retrievedUsers) {
+            // Yay I have a list of user
+        }
 
-                activity.mobileCore.getLogger().info("Users: " + retrievesUsers.size());
+        @Override
+        public void onException(Exception exception) {
+            // Oops something went wrong :(
+        }
 
-                users.addAll(retrievesUsers);
-            });
-        });
+    });
 ----
- 
-See link:../getting-started.adoc[SDK architecture] for more details about SDK architecture
-See link:./example[example] project for examples how core can be used. 

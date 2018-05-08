@@ -4,7 +4,7 @@ Mobile authentication SDK based on link:http://www.keycloak.org/[Keycloak] using
 
 Provides authentication features like access control and two factor authentication through Keycloak.
 
-image::https://img.youtube.com/vi/MGecRG11k6E/0.jpg[title="Demo Video (https://www.youtube.com/watch?v=MGecRG11k6E&feature=youtu.be)", link="https://www.youtube.com/watch?v=MGecRG11k6E&feature=youtu.be",caption=""]
+image::https://img.youtube.com/vi/MGecRG11k6E/0.jpg[title="Demo Video (https://www.youtube.com/watch?v=MGecRG11k6E)", link="https://www.youtube.com/watch?v=MGecRG11k6E",caption=""]
 
 == Usage
 
@@ -43,7 +43,7 @@ To setup standalone Keycloak follow Keycloak's guide link:/https://github.com/ke
 Add dependency to your application module
 ----
 dependencies {
-    implementation 'org.aerogear:auth:5.0.0-SNAPSHOT'
+    implementation "org.aerogear:aerogear-auth:[version]"
 }
 ----
 
@@ -62,21 +62,23 @@ The Auth SDK will use this configuration to communicate with Keycloak.
 
 [source,java]
 ----
-AuthService authService = mobileCore.getInstance(AuthService.class);
+AuthService authService = MobileCore.getInstance().getService(AuthService.class);
 ----
 
-Any subsequent `MobileCore#getInstance` method will return the same instance of `AuthService`.
+Any subsequent `getService` call will return the same instance of `AuthService`.
 
-Before the `AuthService` can be used used `AuthService#init` must be invoked once in an app.
+Before the `AuthService` can be used `AuthService#init` must be invoked once in an app.
 
 [source,java]
 ----
-// Specify redirect URI. It is recommended to use the package name of your app if possible.
-AuthServiceConfiguration authServiceConfig = new AuthServiceConfiguration.AuthConfigurationBuilder()
+// Specify redirect URI. It is recommended to use the package name of your app.
+AuthServiceConfiguration authServiceConfig = new AuthServiceConfiguration
+    .AuthConfigurationBuilder()
     .withRedirectUri("org.aerogear.mobile.example:/callback")
     .build();
 
-// You only need to invoke this once, every subsequent retrieval of the AuthService will retrieve the same, already initialized, instance.
+// You only need to invoke this once every subsequent retrieval of the AuthService 
+// will retrieve the same instance.
 authService.init(context, authServiceConfig);
 ----
 
@@ -144,12 +146,14 @@ To start the authentication invoke the `AuthService#login` method.
 [source,java]
 ----
 // authService already initialized.
-AuthService authService = mobileCore.getInstance(AuthService.class);
+AuthService authService = MobileCore.getInstance().getService(AuthService.class);
 
 static int LOGIN_RESULT_CODE = 1;
 
-// Build the options object and start the authentication flow. Provide an activity to handle the auth response.
-DefaultAuthenticateOptions options = new DefaultAuthenticateOptions(myActivity, LOGIN_RESULT_CODE);
+// Build the options object and start the authentication flow. 
+// Provide an activity to handle the auth response.
+DefaultAuthenticateOptions options = 
+    new DefaultAuthenticateOptions(myActivity, LOGIN_RESULT_CODE);
 
 Callback authCallback = new Callback<UserPrincipal>() {
     @Override
@@ -209,7 +213,7 @@ and `UserPrincipal#hasRealmRole` methods and provide the role name to check for.
 [source,java]
 ----
 // authService already initialized.
-AuthService authService = mobileCore.getInstance(AuthService.class);
+AuthService authService = MobileCore.getInstance().getService(AuthService.class);
 UserPrincipal currentUser = authService.currentUser();
 
 boolean hasAdminPermissions = currentUser.hasRealmRole("user_admin");
@@ -232,7 +236,7 @@ provided by `AuthService#handleAuthResponse` and has a callback to determine if 
 [source,java]
 ----
 // authService already initialized.
-AuthService authService = mobileCore.getInstance(AuthService.class);
+AuthService authService = MobileCore.getInstance().getService(AuthService.class);
 UserPrincipal currentUser = authService.currentUser();
 
 authService.logout(currentUser, new Callback<UserPrincipal>() {
