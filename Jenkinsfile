@@ -44,7 +44,7 @@ if ( prLabels.contains("test/integration") ) {
                 }
     
                 stage ('Prepare config file') {
-                    def servicesConfigJsonPath = "./core/src/test/assets/integration-test-mobile-services.json"
+                    def servicesConfigJsonPath = "./core/src/test/assets/mobile-services.json"
                     def servicesConfigJson = readJSON file: servicesConfigJsonPath
 
                     // Update URL for metrics in mobile-services.json file
