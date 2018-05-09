@@ -49,7 +49,7 @@ if ( prLabels.contains("test/integration") ) {
 
                     // Update URL for metrics in mobile-services.json file
                     servicesConfigJson.services.each {
-                        if ( it.id == "metrics" ) {
+                        if ( it.type == "metrics" ) {
                             it.url = metricsApiHost + "/metrics"
                         }
                     }
