@@ -23,7 +23,7 @@ public class MobileCoreConfiguration {
     public MobileCoreConfiguration(final Map<String, ServiceConfiguration> serviceConfigsPerId,
                     final HttpsConfiguration httpsConfig) {
         this.httpsConfig = httpsConfig;
-        this.serviceConfigsPerId = serviceConfigsPerId;
+        this.serviceConfigsPerId = new HashMap<>(serviceConfigsPerId);
 
         // now, create a map of <service type, list<config>> from <service id, config> map
         serviceConfigsByType = new HashMap<>();

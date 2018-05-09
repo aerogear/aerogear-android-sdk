@@ -46,7 +46,7 @@ public final class MobileCoreJsonParser {
     private Map<String, ServiceConfiguration> parseMobileCoreArray(final JSONArray array)
                     throws JSONException, IOException {
         final int length = nonNull(array, "json array").length();
-        Map<String, ServiceConfiguration> serviceConfigs = new HashMap<>();
+        final Map<String, ServiceConfiguration> serviceConfigs = new HashMap<>(length);
         for (int i = 0; i < length; i++) {
             ServiceConfiguration serviceConfig = parseConfigObject(array.getJSONObject(i));
             serviceConfigs.put(serviceConfig.getId(), serviceConfig);
@@ -58,11 +58,9 @@ public final class MobileCoreJsonParser {
                     throws JSONException, IOException {
         nonNull(jsonObject, "jsonObject");
 
-        final ServiceConfiguration.Builder serviceConfigBuilder =
-                        ServiceConfiguration.newConfiguration();
-        serviceConfigBuilder.setId(jsonObject.getString("id"));
-        serviceConfigBuilder.setUrl(jsonObject.getString("url"));
-        serviceConfigBuilder.setType(jsonObject.getString("type"));
+        final ServiceConfiguration.Builder serviceConfigBuilder = ServiceConfiguration
+                        .newConfiguration().setId(jsonObject.getString("id"))
+                        .setUrl(jsonObject.getString("url")).setType(jsonObject.getString("type"));
 
         final JSONObject nestedConfig = jsonObject.getJSONObject("config");
         final JSONArray nestedConfigKeys = nestedConfig.names();
