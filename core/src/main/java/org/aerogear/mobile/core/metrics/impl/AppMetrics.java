@@ -42,6 +42,7 @@ public class AppMetrics implements Metrics<JSONObject> {
             data.put("appId", appId);
             data.put("appVersion", appVersion);
             data.put("sdkVersion", sdkVersion);
+            data.put("framework", "native");
             return data;
         } catch (JSONException e) {
             MobileCore.getLogger().error("Error building JSON for App Metrics", e);
