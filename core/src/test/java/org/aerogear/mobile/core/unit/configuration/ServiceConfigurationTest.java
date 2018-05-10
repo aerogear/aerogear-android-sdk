@@ -12,11 +12,11 @@ public class ServiceConfigurationTest {
 
     @Test
     public void testCreateConfig() {
-        ServiceConfiguration config = ServiceConfiguration.newConfiguration().setName("conf-name")
+        ServiceConfiguration config = ServiceConfiguration.newConfiguration().setId("conf-id")
                         .setType("conf-type").setUrl("http://test-uri.feedhenry.org")
                         .addProperty("prop1", "value1").addProperty("prop2", "value2").build();
 
-        Assert.assertEquals("conf-name", config.getName());
+        Assert.assertEquals("conf-id", config.getId());
         Assert.assertEquals("conf-type", config.getType());
         Assert.assertEquals("http://test-uri.feedhenry.org", config.getUrl());
         Assert.assertEquals(2, config.getProperties().size());

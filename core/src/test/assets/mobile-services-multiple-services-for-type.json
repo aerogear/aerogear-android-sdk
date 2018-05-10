@@ -31,6 +31,13 @@
             "type": "metrics",
             "url": "https://www.mocky.io/v2/5a79c6572e000028009a5c4f",
             "config": {}
+        },
+        {
+            "id": "metrics-yourapp-android",
+            "name": "metrics",
+            "type": "metrics",
+            "url": "https://www.mocky.io/v2/5a79c6572e000028009a5c4f",
+            "config": {}
         }
     ]
 }

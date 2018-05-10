@@ -26,10 +26,4 @@ public interface ServiceModule {
      * @return <code>true</code> if the singleThreadService configuration should be defined.
      */
     boolean requiresConfiguration();
-
-    /**
-     * Called when singleThreadService destroyed
-     */
-    void destroy();
-
 }

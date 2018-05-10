@@ -46,10 +46,10 @@ public final class MobileCoreJsonParser {
     private Map<String, ServiceConfiguration> parseMobileCoreArray(final JSONArray array)
                     throws JSONException, IOException {
         final int length = nonNull(array, "json array").length();
-        Map<String, ServiceConfiguration> serviceConfigs = new HashMap<>();
+        final Map<String, ServiceConfiguration> serviceConfigs = new HashMap<>(length);
         for (int i = 0; i < length; i++) {
             ServiceConfiguration serviceConfig = parseConfigObject(array.getJSONObject(i));
-            serviceConfigs.put(serviceConfig.getName(), serviceConfig);
+            serviceConfigs.put(serviceConfig.getId(), serviceConfig);
         }
         return serviceConfigs;
     }
@@ -58,19 +58,18 @@ public final class MobileCoreJsonParser {
                     throws JSONException, IOException {
         nonNull(jsonObject, "jsonObject");
 
-        final ServiceConfiguration.Builder serviceConfigBuilder =
-                        ServiceConfiguration.newConfiguration();
-        serviceConfigBuilder.setName(jsonObject.getString("name"));
-        serviceConfigBuilder.setUrl(jsonObject.getString("url"));
-        serviceConfigBuilder.setType(jsonObject.getString("type"));
+        final ServiceConfiguration.Builder serviceConfigBuilder = ServiceConfiguration
+                        .newConfiguration().setId(jsonObject.getString("id"))
+                        .setUrl(jsonObject.getString("url")).setType(jsonObject.getString("type"));
 
-        final JSONObject config = jsonObject.getJSONObject("config");
-        final JSONArray namesArray = config.names();
-        if (namesArray != null) {
-            int namesSize = namesArray.length();
-            for (int i = 0; i < namesSize; i++) {
-                final String name = namesArray.getString(i);
-                serviceConfigBuilder.addProperty(name, config.getString(name));
+        final JSONObject nestedConfig = jsonObject.getJSONObject("config");
+        final JSONArray nestedConfigKeys = nestedConfig.names();
+        if (nestedConfigKeys != null) {
+            int nestedConfigKeyCount = nestedConfigKeys.length();
+            for (int i = 0; i < nestedConfigKeyCount; i++) {
+                final String nestedConfigKey = nestedConfigKeys.getString(i);
+                serviceConfigBuilder.addProperty(nestedConfigKey,
+                                nestedConfig.getString(nestedConfigKey));
             }
         }
         return serviceConfigBuilder.build();

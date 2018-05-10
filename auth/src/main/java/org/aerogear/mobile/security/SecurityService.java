@@ -63,12 +63,6 @@ public class SecurityService implements ServiceModule {
     }
 
     /**
-     * Invoked when security service needs to be destroyed.
-     */
-    @Override
-    public void destroy() {}
-
-    /**
      * Retrieve a check executor that can synchronously run multiple security checks.
      *
      * @return {@link SyncSecurityCheckExecutor}

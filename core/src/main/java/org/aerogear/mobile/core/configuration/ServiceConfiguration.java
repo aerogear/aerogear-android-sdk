@@ -9,14 +9,14 @@ import java.util.Map;
  */
 public final class ServiceConfiguration {
 
-    private final String name;
+    private final String id;
     private final String type;
     private final String url;
     private final Map<String, String> properties;
 
-    private ServiceConfiguration(final String name, final Map<String, String> properties,
+    private ServiceConfiguration(final String id, final Map<String, String> properties,
                     final String type, final String url) {
-        this.name = name;
+        this.id = id;
         this.properties = properties;
         this.type = type;
         this.url = url;
@@ -24,13 +24,13 @@ public final class ServiceConfiguration {
 
     public static class Builder {
 
-        protected String name;
+        protected String id;
         protected Map<String, String> properties = new HashMap<>();
         protected String type;
         protected String uri;
 
-        public Builder setName(final String name) {
-            this.name = name;
+        public Builder setId(final String id) {
+            this.id = id;
             return this;
         }
 
@@ -51,12 +51,12 @@ public final class ServiceConfiguration {
 
 
         public ServiceConfiguration build() {
-            return new ServiceConfiguration(this.name, this.properties, this.type, this.uri);
+            return new ServiceConfiguration(this.id, this.properties, this.type, this.uri);
         }
     }
 
-    public String getName() {
-        return name;
+    public String getId() {
+        return id;
     }
 
     public Map<String, String> getProperties() {
