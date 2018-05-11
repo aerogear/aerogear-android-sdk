@@ -1,14 +1,14 @@
 = Self Defence Checks
 
-As part of the Auth SDK module, there is a self defence check feature.  This feature offers multiple security checks that can be used to analyse the security of the device.  This can be useful for apps to detect vulnerablities and react accordingly.  For example, if the app detects security issue *X* then do *Y*, where *X* could be no lock screen is set and *Y* is show a system prompt to setup the lock screen.
+As part of the Auth SDK module, there is a self defence check feature that will make sure that yor application is meeting the modern OWASP recommendations.  This feature offers multiple security checks that can be used to analyse the security of the device.  This can be useful for developers to detect vulnerablities and react accordingly.  For example, if the app detects security issue *X* then do *Y*, where *X* could be no lock screen is set and *Y* is show a system prompt to setup the lock screen.
 
 This module offers:
 
-1. A suite of self-defence checks to detect a compromised enviroment.
+1. A suite of self-defence checks to detect an insecure or hostile environment.
 2. Integration with the AeroGear Services Metrics SDK to report self-defence checks data.
 3. Interfaces to access the results of self-defence checks and take appropriate action in application code.
 
-== Prequisite's
+== Perquisites
 
 . Import and initialise the Auth SDK module - link:auth.adoc[AeroGear Services Auth SDK].
 
@@ -24,13 +24,13 @@ SecurityService securityService = MobileCore.getInstance(SecurityService.class);
 Any subsequent `MobileCore#getInstance` method will return the same instance of `SecurityService`. +
 There are two ways to implement self defence checks: <<Provided Self Defence Checks>> and <<Custom Self Defence Checks>>.
 
-=== Provided Self Defence Checks
+== Provided Self Defence Checks
 
 These are self defence checks provided by the SDK in link:javadoc[`SecurityCheckType`].
 
-A successful Check means that the environment the application is running in is more secure than otherwise, as opposed to signalling if a certain feature is enabled.
+A successful Check means that the environment the application is running in is more secure and no action is required, as opposed to signalling if a certain feature is enabled.
 
-For example, a check for whether the device is Rooted should return `true` when it is *not* rooted, since this would be the more secure condition.
+For example, the Root Access Detection Check `NOT_ROOTED` should return `true` when it is *not* rooted, since this would be the more secure condition.
 
 ==== Root Access Detection (NOT_ROOTED)
 
@@ -54,7 +54,7 @@ To detect if a device has a lock screen set (with pin, fingerprint, pattern) the
 
 ==== App Data Backup Detection (ALLOW_BACKUP_DISABLED)
 
-To detect whether the application's data is configured to be synchronized accross devices the `SecurityCheckType#ALLOW_BACKUP_DISABLED` function can be used. The link:https://developer.android.com/guide/topics/manifest/application-element.html[allowBackup] flag determines whether to allow the application to participate in the backup and restore infrastructure, which might be interesting to avoid depending on your app's needs.
+To detect whether the application's data is configured to be synchronized across devices the `SecurityCheckType#ALLOW_BACKUP_DISABLED` function can be used. The link:https://developer.android.com/guide/topics/manifest/application-element.html[allowBackup] flag determines whether to allow the application to participate in the backup and restore infrastructure, which might be interesting to avoid depending on your app's needs.
 
 ==== Device Encryption Detection (HAS_ENCRYPTION_ENABLED)
 
@@ -85,7 +85,7 @@ class CustomSecurityCheck extends AbstractSecurityCheck {
 === Invoking a Single Self Defence Check
 The `SecurityService#check` method can be used to run a single self defence check.  It expects either `SecurityCheckType` (see <<Provided Self Defence Checks
 >>)  or `SecurityCheck` (see <<Custom Self Defence Checks
->>) as a paramater and returns link:javadoc[`SecurityCheckResult`].
+>>) as a parameter and returns link:javadoc[`SecurityCheckResult`].
 
 [source, java]
 ----
