@@ -180,7 +180,6 @@ dependencies {
 
 Please follow individual SDK's documentation to see how to add them to the project
 
- * link:./core.adoc[Core]
  * link:./auth.adoc[Auth] 
 
 == Certificate Pinning

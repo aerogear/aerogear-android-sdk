@@ -11,7 +11,7 @@ image::https://img.youtube.com/vi/MGecRG11k6E/0.jpg[title="Demo Video (https://w
 To use the Auth SDK you'll first need to:
 
 * Have a Keycloak instance. See <<Setting up Keycloak>>.
-* Import the Core module. See link:./core.adoc[the Core documentation].
+* Import the Core module.
 * A configuration file added to the apps assets directory. See <<Configuration file>>
 * Specify the schema of the redirect url for your Android project in `android.defaultConfig.manifestPlaceholders` of the apps `build.gradle` file.
 It should match the schema specified in the `Valid Redirect URL` section for the client in Keycloak.

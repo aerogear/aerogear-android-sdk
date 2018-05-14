@@ -24,8 +24,8 @@
 
 AeroGear Services SDK consist of set of separate SDKs
 
-- [Core](./docs/modules/getting-started/pages/core.adoc): Common base for all SDKs
 - [Auth](./docs/modules/getting-started/pages/auth.adoc):  Mobile authentication SDK
+- [Push](./docs/modules/getting-started/pages/push.adoc):  Push Notifications SDK
 
 ## License 
 
