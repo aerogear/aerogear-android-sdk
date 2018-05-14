@@ -50,3 +50,7 @@ See the [Gradle Documentation](https://docs.gradle.org/current/userguide/pt02.ht
 ## Adding Our Style Guide to Android Studio
 
 We are using spotless to enforce our style guidelines on the project.  You may invoke spotless manually by running `./gradlew spotlessCheck`.  If there are errors spotless will prompt you to run `./gradlew spotlessApply` and auto fix them.  If your code fails to meet the style guidelines it will fail.  However, if you are using Android Studio you may make use of the [Eclipse Code Formatter](http://plugins.jetbrains.com/plugin/6546-eclipse-code-formatter).  You can find our Eclipse formatting settings in [codequality/eclipse-code-style.xml](./codequality/eclipse-code-style.xml) and out import orders in [codequality/aerogear.importorder](codequality/aerogear.importorder).
+
+## Android SDK specific contributing documentation
+
+See [Contributor documentation](./docs/contrib)
