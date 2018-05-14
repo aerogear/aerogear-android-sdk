@@ -21,6 +21,7 @@ import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpResponse;
 import org.aerogear.mobile.core.reactive.MapFunction;
 import org.aerogear.mobile.core.reactive.Request;
+import org.aerogear.mobile.core.reactive.RequestMapFunction;
 import org.aerogear.mobile.core.reactive.Requester;
 import org.aerogear.mobile.core.reactive.Responder;
 import org.json.JSONArray;
@@ -129,57 +130,55 @@ public class PushService implements ServiceModule {
 
     private Request<Boolean> registerDevice(final JSONObject data) {
 
-        return Requester.call(() -> {
-            data.put("deviceToken", FirebaseInstanceId.getInstance().getToken());
+            return Requester.call(()->{
+                data.put("deviceToken", FirebaseInstanceId.getInstance().getToken());
 
-            String authHash = getHashedAuth(unifiedPushCredentials.getVariant(),
-                unifiedPushCredentials.getSecret().toCharArray());
+                String authHash = getHashedAuth(unifiedPushCredentials.getVariant(),
+                    unifiedPushCredentials.getSecret().toCharArray());
 
-            final HttpRequest httpRequest = core.getHttpLayer().newRequest();
-            httpRequest.addHeader("Authorization", authHash);
+                final HttpRequest httpRequest = core.getHttpLayer().newRequest();
+                httpRequest.addHeader("Authorization", authHash);
 
-            // Invalidate old on Unified Push Server
-            String oldDeviceToken = retrieveOldDeviceToken();
-            if (oldDeviceToken != null) {
-                httpRequest.addHeader("x-ag-old-token", oldDeviceToken);
-            }
+                // Invalidate old on Unified Push Server
+                String oldDeviceToken = retrieveOldDeviceToken();
+                if (oldDeviceToken != null) {
+                    httpRequest.addHeader("x-ag-old-token", oldDeviceToken);
+                }
+                return httpRequest;
+            }).requestMap(
+                httpRequest -> httpRequest.post(url + registryDeviceEndpoint, data.toString().getBytes())).requestMap(
+                    httpResponse -> Requester.call(()-> {
+                        switch (httpResponse.getStatus()) {
+                            case HTTP_OK:
 
-            return httpRequest.post(url + registryDeviceEndpoint, data.toString().getBytes());
-        }).map(new MapFunction<HttpResponse, Boolean>(){
+                                FirebaseMessaging firebaseMessaging =
+                                    FirebaseMessaging.getInstance();
 
-            @Override
-            public Boolean map(HttpResponse httpResponse) throws Exception {
-                    switch (httpResponse.getStatus()) {
-                        case HTTP_OK:
-
-                            FirebaseMessaging firebaseMessaging =
-                                FirebaseMessaging.getInstance();
-
-                            try {
-                                JSONArray categories =
-                                    data.getJSONArray("categories");
-                                for (int i = 0; i < categories.length(); i++) {
-                                    String category = categories.getJSONObject(i)
-                                        .toString();
-                                    firebaseMessaging.subscribeToTopic(category);
+                                try {
+                                    JSONArray categories =
+                                        data.getJSONArray("categories");
+                                    for (int i = 0; i < categories.length(); i++) {
+                                        String category = categories.getJSONObject(i)
+                                            .toString();
+                                        firebaseMessaging.subscribeToTopic(category);
+                                    }
+                                } catch (JSONException e) {
+                                    // ignore
                                 }
-                            } catch (JSONException e) {
-                                // ignore
-                            }
 
-                            firebaseMessaging.subscribeToTopic(
-                                unifiedPushCredentials.getVariant());
+                                firebaseMessaging.subscribeToTopic(
+                                    unifiedPushCredentials.getVariant());
 
-                            saveCache(data);
+                                saveCache(data);
 
-                            return Boolean.TRUE;
-                        default:
-                            throw (new HttpException(
-                                httpResponse.getStatus()));
-                    }
+                                return Boolean.TRUE;
+                            default:
+                                throw (new HttpException(
+                                    httpResponse.getStatus()));
+                        }
+                    }))
 
-            }
-        }).requestOn(new AppExecutors().networkThread());
+                .requestOn(new AppExecutors().networkThread());
 
     }
 
@@ -274,7 +273,7 @@ public class PushService implements ServiceModule {
 
                 @Override
                 public void onException(Exception error) {
-                    MobileCore.getLogger().error(error.getMessage(), error));
+                    MobileCore.getLogger().error(error.getMessage(), error);
                 }
             });
 

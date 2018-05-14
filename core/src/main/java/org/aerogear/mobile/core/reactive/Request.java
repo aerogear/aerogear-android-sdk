@@ -33,7 +33,8 @@ public interface Request<T> {
      * the thread the request is running on, but this behavior is overridden with
      * {@link #cancelWith(Canceller)}.
      *
-     * Please note, when you cancel a request responders are not called.
+     * Please note, when you cancel a request responders be called if cancelling
+     * them raises an exception or immediately generates a value.
      */
     void cancel();
 
@@ -91,6 +92,6 @@ public interface Request<T> {
      * @param <R> the type to transform into
      * @return a chainable instance of Request, not guaranteed to be the this reference
      */
-    <R> Request<R> requestMap(MapFunction<? super T, Request<? extends R>> mapper);
+    <R> Request<R> requestMap(RequestMapFunction<? super T, ? extends R> mapper);
 
 }

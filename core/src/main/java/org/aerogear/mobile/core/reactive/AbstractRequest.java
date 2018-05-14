@@ -48,8 +48,8 @@ abstract class AbstractRequest<T> implements Request<T> {
     }
 
     @Override
-    public final <R> Request<R> requestMap(MapFunction<? super T, Request<? extends R>> mapper) {
-        return new MapRequestRequest<T, R>(this, mapper);
+    public final <R> Request<R> requestMap(RequestMapFunction<? super T, ? extends R> mapper) {
+        return new RequestMapRequest<T, R>(this, mapper);
     }
 
     @Override

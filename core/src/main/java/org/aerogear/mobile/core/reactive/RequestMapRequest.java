@@ -8,12 +8,13 @@ import java.util.concurrent.atomic.AtomicReference;
  * @param <T> The type of the request before the map operation
  * @param <R> The type of the request after the map operation.
  */
-class MapRequestRequest<T, R> extends AbstractRequest<R> {
+class RequestMapRequest<T, R> extends AbstractRequest<R> {
 
     private final AbstractRequest<T> delegateTo;
-    private final MapFunction<? super T, Request<? extends R>> mapper;
+    private final RequestMapFunction<? super T, ? extends R> mapper;
+    private boolean cancelled = false;
 
-    public MapRequestRequest(AbstractRequest<T> delegateTo, MapFunction<? super T, Request<? extends R>> mapper) {
+    public RequestMapRequest(AbstractRequest<T> delegateTo, RequestMapFunction<? super T, ? extends R> mapper) {
         this.mapper = mapper;
         this.delegateTo = delegateTo;
     }
@@ -37,7 +38,9 @@ class MapRequestRequest<T, R> extends AbstractRequest<R> {
                      * mapper.
                      */
                     try {
-                        mappedValue = (Request <R>) mapper.map(value);
+                        if (!cancelled) {
+                            mappedValue = (Request<R>) mapper.map(value);
+                        }
                     } catch (Exception exception) {
                         onException(exception);
                         return;
@@ -45,8 +48,9 @@ class MapRequestRequest<T, R> extends AbstractRequest<R> {
                         // We are done with the original value, it is safe to cleanup.
                         delegateTo.liftCleanupAction().cleanup();
                     }
-
-                    mappedValue.respondWith(responder);
+                    if (!cancelled) {
+                        mappedValue.respondWith(responder);
+                    }
 
                 }
             }
@@ -64,7 +68,12 @@ class MapRequestRequest<T, R> extends AbstractRequest<R> {
 
     @Override
     public void cancel() {
-        delegateTo.cancel();
+        try {
+            delegateTo.cancel();
+        } finally {
+            this.cancelled = true; //Do not invoke the request from the mapping function
+                                   // if we are cancelled.
+        }
     }
 
     @Override
