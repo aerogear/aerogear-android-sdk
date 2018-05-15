@@ -7,5 +7,5 @@ package org.aerogear.mobile.core.reactive;
  * Android
  */
 public interface RequestMapFunction<T, R> {
-    Request<R> map(T value)  throws Exception;
+    Request<R> map(T value) throws Exception;
 }

@@ -1,11 +1,11 @@
 package org.aerogear.mobile.core.reactive;
 
-import android.util.Log;
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+import android.util.Log;
 
 
 /**

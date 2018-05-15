@@ -1,11 +1,11 @@
 package org.aerogear.mobile.core.reactive;
 
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicReference;
-
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 
 /**

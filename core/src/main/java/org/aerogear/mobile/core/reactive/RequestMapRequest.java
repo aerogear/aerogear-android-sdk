@@ -14,7 +14,8 @@ class RequestMapRequest<T, R> extends AbstractRequest<R> {
     private final RequestMapFunction<? super T, ? extends R> mapper;
     private boolean cancelled = false;
 
-    public RequestMapRequest(AbstractRequest<T> delegateTo, RequestMapFunction<? super T, ? extends R> mapper) {
+    public RequestMapRequest(AbstractRequest<T> delegateTo,
+                    RequestMapFunction<? super T, ? extends R> mapper) {
         this.mapper = mapper;
         this.delegateTo = delegateTo;
     }
@@ -71,7 +72,7 @@ class RequestMapRequest<T, R> extends AbstractRequest<R> {
         try {
             delegateTo.cancel();
         } finally {
-            this.cancelled = true; //Do not invoke the request from the mapping function
+            this.cancelled = true; // Do not invoke the request from the mapping function
                                    // if we are cancelled.
         }
     }

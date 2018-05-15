@@ -9,22 +9,21 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.aerogear.mobile.core.http.HttpServiceModule;
-import org.aerogear.mobile.core.reactive.Requester;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RuntimeEnvironment;
 
+import com.google.common.base.Strings;
+
 import android.app.Application;
 import android.support.test.filters.SmallTest;
-
-import com.google.common.base.Strings;
 
 import org.aerogear.mobile.core.AeroGearTestRunner;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.http.HttpResponse;
+import org.aerogear.mobile.core.http.HttpServiceModule;
 import org.aerogear.mobile.core.http.OkHttpResponse;
 import org.aerogear.mobile.core.reactive.Request;
 import org.aerogear.mobile.core.reactive.Responder;
@@ -71,20 +70,20 @@ public class ReactiveHTTPTest {
 
         // Actual test
         MobileCore.getInstance().getHttpLayer().newRequest().get(webServer.url("/test").toString())
-            .respondOn(executor.singleThreadService())
-            .respondWith(new Responder<HttpResponse>() {
-                @Override
-                public void onResult(HttpResponse value) {
-                    System.out.println("OnResult On" + Thread.currentThread());
-                    responseString.append(value.stringBody());
-                    latch.countDown();
-                }
+                        .respondOn(executor.singleThreadService())
+                        .respondWith(new Responder<HttpResponse>() {
+                            @Override
+                            public void onResult(HttpResponse value) {
+                                System.out.println("OnResult On" + Thread.currentThread());
+                                responseString.append(value.stringBody());
+                                latch.countDown();
+                            }
 
-                @Override
-                public void onException(Exception exception) {
-                    latch.countDown();
-                }
-            });
+                            @Override
+                            public void onException(Exception exception) {
+                                latch.countDown();
+                            }
+                        });
         System.out.println("test wait on " + Thread.currentThread());
         latch.await(10, TimeUnit.SECONDS);
 
@@ -102,7 +101,7 @@ public class ReactiveHTTPTest {
      */
     @Test
     public void httpStringRequestsCloseAutomaticallyTest()
-        throws IOException, InterruptedException {
+                    throws IOException, InterruptedException {
         // Setup Test References
         final String expectedResponse = "Hello World!";
         CountDownLatch latch = new CountDownLatch(1);
@@ -118,18 +117,18 @@ public class ReactiveHTTPTest {
 
         // Actual test
         MobileCore.getInstance().getHttpLayer().newRequest().get(webServer.url("/test").toString())
-            .respondWith(new Responder<HttpResponse>() {
-                @Override
-                public void onResult(HttpResponse value) {
-                    responseReference.set(value);
-                    latch.countDown();
-                }
+                        .respondWith(new Responder<HttpResponse>() {
+                            @Override
+                            public void onResult(HttpResponse value) {
+                                responseReference.set(value);
+                                latch.countDown();
+                            }
 
-                @Override
-                public void onException(Exception exception) {
-                    latch.countDown();
-                }
-            });
+                            @Override
+                            public void onException(Exception exception) {
+                                latch.countDown();
+                            }
+                        });
 
         latch.await(1, TimeUnit.SECONDS);
 
@@ -160,27 +159,27 @@ public class ReactiveHTTPTest {
 
         // Actual test
         MobileCore.getInstance().getHttpLayer().newRequest().get(webServer.url("/test").toString())
-            .respondWith(new Responder<HttpResponse>() {
-                @Override
-                public void onResult(HttpResponse value) {
-                    try (InputStream bodyStream = value.streamBody()) {
-                        int readValue = bodyStream.read();
-                        while (readValue != -1) {
-                            responseString.append((char) readValue);
-                            readValue = bodyStream.read();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                        .respondWith(new Responder<HttpResponse>() {
+                            @Override
+                            public void onResult(HttpResponse value) {
+                                try (InputStream bodyStream = value.streamBody()) {
+                                    int readValue = bodyStream.read();
+                                    while (readValue != -1) {
+                                        responseString.append((char) readValue);
+                                        readValue = bodyStream.read();
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
 
-                    latch.countDown();
-                }
+                                latch.countDown();
+                            }
 
-                @Override
-                public void onException(Exception exception) {
-                    latch.countDown();
-                }
-            });
+                            @Override
+                            public void onException(Exception exception) {
+                                latch.countDown();
+                            }
+                        });
 
         latch.await(1, TimeUnit.SECONDS);
 
@@ -213,28 +212,28 @@ public class ReactiveHTTPTest {
 
         // Actual test
         Request request = MobileCore.getInstance().getHttpLayer().newRequest()
-            .get(webServer.url("/test").toString())
-            .respondWith(new Responder<HttpResponse>() {
-                @Override
-                public void onResult(HttpResponse value) {
-                    try (InputStream bodyStream = value.streamBody()) {
-                        int readValue = bodyStream.read();
-                        while (readValue != -1) {
-                            responseString.append((char) readValue);
-                            readValue = bodyStream.read();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                        .get(webServer.url("/test").toString())
+                        .respondWith(new Responder<HttpResponse>() {
+                            @Override
+                            public void onResult(HttpResponse value) {
+                                try (InputStream bodyStream = value.streamBody()) {
+                                    int readValue = bodyStream.read();
+                                    while (readValue != -1) {
+                                        responseString.append((char) readValue);
+                                        readValue = bodyStream.read();
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
 
-                    latch.countDown();
-                }
+                                latch.countDown();
+                            }
 
-                @Override
-                public void onException(Exception exception) {
-                    latch.countDown();
-                }
-            });
+                            @Override
+                            public void onException(Exception exception) {
+                                latch.countDown();
+                            }
+                        });
 
 
         latch.await(100, TimeUnit.MILLISECONDS);
@@ -269,18 +268,18 @@ public class ReactiveHTTPTest {
 
         // Actual test
         MobileCore.getInstance().getHttpLayer().newRequest().get(webServer.url("/test").toString())
-            .respondWith(new Responder<HttpResponse>() {
-                @Override
-                public void onResult(HttpResponse value) {
-                    responseString.append(value.stringBody());
-                    latch.countDown();
-                }
+                        .respondWith(new Responder<HttpResponse>() {
+                            @Override
+                            public void onResult(HttpResponse value) {
+                                responseString.append(value.stringBody());
+                                latch.countDown();
+                            }
 
-                @Override
-                public void onException(Exception exception) {
-                    latch.countDown();
-                }
-            });
+                            @Override
+                            public void onException(Exception exception) {
+                                latch.countDown();
+                            }
+                        });
 
         latch.await(1, TimeUnit.SECONDS);
 
@@ -294,8 +293,9 @@ public class ReactiveHTTPTest {
     /**
      * This test will test that a Request which emits a Request that uses HTTP is properly called.
      * <p>
-     * This case would be if you need the output of a http request to be fed into a second http request
-     * but want to wrap the whole operation in a single request.  This is the case with PushService#register.
+     * This case would be if you need the output of a http request to be fed into a second http
+     * request but want to wrap the whole operation in a single request. This is the case with
+     * PushService#register.
      */
     @Test
     public void testFlatMapHttpResults() throws IOException, InterruptedException {
@@ -316,11 +316,12 @@ public class ReactiveHTTPTest {
                 String path = request.getPath();
                 if (Strings.isNullOrEmpty(request.getPath()) || path.equals("/")) {
                     MockResponse response = new MockResponse();
-                    response.setBody(firstResponse); //No path? return Hello
+                    response.setBody(firstResponse); // No path? return Hello
                     response.setStatus("HTTP/1.1 200");
                     return response;
                 } else {
-                    //the second request will append the output of the first to the path of the request,
+                    // the second request will append the output of the first to the path of the
+                    // request,
                     MockResponse response = new MockResponse();
                     response.setBody(request.getPath().replace("/", "") + secondResponse);
                     response.setStatus("HTTP/1.1 200");
@@ -334,19 +335,21 @@ public class ReactiveHTTPTest {
         // Actual test
         HttpServiceModule http = MobileCore.getInstance().getHttpLayer();
 
-            http.newRequest().get(webServer.url("").toString())
-            .requestMap((httpResponse) -> http.newRequest().get(webServer.url("" + httpResponse.stringBody()).toString())).respondWith(new Responder<HttpResponse>() {
-            @Override
-            public void onResult(HttpResponse value) {
-                responseString.append(value.stringBody());
-                latch.countDown();
-            }
+        http.newRequest().get(webServer.url("").toString())
+                        .requestMap((httpResponse) -> http.newRequest().get(
+                                        webServer.url("" + httpResponse.stringBody()).toString()))
+                        .respondWith(new Responder<HttpResponse>() {
+                            @Override
+                            public void onResult(HttpResponse value) {
+                                responseString.append(value.stringBody());
+                                latch.countDown();
+                            }
 
-            @Override
-            public void onException(Exception exception) {
-                latch.countDown();
-            }
-        });
+                            @Override
+                            public void onException(Exception exception) {
+                                latch.countDown();
+                            }
+                        });
 
         latch.await(100, TimeUnit.SECONDS);
         assertEquals(expectedResponse, responseString.toString());

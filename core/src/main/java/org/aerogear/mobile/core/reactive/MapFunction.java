@@ -7,5 +7,5 @@ package org.aerogear.mobile.core.reactive;
  * Android
  */
 public interface MapFunction<T, R> {
-    R map(T value)  throws Exception;
+    R map(T value) throws Exception;
 }

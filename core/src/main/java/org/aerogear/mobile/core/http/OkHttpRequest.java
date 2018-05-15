@@ -63,7 +63,7 @@ public class OkHttpRequest implements HttpRequest {
 
     @Override
     public org.aerogear.mobile.core.reactive.Request<HttpResponse> post(final String url,
-                                                                        final byte[] body) {
+                    final byte[] body) {
 
         AtomicReference<OkHttpResponse> response = new AtomicReference<>();
         return Requester.call(() -> {
@@ -91,7 +91,7 @@ public class OkHttpRequest implements HttpRequest {
 
     @Override
     public org.aerogear.mobile.core.reactive.Request<HttpResponse> put(final String url,
-                                                                       final byte[] body) {
+                    final byte[] body) {
 
         AtomicReference<OkHttpResponse> response = new AtomicReference<>();
         return Requester.call(() -> {

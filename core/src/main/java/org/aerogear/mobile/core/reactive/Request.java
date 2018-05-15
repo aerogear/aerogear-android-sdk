@@ -33,8 +33,8 @@ public interface Request<T> {
      * the thread the request is running on, but this behavior is overridden with
      * {@link #cancelWith(Canceller)}.
      *
-     * Please note, when you cancel a request responders be called if cancelling
-     * them raises an exception or immediately generates a value.
+     * Please note, when you cancel a request responders be called if cancelling them raises an
+     * exception or immediately generates a value.
      */
     void cancel();
 
@@ -84,7 +84,7 @@ public interface Request<T> {
     <R> Request<R> map(MapFunction<? super T, ? extends R> mapper);
 
     /**
-     * This method is meant to be called if the type of a Request is itself a request.  In the event
+     * This method is meant to be called if the type of a Request is itself a request. In the event
      * that it isn't a request then {@link #map(MapFunction)} should be used instead, but the method
      * should work normally.
      *
