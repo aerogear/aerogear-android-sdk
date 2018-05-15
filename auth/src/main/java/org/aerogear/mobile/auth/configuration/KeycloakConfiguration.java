@@ -95,8 +95,8 @@ public class KeycloakConfiguration {
     }
 
     /**
-     * Get the Auth Server URL string of the Keycloak singleThreadService
-     * This URL should only be used to get the issuer field for token verification.
+     * Get the Auth Server URL string of the Keycloak singleThreadService This URL should only be
+     * used to get the issuer field for token verification.
      *
      * @return the Auth Server URL of the Keycloak singleThreadService
      */
