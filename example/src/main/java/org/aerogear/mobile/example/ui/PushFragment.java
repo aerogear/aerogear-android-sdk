@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.reactive.Responder;
@@ -117,25 +116,25 @@ public class PushFragment extends BaseFragment implements MessageHandler {
         unregister.setEnabled(false);
 
         PushService pushService = MobileCore.getInstance().getService(PushService.class);
-        pushService.unregisterDevice(new Callback() {
-            @Override
-            public void onSuccess() {
-                new AppExecutors().mainThread().execute(() -> registered(false));
+        pushService.unregisterDevice().respondOn(new AppExecutors().mainThread())
+                        .respondWith(new Responder<Boolean>() {
+                            @Override
+                            public void onResult(Boolean value) {
+                                new AppExecutors().mainThread().execute(() -> registered(false));
+                            }
 
-            }
-
-            @Override
-            public void onError(Throwable error) {
-                refreshToken.setEnabled(false);
-                register.setEnabled(false);
-                MobileCore.getLogger().error(error.getMessage(), error);
-                new AppExecutors().mainThread().execute(() -> {
-                    registered(true);
-                    Toast.makeText(getContext(), R.string.device_register_error, Toast.LENGTH_LONG)
-                                    .show();
-                });
-            }
-        });
+                            @Override
+                            public void onException(Exception error) {
+                                refreshToken.setEnabled(false);
+                                register.setEnabled(false);
+                                MobileCore.getLogger().error(error.getMessage(), error);
+                                new AppExecutors().mainThread().execute(() -> {
+                                    registered(true);
+                                    Toast.makeText(getContext(), R.string.device_register_error,
+                                                    Toast.LENGTH_LONG).show();
+                                });
+                            }
+                        });
     }
 
     private void registered(boolean registered) {
