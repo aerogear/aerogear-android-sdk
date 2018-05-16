@@ -1,0 +1,461 @@
+ca75f2098ce36a72659d41b8c8a5d90928c4d6a3;Tom Jackman;TommyJ1994@users.noreply.github.com;1521018366;GitHub;noreply@github.com;1521018366;Merge-pull-request-149-from-TommyJ1994-add-user-attributes-docs
+ee50657f79e25698391ff4dcb312953e4a249b8c;Tom Jackman;tom.dls@hotmail.com;1520962396;Tom Jackman;tom.dls@hotmail.com;1520962626;use-opt-to-get-json-values
+199b2639215db054457aeba96118b76249b7f335;Tom Jackman;tom.dls@hotmail.com;1520960543;Tom Jackman;tom.dls@hotmail.com;1520960543;add-typed-methods
+44446977fa3c20adde3072f0801b696b37b663e9;Tom Jackman;tom.dls@hotmail.com;1520947492;Tom Jackman;tom.dls@hotmail.com;1520947492;update-docs-example-code
+31234496cf87fb87aa5f2bff718eaf33c36944d3;Tom Jackman;tom.dls@hotmail.com;1520946913;Tom Jackman;tom.dls@hotmail.com;1520946913;return-null-by-default
+784e7218e28207669c41d3c2ba95175bc891a0b2;Tom Jackman;tom.dls@hotmail.com;1520938522;Tom Jackman;tom.dls@hotmail.com;1520938522;add-unit-test
+61e3875372e4d70156e2232d067fe39f9cd39f66;Tom Jackman;tom.dls@hotmail.com;1520935669;Tom Jackman;tom.dls@hotmail.com;1520935669;apply-spotless
+e55140e3f93005f8894ae81441858b02534b0658;Tom Jackman;tom.dls@hotmail.com;1520872582;Tom Jackman;tom.dls@hotmail.com;1520872582;update-documentation-with-example
+0286093e4d0b1378d5457a0df8acfba9ba2b7c13;Tom Jackman;tom.dls@hotmail.com;1520871799;Tom Jackman;tom.dls@hotmail.com;1520872303;add-custom-attribute-getter
+42e22582c0fb7b7c4f284b7c77db481b31990059;Tom Jackman;tom.dls@hotmail.com;1520853837;Tom Jackman;tom.dls@hotmail.com;1520872012;add-custom-user-attributes-docs
+9cdc1f8bc2986c47812f87e77cdf8a156d6cee99;Aiden Keating;aidenkeating@users.noreply.github.com;1520859713;GitHub;noreply@github.com;1520859713;Merge-pull-request-145-from-aidenkeating-getting-started-video
+4221de25f3ae3320df5cfd5fc9e5a00fc8b0b81e;Aiden Keating;akeating@redhat.com;1520499057;Aiden Keating;akeating@redhat.com;1520499592;Add-getting-started-video-to-auth-SDK
+9e88df56f10f40ee993912c02f269276252f724d;David Martin;david-martin@users.noreply.github.com;1520439625;GitHub;noreply@github.com;1520439625;Merge-pull-request-142-from-aerogear-metrics-docs-update
+9036d7c4f82b4dec94091fa1fc01c14f5e0441b0;Wojciech Trocki;wtrocki@redhat.com;1520438987;GitHub;noreply@github.com;1520438987;Remove-link-to-metrics-contributor-guide
+1ee80abb472842685efafcaac0609dd1ad50e56e;Daniel Passos;daniel@passos.me;1520437401;GitHub;noreply@github.com;1520437401;Merge-pull-request-141-from-wojta-mobile-services-fix
+76c83b60192cfef73945a6e58ab69ee2229b3191;Vojtěch Sázel;vojtech@sazel.cz;1520436858;Vojtěch Sázel;vojtech@sazel.cz;1520436858;fixed-mobile-services-json-it-was-broken
+6afae081011f8a341dcaa8381f92f5f7914a0d3b;Paolo Bueno;paolobueno@users.noreply.github.com;1520432728;GitHub;noreply@github.com;1520432728;Merge-pull-request-137-from-paolobueno-security-metrics-testing
+744acea4835ea7c9262fab3936748caddfe9d70c;Paolo Bueno;paolohaji@gmail.com;1520426821;Paolo Bueno;paolohaji@gmail.com;1520429007;Rename-getDisplayName-to-getName-and-getType-to-getId
+84a066160d9f84b30f072d0abccd55bc97bfa642;Paolo Bueno;paolohaji@gmail.com;1520420069;Paolo Bueno;paolohaji@gmail.com;1520420426;Use-get-type-instead-of-display-name
+1dbbadbd9ba23ce6f26ca94e49a20affe8d4043f;Paolo Bueno;paolohaji@gmail.com;1520418172;Paolo Bueno;paolohaji@gmail.com;1520418420;Finish-updating-references-to-getName
+44976f6ec7f200e3ac40e301d6ec08df2d748de0;Paolo Bueno;paolohaji@gmail.com;1520392155;Paolo Bueno;paolohaji@gmail.com;1520418420;Log-metrics-server-response
+a432bb50e1c55bb040d4b3763fbc5383ddcd8cb9;Paolo Bueno;paolohaji@gmail.com;1520353814;Paolo Bueno;paolohaji@gmail.com;1520418420;Add-display-name-and-type-keys-to-metrics-json
+5284e4fbd7d00bc5577e36ce262aa4656c7b900e;Aiden Keating;aidenkeating@users.noreply.github.com;1520418357;GitHub;noreply@github.com;1520418357;Merge-pull-request-134-from-aidenkeating-first-last-names
+5bbc424a5842f98a79a86a61d9373558f4287a4b;Aiden Keating;akeating@redhat.com;1520354060;Aiden Keating;akeating@redhat.com;1520415562;Give-users-first-and-last-names
+f75354705ff204615be952b5fd1296c9dc1c9b5e;Ciaran Roche;ciaranroche@hotmail.co.uk;1520413949;GitHub;noreply@github.com;1520413949;Merge-pull-request-130-from-ciaranRoche-add-check-to-docs
+194aedab0d881ad2202792ad30605ffd6843aaf7;ciaranRoche;ciaranroche@hotmail.co.uk;1520412845;ciaranRoche;ciaranroche@hotmail.co.uk;1520412979;name-changed
+a34d677351ead33489728cb9f169c42a43b89b50;ciaranRoche;ciaranroche@hotmail.co.uk;1520412134;ciaranRoche;ciaranroche@hotmail.co.uk;1520412979;changed-check-names
+f0c411ff3c884fff13283edb0144c2a8979c7e8e;ciaranRoche;ciaranroche@hotmail.co.uk;1520348985;ciaranRoche;ciaranroche@hotmail.co.uk;1520412979;removed-todo-comment
+658bcb035daeb6c960077922c1576bcc8b3e64e7;ciaranRoche;ciaranroche@hotmail.co.uk;1520334092;ciaranRoche;ciaranroche@hotmail.co.uk;1520412979;removed-broken-javadoc-links
+1ad575ec036a92ea51085b8c700a199f23a66740;ciaranRoche;ciaranroche@hotmail.co.uk;1520331582;ciaranRoche;ciaranroche@hotmail.co.uk;1520412979;added-backup-and-encryption-checks-to-docs
+09b2f342ec3cae4d0fe302c4b6dd2adce3ed73ad;Daniel Passos;daniel@passos.me;1520367421;GitHub;noreply@github.com;1520367421;Merge-pull-request-135-from-aerogear-release
+2fda76ba6d9d97f39ea7e4fb342c00f5f90294e3;Daniel Passos;daniel@passos.me;1520367016;Daniel Passos;daniel@passos.me;1520367016;prepare-for-next-development-iteration
+3b67064834528dee92597c75d1e16425cbc8b78f;Daniel Passos;daniel@passos.me;1520365575;Daniel Passos;daniel@passos.me;1520365575;AeroGear-Android-SDK-0.1.0-2018-09-release
+455dc6032f9fa7cc3f996f6d32c5aa62fb507114;Daniel Passos;daniel@passos.me;1520364843;GitHub;noreply@github.com;1520364843;Merge-pull-request-128-from-secondsun-spotless
+3c1077601107b4f57ea08c3aeb8fd373b274cc64;Summers Pittman;secondsun@gmail.com;1520364499;Summers Pittman;secondsun@gmail.com;1520364631;SpotlessApply
+e78fd83f0700770c34e238552372075fb739434f;Summers Pittman;secondsun@gmail.com;1520258233;Summers Pittman;secondsun@gmail.com;1520364631;Removing-custom-clean-task-it-caused-a-gradle-error
+6a7b5d473596809bc560c2bbbcc46a72a59a9b67;Summers Pittman;secondsun@gmail.com;1520258206;Summers Pittman;secondsun@gmail.com;1520364631;Adding-spotless
+000106e054823a225e7f6b0e91a629da56a7ae3f;Peter Braun;pbraun@redhat.com;1520357163;GitHub;noreply@github.com;1520357163;Merge-pull-request-125-from-pb82-redirect-test
+d9743fd06871a1dfc46e52e8c72ac55a0cd14c54;Peter Braun;pbraun@redhat.com;1520356522;Peter Braun;pbraun@redhat.com;1520356539;update-to-latest-bom
+f765d45b8c521ec3b15e1c5a549ffd866e0547d8;Peter Braun;pbraun@redhat.com;1520325136;Peter Braun;pbraun@redhat.com;1520356539;use-mockwebserver-for-testing
+99695d1d1500de06203a135a1b234ed10b31d4b7;Peter Braun;pbraun@redhat.com;1520007184;Peter Braun;pbraun@redhat.com;1520356539;add-a-test-for-http-redirects
+a71f16b880f1050b52357749f1082dbd490b3eb3;Tom Jackman;TommyJ1994@users.noreply.github.com;1520350598;GitHub;noreply@github.com;1520350598;Merge-pull-request-133-from-TommyJ1994-expose-tokens
+a08b61f0e76a5b12844c035ebed248a0c764b266;Tom Jackman;tom.dls@hotmail.com;1520348786;Tom Jackman;tom.dls@hotmail.com;1520348816;expose-refresh-token-add-docs
+ffaa79111c2d010dd731d0e4a635b12f8cc79558;Hoyt Summers Pittman;secondsun@gmail.com;1520347250;GitHub;noreply@github.com;1520347250;Merge-pull-request-118-from-TommyJ1994-add-logout-callback
+d881193d477903daacdcc57cc8a7c18542a967dc;Hoyt Summers Pittman;secondsun@gmail.com;1520347058;GitHub;noreply@github.com;1520347058;Merge-branch-master-into-add-logout-callback
+c7df5c6c7e1ee7abdc4bbda39a56a0af887d226d;Paolo Bueno;paolobueno@users.noreply.github.com;1520343896;GitHub;noreply@github.com;1520343896;Merge-pull-request-126-from-paolobueno-AGDROID-771-batch-security-metrics
+73b17fb013ae8f007db9764f3edb8f5af416f1d8;Paolo Bueno;paolohaji@gmail.com;1520343201;Paolo Bueno;paolohaji@gmail.com;1520343201;Rename-listener-interface-method-to-onComplete
+ed523c606ed9c98f67370016d9dabef98a38054f;Paolo Bueno;paolohaji@gmail.com;1520341997;Paolo Bueno;paolohaji@gmail.com;1520342499;Build-only-a-single-result-metric
+8a7df80b0492ca71ee7a0425102300a6ede30535;Paolo Bueno;paolohaji@gmail.com;1520269910;Paolo Bueno;paolohaji@gmail.com;1520342499;Make-Metrics-generic
+6f85e4f184564ac96538b2deca1a61af420bacde;Paolo Bueno;paolohaji@gmail.com;1520006736;Paolo Bueno;paolohaji@gmail.com;1520342499;Fix-logging-for-Metrics
+7d6ef9bbbeee34da0ac100cd25b61eafa8b673a4;Paolo Bueno;paolohaji@gmail.com;1520006588;Paolo Bueno;paolohaji@gmail.com;1520342499;Use-final
+5b5357c34494dd3f91780e15541b32d9c1f26e0c;Paolo Bueno;paolohaji@gmail.com;1520005361;Paolo Bueno;paolohaji@gmail.com;1520342499;Fix-tests
+98fc804c17db126c21a0c7e2af8cabb30b02fe03;Paolo Bueno;paolohaji@gmail.com;1520005233;Paolo Bueno;paolohaji@gmail.com;1520342499;Fallback-to-Object-on-Metrics-interface-in-order-to-accept-JSONArray
+94d7b09b6e95fe96fef2803e5b1e3c2e29b9da00;Paolo Bueno;paolohaji@gmail.com;1519995777;Paolo Bueno;paolohaji@gmail.com;1520342499;Improve-logging-calls
+0e9ba315da4c6063c77a85fc22dc6e89fb675603;Paolo Bueno;paolohaji@gmail.com;1519994759;Paolo Bueno;paolohaji@gmail.com;1520342499;Change-Metrics-interface-to-use-JSONObject-over-Map-String-String
+ea8971c142d4182d007672d6c0e02ef2e624d0fe;Paolo Bueno;paolohaji@gmail.com;1519931691;Paolo Bueno;paolohaji@gmail.com;1520342499;Update-metric-api-to-support-multiple-results
+5ce5e77e01d107145d4bc2294eb9444331fc3a53;Paolo Bueno;paolohaji@gmail.com;1519931638;Paolo Bueno;paolohaji@gmail.com;1520342499;Change-networkExecutor-type-to-ExecutorService
+322edbfde7dbda5fb62da92ffb579a88dd458433;Massimiliano Ziccardi;mziccard@redhat.com;1520342289;Massimiliano Ziccardi;mziccard@redhat.com;1520342289;Made-the-new-method-accepting-a-list-of-listener-private-to-hide-it-from-the-end-user
+109a20884c9fbc1493e3aa74e304be7b760d0c59;Massimiliano Ziccardi;mziccard@redhat.com;1520335357;Massimiliano Ziccardi;mziccard@redhat.com;1520335357;Removed-if-removed-double-call-to-getChecks
+63af571a8d9788843a02a8b0dacf09abcd19b1e9;Massimiliano Ziccardi;mziccard@redhat.com;1520335089;Massimiliano Ziccardi;mziccard@redhat.com;1520335089;Removed-double-for-loop
+4078f5410a875ef390c88dc66fbe5a0510837968;Tom Jackman;tom.dls@hotmail.com;1520329563;Tom Jackman;tom.dls@hotmail.com;1520329563;fix-test
+a9e4f427092301a91d3c384147ee288d75860f30;Massimiliano Ziccardi;mziccard@redhat.com;1520329159;Massimiliano Ziccardi;mziccard@redhat.com;1520329159;Added-metric-publishing-batching
+93a54fe332c45fe6f44be7eb34c2c0aa3dfda129;Tom Jackman;tom.dls@hotmail.com;1520241338;Tom Jackman;tom.dls@hotmail.com;1520242030;update-logout-functionality
+daf453a6a7154272ce16c464d73b9d7a451b4758;Tom Jackman;tom.dls@hotmail.com;1519903442;Tom Jackman;tom.dls@hotmail.com;1520241370;create-logout-test
+ffc0ac3de8c628ca0403779f1cbe4428b89bc8da;Tom Jackman;tom.dls@hotmail.com;1519898495;Tom Jackman;tom.dls@hotmail.com;1520241369;update-logout-documentation
+6b656e174b866211c22d24eb5f352831b5c39634;Tom Jackman;tom.dls@hotmail.com;1519896606;Tom Jackman;tom.dls@hotmail.com;1520241368;expose-delete-tokens-function
+15ba30ca45f47c8ca3fcba84eab5ff4415687d82;Tom Jackman;tom.dls@hotmail.com;1519836712;Tom Jackman;tom.dls@hotmail.com;1520241361;update-javadoc
+f329e1abd790cd7241de3ffc9e96d5a9d9bd1578;Tom Jackman;tom.dls@hotmail.com;1519836240;Tom Jackman;tom.dls@hotmail.com;1520241356;add-logout-callback
+b00be296390b928bff11fca83398907b34ba4442;Summers Pittman;secondsun@gmail.com;1520006514;Summers Pittman;secondsun@gmail.com;1520006514;Merge-commit-refs-pull-124-head-of-github.com-aerogear-aerogear-android-sdk
+b691bd53b6f8b605f16d926600db58eb4997224b;Peter Braun;pbraun@redhat.com;1520005204;Peter Braun;pbraun@redhat.com;1520005204;remove-unused-exception
+4cd642ceed0afd559c1a6889a6bd6d9eca36de80;Peter Braun;pbraun@redhat.com;1520005039;Peter Braun;pbraun@redhat.com;1520005039;run-onSuccess-for-every-response
+1f72c69770e688ca6b585cafad0edc0406d0ebfe;Peter Braun;pbraun@redhat.com;1519999250;GitHub;noreply@github.com;1519999250;Merge-pull-request-119-from-pb82-http-error-handling
+5a1143d0f5a7428c49457d45ff23bf5b01d9f923;Peter Braun;pbraun@redhat.com;1519913603;Peter Braun;pbraun@redhat.com;1519997026;add-onSuccess-handler-and-run-onComplete-always
+83233e8b838af6d3c3795cd070f06f2da30c8082;Peter Braun;pbraun@redhat.com;1519903423;Peter Braun;pbraun@redhat.com;1519997026;cleanup
+994f6a166b721470d0cfb853c57b730e49290cf0;Peter Braun;pbraun@redhat.com;1519895143;Peter Braun;pbraun@redhat.com;1519997026;implement-http-error-handling
+27529c649ad259d45a9a8a614df76342f45b06c4;Ciaran Roche;ciaranroche@hotmail.co.uk;1519989940;GitHub;noreply@github.com;1519989940;Merge-pull-request-121-from-ciaranRoche-AEROGEAR-2209-encryption-check
+3d1a57cbaada0d6d25d9fc1e7fa574eed2f8acd1;ciaranRoche;ciaranroche@hotmail.co.uk;1519986346;ciaranRoche;ciaranroche@hotmail.co.uk;1519986346;requested-changes
+739eda8cce6a399a642962e456fb30c1ac42e2d4;ciaranRoche;ciaranroche@hotmail.co.uk;1519918185;ciaranRoche;ciaranroche@hotmail.co.uk;1519918185;fixed-conflicts-add-some-javadoc
+1719d2d59407d36c6bad13ed67878ed86bf6176f;ciaranRoche;ciaranroche@hotmail.co.uk;1519917688;ciaranRoche;ciaranroche@hotmail.co.uk;1519918109;removed-unused-imports
+b66385721d2356c27f4127618e4337b9fdf6f7e3;ciaranRoche;ciaranroche@hotmail.co.uk;1519917509;ciaranRoche;ciaranroche@hotmail.co.uk;1519918109;encryption-check-added
+c6d99090c8005449640f3fda018991da649317d5;Rachael O'Regan;roregan@redhat.com;1519916566;GitHub;noreply@github.com;1519916566;Merge-pull-request-106-from-rachael-oregan-AEROGEAR-1981-1
+6438d95c11db8ec08753ef9a0cb8feb02b519689;rachael-oregan;roregan@redhat.com;1519903427;rachael-oregan;roregan@redhat.com;1519916065;requested-changes
+0640dbd95bbe1a85db279ec328e7a079661ea54a;rachael-oregan;roregan@redhat.com;1519903311;rachael-oregan;roregan@redhat.com;1519916065;refactor-unit-test
+f97afd7eb1c0e3a9f45f1b6aed5e9dbe57615178;rachael-oregan;roregan@redhat.com;1519899899;rachael-oregan;roregan@redhat.com;1519916065;remove-throws-from-child-classes-and-refactoring
+cbe4d0c1016ebdfc98daf79a59cdfbb7a2937848;rachael-oregan;roregan@redhat.com;1519840420;rachael-oregan;roregan@redhat.com;1519916065;remove-broken-links-to-T-type-and-refactor
+7f835b2e692b453b00ffbfefc220f77c15c5f6b7;rachael-oregan;roregan@redhat.com;1519811252;rachael-oregan;roregan@redhat.com;1519916064;fix-javadoc-errors-and-remove-javadoc-from-private-fields
+225bb1a75b83f6fc34797aa4a4cf9b67a81cf61d;rachael-oregan;roregan@redhat.com;1519733444;rachael-oregan;roregan@redhat.com;1519916064;requested-changes
+0276dc27aa07498561b6975da8e98a9c4bab202b;rachael-oregan;roregan@redhat.com;1519727036;rachael-oregan;roregan@redhat.com;1519916064;AEROGEAR-1981-API-Documentation-using-Javadoc
+3c08e6ab166ee52235f71b6822a93f436db551b4;Rachael O'Regan;roregan@redhat.com;1519915992;GitHub;noreply@github.com;1519915992;Merge-pull-request-77-from-rachael-oregan-AEROGEAR-1981
+77cd75c483fa8a25b85f348b63603a73ced5bbb8;rachael-oregan;roregan@redhat.com;1519910678;rachael-oregan;roregan@redhat.com;1519915647;add-reference-to-the-method-used-for-the-check-result
+6e1bdaf60f5d80dc3a068e2ece9004669fbf8253;rachael-oregan;roregan@redhat.com;1519910114;rachael-oregan;roregan@redhat.com;1519915647;fix-typo
+966650209e1ea11e36055257380e6f1af7972707;Paolo Bueno;paolohaji@gmail.com;1519907427;rachael-oregan;roregan@redhat.com;1519915647;Address-comments
+316247de642dbd27b435ac5ac96871b9eb71da3d;Paolo Bueno;paolohaji@gmail.com;1519906871;rachael-oregan;roregan@redhat.com;1519915647;Remove-redundant-intro-paragraphs
+7917997a0861ff36c85a08449c1c15ad1e33d6ad;Paolo Bueno;paolohaji@gmail.com;1519833285;rachael-oregan;roregan@redhat.com;1519915647;Use-correct-method-to-get-a-builder
+e777554c170cb1de15be4f119df43767c93d501e;Paolo Bueno;paolohaji@gmail.com;1519830484;rachael-oregan;roregan@redhat.com;1519915647;Add-metrics-integration-api-examples
+077a03ca9051a9507dcfb620a9d89eb734063d1d;Paolo Bueno;paolohaji@gmail.com;1519822172;rachael-oregan;roregan@redhat.com;1519915647;Add-WIP-metrics-section
+ef3cf92ab20cad83a42aa39521ddff02886941bd;Paolo Bueno;paolohaji@gmail.com;1519822086;rachael-oregan;roregan@redhat.com;1519915647;Graft-introduction-from-duplicated-PR
+6203cd2495709990e85be9cb1489368d2ebbc7a0;rachael-oregan;roregan@redhat.com;1519839267;rachael-oregan;roregan@redhat.com;1519915647;rephrase-use-case-section-in-first-paragraph
+30a6e77607cbbbbc583dc2fb672dbb1cabf11185;rachael-oregan;roregan@redhat.com;1519836150;rachael-oregan;roregan@redhat.com;1519915647;requested-changes
+d7a3b4f75db5c4e8c5031846dfc74a191cf38cdd;rachael-oregan;roregan@redhat.com;1519650780;rachael-oregan;roregan@redhat.com;1519915647;update-to-reference-new-refactored-code
+1808289baa69278cfe2029981156926af92e43c3;rachael-oregan;roregan@redhat.com;1519324122;rachael-oregan;roregan@redhat.com;1519915647;add-sections-for-single-and-multiple-checks
+9c2f361cea332a30d5fe8a8ba411156e0a36e31e;rachael-oregan;roregan@redhat.com;1519303166;rachael-oregan;roregan@redhat.com;1519915647;AEROGEAR-1981-Self-Defence-Check-API-Docs
+b16ca428bac8d7e252948e36221612e8228eae4b;Aiden Keating;aidenkeating@users.noreply.github.com;1519914128;GitHub;noreply@github.com;1519914128;Merge-pull-request-114-from-aidenkeating-AEROGEAR-2208-backup-flag
+5595eb33fd2e9f90b3aa2c4acacf3e574c50616e;Aiden Keating;akeating@redhat.com;1519818905;Aiden Keating;akeating@redhat.com;1519907669;AEROGEAR-2208-Add-allow-backup-flag-check
+b64cc37892c4e5176c92512fa85056b9d66bd2b4;Wojciech Trocki;wtrocki@redhat.com;1519906780;GitHub;noreply@github.com;1519906780;Merge-pull-request-120-from-aerogear-timeouts
+f6c243a42059ff1c2a4661177bd5f2f341d95b9f;Wojciech Trocki;wtrocki@redhat.com;1519906137;Wojciech Trocki;wtrocki@redhat.com;1519906403;Extract-values-to-fields
+812d919f11e91d32cc3302e29e3ff249a683213e;Wojciech Trocki;wtrocki@redhat.com;1519901328;Wojciech Trocki;wtrocki@redhat.com;1519906403;Adjust-default-network-timeouts
+c8fdf34389d99c0de23938abaf9a4396e99829a8;Daniel Passos;daniel@passos.me;1519906192;GitHub;noreply@github.com;1519906192;Merge-pull-request-72-from-josemigallas-tests_improvements
+83b1c21cad7fd7bfacb776751d0d617226063e7c;Jose Miguel Gallas;josemigallas@gmail.com;1519381321;Jose Miguel Gallas;josemigallas@gmail.com;1519893789;fixes-test-and-adds-new-case
+1c790b58a27a36a7cd631ba4463612fb8f415208;Jose Miguel Gallas;josemigallas@gmail.com;1519380466;Jose Miguel Gallas;josemigallas@gmail.com;1519893740;removes-unused-and-redundant-constructor
+b2169cfdb704c9706ad3ba2e6529dc102c7db5d0;Jose Miguel Gallas;josemigallas@gmail.com;1519380438;Jose Miguel Gallas;josemigallas@gmail.com;1519893740;Restraining-config-file-visibility
+bb021f0bd97ecd0c00eef5cbd297c14d4b4a7c00;Jose Miguel Gallas;josemigallas@gmail.com;1519380377;Jose Miguel Gallas;josemigallas@gmail.com;1519893740;moving-constant-up-to-main-class
+2a00832cf6180c48149de57071fc297ad6b081ed;Jose Miguel Gallas;josemigallas@gmail.com;1519289597;Jose Miguel Gallas;josemigallas@gmail.com;1519893740;Refactors-tests-and-improves-coverage
+242e4b027edbb7c76e1369616a3169209b980e6f;Paolo Bueno;paolobueno@users.noreply.github.com;1519839650;GitHub;noreply@github.com;1519839650;Merge-pull-request-116-from-paolobueno-add-metrics-executor-example
+c1e08e2c9652f431d6e7c7c12cdaf32ffb487dae;Paolo Bueno;paolohaji@gmail.com;1519833494;Paolo Bueno;paolohaji@gmail.com;1519833494;Merge-executor-declaration
+7c91d1963f294ddc755b92aafb0a983300de84ff;Paolo Bueno;paolohaji@gmail.com;1519833079;Paolo Bueno;paolohaji@gmail.com;1519833079;Use-newSyncExecutor
+9f242300807e807528f679044b74bd4c94751cd7;Paolo Bueno;paolohaji@gmail.com;1519832981;Paolo Bueno;paolohaji@gmail.com;1519832981;Revert-making-builders-public
+83e29379cf1765364a12fdfb5d38b8b1daf86c2b;Paolo Bueno;paolohaji@gmail.com;1519831810;Paolo Bueno;paolohaji@gmail.com;1519832646;Change-example-to-use-executor-with-metrics
+97627e0067d2e69340ef49ed30e474fa4efc1c8d;Paolo Bueno;paolohaji@gmail.com;1519831803;Paolo Bueno;paolohaji@gmail.com;1519832646;Make-builders-public
+388eee08435b3b5b7ea426b6eb0163005e5331d0;Summers Pittman;secondsun@gmail.com;1519826961;Summers Pittman;secondsun@gmail.com;1519826961;Merge-branch-circleci_generate_maven_artifacts-of-github.com-secondsun-aerogear-android-sdk
+32f566b9f3f63e058c8b5cd4db1f204a7ee12d6e;Summers Pittman;secondsun@gmail.com;1519768294;Summers Pittman;secondsun@gmail.com;1519826801;Fixing-javadoc-warnings-and-errors
+d3b198af4cbd1ca469f828afcb8709d02e528e51;Summers Pittman;secondsun@gmail.com;1519764406;Summers Pittman;secondsun@gmail.com;1519826350;JavaDoc-warnings-now-fail-the-build
+03899ed0695042ab24a96820b620fbc9a5750e02;Summers Pittman;secondsun@gmail.com;1519764180;Summers Pittman;secondsun@gmail.com;1519826350;Bumping-Android-version
+2f85b49501b2ae0210cd8f391b3697e2045ce6f4;Summers Pittman;secondsun@gmail.com;1519763797;Summers Pittman;secondsun@gmail.com;1519826350;Adding-in-gradlew-install-to-circle-ci
+59d2a984947d7699feb143712dfa4c0e616ec231;Daniel Passos;daniel@passos.me;1519825462;GitHub;noreply@github.com;1519825462;Merge-pull-request-113-from-aerogear-metrics-docs
+cb02fc7e60ad97638bcdd4f28fb1217053cd5fec;Wojciech Trocki;wtrocki@redhat.com;1519824459;Daniel Passos;daniel@passos.me;1519825312;Metrics
+c1b641adfd4702797fe10593b528337ab725e2b8;Daniel Passos;daniel@passos.me;1519823746;GitHub;noreply@github.com;1519823746;Merge-pull-request-110-from-aerogear-github-code-owners
+7be1978e32d8fe897d23aebb7f51235f61453115;Daniel Passos;daniel@passos.me;1519771551;Daniel Passos;daniel@passos.me;1519823513;Add-code-owners
+6490d06bb52f2836108974ef834b1f9fa865b95f;Massimiliano Ziccardi;mziccard@redhat.com;1519817638;GitHub;noreply@github.com;1519817638;Merge-pull-request-112-from-ziccardi-added-base-class
+0522347b2e9c2ec8931daa8a6461eea74670419c;Massimiliano Ziccardi;mziccard@redhat.com;1519813015;Massimiliano Ziccardi;mziccard@redhat.com;1519817050;Added-base-class-to-remove-duplicate-code
+5c33829b88144ae244ead8ab76c9a2be748d82d7;Ciaran Roche;ciaranroche@hotmail.co.uk;1519816868;GitHub;noreply@github.com;1519816868;Merge-pull-request-111-from-ciaranRoche-securityCheckResult-fix
+5ef6400f8dbdc614eb0860eaa5ca8a83b53b28e0;ciaranRoche;ciaranroche@hotmail.co.uk;1519815885;ciaranRoche;ciaranroche@hotmail.co.uk;1519815885;revert-back
+d8e2c5fccaa885eb0b69d0e11307e6d1603a5614;ciaranRoche;ciaranroche@hotmail.co.uk;1519814020;ciaranRoche;ciaranroche@hotmail.co.uk;1519814020;fix-typo
+6af11263725e055477a2df1723eafa0d53942f27;ciaranRoche;ciaranroche@hotmail.co.uk;1519813839;ciaranRoche;ciaranroche@hotmail.co.uk;1519813839;requested-change
+1deede1c29b509a71c45cf2aba4b47e00622d827;ciaranRoche;ciaranroche@hotmail.co.uk;1519811974;ciaranRoche;ciaranroche@hotmail.co.uk;1519811974;casting-fixed
+7b503f1c0106f5b63c4e4fc2dc95cd0e36cfb6c4;Ciaran Roche;ciaranroche@hotmail.co.uk;1519743766;GitHub;noreply@github.com;1519743766;AEROGEAR-2110-2111-2112-Self-Defense-Checks-Added-69
+b482268f78f5db02c60913ce34c0a708b0e5d823;Daniel Passos;daniel@passos.me;1519734690;Daniel Passos;daniel@passos.me;1519734690;prepare-for-next-development-iteration
+2323c4b82c06b63b0b82adc8f8ea196e022ac5ea;Wei Li;wei.li@redhat.com;1519723990;GitHub;noreply@github.com;1519723990;Merge-pull-request-102-from-aerogear-fix-type
+0ef6a041dc42ca0888723c734868c5cab5a5840a;Tom Jackman;TommyJ1994@users.noreply.github.com;1519722781;GitHub;noreply@github.com;1519722781;fix-type
+c36fbe908f4f096050b64b4bacac5cdef75ea658;Daniel Passos;daniel@passos.me;1519672676;Daniel Passos;daniel@passos.me;1519672676;Release-version-0.1.0-2018-07
+79ff81aef6513a833713d8b132e3555b471ea68f;Daniel Passos;daniel@passos.me;1519671864;GitHub;noreply@github.com;1519671864;Merge-pull-request-101-from-secondsun-new_version
+504b3247623cb24813409cacfed0e03f8770d143;Summers Pittman;secondsun@gmail.com;1519671307;Summers Pittman;secondsun@gmail.com;1519671555;New-version-number
+7eed54e4f5840edf814006fd610946f4516a4179;Daniel Passos;daniel@passos.me;1519671337;GitHub;noreply@github.com;1519671337;Merge-pull-request-99-from-secondsun-javadoc_fixes
+54ebeb683cd1d4063e0cb04b23951a3e81126806;Summers Pittman;secondsun@gmail.com;1519670960;Summers Pittman;secondsun@gmail.com;1519670960;JavaDoc-Fixes
+925ebfc378e70777740c6ae81502ea4b1d91a971;Rachael O'Regan;roregan@redhat.com;1519657897;GitHub;noreply@github.com;1519657897;Merge-pull-request-86-from-rachael-oregan-AEROGEAR-1978-1
+80fca2909547cfc10d124439bb5808437297884a;rachael-oregan;roregan@redhat.com;1519654443;rachael-oregan;roregan@redhat.com;1519654443;refactor-after-rebase
+311333d3c8c2a560ad06622a33de1364741cbc20;rachael-oregan;roregan@redhat.com;1519641454;rachael-oregan;roregan@redhat.com;1519654116;add-sanity-check-to-security-check-and-refactor
+001917e534c193021b8a748a3d0f0d585690126b;rachael-oregan;roregan@redhat.com;1519318648;rachael-oregan;roregan@redhat.com;1519654115;AEROGEAR-1978-Add-a-Check-to-Detect-if-the-Developer-Options-are-Enabled-on-the-Device
+7ee26859f5a6f8a40f54500149f6f6ef7ca4610c;Matthias Wessendorf;matzew@apache.org;1519647249;GitHub;noreply@github.com;1519647249;Merge-pull-request-95-from-aerogear-update-docs
+4ac616d39517c6f85a48c45935e8c86360c5df39;Massimiliano Ziccardi;mziccard@redhat.com;1519644910;GitHub;noreply@github.com;1519644910;Merge-pull-request-94-from-ziccardi-changed-getname-implementation
+6a7bbd9cc923731949b556ff4e0358d9b3b08179;Tom Jackman;TommyJ1994@users.noreply.github.com;1519644807;GitHub;noreply@github.com;1519644807;update-outdated-class-name-in-docs
+106a03c85a337bef8aa0503261dae07d9471e986;Massimiliano Ziccardi;mziccard@redhat.com;1519642467;Massimiliano Ziccardi;mziccard@redhat.com;1519643257;Updated-javadocs
+a42b15937d2be72f7c7c8ce495ea880123d6f051;Massimiliano Ziccardi;mziccard@redhat.com;1519642308;Massimiliano Ziccardi;mziccard@redhat.com;1519642308;Updated-unit-tests
+40828d7f3664fbe11704833cd4cde9f64d16f69e;Massimiliano Ziccardi;mziccard@redhat.com;1519642267;Massimiliano Ziccardi;mziccard@redhat.com;1519642267;Added-default-implementation-for-the-getName-method
+6ad763627aa9833eb98da77ed2293b2fc91a8e6a;Massimiliano Ziccardi;mziccard@redhat.com;1519641042;GitHub;noreply@github.com;1519641042;Merge-pull-request-90-from-ziccardi-adding-back-addcheck
+fe68a88b431a57dbc3ba7a367856e224186282ea;Massimiliano Ziccardi;mziccard@redhat.com;1519638410;Massimiliano Ziccardi;mziccard@redhat.com;1519639450;Removed-getTestResults-method
+37188c9c6df2a2455b2146c8636b657964fb051a;Matthias Wessendorf;matzew@apache.org;1519636962;GitHub;noreply@github.com;1519636962;Merge-pull-request-92-from-danielpassos-expose-config
+5e2314158994a8410d0cbfaa675a5052180fa0f9;Daniel Passos;daniel@passos.me;1519417876;Daniel Passos;daniel@passos.me;1519417876;Remove-redundant-cast
+2a185557d45060d8e527a5890f6634d13b196438;Daniel Passos;daniel@passos.me;1519417820;Daniel Passos;daniel@passos.me;1519417820;Make-MobileCore.getServiceConfiguration-public
+2b713ff39ea9884cbf0f27e65e0b9295771f44d5;Massimiliano Ziccardi;mziccard@redhat.com;1519407372;Massimiliano Ziccardi;mziccard@redhat.com;1519408125;Changed-return-value-of-check-execution-from-array-to-Map
+dc97ee6961a02a49667dfe30c9d8dedc0cb799af;Massimiliano Ziccardi;mziccard@redhat.com;1519405337;Massimiliano Ziccardi;mziccard@redhat.com;1519405337;Added-back-the-addCheck-methods
+3608e299b91131ce79f00891b21ae3f8f811b55c;Massimiliano Ziccardi;mziccard@redhat.com;1519404567;GitHub;noreply@github.com;1519404567;Merge-pull-request-87-from-ziccardi-adding-async-executor
+6c85c442288275b4fe2d6805946b4a44b44d0d4e;Massimiliano Ziccardi;mziccard@redhat.com;1519402749;Massimiliano Ziccardi;mziccard@redhat.com;1519402749;Renamed-service-method-to-singleThreadService
+5bc91d571342379f27b6d9e036bb29cb2307676a;Massimiliano Ziccardi;mziccard@redhat.com;1519398699;Massimiliano Ziccardi;mziccard@redhat.com;1519402606;Added-method-to-retrieve-an-Async-executor-to-the-SecurityService-class
+4d6abc883584896eb2efac5308474228c9a06da1;Massimiliano Ziccardi;mziccard@redhat.com;1519398456;Massimiliano Ziccardi;mziccard@redhat.com;1519398456;Remove-choice-to-execute-method-with-future-or-Callback
+38d40d53c955ee13d459f4d6803d2b3046140bd8;Massimiliano Ziccardi;mziccard@redhat.com;1519393957;Massimiliano Ziccardi;mziccard@redhat.com;1519395881;Changed-the-callback
+a572a2552ebab4fbd9aa26a4c1cb8cde4e7e47ae;Massimiliano Ziccardi;mziccard@redhat.com;1519393014;Massimiliano Ziccardi;mziccard@redhat.com;1519393014;Added-onComplete-method-to-the-callback
+905cbcb8e6afafefb2481888f1add29fc71ecc2c;Tom Jackman;TommyJ1994@users.noreply.github.com;1519391699;GitHub;noreply@github.com;1519391699;Merge-pull-request-88-from-aerogear-update-checkauth-usage-docs
+368658930c59f7d88da44ec7136849665a3e44b4;Massimiliano Ziccardi;mziccard@redhat.com;1519384491;Massimiliano Ziccardi;mziccard@redhat.com;1519384491;Using-AppExecutors.service-as-default-executor
+683e7b441ade448317868969cf7c0206f2993fcb;Massimiliano Ziccardi;mziccard@redhat.com;1519382912;Massimiliano Ziccardi;mziccard@redhat.com;1519382912;Added-some-lint-annotation
+7a8f49286afa4fdfc03b1b7db12bc5cd25438c5b;Massimiliano Ziccardi;mziccard@redhat.com;1519379915;Massimiliano Ziccardi;mziccard@redhat.com;1519380207;Added-a-method-to-specify-the-executor-to-be-used
+2ff403ec50b1e5dbc1628c467d2bb28e3b22feea;Wojciech Trocki;wtrocki@redhat.com;1519379778;GitHub;noreply@github.com;1519379778;Merge-pull-request-79-from-danielpassos-remove-default-metrics
+731f23555671375e644ce37f1467812037f173a0;Massimiliano Ziccardi;mziccard@redhat.com;1519379358;Massimiliano Ziccardi;mziccard@redhat.com;1519379358;Added-execute-method-with-Callback
+6994e87e7c2e00d425f9fd72762c3f718bfe3114;Massimiliano Ziccardi;mziccard@redhat.com;1519378945;Massimiliano Ziccardi;mziccard@redhat.com;1519378945;Added-unit-tests-for-async-execution-futures
+0b2f1017fdd7033f57c304a5ab58f5bd224e3cf7;Tom Jackman;TommyJ1994@users.noreply.github.com;1519378592;GitHub;noreply@github.com;1519378592;update-check-authenticated-example
+73096e0cb8df6f1d58e643c7f501f31acb1c6d14;Massimiliano Ziccardi;mziccard@redhat.com;1519377963;Massimiliano Ziccardi;mziccard@redhat.com;1519378083;Added-Async-executor-for-SecurityChecks
+f2bec2b6a9fe9f61864d5de6b32f250de1e40ccc;Daniel Passos;daniel@passos.me;1519326612;Daniel Passos;daniel@passos.me;1519327164;Rename-sendDefaultMetrics-to-sendAppAndDeviceMetrics
+fda9f55dd29c78700425f03f901b580f735eb31e;Matthias Wessendorf;matzew@apache.org;1519317847;GitHub;noreply@github.com;1519317847;Merge-pull-request-83-from-matzew-DefaultAuthOptions
+0b5dc0329817e515f24f4c9ab6fb7d059c30c9bf;Matthias Wessendorf;matzew@apache.org;1519317548;GitHub;noreply@github.com;1519317548;Merge-pull-request-82-from-matzew-OIDC_renew_fix
+48c1f870fd7bd085859869b97ec3c027b58b6b3a;Matthias Wessendorf;matzew@apache.org;1519317395;GitHub;noreply@github.com;1519317395;Merge-pull-request-84-from-matzew-Misc_code_improvements
+0d4b63c16cf484f0ce16c2900884ab0cc12ffda7;Tom Jackman;TommyJ1994@users.noreply.github.com;1519317028;GitHub;noreply@github.com;1519317028;Merge-pull-request-85-from-aerogear-correct-function-name
+11c1e3a14ef31af6dbe06a8868b2b16b29d8b478;Tom Jackman;TommyJ1994@users.noreply.github.com;1519316693;GitHub;noreply@github.com;1519316693;correct-function-name
+c0ce6f4262f3170b43271fbd6189fa7da3dbd251;Daniel Passos;daniel@passos.me;1519316608;Daniel Passos;daniel@passos.me;1519316608;Update-metrics-doc
+70da7bdd4245964e14532a00e5b9fef740cdb015;Daniel Passos;daniel@passos.me;1519309027;Daniel Passos;daniel@passos.me;1519316184;Stop-to-send-default-metrics-automatically
+cda4db54f4725f5f155fbd7c5e43324706f5cbf3;Matthias Wessendorf;matzew@apache.org;1519315830;Matthias Wessendorf;matzew@apache.org;1519316013;lipstick-some-more-code-improvements
+66c353aff147d2361c99a354306a219916e22f35;Matthias Wessendorf;matzew@apache.org;1519315163;Matthias Wessendorf;matzew@apache.org;1519315163;Renaming-OICDAuthOptions-to-DefaultAuthOptions-since-there-is-nothing-on-oidc-in-the-clazz
+f1b4f8fcbe9afc49c42b205b2fab1a4cbb8d441e;Matthias Wessendorf;matzew@apache.org;1519314043;Matthias Wessendorf;matzew@apache.org;1519314043;Some-fixes-on-OIDCCredential-clazz
+83e97f9c77d9f916d902615ffeeb640c1cc018db;Tom Jackman;TommyJ1994@users.noreply.github.com;1519312673;GitHub;noreply@github.com;1519312673;Merge-pull-request-80-from-aerogear-add-semi-colon
+e1371a6fae2eff4221d22ab261af55f55e9cd323;Tom Jackman;TommyJ1994@users.noreply.github.com;1519312295;GitHub;noreply@github.com;1519312295;add-semi-colon
+6f5dd98f95c9b8c5081f1dbc59d083be29f87951;Massimiliano Ziccardi;mziccard@redhat.com;1519312130;GitHub;noreply@github.com;1519312130;Merge-pull-request-75-from-ziccardi-deuglify-checkreadyness
+6e0ad97ad4adc68ccb704f12b8142bac35cb45f8;Massimiliano Ziccardi;mziccard@redhat.com;1519299572;Massimiliano Ziccardi;mziccard@redhat.com;1519311014;Reimplemented-check-for-readyness-state-of-the-AuthService-service-by-using-EnumSet-instead-of-bitwise-operations
+385b8c5582954ebe77600d08458cb041c7145e4e;Wei Li;wei.li@redhat.com;1519309295;GitHub;noreply@github.com;1519309295;Merge-pull-request-78-from-wei-lee-support-self-signed-cert
+923751a807fee61d40404a8c0a910f9bcf81f056;Matthias Wessendorf;matzew@apache.org;1519308971;GitHub;noreply@github.com;1519308971;Merge-pull-request-73-from-matzew-Core_fixes
+0b2da5779f8d1442bdb800e174c952243ef5e858;Matthias Wessendorf;matzew@apache.org;1519308336;Matthias Wessendorf;matzew@apache.org;1519308336;do-not-change-passed-in-arguments
+a3114a9e15e95541052ddc3de2d5eece1ac0f2ac;Matthias Wessendorf;matzew@apache.org;1519306483;Matthias Wessendorf;matzew@apache.org;1519306483;Adding-sanity-checks-and-more-final
+d5466630c4a67e0c89ffa9d6c1eea4e6f5bb7265;Wei Li;wei.li@redhat.com;1519305366;Wei Li;wei.li@redhat.com;1519305366;Remove-ConnectionBuilderForTesting-as-it-is-not-required-anymore
+ac7414dd9b94ddb2602dcc48c8163d3a699e9c21;Wei Li;wei.li@redhat.com;1519304718;Wei Li;wei.li@redhat.com;1519304718;add-instructions-on-how-to-support-self-signed-certs.-Update-the
+6c58653a1f4b1aa67c92239ef98d668ee2fbb192;Matthias Wessendorf;matzew@apache.org;1519289571;Matthias Wessendorf;matzew@apache.org;1519304392;Some-clean-ups
+cb1d2a24c73345f1ca29a56a1aa6af9335be9cff;Matthias Wessendorf;matzew@apache.org;1519304327;GitHub;noreply@github.com;1519304327;Merge-pull-request-76-from-matzew-nonNull_IAE
+bd1c89b0e244bcbc26d05a977650b8c312351373;Matthias Wessendorf;matzew@apache.org;1519304312;GitHub;noreply@github.com;1519304312;Merge-pull-request-70-from-matzew-Fix_UserImpl_toString
+be827205ef87c3355f227b8a5dce018d65833931;Matthias Wessendorf;matzew@apache.org;1519300327;Matthias Wessendorf;matzew@apache.org;1519300327;boom-fixing-NonNull-to-throw-IllegalArgumentException
+e8733911ca8abc31b888f2c5406c13e6d5fddce6;Matthias Wessendorf;matzew@apache.org;1519288567;Matthias Wessendorf;matzew@apache.org;1519297085;sparkles-fixing-broken-toString-impl-and-adding-test
+36365d579ca28e485d25cfae4079aafc07e41987;Matthias Wessendorf;matzew@apache.org;1519291302;GitHub;noreply@github.com;1519291302;Merge-pull-request-71-from-josemigallas-typos
+668522bb968b3322a72e5ea58c765a2e01268b25;Jose Miguel Gallas;josemigallas@gmail.com;1519287654;Jose Miguel Gallas;josemigallas@gmail.com;1519287654;typos
+81ac4c706d0aa4346bd85b24c927eed2d1bb6fc4;Matthias Wessendorf;matzew@apache.org;1519286919;GitHub;noreply@github.com;1519286919;Merge-pull-request-68-from-matzew-Auth_improvements
+eec939846f7ae7660e4f9e71dd7cd2a097c098fc;Matthias Wessendorf;matzew@apache.org;1519286643;Matthias Wessendorf;matzew@apache.org;1519286643;lipstick-compact-code-and-misc-fixes
+6bfe73082630f90da60c75459de9a3d6f5154c47;Massimiliano Ziccardi;mziccard@redhat.com;1519231791;GitHub;noreply@github.com;1519231791;Merge-pull-request-60-from-ziccardi-add-jwks-manager
+533f81a60a3b2c7e990573fac009e878a2ac9b32;Aiden Keating;aidenkeating@users.noreply.github.com;1519231639;GitHub;noreply@github.com;1519231639;Merge-pull-request-61-from-aidenkeating-AEROGEAR-2174
+d7ae3dfa371ab3d76d614a8e1c903987ac3fb3d5;Aiden Keating;akeating@redhat.com;1519229784;Aiden Keating;akeating@redhat.com;1519231428;AEROGEAR-2174-Add-class-level-JavaDoc
+edb5877aed88e796764e5886495abe09ac030e2c;Aiden Keating;akeating@redhat.com;1519226795;Aiden Keating;akeating@redhat.com;1519231428;AEROGEAR-2174-Update-dependencies
+065b1d1dd28faeaa8fee8d3daf137c9e967e1b57;Aiden Keating;akeating@redhat.com;1519226456;Aiden Keating;akeating@redhat.com;1519231428;AEROGEAR-2174-Finalize
+8bc9325f31d5d5bbeebf570d8300f5d56c5cb4a3;Aiden Keating;akeating@redhat.com;1519223687;Aiden Keating;akeating@redhat.com;1519231428;AEROGEAR-2174-Update-getSecurityConfig
+28c1a7220d8b9dd496743a3aea9dbd39bfb0fa5f;Aiden Keating;akeating@redhat.com;1519222324;Aiden Keating;akeating@redhat.com;1519231428;AEROGEAR-2174-Refactor-Check-to-SecurityCheckType
+30970068353e84c9efb84b695981a48986294f65;Aiden Keating;akeating@redhat.com;1519220783;Aiden Keating;akeating@redhat.com;1519231428;AEROGEAR-2174-Implememnt-tests-for-initial-classes
+e4a6010de011ec8ab9f36ef8442bfb55e9384885;Aiden Keating;akeating@redhat.com;1519216817;Aiden Keating;akeating@redhat.com;1519231428;AEROGEAR-2174-Workaround-for-linting-issue
+c0b15b6eda7d2b468c74720fd6dd14e3c5095c44;Aiden Keating;akeating@redhat.com;1519214442;Aiden Keating;akeating@redhat.com;1519231428;AEROGEAR-2174-Enable-metrics-to-be-sent
+68accd780a069430a78dc0d5afe3bad5a41ff763;Aiden Keating;akeating@redhat.com;1519212688;Aiden Keating;akeating@redhat.com;1519231428;Fix-linting-issue-in-AuthStateManager
+718f503479a8881c720f2624fd5dcb8e4586066e;Aiden Keating;akeating@redhat.com;1519208944;Aiden Keating;akeating@redhat.com;1519231428;AEROGEAR-2174-Allow-for-a-null-service-configuration
+0775063f92db3acc5f64bc1ae7a711e12f87cd57;Aiden Keating;akeating@redhat.com;1519167408;Aiden Keating;akeating@redhat.com;1519231428;AEROGEAR-2174-Initial-interface-and-class-implementation
+ea52e730a0e504411bf96d4860ce59ffbb91b397;Matthias Wessendorf;matzew@apache.org;1519227257;GitHub;noreply@github.com;1519227257;Merge-pull-request-67-from-matzew-Misc_Improvement
+1edd43a31ec9020f017e41d0a628ff4dc78f4a0f;Massimiliano Ziccardi;mziccard@redhat.com;1519226496;Massimiliano Ziccardi;mziccard@redhat.com;1519226496;Added-getIssuer-method-in-the-KeycloakConfiguration-class
+062c923c225b3c9872605781ac5aaa6782aabbd3;Matthias Wessendorf;matzew@apache.org;1519224548;Matthias Wessendorf;matzew@apache.org;1519224548;some-fixes-on-http-and-utils-package
+14ecb1358495bcae6bf44f2504be6e8fd097767e;Tom Jackman;TommyJ1994@users.noreply.github.com;1519224363;GitHub;noreply@github.com;1519224363;Merge-pull-request-64-from-aerogear-add-docs-links
+9f0291af2f1b105e1b4499ababda193b6f25c77a;Matthias Wessendorf;matzew@apache.org;1519220902;GitHub;noreply@github.com;1519220902;Merge-pull-request-63-from-matzew-metrics_impl
+d234cf703d2898315333936922d22fb434740bfd;Matthias Wessendorf;matzew@apache.org;1519220895;GitHub;noreply@github.com;1519220895;Merge-pull-request-62-from-danielpassos-metrics-update
+95a02b1d6f86877110151ae02b801567bb08352e;Tom Jackman;TommyJ1994@users.noreply.github.com;1519219289;GitHub;noreply@github.com;1519219289;Merge-pull-request-66-from-aerogear-use-keycloak-latest-docs
+ac6c95eef8d037be01fef2eda46960baa231bb12;Tom Jackman;TommyJ1994@users.noreply.github.com;1519219263;GitHub;noreply@github.com;1519219263;Merge-pull-request-65-from-aerogear-add-backchannel-logout-note
+e8828a4d5bb9a83ed849a4eb6199fdd01abec3a5;Daniel Passos;daniel@passos.me;1519212000;Daniel Passos;daniel@passos.me;1519217545;Fix-debug-logger-message
+074812b99b497c258f1b871b4da1e78c40f5a034;Daniel Passos;daniel@passos.me;1519211982;Daniel Passos;daniel@passos.me;1519217541;Make-all-the-things-final
+939ff68e5292ab1556cd45d88f7423cad4099fc2;Tom Jackman;TommyJ1994@users.noreply.github.com;1519214214;GitHub;noreply@github.com;1519214214;use-keycloak-latest-for-docs
+b5c2f1609e45c2bfcd76127303a9cb076c4e33d3;Massimiliano Ziccardi;mziccard@redhat.com;1519143904;Massimiliano Ziccardi;mziccard@redhat.com;1519213733;Added-test-for-JwksManager-class
+8a080f3bdc62d50af06731b2d15d845e1f0545fc;Tom Jackman;TommyJ1994@users.noreply.github.com;1519213665;GitHub;noreply@github.com;1519213665;add-backchannel-logout-note
+56e6941f9d160f297594d497a1b53b88233950d6;Tom Jackman;TommyJ1994@users.noreply.github.com;1519213025;GitHub;noreply@github.com;1519213025;Add-link-to-Core-Auth-getting-started-docs
+c6ad422ced12abf260851c65670a561b767f05e3;Matthias Wessendorf;matzew@apache.org;1519201720;Matthias Wessendorf;matzew@apache.org;1519201720;Avoid-double-metrics.metrics-package-name
+6717e7e81d33a5ce5d75fbfb0db8033fa5610207;Daniel Passos;daniel@passos.me;1519160910;Daniel Passos;daniel@passos.me;1519160910;Update-metrics-payload-structure
+6db4eb2d4a70376fb20afd1ee17945e0b863cdde;Rachael O'Regan;roregan@redhat.com;1519146011;GitHub;noreply@github.com;1519146011;Merge-pull-request-36-from-rachael-oregan-AEROGEAR-1967
+8a3d79f61d792eee9018faa35a8cee611be9487a;Massimiliano Ziccardi;mziccard@redhat.com;1519134971;Massimiliano Ziccardi;mziccard@redhat.com;1519145036;Fixed-JWT-claim-verification
+e8f808d5c2f8c27171818b12df738dd67cbac83b;Massimiliano Ziccardi;mziccard@redhat.com;1519127246;Massimiliano Ziccardi;mziccard@redhat.com;1519145035;Removed-tests-relying-on-IntegrityCheck-class
+a6e53dae20ebd87c0c3d7234521c69807dfd43d2;Wei Li;wei.li@redhat.com;1519122588;Massimiliano Ziccardi;mziccard@redhat.com;1519145035;update-signature
+63da2570e191a1d603fec5dd4605e014d5e56111;Wei Li;wei.li@redhat.com;1519122270;Massimiliano Ziccardi;mziccard@redhat.com;1519145033;remove-IntegrityCheckParameters-and-its-implementation
+74a52a7b4538bcd66241e6b027e6fb8f0b624346;rachael-oregan;roregan@redhat.com;1519144423;rachael-oregan;roregan@redhat.com;1519145028;mention-that-the-keycloak-config-defined-in-the-app-config-file-must-match-the-keycloak-client-its-intended-for
+521ddbb500a85d0698338aaf089ae55ec630a912;Wei Li;wei.li@redhat.com;1519121659;Massimiliano Ziccardi;mziccard@redhat.com;1519144869;add-implementation
+47165a9584e528eda753e6ccc09c1000d7b0c372;Wei Li;wei.li@redhat.com;1518801595;Massimiliano Ziccardi;mziccard@redhat.com;1519144044;initial-implementation-to-load-and-manage-json-web-key-set-for-token
+ca6fcec847db22d3ab611c43569323ecc4ace5a5;David Martin;david-martin@users.noreply.github.com;1519143363;GitHub;noreply@github.com;1519143363;Merge-pull-request-34-from-aidenkeating-AGDROID-669-auth-docs
+55cd898914fe0491b7e8cea069c829223af9165f;rachael-oregan;roregan@redhat.com;1519141424;rachael-oregan;roregan@redhat.com;1519141424;add-note-that-multiple-keycloak-clients-are-not-required-to-achieve-SSO-across-apps
+b9e0f4ba5dbd6a205b893c0fd1424afaa1944575;rachael-oregan;roregan@redhat.com;1519140132;rachael-oregan;roregan@redhat.com;1519140500;refine-the-docs-by-referencing-the-main-auth-docs-for-prereqs
+945cc908f5a056cd9a16bc189c5f75b7c310973e;Aiden Keating;akeating@redhat.com;1519131727;Aiden Keating;akeating@redhat.com;1519139218;AGDROID-669-Address-review-comments
+b64c619150235247f658f86bd7ccec648ea1d070;Aiden Keating;akeating@redhat.com;1519056235;Aiden Keating;akeating@redhat.com;1519139218;AGDROID-669-Update-dependency-information
+9b88499ebd0358519279d30f4bdc3fba78a4f47d;Aiden Keating;akeating@redhat.com;1518828391;Aiden Keating;akeating@redhat.com;1519139218;AGDROID-669-Include-UserPrincipal-methods
+9df4e2409589925e76f07fb378842fd8ef513321;Aiden Keating;akeating@redhat.com;1518601701;Aiden Keating;akeating@redhat.com;1519139218;AGDROID-669-Initial-documentation-without-links
+da61b13c6cdc3cb76c9f5d16039c4fe77b89c0cd;Ciaran Roche;ciaranroche@hotmail.co.uk;1519139036;GitHub;noreply@github.com;1519139036;AEROGEAR-2114-Security-Service-view-added-to-example-app-57
+38a514725a31723d09038c7e59952cf1c857cae6;Massimiliano Ziccardi;mziccard@redhat.com;1519138041;GitHub;noreply@github.com;1519138041;Merge-pull-request-54-from-ziccardi-AGDROID-752
+a61f5d3dd8d59714d33a554c8db8053d1f47f5f3;Paul Wright;finp@users.noreply.github.com;1519130884;GitHub;noreply@github.com;1519130884;Merge-pull-request-59-from-pb82-AGDROID-732
+1e3e60bd98c27c5589b368426e5e9d39fb9af799;rachael-oregan;roregan@redhat.com;1519127286;rachael-oregan;roregan@redhat.com;1519127286;refactor-heading-and-include-reference-to-mobile-cli-tool-for-generating-the-config-file
+02be2d1119cf1993b2d1fd45cc5e38c37dcc1fd3;Wojciech Trocki;wtrocki@redhat.com;1519126926;GitHub;noreply@github.com;1519126926;Merge-pull-request-58-from-aerogear-add-top-level-metrics
+442bc543671034a9ff878bd4ef4ad236e79180fc;Peter Braun;pbraun@redhat.com;1519117614;Peter Braun;pbraun@redhat.com;1519126253;add-basic-metrics-docs
+58bceec15d80a22e72fabd2007a9ca3aea5dc8ad;Wojciech Trocki;wtrocki@redhat.com;1519121333;Wojciech Trocki;wtrocki@redhat.com;1519121333;Adjust-tests
+ed68d7392e8b861eb42258b159cd84b67764e3e1;Wojciech Trocki;wtrocki@redhat.com;1519121283;Wojciech Trocki;wtrocki@redhat.com;1519121283;Move-to-client-id
+cbe951f9bed746ea81d97351a4884e7a102216e9;Wojciech Trocki;wtrocki@redhat.com;1519064079;Wojciech Trocki;wtrocki@redhat.com;1519064079;Rename-to-clientId
+adc4dddf9ada789c95181db3078ceb18e3b11258;Wojciech Trocki;wtrocki@redhat.com;1519062146;Wojciech Trocki;wtrocki@redhat.com;1519062146;Add-fields-to-publisher
+978bb129e150d42054eb8575e073f158dba1bca3;Wojciech Trocki;wtrocki@redhat.com;1519061407;Wojciech Trocki;wtrocki@redhat.com;1519061407;WIP-flag-required-fields
+7980823b4a80425d44892cfc2eab8c0f41c948f6;Summers Pittman;secondsun@gmail.com;1519060969;Summers Pittman;secondsun@gmail.com;1519060969;Merge-branch-compiler-doc-of-github.com-danielpassos-aerogear-android-sdk
+4493300e7a84f2e43bd02dcc17bcee6fb518b09c;rachael-oregan;roregan@redhat.com;1519052738;rachael-oregan;roregan@redhat.com;1519060663;rephrase-intro-remove-mentioning-of-AppAuth-Library
+0ba93c34e500e677174f6c5c7de90d946f604cea;Daniel Passos;daniel@passos.me;1519052031;Daniel Passos;daniel@passos.me;1519060396;Add-note-about-Java-8-on-getting-started-doc
+361fb36d655529ac0af63ec12e5ee3338f4deb2e;Daniel Passos;daniel@passos.me;1519050159;Daniel Passos;daniel@passos.me;1519060388;Fixing-some-getting-started-adoc-format
+e7d4038a778b5fe771d2e59fd5411192a81aa807;Massimiliano Ziccardi;mziccard@redhat.com;1519036359;Massimiliano Ziccardi;mziccard@redhat.com;1519059756;Adding-unit-tests
+eb59daab6beb57892b803093f1ddbea4188c726b;rachael-oregan;roregan@redhat.com;1519046940;rachael-oregan;roregan@redhat.com;1519052773;WIP-refactoring
+5574818af7af8c4e696d6522a8fa61afb3e93e61;rachael-oregan;roregan@redhat.com;1518604085;rachael-oregan;roregan@redhat.com;1519052772;AEROGEAR-1967-docs-for-SSO-via-device-browser
+1d2f2ae408c1ae517adddbc1760f9477e26f6ed9;Daniel Passos;daniel@passos.me;1519049393;Daniel Passos;daniel@passos.me;1519049393;Remove-metrics-module-reference-on-README
+758d23a0162f043ee4d0c8c9c40000c0bfd19b79;Daniel Passos;daniel@passos.me;1519049243;GitHub;noreply@github.com;1519049243;Merge-pull-request-52-from-secondsun-instructions_fix
+8c65eb526bf726562468edf408c36d1341b18fb8;Summers Pittman;secondsun@gmail.com;1519048331;Summers Pittman;secondsun@gmail.com;1519048367;Updating-links
+676745ef84eae36f90a45a2348d823432c9843ac;Summers Pittman;secondsun@gmail.com;1519046423;Summers Pittman;secondsun@gmail.com;1519048185;Moving-mavenLocal-line-per-wei
+66afe8da5bb01812ae7c92dd52a912b8e52acf08;Summers Pittman;secondsun@gmail.com;1519046097;Summers Pittman;secondsun@gmail.com;1519048184;Fixing-adoc-style-where-MD-had-been-used
+e39e539c31d14d000f1d2e81c6dd998240bb9b12;Summers Pittman;secondsun@gmail.com;1518798206;Summers Pittman;secondsun@gmail.com;1519048152;Updating-getting-started-doc
+469d93da473e9469d007884a10a7fc0afdc2029a;David Martin;david-martin@users.noreply.github.com;1519045094;GitHub;noreply@github.com;1519045094;Merge-pull-request-53-from-finp-AEROGEAR-2177
+f7975222dd909d58e6db5ba40c45ae32dd7530b1;Paul Wright;pwright@redhat.com;1519041722;Paul Wright;pwright@redhat.com;1519041722;remove-build-script
+e907ef3adf8c7ebec55703354798feb86a9bb0d8;Paul Wright;pwright@redhat.com;1519041611;Paul Wright;pwright@redhat.com;1519041611;remove-link-to-getting-started-from-contribution-guide
+a0a712bdedfe97a9b00691a25f15e265c6ff587b;Paul Wright;pwright@redhat.com;1519041384;Paul Wright;pwright@redhat.com;1519041384;remove-asciibinder-template-files
+72e24b579f4366787f10c3397372c19329ad0c3c;Peter Braun;pbraun@redhat.com;1519039638;GitHub;noreply@github.com;1519039638;Merge-pull-request-49-from-pb82-push-based-metrics
+02cb69107f4f83954a1005ffcae8aed09ac3ecb7;Paul Wright;pwright@redhat.com;1519039086;Paul Wright;pwright@redhat.com;1519039086;ignore-asciibinder-output-directories
+9219deb003792ff19c831ff5c76e0c1741a29e80;Paul Wright;pwright@redhat.com;1519038756;Paul Wright;pwright@redhat.com;1519038756;remove-unnecessary-files
+0964a192534695e921594f1536d7e625e4d8059f;Peter Braun;pbraun@redhat.com;1519037163;Peter Braun;pbraun@redhat.com;1519037163;add-example-metrics-configuration
+765a9eb06bbb96d4df76da65f89a790ae84e8a98;Peter Braun;pbraun@redhat.com;1519030294;Peter Braun;pbraun@redhat.com;1519035651;make-metrics-optional
+d75b62317fa070ba6783a751e27049d7b5cc3028;Paul Wright;pwright@redhat.com;1519030535;Paul Wright;pwright@redhat.com;1519030535;AEROGEAR-2177-add-asciibinder-structure-to-sdk-docs
+67b84e6e881d277e3a9753c97115cfb2b7877adc;Daniel Passos;daniel@passos.me;1518829035;Daniel Passos;daniel@passos.me;1518829035;Implement-DummyHttpServiceModule-to-avoid-NPE
+61666261f7a8215fc9e7b3611b5034aec388c5a5;Daniel Passos;daniel@passos.me;1518828758;Daniel Passos;daniel@passos.me;1518828758;Add-some-test-for-MetricsService
+30c81b85ae7f89ee409aa5d9b6b452732c043f7e;Daniel Passos;daniel@passos.me;1518827683;Daniel Passos;daniel@passos.me;1518828094;Simplify-sendMetrics-killing-MetricsPublisher
+629fe792200ecd6125086bf41f4d45f9d2848236;Daniel Passos;daniel@passos.me;1518826358;Daniel Passos;daniel@passos.me;1518826358;Remove-createMetricsPublisher-from-MobileCore
+b9f364b77d3e3bdb1ea16f794610712f8c5fa2e9;Daniel Passos;daniel@passos.me;1518824864;Daniel Passos;daniel@passos.me;1518824870;Update-tests
+ba0a87c45a42cb82c3e94895d6ec6be3dfad8a1e;Daniel Passos;daniel@passos.me;1518824395;Daniel Passos;daniel@passos.me;1518824395;Fix-logger
+b5651e0e755f4e0a2f2a51246ff9ba09c809baca;Daniel Passos;daniel@passos.me;1518822811;Daniel Passos;daniel@passos.me;1518823499;Make-sure-sendDefaultMetrics-was-not-called-before-configure
+bd2d5cb64bf04d1e254b1d36b971a72a4593e68d;Daniel Passos;daniel@passos.me;1518820464;Daniel Passos;daniel@passos.me;1518823492;Split-DefaultMetrics-in-DeviceMetrics-and-AppMetrics
+b6e6bc2651156a0af3f8b77ffa2dd063d9b38e87;Daniel Passos;daniel@passos.me;1518819719;Daniel Passos;daniel@passos.me;1518819719;Rename-initMetrics
+bc774b032b340d4bb6f8e9a20262445ec3f3992e;Daniel Passos;daniel@passos.me;1518819649;Daniel Passos;daniel@passos.me;1518819697;Get-app-version-from-MobileCore
+a25d570856bae46973d74ceda4044530b860b9cc;Daniel Passos;daniel@passos.me;1518818407;Daniel Passos;daniel@passos.me;1518818407;Remove-unset-variable
+a75d56a06849b24e67c55bb1083a9fce2a92df51;Daniel Passos;daniel@passos.me;1518818045;Daniel Passos;daniel@passos.me;1518818362;Creating-an-interface-for-Metrics
+b8531e2869cbd57cdc46b205b0538341faf2fbb7;Peter Braun;pbraun@redhat.com;1518788533;Peter Braun;pbraun@redhat.com;1518791957;test-and-cleanup
+3228e5c9854361d669aaf3133602271dc88d5ce6;Peter Braun;pbraun@redhat.com;1518788013;Peter Braun;pbraun@redhat.com;1518788013;move-metrics-to-core-and-change-to-push-approach
+5694018b7326dad0ab9da90d2e971489e99b428a;Daniel Passos;daniel@passos.me;1518780975;GitHub;noreply@github.com;1518780975;Merge-pull-request-48-from-danielpassos-service-with-context
+323e215294d4422a005cf047b1ceb6f0c16d698c;Daniel Passos;daniel@passos.me;1518741350;Daniel Passos;daniel@passos.me;1518741350;Allow-access-to-the-application-context-from-the-MobileCore
+efa350a651af6ef62c418dcdf4cd70f11754b4c8;Massimiliano Ziccardi;mziccard@redhat.com;1518705448;GitHub;noreply@github.com;1518705448;Merge-pull-request-41-from-ziccardi-AGDROID-753
+59f37acadd6b59048844974b3c0b6bfc3283cfc4;Aiden Keating;aidenkeating@users.noreply.github.com;1518704685;GitHub;noreply@github.com;1518704685;Merge-pull-request-47-from-aidenkeating-serialize-everything
+2e3f798d14a894f1e9fb78d5985856e70a8457eb;Massimiliano Ziccardi;mziccard@redhat.com;1518629882;Massimiliano Ziccardi;mziccard@redhat.com;1518704445;Added-sanity-check
+e5c3fbfc9e6d503b932a6ea2e931535779126236;Aiden Keating;akeating@redhat.com;1518698439;Aiden Keating;akeating@redhat.com;1518699144;Update-objects-to-be-serializable-if-needed
+2126995866e3ac56a8746df585912d79f6201151;Wojciech Trocki;wtrocki@redhat.com;1518691534;GitHub;noreply@github.com;1518691534;Merge-pull-request-40-from-aerogear-adjust-config-parser
+92c7e02c14b1c4b6aecb27b8be8e2a0cf65533b4;Wojciech Trocki;wtrocki@redhat.com;1518691337;Wojciech Trocki;wtrocki@redhat.com;1518691337;Remove-client-id
+2232534bd36ab611ce1856c5b4de4516994dd1f3;Wei Li;wei.li@redhat.com;1518690070;GitHub;noreply@github.com;1518690070;Merge-pull-request-45-from-wei-lee-build-auth-module
+ea843bf065bb1271d6e2b033667df312c175d349;Aiden Keating;aidenkeating@users.noreply.github.com;1518689639;GitHub;noreply@github.com;1518689639;Merge-pull-request-44-from-aidenkeating-fix-logout
+16cfdb1f868fe876d167a2440ba12f631e22ce81;Wei Li;wei.li@redhat.com;1518688559;Wei Li;wei.li@redhat.com;1518688559;allow-build-the-auth-module
+e46453f5f4cef4214dbc25cac3da26c3eb384bfa;Aiden Keating;akeating@redhat.com;1518688214;Aiden Keating;akeating@redhat.com;1518688349;Update-login-request-to-include-OpenID-scope
+7cd2e22727e4a633f542f0c041c15aa435a55d19;Wei Li;wei.li@redhat.com;1518626169;GitHub;noreply@github.com;1518626169;Merge-pull-request-38-from-wei-lee-fix-logout-example
+ccbed0c68e90e52f37b6f9c406dc108007a63ed3;Wei Li;wei.li@redhat.com;1518625673;Wei Li;wei.li@redhat.com;1518625673;address-the-comments
+1fc77b39aab431f830a95b30684ba55e313ee2e8;Wojciech Trocki;wtrocki@redhat.com;1518622192;Wojciech Trocki;wtrocki@redhat.com;1518622192;Change-auth-module-tests
+76a3479e7c4547d4076553c7c994bd28c3cf31a4;Wojciech Trocki;wtrocki@redhat.com;1518622123;Wojciech Trocki;wtrocki@redhat.com;1518622123;Adjust-documentation
+a1d774c204641cd6fdba5b6c966714bf4491d80c;Wojciech Trocki;wtrocki@redhat.com;1518621853;Wojciech Trocki;wtrocki@redhat.com;1518621853;Adjust-dummy-config
+f66d9af5319930037b21356f27fb201f1ba0b2fd;Wojciech Trocki;wtrocki@redhat.com;1518620111;Wojciech Trocki;wtrocki@redhat.com;1518620111;Adjust-json-parser-to-new-format
+77281e718bc4876a96eed93205e3d57aacbb1b31;Wei Li;wei.li@redhat.com;1518612411;Wei Li;wei.li@redhat.com;1518614254;fix-for-logout-and-some-small-improvement
+eaf62b5b8f22e6c545e1131b5fec713a70172bb4;Wei Li;wei.li@redhat.com;1518612378;GitHub;noreply@github.com;1518612378;Merge-pull-request-37-from-ziccardi-AGDROID-666-3
+6e295a38c0f7309795831bae4565132980c525e9;Massimiliano Ziccardi;mziccard@redhat.com;1518607770;Massimiliano Ziccardi;mziccard@redhat.com;1518607770;Fixed-tests
+b30cbbb35e8ba777c29f595b0f7aafbf906ee34a;Massimiliano Ziccardi;mziccard@redhat.com;1518607074;Massimiliano Ziccardi;mziccard@redhat.com;1518607074;Make-login-work-and-show-user-details
+0383efb62567a9dcdb3e228128e3badf6c49025b;Massimiliano Ziccardi;mziccard@redhat.com;1518604871;Massimiliano Ziccardi;mziccard@redhat.com;1518604871;Added-final-where-required
+0d2834f341bf90b4c8c9e7096a3e5957c06b71fc;Massimiliano Ziccardi;mziccard@redhat.com;1518602120;GitHub;noreply@github.com;1518602120;Merge-pull-request-1-from-wei-lee-AGDROID-666-3
+43a3690157c0f7ca76d8e25349c53ca05d0f896c;Wei Li;wei.li@redhat.com;1518566160;Wei Li;wei.li@redhat.com;1518566160;refactoring-the-code-to-make-it-simpler
+5ca172b64f19211c77f0cae82fb40a879205854b;Massimiliano Ziccardi;mziccard@redhat.com;1518545089;Massimiliano Ziccardi;mziccard@redhat.com;1518545089;Refactored-auth-module-to-use-callbacks
+120e227f6dd0bf577bae30a8f6abcafbb4aebe83;Wojciech Trocki;wtrocki@redhat.com;1518541228;GitHub;noreply@github.com;1518541228;Update-README.md
+81443a0c469e18e32c7401ce5f81f93554e0bfdf;Wojciech Trocki;wtrocki@redhat.com;1518524157;GitHub;noreply@github.com;1518524157;Merge-pull-request-30-from-aerogear-docs-updates
+a1dd596a7afc352f33ca35323e7954cd09bb3609;Wojciech Trocki;wtrocki@redhat.com;1518523678;Wojciech Trocki;wtrocki@redhat.com;1518523833;Add-usage
+3d612b0120100381b5edfc938af123e06ac6ce17;Wojciech Trocki;wtrocki@redhat.com;1518523451;Wojciech Trocki;wtrocki@redhat.com;1518523451;Update-diagram
+79a452ad62aad5d1cbcc434f85516a557d8d0b11;Wojciech Trocki;wtrocki@redhat.com;1518521322;Wojciech Trocki;wtrocki@redhat.com;1518521322;Minor-fixes-in-docs
+2cebca8f116a067f6ca9d5e6154b6e903c01f445;Wojciech Trocki;wtrocki@redhat.com;1518520155;Wojciech Trocki;wtrocki@redhat.com;1518520155;Minimal-adjustments
+c2da6620b9af2a67d88116215169c11887bdd4b3;Aiden Keating;aidenkeating@users.noreply.github.com;1518517605;GitHub;noreply@github.com;1518517605;Merge-pull-request-33-from-aidenkeating-refactor-auth-package
+77705886dabeb5002ce817f8ed6f7c953f0f38be;Aiden Keating;akeating@redhat.com;1518514646;Aiden Keating;akeating@redhat.com;1518517084;Refactor-auth-package
+dcd59462a7ffbd8073b7d7327c9115f51612f5b2;Rachael O'Regan;roregan@redhat.com;1518514796;GitHub;noreply@github.com;1518514796;Merge-pull-request-31-from-rachael-oregan-decouple-user-identity
+11768f68d06455c142d807a0d3d9b084ff545510;Aiden Keating;aidenkeating@users.noreply.github.com;1518514697;GitHub;noreply@github.com;1518514697;Merge-pull-request-32-from-aidenkeating-auth-ui-boilerplate
+1867751e60cae440149e79f76fdba61c24cf4fad;Aiden Keating;akeating@redhat.com;1518510474;Aiden Keating;akeating@redhat.com;1518511968;Add-auth-UI-boilerplate
+320c6c8a4073ad8187ab523508bef78259784cef;Wojciech Trocki;wtrocki@redhat.com;1518470158;Wojciech Trocki;wtrocki@redhat.com;1518470158;Minor-tweaks
+d9e6eb833e9f29f723568df6dcaf834baa816d55;rachael-oregan;roregan@redhat.com;1518459617;rachael-oregan;roregan@redhat.com;1518459840;refactor-decoding-of-user-identity-into-separate-util-class
+1e4cf0e4a90af934e06018ecae8fe3f5eca824f9;Wojciech Trocki;wtrocki@redhat.com;1518457900;Wojciech Trocki;wtrocki@redhat.com;1518457900;Documentation
+9e389cbecf4f897524d6fe5d5d9cd25d82817e52;Rachael O'Regan;roregan@redhat.com;1518454758;GitHub;noreply@github.com;1518454758;Merge-pull-request-25-from-rachael-oregan-AGDROID-681
+c0fda565868d56131d47cc68e62f082a1651b3ff;rachael-oregan;roregan@redhat.com;1518451566;rachael-oregan;roregan@redhat.com;1518451566;refactor-token-authenticator-constuctor
+d96451598f74a01b2dfc17f9016d0d12f3aa24ff;Wojciech Trocki;wtrocki@redhat.com;1518451511;Wojciech Trocki;wtrocki@redhat.com;1518451511;Remove-outdated-redundant-package
+110116533183c9d77fae3e733e5cca02fe053226;rachael-oregan;roregan@redhat.com;1518434649;rachael-oregan;roregan@redhat.com;1518441967;requested-changes-refactor-auth-config-in-auth-service
+cfd1cf959080d005604a81d7976f58a37827fd12;rachael-oregan;roregan@redhat.com;1518193661;rachael-oregan;roregan@redhat.com;1518434779;requested-changes-and-rebased
+ef0a41010ec2f9747b8c807026048a935d153058;rachael-oregan;roregan@redhat.com;1518099816;rachael-oregan;roregan@redhat.com;1518434778;update-AuthService
+91f31e6281a11b792e12acdb8a91b0b34d3962da;rachael-oregan;roregan@redhat.com;1518090530;rachael-oregan;roregan@redhat.com;1518434778;add-java-docs
+7f9a86dd3ffb28326402359d3e0345422c40efe3;rachael-oregan;roregan@redhat.com;1518020927;rachael-oregan;roregan@redhat.com;1518434778;unit-tests
+fc61304703a59bc32109ecfd2a204dff4ae382bb;rachael-oregan;roregan@redhat.com;1518020663;rachael-oregan;roregan@redhat.com;1518434778;requested-changes
+18eae3d810d6d96543453f4bf6efffb08dec1e51;rachael-oregan;roregan@redhat.com;1517927154;rachael-oregan;roregan@redhat.com;1518434778;requested-changes
+49f5a9ff19008a4111f8e522420a9a3136f7eda1;rachael-oregan;roregan@redhat.com;1517590757;rachael-oregan;roregan@redhat.com;1518434778;AGDROID-681-logout-implementation
+9b8b73519ca4eaf61576ac680461b0e2b60aa15d;Wojciech Trocki;wtrocki@redhat.com;1518196818;Wojciech Trocki;wtrocki@redhat.com;1518196831;WIP-Initial-documentation-for-Android-SDK
+9cb934c933b23480dadae0d1d359ec09baa33f34;Wojciech Trocki;wtrocki@redhat.com;1518193905;GitHub;noreply@github.com;1518193905;Merge-pull-request-15-from-rachael-oregan-AGDROID-684
+56678beea6cdfc5c16abc4178408a6bc96da5739;rachael-oregan;roregan@redhat.com;1518183618;rachael-oregan;roregan@redhat.com;1518189293;refactored-users-roles-to-hashset
+bf9dc8e9629a3d007719ad3a7990a2c85c625662;rachael-oregan;roregan@redhat.com;1517486968;rachael-oregan;roregan@redhat.com;1518183964;requested-changes-refactor-getClientID-to-make-it-ClientRole-specific
+b602f64e5bb12361deeee5c14180a91611ee7869;rachael-oregan;roregan@redhat.com;1517419539;rachael-oregan;roregan@redhat.com;1518183963;requested-changes-add-javaDocs-to-RoleKey-methods
+45ccb06f3a9e3a73ddd35ea391d3acb5e7baa6c2;Massimiliano Ziccardi;mziccard@redhat.com;1517408040;rachael-oregan;roregan@redhat.com;1518183963;Fixed-method-to-load-test-file
+c3c252c7122f8c48504b524f335f1bc849825140;rachael-oregan;roregan@redhat.com;1516714723;rachael-oregan;roregan@redhat.com;1518183893;Implement-user-get-roles-and-has-roles-functionality
+ae6555f7765f9bdab70b8361a7d4c6b518258a50;Wojciech Trocki;wtrocki@redhat.com;1518179162;GitHub;noreply@github.com;1518179162;Merge-pull-request-29-from-aerogear-example
+f225312e9dd8359a5dc2b7537cdea72870157061;Daniel Passos;daniel@passos.me;1518121487;Daniel Passos;daniel@passos.me;1518175213;Update-launcher-icon
+cd6971787f3347e782a18972b5ebd54c14bc1aed;Daniel Passos;daniel@passos.me;1518121341;Daniel Passos;daniel@passos.me;1518175213;Add-HTTP-example
+11e753838a234552270aada8cc32d861cf353d1c;Daniel Passos;daniel@passos.me;1518118816;Daniel Passos;daniel@passos.me;1518175213;Create-example-app-skeleton
+4f50915b09da289f018d9e55012a6f8f09b0670e;Daniel Passos;daniel@passos.me;1518175098;GitHub;noreply@github.com;1518175098;Merge-pull-request-27-from-pb82-AGDROID-719
+62c625097e1e064a15c928f0b553be2b83975c6f;Peter Braun;pbraun@redhat.com;1518111066;Peter Braun;pbraun@redhat.com;1518164132;Refactor-and-add-unit-test
+d4230faba582bd59fcd1cfadf0862a7f91299276;Peter Braun;pbraun@redhat.com;1518015209;Peter Braun;pbraun@redhat.com;1518164107;AGDROID-719-collect-metrics-data-and-send-it-to-server
+7805c8fdc945fce8811ce1d69813ddfd86be6ad8;Peter Braun;pbraun@redhat.com;1517999050;Peter Braun;pbraun@redhat.com;1518164107;AGDROID-719-add-metrics-service
+b71d208b4a824cb83ec3b60fda26cc854fe5dbb8;Wojciech Trocki;wtrocki@redhat.com;1518112646;GitHub;noreply@github.com;1518112646;Merge-pull-request-21-from-aidenkeating-AGDROID-686
+9afbbebdb95e024e10b20030fc75e7673ee690f5;Aiden Keating;akeating@redhat.com;1518090713;Aiden Keating;akeating@redhat.com;1518090713;AGDROID-686-Retrieve-context-using-an-init-method
+ee5ad56731dc2cd7b3d8475030a4bc7c7c245551;Aiden Keating;akeating@redhat.com;1518082345;Aiden Keating;akeating@redhat.com;1518082345;AGDROID-686-Fix-checkAuthStatus
+63ad9bb4b61b01760c3f23e460b40d04d39724da;Aiden Keating;akeating@redhat.com;1518018764;Aiden Keating;akeating@redhat.com;1518080180;AGDROID-686-Address-core-changes
+55103401eeaabecaaa586839e9fe91da8a9f7ba7;Aiden Keating;akeating@redhat.com;1517931867;Aiden Keating;akeating@redhat.com;1518080180;AGDROID-686-Remove-unused-singleton-stuff
+6f82033b2f42b6934e51c845acfa53db20d4fee1;Aiden Keating;akeating@redhat.com;1517917057;Aiden Keating;akeating@redhat.com;1518080180;AGDROID-686-Update-android-sdk-bom-version
+81f922b48db7863ab83f230c6bd5434138559cd1;Aiden Keating;akeating@redhat.com;1517918164;Aiden Keating;akeating@redhat.com;1518080180;AGDROID-686-Document-IIntegrityCheckParameters-isValid
+fa37ada2b01ef9af0c11d541e5d6bd80ed449200;Aiden Keating;akeating@redhat.com;1517852350;Aiden Keating;akeating@redhat.com;1518080180;AGDROID-686-Update-docs
+0ab328383d87091ca04439350e12938b8bfdf7f1;Aiden Keating;akeating@redhat.com;1517847818;Aiden Keating;akeating@redhat.com;1518080180;AGDROID-686-Make-AuthStateManager-a-singleton
+ccf8a60bab49947a0964355560a1abc08751ba66;Aiden Keating;akeating@redhat.com;1517825955;Aiden Keating;akeating@redhat.com;1518080180;AGDROID-686-Use-appropriate-exceptions
+c1364a705cd9084e61f2f1aea6cb34ce6ac4ba6a;Aiden Keating;akeating@redhat.com;1517479867;Aiden Keating;akeating@redhat.com;1518080180;AGDROID-686-Move-to-org.aerogear.android.ags.auth-package
+5c98652b0f99bd35f7778a28849c8cb04d42a6fa;Aiden Keating;akeating@redhat.com;1517420209;Aiden Keating;akeating@redhat.com;1518080180;AGDROID-686-Dont-leak-JSONExceptions
+1ce22ca8dfc12078be1f30162d75ae3047cc632e;Aiden Keating;akeating@redhat.com;1517403225;Aiden Keating;akeating@redhat.com;1518080179;AGDROID-686-Make-parameters-final
+9eeba6ad51180d66fc42fc67326cea492b3f729f;Aiden Keating;akeating@redhat.com;1517394864;Aiden Keating;akeating@redhat.com;1518080179;Use-integrity-parameters-for-integrity-check
+ef67979a3f98939f168ace6d7065b8b025ab6d71;Tom Jackman;tom.dls@hotmail.com;1516635280;Aiden Keating;akeating@redhat.com;1518080179;add-unit-tests
+f5008ca2e96c5330a3dedba0f52fabd9ab9ca172;Tom Jackman;tom.dls@hotmail.com;1516617774;Aiden Keating;akeating@redhat.com;1518080179;improve-log-messages
+88a98fd19a755401cd13566820c0f387416046b2;Tom Jackman;tom.dls@hotmail.com;1516363404;Aiden Keating;akeating@redhat.com;1518080179;add-token-verification-starter-code
+8329540cee7fef3ff7c23e2bfa0679d90300ad0e;Aiden Keating;akeating@redhat.com;1517389739;Aiden Keating;akeating@redhat.com;1518080179;AGDROID-711-Pass-integrity-check-params-to-credentials
+5b1df450ce27a170db3918f150bb6515a87cc9dc;Daniel Passos;daniel@passos.me;1518021257;GitHub;noreply@github.com;1518021257;Merge-pull-request-28-from-danielpassos-logger
+4508055b1de3968535ddec92dead93a0d44a899a;Daniel Passos;daniel@passos.me;1518020502;Daniel Passos;daniel@passos.me;1518020735;Add-logger-in-the-MobileCore
+cc32afe339582b740d543c476bd8f547613b4966;Daniel Passos;daniel@passos.me;1518017034;GitHub;noreply@github.com;1518017034;Merge-pull-request-22-from-danielpassos-singleton
+910a2422f6796c19f0eb51b46c67c8349ed06179;Daniel Passos;daniel@passos.me;1517935169;Daniel Passos;daniel@passos.me;1518016532;Pass-core-to-the-service-module-in-configure
+58e26b285ba88c5eed8b7a6526ba61a934dedaac;Daniel Passos;daniel@passos.me;1517934961;Daniel Passos;daniel@passos.me;1518016531;Added-RuntimeException-on-core.getInstance-and-collapse-catch
+69907ebb98061da793b72596031c9bcc159e6901;Daniel Passos;daniel@passos.me;1517854182;Daniel Passos;daniel@passos.me;1518016531;Make-SDK-less-singleton
+1703063b99313c19564b24178da1bf400096a6bc;Daniel Passos;daniel@passos.me;1517575282;Daniel Passos;daniel@passos.me;1518016504;Make-KeyCloakService-singleton
+c8e41c16ff108b74ddb48294357bdcec9fa6b161;Daniel Passos;daniel@passos.me;1517574890;Daniel Passos;daniel@passos.me;1518016504;Add-ConfigurationNotFoundException
+4acbf2ccd458dab3fab0f85c124c1604c84af0cd;Daniel Passos;daniel@passos.me;1517514522;Daniel Passos;daniel@passos.me;1518016504;Kill-ServiceModuleRegistry-with-fire
+d66f14f86a78de3caf75e15e3411b9b96a0b5146;Peter Braun;pbraun@redhat.com;1518013491;GitHub;noreply@github.com;1518013491;Merge-pull-request-26-from-pb82-fix-parsing
+256f8495786721f2bc0466200d92b58a0690af25;Peter Braun;pbraun@redhat.com;1517999128;Peter Braun;pbraun@redhat.com;1517999128;fix-parsing-for-mobile-config
+81bfd72ebe6b611c4ac65e45fa6c2cf97b68bfd1;Aiden Keating;aidenkeating@users.noreply.github.com;1517916114;GitHub;noreply@github.com;1517916114;Merge-pull-request-24-from-aidenkeating-immutable-service-config
+0a20b13fb84c2707a5d60248a52ffc4063da9f10;Aiden Keating;akeating@redhat.com;1517910763;Aiden Keating;akeating@redhat.com;1517914027;Make-parameters-final
+e4137977aba82b868e78f5bcd1aac20504b11143;Aiden Keating;akeating@redhat.com;1517909916;Aiden Keating;akeating@redhat.com;1517909916;Update-service-configuration-to-be-immutable
+ff7442e85683e55d156fcd5c0b447c0999e41d7a;Daniel Passos;daniel@passos.me;1517840859;GitHub;noreply@github.com;1517840859;Merge-pull-request-23-from-danielpassos-update-bom
+430341a00e5c56019d5d67e15b83f9220cdf564c;Daniel Passos;daniel@passos.me;1517330966;Daniel Passos;daniel@passos.me;1517661391;Move-library-dependencies-to-the-BOM
+f262924b3db7172149bbbb5f8fd92029ddb5a83c;Daniel Passos;daniel@passos.me;1517343181;GitHub;noreply@github.com;1517343181;Merge-pull-request-20-from-AdamSaleh-Jenkinsfile
+84262062a2c2a1930561c4bc358cafb215e7ac7c;Daniel Passos;daniel@passos.me;1517342934;GitHub;noreply@github.com;1517342934;Merge-pull-request-19-from-secondsun-AGDROID-711-config-params
+3abbd7555f61c5b13fa5bbb9e692df5fb0b2e380;Summers Pittman;secondsun@gmail.com;1517001909;Summers Pittman;secondsun@gmail.com;1517342284;Updating-tests-for-the-previous-commit
+5da7cfe3924b97c9bac71f6e00d6556b473d6c4f;Summers Pittman;secondsun@gmail.com;1517001886;Summers Pittman;secondsun@gmail.com;1517342282;Services-are-instanciated-because-they-are-declared-in-the-mobile-services.json-instead-of-because-they-are-registered-with-the-service-registry
+62718b78db28a998d12c006bcfbac6b7ca514b09;Summers Pittman;secondsun@gmail.com;1517000466;Summers Pittman;secondsun@gmail.com;1517342255;Adding-in-name-instance-mappings-to-the-service-registry
+a7c9e691f7606f8c0dbd463991f9138e2d9fbfc3;Adam Saleh;asaleh@redhat.com;1517325083;Adam Saleh;asaleh@redhat.com;1517325083;Added-Lint-step
+8065719da697b37f9418bc6c55df0435bd0391ba;Adam Saleh;asaleh@redhat.com;1517324729;Adam Saleh;asaleh@redhat.com;1517324729;Added-Jenkinsfile
+75fe6a75853aaf0d39e5467675de38661e867c90;Summers Pittman;secondsun@gmail.com;1516995414;Summers Pittman;secondsun@gmail.com;1516995432;Minor-Cleanups
+4a8c7770ae14623a9f55a5d7fb2d8de8e917daa4;Daniel Passos;daniel@passos.me;1516983701;GitHub;noreply@github.com;1516983701;Merge-pull-request-17-from-secondsun-http_module
+9345fc5a6fd6c0416eced095cda6a9b7eab2f347;Summers Pittman;secondsun@gmail.com;1516979297;Summers Pittman;secondsun@gmail.com;1516983573;Fixing-some-edge-cases-around-http
+cd7d2106d72b1552784cb409e8c9e23409e8e4dd;Aiden Keating;aidenkeating@users.noreply.github.com;1516982254;GitHub;noreply@github.com;1516982254;Merge-pull-request-14-from-aidenkeating-AGDROID-682
+8907f73bfd826785bf3052de3af84fb31593c250;Summers Pittman;secondsun@gmail.com;1516206067;Summers Pittman;secondsun@gmail.com;1516982179;Initial-OKHttpBased-Service-Module
+25f90ef276cd3b0cb47bd63079cb41c8a8bf379d;Summers Pittman;secondsun@gmail.com;1516982130;Summers Pittman;secondsun@gmail.com;1516982130;Merge-branch-service_registry-of-github.com-secondsun-aerogear-android-sdk
+df9b21984e223fc005d772c2d7eb8e9c1e0a55ab;Summers Pittman;secondsun@gmail.com;1516976784;Summers Pittman;secondsun@gmail.com;1516982091;Adding-in-minor-fixes-and-refactors-for-clarity
+2ea2931a1e26debe86fb0a6289db00b8556e1fe3;Summers Pittman;secondsun@gmail.com;1515730507;Summers Pittman;secondsun@gmail.com;1516982091;ServiceRegistry-and-Service-Module-management
+db42afd2a4ed926a4d399c504f04b66237ddc85e;Summers Pittman;secondsun@gmail.com;1515624170;Summers Pittman;secondsun@gmail.com;1516982091;Minor-code-formatting-improvements
+cfd4d8a97fca67711b7cc350b09460f3c1dceb0e;Summers Pittman;secondsun@gmail.com;1516982033;Summers Pittman;secondsun@gmail.com;1516982033;Merge-branch-circle-ci-of-github.com-danielpassos-aerogear-android-sdk
+a075b3f0e48fbe666ba0b27508897fcb04da63d6;Daniel Passos;daniel@passos.me;1516973096;Daniel Passos;daniel@passos.me;1516975154;Update-README
+d84967e5e934b30ee6f141a967c2acc2b3b04326;Daniel Passos;daniel@passos.me;1516969739;Daniel Passos;daniel@passos.me;1516973805;Add-circle-ci
+b4fc669780c16a0278674c54d5bba4f366bae547;Aiden Keating;akeating@redhat.com;1516964027;Aiden Keating;akeating@redhat.com;1516964027;AGDROID-682-Implement-OIDCUserPrincipalImpl
+35edcdf1187186e8564451d8ca78d54ca1a2d5af;Aiden Keating;akeating@redhat.com;1516881665;Aiden Keating;akeating@redhat.com;1516881665;AGDROID-682-Move-checkAuthStatus-from-user-principal-to-credential
+78f23d5b8fc913c1db69e0081ceec01f35d6e73a;Wojciech Trocki;wtrocki@redhat.com;1516742307;GitHub;noreply@github.com;1516742307;Merge-pull-request-6-from-secondsun-AGDROID-693_parse_mobile_core
+a63f7db58971b61d6fd55d8a9ad1ae482db9a9da;Aiden Keating;akeating@redhat.com;1516707173;Aiden Keating;akeating@redhat.com;1516707173;AGDROID-682-checkAuthStatusFunction
+40e8dc33674b2bcf620c3b00ba12d7fc9ce78ea8;Paolo Bueno;paolobueno@users.noreply.github.com;1516630606;GitHub;noreply@github.com;1516630606;Merge-pull-request-9-from-paolobueno-AGDROID-680-contrib-guide
+52166bfdc8a79f37fe5e23e00d4f1498e451b013;Paolo Bueno;paolohaji@gmail.com;1516630577;Paolo Bueno;paolohaji@gmail.com;1516630577;Change-multilevel-ol-to-h4
+3bd23b2d9f5abec8f8acd5169a54aa9adab34ce6;Paolo Bueno;paolohaji@gmail.com;1516622368;Paolo Bueno;paolohaji@gmail.com;1516622368;Add-code-of-conduct
+243ac85356d6ea8751be050953ec7dd3c682d6eb;Aiden Keating;aidenkeating@users.noreply.github.com;1516617586;GitHub;noreply@github.com;1516617586;Merge-pull-request-13-from-aidenkeating-AGDROID-705
+736d254e4834dbd93a02054d95e04971174c9465;Aiden Keating;akeating@redhat.com;1516612533;Aiden Keating;akeating@redhat.com;1516612533;Use-synchronized-methods-for-write-and-clear
+ca6deac5ed0e63dce8db62bf854e66b0229e5931;Aiden Keating;akeating@redhat.com;1516611554;Aiden Keating;akeating@redhat.com;1516611554;Use-final-where-needed
+9138de9fd6ceddc77cae1532a1062634970a6696;Paolo Bueno;paolohaji@gmail.com;1516383006;Paolo Bueno;paolohaji@gmail.com;1516383006;Add-issue-template
+284df05813827c69a553961f8316619881eafa45;Paolo Bueno;paolohaji@gmail.com;1516382175;Paolo Bueno;paolohaji@gmail.com;1516382175;Address-comments
+f3bd5cbfbc87b8d33dd21e97b2c250fcd64d9848;Aiden Keating;akeating@redhat.com;1516378775;Aiden Keating;akeating@redhat.com;1516378775;Namespace-auth-state-manager-store-name
+14f5e244e48a04e538ec82b4efee232bc34437e9;Aiden Keating;akeating@redhat.com;1516375713;Aiden Keating;akeating@redhat.com;1516375713;Implement-auth-state-manager-for-persisting
+2936380063fc8d1b293942198c6fd22dd21deafb;Paolo Bueno;paolohaji@gmail.com;1516371667;Paolo Bueno;paolohaji@gmail.com;1516371667;Move-module-creation-to-separate-file
+fe5d18c98d73e9668c754e6af19f0feaf0ccef46;Paolo Bueno;paolohaji@gmail.com;1516371582;Paolo Bueno;paolohaji@gmail.com;1516371582;Add-information-on-creating-a-new-module-project-via-android-studio-fix-links
+6e168a94a0bd47af7f5b1870f2bd0b9a1736afdc;Paolo Bueno;paolohaji@gmail.com;1516371570;Paolo Bueno;paolohaji@gmail.com;1516371570;Change-installation-command
+2153b0264f4fddb719584a8fb9fea828470351db;Paolo Bueno;paolohaji@gmail.com;1516371193;Paolo Bueno;paolohaji@gmail.com;1516371396;Fix-task-list-example
+288781cac2d04200b8e03c462c67bc213fd917d5;Paolo Bueno;paolohaji@gmail.com;1516229699;Paolo Bueno;paolohaji@gmail.com;1516229699;Move-architecture-docs-and-add-building-info
+9a2da6be2e9fbe4af3b2194e97c07ed1fdb8c9bd;Paolo Bueno;paolohaji@gmail.com;1516209524;Paolo Bueno;paolohaji@gmail.com;1516210134;Add-info-about-creating-a-new-service-module
+b854cd08607af859d491e2f6b947c5c296c615a9;Paolo Bueno;paolohaji@gmail.com;1516208981;Paolo Bueno;paolohaji@gmail.com;1516208981;Add-draft-of-contributing
+e74e534363d348d9648324ce3413df28c5430894;Paolo Bueno;paolohaji@gmail.com;1516205094;Paolo Bueno;paolohaji@gmail.com;1516205094;Update-license-metadata
+a7aa0d538ec8085a3bcb8f3d1cdbc8356f73c28f;Paolo Bueno;paolohaji@gmail.com;1516202632;Paolo Bueno;paolohaji@gmail.com;1516205011;Add-pr-template
+cb5f7d22ccefa7738a4df381677cc9ab7bd9dd78;Paolo Bueno;paolohaji@gmail.com;1516202625;Paolo Bueno;paolohaji@gmail.com;1516202625;Add-editorconfig-file
+95b2f883227afe82be792d6966f09afc4326cc9b;Summers Pittman;secondsun@gmail.com;1516195090;Summers Pittman;secondsun@gmail.com;1516195090;Making-mobile-services-file-configurable-and-defaulting-to-mobile-services.json
+18fd5f0550cc8c062d5bb38fc2029aaaddb8486b;Summers Pittman;secondsun@gmail.com;1515624170;Summers Pittman;secondsun@gmail.com;1516194398;Parsing-assets-mobile-core.json
+e97f917d042184b60582196b829cd25625eadda7;Paolo Bueno;paolobueno@users.noreply.github.com;1516192706;GitHub;noreply@github.com;1516192706;Merge-pull-request-8-from-paolobueno-AGDROID-697-bom-usage
+33f42d7718e7abf06604ce888bdeb3f0ee2f4001;Massimiliano Ziccardi;mziccard@redhat.com;1516191252;GitHub;noreply@github.com;1516191252;Merge-pull-request-3-from-aerogear-AGDROID-691
+b3aef8e9564e599142af76008805395d0cbd867e;Massimiliano Ziccardi;mziccard@redhat.com;1515779464;Massimiliano Ziccardi;mziccard@redhat.com;1516190929;IDM-Service-skeleton-implementation
+c4f7651d138142607591f54bdd4c51eec28f2305;Summers Pittman;secondsun@gmail.com;1516123923;Summers Pittman;secondsun@gmail.com;1516123923;Merge-branch-maven
+b9d13b963990a0bd558c9bd9c18d240f82e9d344;Summers Pittman;secondsun@gmail.com;1515617236;Summers Pittman;secondsun@gmail.com;1516123911;Adding-maven
+2849a7aa5560c123a037c0f669244a9520510288;Peter Braun;pbraun@redhat.com;1516110288;GitHub;noreply@github.com;1516110288;Update-README.md
+fd8f9b1db6cb74b34e5c4a4f3215a6bc4ed1e946;Peter Braun;pbraun@redhat.com;1516110136;GitHub;noreply@github.com;1516110136;Merge-pull-request-7-from-pb82-AGDROID-698
+f58a4ade05a39a130eebe9ea4ca0998e71c8340c;Summers Pittman;secondsun@gmail.com;1516108718;Summers Pittman;secondsun@gmail.com;1516108718;Merge-branch-temp_service_module-of-github.com-secondsun-aerogear-android-sdk
+d5eede7d34d38b27f5e3642ddbab639145334069;Peter Braun;pbraun@redhat.com;1516099958;Peter Braun;pbraun@redhat.com;1516105991;AGDROID-698-add-initial-docs
+01ba0ffb992fc628acd0881e7d9feb13bb9961ad;Paolo Bueno;paolohaji@gmail.com;1516102757;Paolo Bueno;paolohaji@gmail.com;1516102831;Remove-snapshot-version-from-tag
+87875c0b49a48115fdea8e0175d5f10b0812ce47;Paolo Bueno;paolohaji@gmail.com;1516039863;Paolo Bueno;paolohaji@gmail.com;1516102831;Add-dep-management-plugin-and-point-to-pending-sdk-bom
+e710438c539e868847fd023350868c967b6ac0ea;Summers Pittman;secondsun@gmail.com;1515519620;Summers Pittman;secondsun@gmail.com;1515941082;Adding-Skeleton-Service-Modules
+225bf72aea5162598f0efed9d3bf2714d633c0eb;Summers Pittman;secondsun@gmail.com;1515519543;Summers Pittman;secondsun@gmail.com;1515939391;Removing-idea-directory-from-git
+728ef9c71f3f96d0f9112f133b8559ef8e5e2913;Daniel Passos;daniel@passos.me;1515075617;GitHub;noreply@github.com;1515075617;Merge-pull-request-1-from-danielpassos-core-skeleton
+c67d993f3c16e5091e6e59c0d8c23ba90903ff95;Daniel Passos;daniel@passos.me;1515020305;Daniel Passos;daniel@passos.me;1515020305;Remove-dummy-test-files
+a36dfe8738c6b7c9f9a6662c6db239f15702b5f9;Daniel Passos;daniel@passos.me;1515020179;Daniel Passos;daniel@passos.me;1515020179;Move-Android-minSdk-targetSdk-and-compileSdk-to-a-separated-Gradle-file
+b361225dd73b28465eb1c850a8053285d68bfafb;Daniel Passos;daniel@passos.me;1514998454;Daniel Passos;daniel@passos.me;1514998535;Create-core-project-skeleton
+9ec8fc6a4ce8eba6a8533e1f5a29fc4be20715bb;Daniel Passos;daniel@passos.me;1514997959;GitHub;noreply@github.com;1514997959;Initial-commit

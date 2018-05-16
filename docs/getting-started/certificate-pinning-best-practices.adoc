@@ -1,0 +1,30 @@
+= Overview
+
+Certificate Pining is a client-side security feature to ensure that secure connections can be made to a target server with the correct identity.
+
+== What is Certificate Pinning?
+
+
+== Why Certificate Pinning?
+Certificate Pinning not only helps protect against eavesdropping or modification of data over a network channel, but also protects against certificate forgery.
+
+It can also help protect against certificate phishing attacks where mobile users can be phished into inserting unwanted certs into the devices trust store.
+
+== What to Pin?
+Multiple entities can be be used to pin.
+
+== Android Best Practices
+* Pin all connections to important hosts.
+* Use a 1 to 1 Pin to Host mapping. Don't try every pin for every host.
+* Perform pinning validation on all SSL connections to the host, not just on first use.
+* Avoid the use of multiple networking/pinning libraries, centralize your pinning implementation to ensure the best control.
+* Use a backup pin where possible.
+
+For Android API level 26+
+
+
+== Pitfalls & Downsides
+* Certificate Pinning will not protect against compromised pinned certificates.
+* Certificate Pinning creates a single point of failure in your applications.
+* Certificate Pinning will require a greater operational overhead to ensure applications are in a working state for end users.
+* Certificate Pinning won't protect against reverse engineering of API calls if a malicious user has physical access.
