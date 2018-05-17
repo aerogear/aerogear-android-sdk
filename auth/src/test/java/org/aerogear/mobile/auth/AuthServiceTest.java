@@ -45,6 +45,7 @@ public class AuthServiceTest {
     public void setup() throws NoSuchFieldException, IllegalAccessException {
         MockitoAnnotations.initMocks(this);
         when(serviceConfiguration.getProperty(anyString())).thenReturn("dummyvalue");
+        when(serviceConfiguration.getUrl()).thenReturn("dummyvalue");
         when(mobileCore.getHttpLayer()).thenReturn(httpServiceModule);
         when(httpServiceModule.newRequest()).thenReturn(httpRequest);
     }

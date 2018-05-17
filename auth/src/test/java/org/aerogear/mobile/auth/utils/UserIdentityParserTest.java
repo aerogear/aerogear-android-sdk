@@ -35,8 +35,8 @@ public class UserIdentityParserTest {
         ServiceConfiguration serviceConfig = ServiceConfiguration.newConfiguration()
                         .addProperty("resource", "client-app")
                         .addProperty("auth-server-url", "test.server.url")
-                        .addProperty("url", "test.server.url").addProperty("realm", "test-realm")
-                        .build();
+                        .addProperty("realm", "test-realm")
+                        .setUrl("https://keycloak-server.com/auth").build();
         keycloakConfiguration = new KeycloakConfiguration(serviceConfig);
         credential = new OIDCCredentials() {
             @Override

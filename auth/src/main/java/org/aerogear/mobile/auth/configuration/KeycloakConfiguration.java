@@ -13,6 +13,7 @@ import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 public class KeycloakConfiguration {
 
     private static final String AUTH_SERVER_URL_NAME = "auth-server-url";
+    private static final String SERVER_URL_NAME = "url";
     private static final String REALM_ID_NAME = "realm";
     private static final String RESOURCE_ID_NAME = "resource";
 
@@ -39,7 +40,7 @@ public class KeycloakConfiguration {
 
         this.authServerUrl = nonEmpty(configuration.getProperty(AUTH_SERVER_URL_NAME),
                         AUTH_SERVER_URL_NAME);
-        this.serverUrl = nonEmpty(configuration.getUrl(), configuration.getUrl());
+        this.serverUrl = nonEmpty(configuration.getUrl(), SERVER_URL_NAME);
         this.realmId = nonEmpty(configuration.getProperty(REALM_ID_NAME), REALM_ID_NAME);
         this.resourceId = nonEmpty(configuration.getProperty(RESOURCE_ID_NAME), RESOURCE_ID_NAME);
         this.baseUrl = String.format(BASE_URL_TEMPLATE, serverUrl, realmId);

@@ -192,7 +192,7 @@ public class OIDCAuthenticatorImplTest {
         MockitoAnnotations.initMocks(this);
         when(serviceConfig.getProperty("auth-server-url"))
                         .thenReturn("https://keycloak-server.com/auth");
-        when(serviceConfig.getProperty("url")).thenReturn("https://keycloak-server.com/auth");
+        when(serviceConfig.getUrl()).thenReturn("https://keycloak-server.com/auth");
         when(serviceConfig.getProperty("realm")).thenReturn("realmId");
         when(serviceConfig.getProperty("resource")).thenReturn("clientId");
 
