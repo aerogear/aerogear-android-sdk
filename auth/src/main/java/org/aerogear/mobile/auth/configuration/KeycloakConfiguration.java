@@ -98,9 +98,9 @@ public class KeycloakConfiguration {
      * Get the Auth Server URL string of the Keycloak singleThreadService This URL should only be
      * used to get the issuer field for token verification.
      *
-     * @return the Auth Server URL of the Keycloak singleThreadService
+     * @return the Issuer Hostname of the Keycloak Server
      */
-    public String getAuthHostURL() {
+    public String getIssuerHostname() {
         return this.authServerUrl;
     }
 
@@ -128,6 +128,6 @@ public class KeycloakConfiguration {
      * @return the JWT Issuer
      */
     public String getIssuer() {
-        return String.format("%s/realms/%s", getAuthHostURL(), getRealmName());
+        return String.format("%s/realms/%s", getIssuerHostname(), getRealmName());
     }
 }
