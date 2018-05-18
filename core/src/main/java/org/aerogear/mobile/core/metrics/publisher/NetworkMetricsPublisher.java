@@ -30,10 +30,10 @@ public final class NetworkMetricsPublisher extends MetricsPublisher {
 
     public NetworkMetricsPublisher(final Context context, final HttpRequest httpRequest,
                     final String url) {
-        super(context);
+        super(nonNull(context, "context"));
 
-        this.httpRequest = httpRequest;
-        this.url = url;
+        this.httpRequest = nonNull(httpRequest, "httpRequest");
+        this.url = nonNull(url, "url");
     }
 
     @Override
@@ -64,6 +64,6 @@ public final class NetworkMetricsPublisher extends MetricsPublisher {
                         });
 
         LOGGER.debug("Sending metrics");
-
     }
+
 }

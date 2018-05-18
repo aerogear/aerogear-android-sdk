@@ -8,7 +8,6 @@ import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.ServiceModule;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
-import org.aerogear.mobile.core.metrics.publisher.LoggerMetricsPublisher;
 import org.aerogear.mobile.core.metrics.publisher.NetworkMetricsPublisher;
 
 public class MetricsService implements ServiceModule {
@@ -40,12 +39,8 @@ public class MetricsService implements ServiceModule {
         nonNull(serviceConfiguration, "serviceConfiguration");
 
         final String metricsUrl = serviceConfiguration.getUrl();
-        if (metricsUrl == null) {
-            publisher = new LoggerMetricsPublisher(core.getContext());
-        } else {
-            publisher = new NetworkMetricsPublisher(core.getContext(),
-                            core.getHttpLayer().newRequest(), metricsUrl);
-        }
+        publisher = new NetworkMetricsPublisher(core.getContext(), core.getHttpLayer().newRequest(),
+                        metricsUrl);
     }
 
     @Override
