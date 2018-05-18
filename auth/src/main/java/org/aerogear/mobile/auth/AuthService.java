@@ -17,6 +17,7 @@ import org.aerogear.mobile.auth.authenticator.AuthorizationServiceFactory;
 import org.aerogear.mobile.auth.authenticator.DefaultAuthenticateOptions;
 import org.aerogear.mobile.auth.authenticator.oidc.OIDCAuthenticatorImpl;
 import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
+import org.aerogear.mobile.auth.configuration.BrowserConfiguration;
 import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
 import org.aerogear.mobile.auth.credentials.JwksManager;
 import org.aerogear.mobile.auth.credentials.OIDCCredentials;
@@ -37,6 +38,7 @@ public class AuthService implements ServiceModule {
     private ServiceConfiguration serviceConfiguration;
     private KeycloakConfiguration keycloakConfiguration;
     private AuthServiceConfiguration authServiceConfiguration;
+    private BrowserConfiguration browserConfiguration;
 
     private AuthStateManager authStateManager;
 
@@ -195,9 +197,10 @@ public class AuthService implements ServiceModule {
      *
      * @param context the current application context
      * @param authServiceConfiguration the configuration of the auth service
+     * @param browserConfiguration the configuration for the browser used during authentication/SSO
      */
-    public void init(final Context context,
-                    final AuthServiceConfiguration authServiceConfiguration) {
+    public void init(final Context context, final AuthServiceConfiguration authServiceConfiguration,
+                    BrowserConfiguration browserConfiguration) {
         if (!initialisationStatus.contains(STEP.CONFIGURED)) {
             throw new IllegalStateException(
                             "configure method must be called before the init method");
@@ -207,12 +210,13 @@ public class AuthService implements ServiceModule {
         this.authStateManager = AuthStateManager.getInstance(context);
         this.authServiceConfiguration =
                         nonNull(authServiceConfiguration, "authServiceConfiguration");
+        this.browserConfiguration = nonNull(browserConfiguration, "browserConfiguration");
         this.jwksManager = new JwksManager(this.appContext, this.mobileCore,
                         this.authServiceConfiguration);
         this.oidcAuthenticatorImpl = new OIDCAuthenticatorImpl(this.serviceConfiguration,
-                        this.authServiceConfiguration, this.authStateManager,
-                        new AuthorizationServiceFactory(appContext), jwksManager,
-                        mobileCore.getHttpLayer());
+                        this.authServiceConfiguration, this.browserConfiguration,
+                        this.authStateManager, new AuthorizationServiceFactory(appContext),
+                        jwksManager, mobileCore.getHttpLayer());
         initialisationStatus.add(STEP.INITIALIZED);
     }
 

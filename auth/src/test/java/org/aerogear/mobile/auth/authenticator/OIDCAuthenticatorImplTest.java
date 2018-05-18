@@ -19,6 +19,9 @@ import android.content.Intent;
 import org.aerogear.mobile.auth.AuthStateManager;
 import org.aerogear.mobile.auth.authenticator.oidc.OIDCAuthenticatorImpl;
 import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
+import org.aerogear.mobile.auth.configuration.Browser;
+import org.aerogear.mobile.auth.configuration.BrowserConfiguration;
+import org.aerogear.mobile.auth.configuration.BrowserType;
 import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
 import org.aerogear.mobile.auth.credentials.JwksManager;
 import org.aerogear.mobile.auth.credentials.OIDCCredentials;
@@ -199,7 +202,7 @@ public class OIDCAuthenticatorImplTest {
         when(serviceWrapper.getAuthorizationService()).thenReturn(authorizationService);
         when(serviceWrapper.getAuthState()).thenReturn(authState);
 
-        when(authorizationServiceFactory.createAuthorizationService(any(), any()))
+        when(authorizationServiceFactory.createAuthorizationService(any(), any(), any()))
                         .thenReturn(serviceWrapper);
 
         when(intent.getStringExtra(EXTRA_RESPONSE)).thenReturn(OIDC_RESPONSE);
@@ -223,11 +226,16 @@ public class OIDCAuthenticatorImplTest {
                 return accessToken;
             }
         };
+        Browser browser = new Browser.BrowserBuilder()
+                        .browser(BrowserType.CHROME_DEFAULT_CUSTOM_TAB).build();
+        BrowserConfiguration browserConfiguration =
+                        new BrowserConfiguration.BrowserConfigurationBuilder().blackList()
+                                        .browser(browser).build();
         authServiceConfiguration = new AuthServiceConfiguration.AuthConfigurationBuilder()
                         .withRedirectUri("some.redirect.uri:/callback").build();
         authenticator = new OIDCAuthenticatorImpl(serviceConfig, authServiceConfiguration,
-                        authStateManager, authorizationServiceFactory, jwksManager,
-                        httpsServiceModule);
+                        browserConfiguration, authStateManager, authorizationServiceFactory,
+                        jwksManager, httpsServiceModule);
 
         doAnswer(invocation -> {
             ((Callback<JsonWebKeySet>) invocation.getArguments()[1]).onSuccess(null);
