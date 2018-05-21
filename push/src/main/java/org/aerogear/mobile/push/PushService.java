@@ -1,27 +1,15 @@
 package org.aerogear.mobile.push;
 
-import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
-import static java.net.HttpURLConnection.HTTP_OK;
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.messaging.FirebaseMessaging;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Base64;
+
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.gson.Gson;
 
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.ServiceModule;
@@ -33,6 +21,19 @@ import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.reactive.Request;
 import org.aerogear.mobile.core.reactive.Requester;
 import org.aerogear.mobile.core.reactive.Responder;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 
 /**
@@ -42,15 +43,16 @@ public class PushService implements ServiceModule {
 
     private static final String DEFAULT_MESSAGE_HANDLER_KEY = "DEFAULT_MESSAGE_HANDLER_KEY";
 
-    private static final String SHARED_PREFERENCE_PUSH_NAME = "UnifiedPushServer";
-    private static final String SHARED_PREFERENCE_PUSH_KEY = "UnifiedPushServer_Cache";
+    private static final String SHARED_PREFERENCE_PUSH_NAME = "AEROGEAR_UNIFIED_PUSH";
+    private static final String SHARED_PREFERENCE_PUSH_KEY_CONFIG = "AEROGEAR_UNIFIED_PUSH_CONFIG";
+    private static final String SHARED_PREFERENCE_PUSH_KEY_CREDENTIALS =
+                    "AEROGEAR_UNIFIED_PUSH_CREDENTIALS";
 
     private static final String registryDeviceEndpoint = "rest/registry/device";
     private static final String JSON_ANDROID_CONFIG_KEY = "android";
     private static final String JSON_VARIANT_ID_KEY = "variantId";
     private static final String JSON_VARIANT_SECRET_KEY = "variantSecret";
     private static final String JSON_SENDER_ID_KEY = "senderId";
-
 
     private static final List<MessageHandler> MAIN_THREAD_HANDLERS =
                     Collections.synchronizedList(new ArrayList<>());
@@ -61,6 +63,8 @@ public class PushService implements ServiceModule {
     private final String deviceType = "ANDROID";
     private final String operatingSystem = "android";
     private final String osVersion = android.os.Build.VERSION.RELEASE;
+
+    private final Gson gson = new Gson();
 
     private MobileCore core;
     private String url;
@@ -201,7 +205,7 @@ public class PushService implements ServiceModule {
                                                     FirebaseMessaging.getInstance();
 
                                     try {
-                                        JSONObject data = retrieveCache();
+                                        JSONObject data = retrieveCachedConfig();
                                         if (data != null) {
                                             JSONArray categories = data.getJSONArray("categories");
                                             for (int i = 0; i < categories.length(); i++) {
@@ -247,7 +251,7 @@ public class PushService implements ServiceModule {
      * Update the device token on Unified Push Server
      */
     public void refreshToken() {
-        JSONObject jsonObject = retrieveCache();
+        JSONObject jsonObject = retrieveCachedConfig();
 
         if (jsonObject != null) {
             this.registerDevice(jsonObject).respondWith(new Responder<Boolean>() {
@@ -269,10 +273,13 @@ public class PushService implements ServiceModule {
     /**
      * Save info sent to the Unified Push Server
      *
-     * @param data JSONObject sent to Unified Push Server
+     * @param config JSONObject sent to Unified Push Server
      */
-    private void saveCache(JSONObject data) {
-        sharedPreferences.edit().putString(SHARED_PREFERENCE_PUSH_KEY, data.toString()).apply();
+    private void saveCache(JSONObject config) {
+        sharedPreferences.edit().putString(SHARED_PREFERENCE_PUSH_KEY_CONFIG, config.toString())
+                        .apply();
+        sharedPreferences.edit().putString(SHARED_PREFERENCE_PUSH_KEY_CREDENTIALS,
+                        gson.toJson(unifiedPushCredentials)).apply();
     }
 
     /**
@@ -280,14 +287,29 @@ public class PushService implements ServiceModule {
      *
      * @return JSONObject sent to Unified Push Server
      */
-    private JSONObject retrieveCache() {
+    private Map<String, Object> retrieveCache() {
+        Map<String, Object> data = new HashMap<>();
+        data.put(SHARED_PREFERENCE_PUSH_KEY_CONFIG,
+                        sharedPreferences.getString(SHARED_PREFERENCE_PUSH_KEY_CONFIG, ""));
+        data.put(SHARED_PREFERENCE_PUSH_KEY_CREDENTIALS,
+                        sharedPreferences.getString(SHARED_PREFERENCE_PUSH_KEY_CREDENTIALS, ""));
+        return data;
+    }
+
+    private JSONObject retrieveCachedConfig() {
         try {
-            String jsonString = sharedPreferences.getString(SHARED_PREFERENCE_PUSH_KEY, "");
+            String jsonString = (String) retrieveCache().get(SHARED_PREFERENCE_PUSH_KEY_CONFIG);
             return (!jsonString.isEmpty()) ? new JSONObject(jsonString) : null;
         } catch (JSONException e) {
             MobileCore.getLogger().error(e.getMessage(), e);
             return null;
         }
+    }
+
+    private UnifiedPushCredentials retrieveCachedCredentials() {
+        String cachedCredentials =
+                        (String) retrieveCache().get(SHARED_PREFERENCE_PUSH_KEY_CREDENTIALS);
+        return new Gson().fromJson(cachedCredentials, UnifiedPushCredentials.class);
     }
 
     /**
@@ -296,9 +318,10 @@ public class PushService implements ServiceModule {
      * @return Device Token
      */
     private String retrieveOldDeviceToken() {
-        JSONObject data = retrieveCache();
+
         try {
-            return (data == null) ? null : data.getString("deviceToken");
+            JSONObject config = retrieveCachedConfig();
+            return (config == null) ? null : config.getString("deviceToken");
         } catch (JSONException e) {
             MobileCore.getLogger().error(e.getMessage(), e);
             return null;
@@ -309,7 +332,8 @@ public class PushService implements ServiceModule {
      * Clear cache of info sent to the Unified Push Server
      */
     private void clearCache() {
-        sharedPreferences.edit().remove(SHARED_PREFERENCE_PUSH_KEY).apply();
+        sharedPreferences.edit().remove(SHARED_PREFERENCE_PUSH_KEY_CONFIG).apply();
+        sharedPreferences.edit().remove(SHARED_PREFERENCE_PUSH_KEY_CREDENTIALS).apply();
     }
 
     /**
