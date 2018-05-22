@@ -1,15 +1,31 @@
 package org.aerogear.mobile.push;
 
+import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.gson.Gson;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Base64;
-
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.gson.Gson;
 
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
@@ -20,19 +36,6 @@ import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.reactive.Request;
 import org.aerogear.mobile.core.reactive.Requester;
 import org.aerogear.mobile.core.reactive.Responder;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
-import static java.net.HttpURLConnection.HTTP_OK;
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 
 /**
@@ -45,22 +48,23 @@ public class PushService {
     private static final String SHARED_PREFERENCE_PUSH_NAME = "AEROGEAR_UNIFIED_PUSH";
     private static final String SHARED_PREFERENCE_PUSH_KEY_CONFIG = "AEROGEAR_UNIFIED_PUSH_CONFIG";
     private static final String SHARED_PREFERENCE_PUSH_KEY_CREDENTIALS =
-        "AEROGEAR_UNIFIED_PUSH_CREDENTIALS";
+                    "AEROGEAR_UNIFIED_PUSH_CREDENTIALS";
 
     private static final String registryDeviceEndpoint = "rest/registry/device";
     private static final String JSON_ANDROID_CONFIG_KEY = "android";
+    private static final String JSON_SERVER_URL = "pushServerURL";
     private static final String JSON_VARIANT_ID_KEY = "variantId";
     private static final String JSON_VARIANT_SECRET_KEY = "variantSecret";
     private static final String JSON_SENDER_ID_KEY = "senderId";
 
     private static final List<MessageHandler> MAIN_THREAD_HANDLERS =
-        Collections.synchronizedList(new ArrayList<>());
+                    Collections.synchronizedList(new ArrayList<>());
     private static final List<MessageHandler> BACKGROUND_THREAD_HANDLERS =
-        Collections.synchronizedList(new ArrayList<>());
+                    Collections.synchronizedList(new ArrayList<>());
     private static final String TAG = "PUSH_SERVICE";
 
     private final static String ERROR_MESSAGE =
-        "An error occurred while trying to load the push config";
+                    "An error occurred while trying to load the push config";
 
     private static SharedPreferences sharedPreferences;
     private static MessageHandler defaultHandler;
@@ -79,8 +83,8 @@ public class PushService {
 
         this.unifiedPushCredentials = unifiedPushCredentials;
 
-        sharedPreferences = context
-            .getSharedPreferences(SHARED_PREFERENCE_PUSH_NAME, Context.MODE_PRIVATE);
+        sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCE_PUSH_NAME,
+                        Context.MODE_PRIVATE);
 
         getDefaultHandler(context);
     }
@@ -90,7 +94,20 @@ public class PushService {
         private Context context;
         private UnifiedPushCredentials unifiedPushCredentials = new UnifiedPushCredentials();
 
-        public Builder() {
+        public Builder() {}
+
+        private UnifiedPushCredentials parseCredentialsFromJSON(JSONObject jsonObject) {
+            try {
+                UnifiedPushCredentials unifiedPushCredentials = new UnifiedPushCredentials();
+                unifiedPushCredentials.setVariant(jsonObject.getString(JSON_VARIANT_ID_KEY));
+                unifiedPushCredentials.setSecret(jsonObject.getString(JSON_VARIANT_SECRET_KEY));
+                unifiedPushCredentials.setSenderId(jsonObject.getString(JSON_SENDER_ID_KEY));
+
+                return unifiedPushCredentials;
+            } catch (JSONException e) {
+                MobileCore.getLogger().error(e.getMessage(), e);
+                throw new ConfigurationNotFoundException(ERROR_MESSAGE);
+            }
         }
 
         public Builder openshift(String id) {
@@ -103,7 +120,7 @@ public class PushService {
 
             try {
                 JSONObject android = new JSONObject(
-                    serviceConfiguration.getProperties().get(JSON_ANDROID_CONFIG_KEY));
+                                serviceConfiguration.getProperties().get(JSON_ANDROID_CONFIG_KEY));
 
                 unifiedPushCredentials = parseCredentialsFromJSON(android);
                 unifiedPushCredentials.setUrl(serviceConfiguration.getUrl());
@@ -115,24 +132,69 @@ public class PushService {
             return this;
         }
 
+        /**
+         * Load unified push informations from assets/push-config.json
+         *
+         * <pre>
+         * {
+         *   "pushServerURL": "pushServerURL (e.g http(s)//host:port/context)",
+         *   "android": {
+         *     "senderId": "senderID (e.g Google Project ID only for android)",
+         *     "variantId": "variantID (e.g. 1234456-234320)",
+         *     "variantSecret": "variantSecret (e.g. 1234456-234320)"
+         * }
+         * </pre>
+         *
+         * @param context Application context
+         * @return Builder The push server builder instance
+         */
+        public Builder standard(Context context) {
+
+            this.context = nonNull(context, "context");
+
+            String fileName = "push-config.json";
+
+            InputStream fileStream = null;
+
+            try {
+                fileStream = context.getResources().getAssets().open(fileName);
+                int size = fileStream.available();
+                byte[] buffer = new byte[size];
+                fileStream.read(buffer);
+                fileStream.close();
+                String json = new String(buffer);
+
+                JSONObject pushConfig = new JSONObject(json);
+                JSONObject android = pushConfig.getJSONObject(JSON_ANDROID_CONFIG_KEY);
+
+                unifiedPushCredentials = parseCredentialsFromJSON(android);
+                unifiedPushCredentials.setUrl(pushConfig.getString(JSON_SERVER_URL));
+
+            } catch (JSONException e) {
+                MobileCore.getLogger().error(TAG, e.getMessage(), e);
+                throw new RuntimeException("An error occurred while parsing the " + fileName
+                                + ". Please check the file format");
+            } catch (IOException e) {
+                MobileCore.getLogger().error(TAG, e.getMessage(), e);
+                throw new RuntimeException("An error occurred while parsing the " + fileName
+                                + ". Please check if the file exists");
+            } finally {
+                if (fileStream != null) {
+                    try {
+                        fileStream.close();
+                    } catch (IOException e) {
+                        // Ignore IOException
+                    }
+                }
+            }
+
+            return this;
+        }
+
         public PushService build() {
             return new PushService(context, unifiedPushCredentials);
         }
 
-    }
-
-    private static UnifiedPushCredentials parseCredentialsFromJSON(JSONObject jsonObject) {
-        try {
-            UnifiedPushCredentials unifiedPushCredentials = new UnifiedPushCredentials();
-            unifiedPushCredentials.setVariant(jsonObject.getString(JSON_VARIANT_ID_KEY));
-            unifiedPushCredentials.setSecret(jsonObject.getString(JSON_VARIANT_SECRET_KEY));
-            unifiedPushCredentials.setSenderId(jsonObject.getString(JSON_SENDER_ID_KEY));
-
-            return unifiedPushCredentials;
-        } catch (JSONException e) {
-            MobileCore.getLogger().error(e.getMessage(), e);
-            throw new ConfigurationNotFoundException(ERROR_MESSAGE);
-        }
     }
 
     /**
@@ -162,7 +224,7 @@ public class PushService {
             data.put("deviceToken", FirebaseInstanceId.getInstance().getToken());
 
             String authHash = getHashedAuth(unifiedPushCredentials.getVariant(),
-                unifiedPushCredentials.getSecret().toCharArray());
+                            unifiedPushCredentials.getSecret().toCharArray());
 
             final HttpRequest httpRequest = MobileCore.getInstance().getHttpLayer().newRequest();
             httpRequest.addHeader("Authorization", authHash);
@@ -174,36 +236,37 @@ public class PushService {
             }
 
             return httpRequest;
-        }).requestMap(httpRequest ->
-            httpRequest.post(unifiedPushCredentials.getUrl() + registryDeviceEndpoint,
-                data.toString().getBytes()))
-            .requestMap(httpResponse -> Requester.call(() -> {
-                switch (httpResponse.getStatus()) {
-                    case HTTP_OK:
+        }).requestMap(httpRequest -> httpRequest.post(
+                        unifiedPushCredentials.getUrl() + registryDeviceEndpoint,
+                        data.toString().getBytes()))
+                        .requestMap(httpResponse -> Requester.call(() -> {
+                            switch (httpResponse.getStatus()) {
+                                case HTTP_OK:
 
-                        FirebaseMessaging firebaseMessaging = FirebaseMessaging.getInstance();
+                                    FirebaseMessaging firebaseMessaging =
+                                                    FirebaseMessaging.getInstance();
 
-                        try {
-                            JSONArray categories = data.getJSONArray("categories");
-                            for (int i = 0; i < categories.length(); i++) {
-                                String category =
-                                    categories.getJSONObject(i).toString();
-                                firebaseMessaging.subscribeToTopic(category);
+                                    try {
+                                        JSONArray categories = data.getJSONArray("categories");
+                                        for (int i = 0; i < categories.length(); i++) {
+                                            String category =
+                                                            categories.getJSONObject(i).toString();
+                                            firebaseMessaging.subscribeToTopic(category);
+                                        }
+                                    } catch (JSONException e) {
+                                        // ignore
+                                    }
+
+                                    firebaseMessaging.subscribeToTopic(
+                                                    unifiedPushCredentials.getVariant());
+
+                                    saveCache(data);
+
+                                    return Boolean.TRUE;
+                                default:
+                                    throw (new HttpException(httpResponse.getStatus()));
                             }
-                        } catch (JSONException e) {
-                            // ignore
-                        }
-
-                        firebaseMessaging.subscribeToTopic(unifiedPushCredentials.getVariant());
-
-                        saveCache(data);
-
-                        return Boolean.TRUE;
-                    default:
-                        throw (new HttpException(httpResponse.getStatus()));
-                }
-            }))
-            .requestOn(new AppExecutors().networkThread());
+                        })).requestOn(new AppExecutors().networkThread());
     }
 
     /**
@@ -214,64 +277,66 @@ public class PushService {
     public Request<Boolean> unregisterDevice() {
 
         String authHash = getHashedAuth(unifiedPushCredentials.getVariant(),
-            unifiedPushCredentials.getSecret().toCharArray());
+                        unifiedPushCredentials.getSecret().toCharArray());
 
         final HttpRequest httpRequest = MobileCore.getInstance().getHttpLayer().newRequest();
         httpRequest.addHeader("Authorization", authHash);
 
         return httpRequest
-            .delete(unifiedPushCredentials.getUrl() + registryDeviceEndpoint + "/"
-                + FirebaseInstanceId.getInstance().getToken())
-            .requestMap(httpResponse -> Requester.call(() -> {
-                switch (httpResponse.getStatus()) {
-                    case HTTP_NO_CONTENT:
+                        .delete(unifiedPushCredentials.getUrl() + registryDeviceEndpoint + "/"
+                                        + FirebaseInstanceId.getInstance().getToken())
+                        .requestMap(httpResponse -> Requester.call(() -> {
+                            switch (httpResponse.getStatus()) {
+                                case HTTP_NO_CONTENT:
 
-                        FirebaseMessaging firebaseMessaging =
-                            FirebaseMessaging.getInstance();
+                                    FirebaseMessaging firebaseMessaging =
+                                                    FirebaseMessaging.getInstance();
 
-                        try {
-                            JSONObject data = retrieveCachedConfig();
-                            if (data != null) {
-                                JSONArray categories = data.getJSONArray("categories");
-                                for (int i = 0; i < categories.length(); i++) {
-                                    String category = categories.getString(i);
-                                    firebaseMessaging.unsubscribeFromTopic(category);
-                                }
+                                    try {
+                                        JSONObject data = retrieveCachedConfig();
+                                        if (data != null) {
+                                            JSONArray categories = data.getJSONArray("categories");
+                                            for (int i = 0; i < categories.length(); i++) {
+                                                String category = categories.getString(i);
+                                                firebaseMessaging.unsubscribeFromTopic(category);
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        // ignore
+                                    }
+
+                                    firebaseMessaging.unsubscribeFromTopic(
+                                                    unifiedPushCredentials.getVariant());
+
+                                    clearCache();
+
+                                    return true;
+
+                                default:
+                                    throw new HttpException(httpResponse.getStatus());
                             }
-                        } catch (JSONException e) {
-                            // ignore
-                        }
-
-                        firebaseMessaging.unsubscribeFromTopic(
-                            unifiedPushCredentials.getVariant());
-
-                        clearCache();
-
-                        return true;
-
-                    default:
-                        throw new HttpException(httpResponse.getStatus());
-                }
-            }));
+                        }));
     }
 
     /**
      * Provide an auth hash to be used to authenticate in Unified Push Service
      *
      * @param variant Unified Push variant id
-     * @param secret  Unified Push variant secret
+     * @param secret Unified Push variant secret
      * @return Auth hash
      */
     private String getHashedAuth(final String variant, final char[] secret) {
         StringBuilder headerValueBuilder = new StringBuilder("Basic").append(" ");
         String unhashedCredentials = variant + ":" + String.valueOf(secret);
         String hashedCrentials =
-            Base64.encodeToString(unhashedCredentials.getBytes(), Base64.NO_WRAP);
+                        Base64.encodeToString(unhashedCredentials.getBytes(), Base64.NO_WRAP);
         return headerValueBuilder.append(hashedCrentials).toString();
     }
 
     /**
      * Update the device token on Unified Push Server
+     *
+     * @param context Application context
      */
     public static void refreshToken(Context context) {
         nonNull(context, "context");
@@ -280,20 +345,19 @@ public class PushService {
         UnifiedPushCredentials unifiedPushCredentials = retrieveCachedCredentials();
 
         if (jsonObject != null) {
-            new PushService(context, unifiedPushCredentials)
-                .registerDevice()
-                .respondOn(new AppExecutors().mainThread())
-                .respondWith(new Responder<Boolean>() {
-                    @Override
-                    public void onResult(Boolean value) {
-                        MobileCore.getLogger().info("Device token refresh");
-                    }
+            new PushService(context, unifiedPushCredentials).registerDevice()
+                            .respondOn(new AppExecutors().mainThread())
+                            .respondWith(new Responder<Boolean>() {
+                                @Override
+                                public void onResult(Boolean value) {
+                                    MobileCore.getLogger().info("Device token refresh");
+                                }
 
-                    @Override
-                    public void onException(Exception error) {
-                        MobileCore.getLogger().error(error.getMessage(), error);
-                    }
-                });
+                                @Override
+                                public void onException(Exception error) {
+                                    MobileCore.getLogger().error(error.getMessage(), error);
+                                }
+                            });
         }
 
     }
@@ -305,9 +369,9 @@ public class PushService {
      */
     private void saveCache(JSONObject config) {
         sharedPreferences.edit().putString(SHARED_PREFERENCE_PUSH_KEY_CONFIG, config.toString())
-            .putString(SHARED_PREFERENCE_PUSH_KEY_CREDENTIALS,
-                gson.toJson(unifiedPushCredentials))
-            .apply();
+                        .putString(SHARED_PREFERENCE_PUSH_KEY_CREDENTIALS,
+                                        gson.toJson(unifiedPushCredentials))
+                        .apply();
     }
 
     /**
@@ -318,9 +382,9 @@ public class PushService {
     private static Map<String, Object> retrieveCache() {
         Map<String, Object> data = new HashMap<>();
         data.put(SHARED_PREFERENCE_PUSH_KEY_CONFIG,
-            sharedPreferences.getString(SHARED_PREFERENCE_PUSH_KEY_CONFIG, ""));
+                        sharedPreferences.getString(SHARED_PREFERENCE_PUSH_KEY_CONFIG, ""));
         data.put(SHARED_PREFERENCE_PUSH_KEY_CREDENTIALS,
-            sharedPreferences.getString(SHARED_PREFERENCE_PUSH_KEY_CREDENTIALS, ""));
+                        sharedPreferences.getString(SHARED_PREFERENCE_PUSH_KEY_CREDENTIALS, ""));
         return data;
     }
 
@@ -336,10 +400,10 @@ public class PushService {
 
     private static UnifiedPushCredentials retrieveCachedCredentials() {
         String cachedCredentials =
-            (String) retrieveCache().get(SHARED_PREFERENCE_PUSH_KEY_CREDENTIALS);
+                        (String) retrieveCache().get(SHARED_PREFERENCE_PUSH_KEY_CREDENTIALS);
         return (!cachedCredentials.isEmpty())
-            ? new Gson().fromJson(cachedCredentials, UnifiedPushCredentials.class)
-            : null;
+                        ? new Gson().fromJson(cachedCredentials, UnifiedPushCredentials.class)
+                        : null;
     }
 
     /**
@@ -362,7 +426,7 @@ public class PushService {
      */
     private void clearCache() {
         sharedPreferences.edit().remove(SHARED_PREFERENCE_PUSH_KEY_CONFIG)
-            .remove(SHARED_PREFERENCE_PUSH_KEY_CREDENTIALS).apply();
+                        .remove(SHARED_PREFERENCE_PUSH_KEY_CREDENTIALS).apply();
     }
 
     /**
@@ -419,19 +483,19 @@ public class PushService {
         }
 
         if (BACKGROUND_THREAD_HANDLERS.isEmpty() && MAIN_THREAD_HANDLERS.isEmpty()
-            && defaultHandler != null) {
+                        && defaultHandler != null) {
             new AppExecutors().singleThreadService().execute(() -> defaultHandler.onMessage(context,
-                Collections.unmodifiableMap(message)));
+                            Collections.unmodifiableMap(message)));
         } else {
 
             for (final MessageHandler handler : BACKGROUND_THREAD_HANDLERS) {
                 new AppExecutors().singleThreadService().execute(() -> handler.onMessage(context,
-                    Collections.unmodifiableMap(message)));
+                                Collections.unmodifiableMap(message)));
             }
 
             for (final MessageHandler handler : MAIN_THREAD_HANDLERS) {
                 new AppExecutors().mainThread().execute(() -> handler.onMessage(context,
-                    Collections.unmodifiableMap(message)));
+                                Collections.unmodifiableMap(message)));
             }
 
         }
@@ -453,7 +517,7 @@ public class PushService {
         try {
 
             ApplicationInfo applicationInfo = context.getPackageManager().getApplicationInfo(
-                context.getPackageName(), PackageManager.GET_META_DATA);
+                            context.getPackageName(), PackageManager.GET_META_DATA);
 
             Bundle metaData = applicationInfo.metaData;
 
@@ -463,8 +527,8 @@ public class PushService {
                 if (defaultHandlerClassName != null) {
                     try {
                         Class<? extends MessageHandler> defaultHandlerClass =
-                            (Class<? extends MessageHandler>) Class
-                                .forName(defaultHandlerClassName);
+                                        (Class<? extends MessageHandler>) Class
+                                                        .forName(defaultHandlerClassName);
                         defaultHandler = defaultHandlerClass.newInstance();
                     } catch (Exception ex) {
                         MobileCore.getLogger().error(ex.getMessage(), ex);

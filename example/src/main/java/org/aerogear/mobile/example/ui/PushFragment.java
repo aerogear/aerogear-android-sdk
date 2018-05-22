@@ -1,5 +1,9 @@
 package org.aerogear.mobile.example.ui;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,15 +15,12 @@ import android.widget.Toast;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.reactive.Responder;
+import org.aerogear.mobile.example.R;
 import org.aerogear.mobile.example.handler.NotificationBarMessageHandler;
 import org.aerogear.mobile.push.MessageHandler;
 import org.aerogear.mobile.push.PushService;
 import org.aerogear.mobile.push.UnifiedPushConfig;
 import org.aerogear.mobile.push.UnifiedPushMessage;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -48,7 +49,7 @@ public class PushFragment extends BaseFragment implements MessageHandler {
 
         pushService = new PushService.Builder().openshift("push").build();
         adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1,
-            new ArrayList<>());
+                        new ArrayList<>());
         messageList.setAdapter(adapter);
     }
 
@@ -89,24 +90,23 @@ public class PushFragment extends BaseFragment implements MessageHandler {
         unifiedPushConfig.setAlias("AeroGear");
         unifiedPushConfig.setCategories(Arrays.asList("Android", "Example"));
 
-        pushService.registerDevice().respondOn(new AppExecutors().mainThread())
-            .respondWith(new Responder<Boolean>() {
+        pushService.registerDevice(unifiedPushConfig).respondOn(new AppExecutors().mainThread())
+                        .respondWith(new Responder<Boolean>() {
+                            @Override
+                            public void onResult(Boolean value) {
+                                registered(value);
+                            }
 
-                @Override
-                public void onResult(Boolean value) {
-                    registered(value);
-                }
+                            @Override
+                            public void onException(Exception error) {
+                                register.setEnabled(true);
+                                MobileCore.getLogger().error(TAG, error.getMessage(), error);
+                                registered(false);
+                                Toast.makeText(getContext(), R.string.device_register_error,
+                                                Toast.LENGTH_LONG).show();
+                            }
 
-                @Override
-                public void onException(Exception error) {
-                    register.setEnabled(true);
-                    MobileCore.getLogger().error(TAG, error.getMessage(), error);
-                    registered(false);
-                    Toast.makeText(getContext(), R.string.device_register_error,
-                        Toast.LENGTH_LONG).show();
-                }
-
-            });
+                        });
 
     }
 
@@ -116,24 +116,24 @@ public class PushFragment extends BaseFragment implements MessageHandler {
         unregister.setEnabled(false);
 
         pushService.unregisterDevice().respondOn(new AppExecutors().mainThread())
-            .respondWith(new Responder<Boolean>() {
-                @Override
-                public void onResult(Boolean value) {
-                    new AppExecutors().mainThread().execute(() -> registered(false));
-                }
+                        .respondWith(new Responder<Boolean>() {
+                            @Override
+                            public void onResult(Boolean value) {
+                                new AppExecutors().mainThread().execute(() -> registered(false));
+                            }
 
-                @Override
-                public void onException(Exception error) {
-                    refreshToken.setEnabled(false);
-                    register.setEnabled(false);
-                    MobileCore.getLogger().error(error.getMessage(), error);
-                    new AppExecutors().mainThread().execute(() -> {
-                        registered(true);
-                        Toast.makeText(getContext(), R.string.device_register_error,
-                            Toast.LENGTH_LONG).show();
-                    });
-                }
-            });
+                            @Override
+                            public void onException(Exception error) {
+                                refreshToken.setEnabled(false);
+                                register.setEnabled(false);
+                                MobileCore.getLogger().error(error.getMessage(), error);
+                                new AppExecutors().mainThread().execute(() -> {
+                                    registered(true);
+                                    Toast.makeText(getContext(), R.string.device_register_error,
+                                                    Toast.LENGTH_LONG).show();
+                                });
+                            }
+                        });
     }
 
     private void registered(boolean registered) {
