@@ -105,6 +105,10 @@ afterEvaluate { project ->
             description "Generates Javadoc for $variant.name."
             source = variant.javaCompile.source
             ext.androidJar = project.files(android.getBootClasspath().join(File.pathSeparator))
+
+            if (org.gradle.internal.jvm.Jvm.current().javaVersion.isJava9Compatible()) {
+                options.addBooleanOption('html5', true)
+            }
             classpath = files(variant.javaCompile.classpath.files) + files(ext.androidJar)
             exclude '**/BuildConfig'
             exclude '**/R.java'

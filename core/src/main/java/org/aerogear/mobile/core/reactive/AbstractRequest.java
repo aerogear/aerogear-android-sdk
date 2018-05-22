@@ -1,12 +1,11 @@
 package org.aerogear.mobile.core.reactive;
 
+
 import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicReference;
-
-import android.support.annotation.NonNull;
 
 
 /**
@@ -31,7 +30,7 @@ abstract class AbstractRequest<T> implements Request<T> {
     }
 
     @Override
-    public final Request<T> respondWith(@NonNull Responder<T> responder) {
+    public final Request<T> respondWith(Responder<T> responder) {
         nonNull(responder, "responder");
         connectedResponders.putIfAbsent(responder, new AtomicReference<>(responder));
         return respondWithActual(connectedResponders.get(responder));
@@ -46,6 +45,11 @@ abstract class AbstractRequest<T> implements Request<T> {
     @Override
     public final <R> Request<R> map(MapFunction<? super T, ? extends R> mapper) {
         return new MapRequest<T, R>(this, mapper);
+    }
+
+    @Override
+    public final <R> Request<R> requestMap(RequestMapFunction<? super T, ? extends R> mapper) {
+        return new RequestMapRequest<T, R>(this, mapper);
     }
 
     @Override
@@ -69,7 +73,7 @@ abstract class AbstractRequest<T> implements Request<T> {
      *        responder is disconnected.
      * @return a chainable instance of Request, not guaranteed to be `this`
      */
-    abstract Request<T> respondWithActual(@NonNull AtomicReference<Responder<T>> responderRef);
+    abstract Request<T> respondWithActual(AtomicReference<Responder<T>> responderRef);
 
     /**
      * This requester is being asked to give up its Cleanup action to be handled by a different

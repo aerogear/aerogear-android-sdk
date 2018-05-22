@@ -4,7 +4,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.1'
+        classpath 'com.android.tools.build:gradle:3.2.0-alpha13'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
         classpath 'com.google.gms:google-services:3.2.1'
     }
@@ -37,14 +37,13 @@ subprojects {
 
 
     afterEvaluate { project ->
-        dependencies {
-            lintChecks files('libs/checks.jar')
-        }
+            dependencies {
+                lintChecks files('libs/checks.jar')
+            }
 
-        android.buildTypes.each { type ->
-            type.buildConfigField 'String', 'PROJECT_ROOT', "\"" + project.projectDir.absolutePath.replace("\\","\\\\") + "/\""
-        }
-
+            android.buildTypes.each { type ->
+                type.buildConfigField 'String', 'PROJECT_ROOT', "\"" + project.projectDir.absolutePath.replace("\\", "\\\\") + "/\""
+            }
     }
 }
 

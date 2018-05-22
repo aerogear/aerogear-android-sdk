@@ -594,4 +594,84 @@ public class ReactiveCaseTest {
         }
     }
 
+    /**
+     * After a request map both the inner and outer methods should cleanup
+     */
+    @Test
+    public void testRequestMapCleanup() throws InterruptedException {
+
+        final String firstResponse = "Hello";
+        final String secondResponse = " World!";
+        final StringBuilder responseString = new StringBuilder();
+        AtomicInteger cleanupCount = new AtomicInteger(0);
+        CountDownLatch latch = new CountDownLatch(1);
+
+        Request<String> request = Requester
+                        .call(() -> firstResponse, () -> cleanupCount.getAndIncrement())
+                        .requestOn(Executors.newSingleThreadExecutor())
+                        .requestMap(string -> Requester.call(() -> string + secondResponse, () -> {
+                            cleanupCount.getAndIncrement();
+                        })).respondOn(Executors.newSingleThreadExecutor())
+                        .respondWith(new Responder<String>() {
+                            @Override
+                            public void onResult(String value) {
+                                responseString.append(value);
+                                latch.countDown();
+                            }
+
+                            @Override
+                            public void onException(Exception exception) {
+                                latch.countDown();
+                            }
+                        });
+
+        assertTrue(latch.await(2, TimeUnit.SECONDS));
+        assertEquals("Hello World!", responseString.toString());
+        assertEquals(2, cleanupCount.get());
+    }
+
+    /**
+     * Cancelling a request that has a flat map should cancel the original request if it hasn't
+     * finished
+     */
+    @Test
+    public void testRequestMapCancel() throws InterruptedException {
+
+        final String firstResponse = "Hello";
+        final String secondResponse = " World!";
+        final StringBuilder responseString = new StringBuilder();
+        CountDownLatch latch = new CountDownLatch(1);
+        AtomicBoolean running = new AtomicBoolean(true);
+        AtomicBoolean failed = new AtomicBoolean(false);
+
+        Request<String> request = Requester.call(() -> {
+            while (running.get()) {
+            }
+            return firstResponse;
+        }).cancelWith(() -> running.set(false)).requestOn(Executors.newSingleThreadExecutor())
+                        .requestMap(string -> Requester.call(() -> string + secondResponse))
+                        .respondOn(Executors.newSingleThreadExecutor())
+                        .respondWith(new Responder<String>() {
+                            @Override
+                            public void onResult(String value) {
+                                responseString.append(value);
+                                latch.countDown();
+                            }
+
+                            @Override
+                            public void onException(Exception exception) {
+                                failed.set(true);
+                                latch.countDown();
+                            }
+                        });
+
+        assertFalse(latch.await(2, TimeUnit.SECONDS));
+        request.cancel();
+        assertFalse(latch.await(2, TimeUnit.SECONDS));// Responder fail will not be called
+        assertFalse(running.get());
+        assertEquals("", responseString.toString());// This should not be called, the request should
+                                                    // be cancelled.
+    }
+
+
 }

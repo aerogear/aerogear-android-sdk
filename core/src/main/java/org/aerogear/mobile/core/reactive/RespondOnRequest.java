@@ -4,7 +4,6 @@ package org.aerogear.mobile.core.reactive;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicReference;
 
-import android.support.annotation.NonNull;
 
 
 public class RespondOnRequest<T> extends AbstractRequest<T> {
@@ -31,8 +30,7 @@ public class RespondOnRequest<T> extends AbstractRequest<T> {
     }
 
     @Override
-    public Request<T> respondWithActual(
-                    @NonNull final AtomicReference<Responder<T>> originalResponderRef) {
+    public Request<T> respondWithActual(final AtomicReference<Responder<T>> originalResponderRef) {
         /*
          *
          * We have to invoke respondWithActual on our delegate with a Atomic Reference that contains
