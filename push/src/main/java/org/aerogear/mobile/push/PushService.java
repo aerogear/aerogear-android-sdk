@@ -118,6 +118,7 @@ public class PushService implements ServiceModule {
      * Register the device on Unified Push Server
      *
      * @param unifiedPushConfig Unified Push configuration to be send to the Unified Push Server
+     * @return a request for a device registration
      */
     public Request<Boolean> registerDevice(final UnifiedPushConfig unifiedPushConfig) {
         nonNull(unifiedPushConfig, "unifiedPushConfig");
@@ -180,7 +181,7 @@ public class PushService implements ServiceModule {
     /**
      * Unregister the device on Unified Push Server
      *
-     * return a response to monitor the unregistration process.
+     * @return a response to monitor the unregistration process.
      */
     public Request<Boolean> unregisterDevice() {
 
