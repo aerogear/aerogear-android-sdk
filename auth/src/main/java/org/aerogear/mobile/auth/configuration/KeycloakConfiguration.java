@@ -12,7 +12,8 @@ import org.aerogear.mobile.core.configuration.ServiceConfiguration;
  */
 public class KeycloakConfiguration {
 
-    private static final String SERVER_URL_NAME = "auth-server-url";
+    private static final String AUTH_SERVER_URL_NAME = "auth-server-url";
+    private static final String SERVER_URL_NAME = "url";
     private static final String REALM_ID_NAME = "realm";
     private static final String RESOURCE_ID_NAME = "resource";
 
@@ -22,6 +23,7 @@ public class KeycloakConfiguration {
     private static final String BASE_URL_TEMPLATE = "%s/realms/%s/protocol/openid-connect";
     private static final String LOGOUT_URL_TEMPLATE = "%s/logout?%s=%s&%s=%s";
 
+    private final String authServerUrl;
     private final String serverUrl;
     private final String realmId;
     private final String resourceId;
@@ -36,7 +38,9 @@ public class KeycloakConfiguration {
     public KeycloakConfiguration(final ServiceConfiguration configuration) {
         nonNull(configuration, "configuration");
 
-        this.serverUrl = nonEmpty(configuration.getProperty(SERVER_URL_NAME), SERVER_URL_NAME);
+        this.authServerUrl = nonEmpty(configuration.getProperty(AUTH_SERVER_URL_NAME),
+                        AUTH_SERVER_URL_NAME);
+        this.serverUrl = nonEmpty(configuration.getUrl(), SERVER_URL_NAME);
         this.realmId = nonEmpty(configuration.getProperty(REALM_ID_NAME), REALM_ID_NAME);
         this.resourceId = nonEmpty(configuration.getProperty(RESOURCE_ID_NAME), RESOURCE_ID_NAME);
         this.baseUrl = String.format(BASE_URL_TEMPLATE, serverUrl, realmId);
@@ -91,6 +95,16 @@ public class KeycloakConfiguration {
     }
 
     /**
+     * Get the Auth Server URL string of the Keycloak singleThreadService This URL should only be
+     * used to get the issuer field for token verification.
+     *
+     * @return the Issuer Hostname of the Keycloak Server
+     */
+    public String getIssuerHostname() {
+        return this.authServerUrl;
+    }
+
+    /**
      * Get the realm name of the Keycloak singleThreadService
      *
      * @return the realm name
@@ -114,6 +128,6 @@ public class KeycloakConfiguration {
      * @return the JWT Issuer
      */
     public String getIssuer() {
-        return String.format("%s/realms/%s", getHostUrl(), getRealmName());
+        return String.format("%s/realms/%s", getIssuerHostname(), getRealmName());
     }
 }
