@@ -2,7 +2,7 @@
 
 <!-- The reason underlying the contents of the PR, can be a link to the originating JIRA -->
 
-JIRA: https://issues.jboss.org/browse/AGDROID-{}
+JIRA: https://issues.jboss.org/browse/AEROGEAR-{}
 
 ## Description
 

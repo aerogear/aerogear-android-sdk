@@ -7,10 +7,9 @@
 | --------------- | ---------------------------------------------------------------- |
 | License:        | Apache License, Version 2.0                                      |
 | Build:          | Gradle                                                           |
-| Documentation:  | https://aerogear.org/android/                                    |
-| Issue tracker:  | https://issues.jboss.org/browse/AGDROID                          |
-| Mailing lists:  | [aerogear-users](http://aerogear-users.1116366.n5.nabble.com/)   | 
-|                 | [aerogear-dev](https://groups.google.com/forum/#!forum/aerogear) |
+| Documentation:  | https://docs.aerogear.org - Under construction                   |
+| Issue tracker:  | https://issues.jboss.org/browse/AEROGEAR                         |
+| Mailing lists:  | [aerogear-dev](https://groups.google.com/forum/#!forum/aerogear) |
 
 ## Documentation
 
@@ -73,4 +72,4 @@ Join our [user mailing list](https://groups.google.com/forum/#!forum/aerogear) f
 
 ## Found a bug?
 
-If you found a bug please create a ticket for us on [Jira](https://issues.jboss.org/browse/AGDROID) with some steps to reproduce it.
+If you found a bug please create a ticket for us on [Jira](https://issues.jboss.org/browse/AEROGEAR) with some steps to reproduce it.
