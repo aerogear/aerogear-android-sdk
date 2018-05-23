@@ -55,7 +55,7 @@ jobs:
           command: echo $GRADLE_SIGNING_PROPERTIES_BASE64 | base64 --decode >> ~/.gradle/gradle.properties
       - run:
           name: Validate the release tags and version numbers
-          command: ./scripts/validateRelease.sh
+          command: TAG=$CIRCLE_TAG ./scripts/validateRelease.sh
       - run:
           name: Run the release
           command: ./gradlew clean build uploadArchives -PNEXUS_USERNAME=$NEXUS_USERNAME -PNEXUS_PASSWORD=$NEXUS_PASSWORD
