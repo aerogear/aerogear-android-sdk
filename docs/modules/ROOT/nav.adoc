@@ -1,2 +1,5 @@
-* xref:index.adoc[Overview]
 
+* xref:index.adoc[Getting Started]
+** xref:auth.adoc[Auth]
+** xref:push.adoc[Push]
+** xref:metrics.adoc[Metrics]
