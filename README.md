@@ -7,10 +7,12 @@
 | --------------- | ---------------------------------------------------------------- |
 | License:        | Apache License, Version 2.0                                      |
 | Build:          | Gradle                                                           |
-| Documentation:  | https://docs.aerogear.org - Under construction                   |
+| End User Documentation:  | https://docs.aerogear.org - Under construction - [Github Link](./docs/modules/ROOT/pages/)|
+| Community Documentation: | https://aerogear.org       |
 | Issue tracker:  | https://issues.jboss.org/browse/AEROGEAR                         |
 | Mailing lists:  | [aerogear-dev](https://groups.google.com/forum/#!forum/aerogear) |
 
+<<<<<<< b1aff43e4264d2d5285b4b239d1e0472c73e74c1
 ## Documentation
 
 1. [End User Getting Started Guide](./docs/modules/ROOT/pages/index.adoc)
@@ -21,50 +23,22 @@
 
 ### List of SDKs
 
-AeroGear Services SDK consist of set of separate SDKs
+AeroGear Services consist of set of separate SDKs
 
-- [Auth](./docs/modules/ROOT/pages/auth.adoc):  Mobile authentication SDK
-- [Push](./docs/modules/ROOT/pages/push.adoc):  Push Notifications SDK
+- Core - Core library used as base for other SDKs
+- Auth - Mobile Application Auth SDK (part of the core bundle)
+- Security - Mobile Application Self Defense Checks
+- Metrics - Mobile application Metrics SDK (part of the core bundle)
+- Push - Mobile application Unified Push SDK
 
 ## License 
 
  See [LICENSE file](./LICENSE)
 
-## Development
-
-If you would like to help develop AeroGear you can join our [developer's mailing list](https://groups.google.com/forum/#!forum/aerogear), join #aerogear on Freenode, or shout at us on Twitter @aerogears.
-
-Also takes some time and skim the [contributor guide](CONTRIBUTING.md)
-
-## Testing
-
-We're using [Gradle](https://gradle.org/) for running the tests from command line.
-
-### Unit tests
-
-For running the unit tests, simly run
-
-`./gradlew testDebug --tests *.UnitTestSuite`
-
-### Integration tests
-
-Integration tests are designed to be triggered when PR is created, but with easy configuration it's also possible to run them on your local machine (described below).
-
-To trigger the integration tests together with creation of PR, select the `test/integration` label in the right column.
-
-**Metrics integration test**
-
-This includes testing of communication between Android SDK Metrics module and [AeroGear App Metrics service](https://github.com/aerogear/aerogear-app-metrics) (part of [Metrics-APB](https://github.com/aerogearcatalog/metrics-apb))
-
-To run it locally:
-
-1. Edit [Metrics URL](https://github.com/aerogear/aerogear-android-sdk/blob/master/core/src/test/assets/integration-test-mobile-services.json#L11) with valid URL pointing to `/metrics` endpoint, e.g. https://app-metrics.example.com/metrics
-2. Run the test: `./gradlew :core:testDebug --tests *.IntegrationTestSuite`
-
 
 ## Contributing
 
-See [General Contributing Guide](./CONTRIBUTING.md)
+[General Contributing Guide](./CONTRIBUTING.md)
 
 ## Questions?
 
