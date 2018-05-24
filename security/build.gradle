@@ -1,15 +1,11 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 27
-
-
+    compileSdkVersion project.ext.targetSdkVersion
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion project.ext.minSdkVersion
+        targetSdkVersion project.ext.targetSdkVersion
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -26,14 +22,21 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+            returnDefaultValues = true
+        }
+    }
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:27.1.1'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    implementation project(':core')
-    implementation 'com.scottyab:rootbeer-lib:0.0.6'
+    implementation project(path: ":core")
+
+    implementation "com.scottyab:rootbeer-lib:${project.ext.rootbeer_version}"
+
+    testImplementation "junit:junit:${project.ext.junit_version}"
+    testImplementation "org.mockito:mockito-core:${project.ext.mockito_version}"
+    testImplementation "org.robolectric:robolectric:${project.ext.robolectric_version}"
 }
