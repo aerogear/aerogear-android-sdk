@@ -73,10 +73,16 @@ Accounts for Nexus are created through their JIRA system. You must link:https://
 * Log into link:https://oss.sonatype.org/[Nexus]
 * Go to link:https://oss.sonatype.org/#stagingRepositories[Staging Repositories.]
 * Find the aerogear repository by searching for `org.aerogear`
+
 image:../img/sonatype_search.png[Sonatype Search Results]
+
 * Click the content tab and ensure everything looks good and all the files are there.
+
 image:../img/sonatype_closed_files.png[Build Artefacts in Sonatype]
+
 * Click the Close button. This process will perform some checks such as checking signatures and javadocs. You can click the refresh button in the Nexus UI to watch the checks completing.
 * If successful, a temporary public repository is created. The URL for this repository is displayed. This can be used to to test out the release before releasing to Maven.
+
 image:../img/sonatype_closed_url.png[Temporary Repository URL in Sonatype]
+
 * Once you are ready to release to Maven, click the release button. The artefacts should be available in Maven after 2-3 hours.
