@@ -1,6 +1,6 @@
 == SDK Release Documentation
 
-The release process results in new versions of the Core and associated SDKs being published on Maven. This docmument should help you understand how releases work and how to create one.
+The release process results in new versions of the core and associated SDKs being published to Maven. This docmument should help you understand how releases work and how to create one.
 
 === How Releases Work
 
@@ -20,8 +20,8 @@ CircleCI is responsible for the initial build and push to Nexus. CircleCI notice
 * A standard build job runs, i.e. the code is built and tested.
 * If the build is successful then a release job runs.
   ** The `VERSION_NAME` and `VERSION_CODE` in `gradle.properties` are validated.
-  ** The Release tag is validated to make sure it matches the version number in `gradle.properties`
-  ** The Core and associated SDKs are released to link:https://oss.sonatype.org/#stagingRepositories[Nexus.]
+  ** The release tag is validated to make sure it matches the version number in `gradle.properties`
+  ** The core and associated SDKs are released to link:https://oss.sonatype.org/#stagingRepositories[Nexus.]
 
 A small amount of preparation needs to take place before this process kicks off. The version number must be updated in `gradle.properties`
 
