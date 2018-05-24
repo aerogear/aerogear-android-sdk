@@ -1,5 +1,7 @@
 package org.aerogear.mobile.security;
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -8,8 +10,6 @@ import org.aerogear.mobile.core.ServiceModule;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.metrics.MetricsService;
 import org.aerogear.mobile.security.metrics.SecurityCheckResultMetric;
-
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 /**
  * Service for running security checks in an application.

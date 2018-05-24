@@ -1,12 +1,5 @@
 package org.aerogear.mobile.security;
 
-import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import org.aerogear.mobile.core.executor.AppExecutors;
-import org.aerogear.mobile.core.metrics.MetricsService;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -16,6 +9,13 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import org.aerogear.mobile.core.executor.AppExecutors;
+import org.aerogear.mobile.core.metrics.MetricsService;
 
 /**
  * Executor used to asynchronously execute checks. Checks are executed by using

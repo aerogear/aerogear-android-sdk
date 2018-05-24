@@ -1,13 +1,13 @@
 package org.aerogear.mobile.security.checks;
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
 import android.content.Context;
 import android.support.annotation.NonNull;
 
 import org.aerogear.mobile.security.SecurityCheck;
 import org.aerogear.mobile.security.SecurityCheckResult;
 import org.aerogear.mobile.security.impl.SecurityCheckResultImpl;
-
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 /**
  * Base class for security checks.

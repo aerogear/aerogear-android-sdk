@@ -1,16 +1,16 @@
 package org.aerogear.mobile.security;
 
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
+import java.util.Collection;
+import java.util.HashSet;
+
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.aerogear.mobile.core.metrics.MetricsService;
-
-import java.util.Collection;
-import java.util.HashSet;
-
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 
 /**

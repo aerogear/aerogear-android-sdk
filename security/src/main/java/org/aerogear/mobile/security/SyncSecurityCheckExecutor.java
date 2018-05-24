@@ -1,14 +1,14 @@
 package org.aerogear.mobile.security;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.aerogear.mobile.core.metrics.MetricsService;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Synchronously executes provided {@link SecurityCheck}s.

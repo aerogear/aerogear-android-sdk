@@ -1,12 +1,12 @@
 package org.aerogear.mobile.security;
 
 
-import org.aerogear.mobile.core.metrics.MetricsService;
-import org.aerogear.mobile.security.metrics.SecurityCheckResultMetric;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.aerogear.mobile.core.metrics.MetricsService;
+import org.aerogear.mobile.security.metrics.SecurityCheckResultMetric;
 
 /**
  * This object will manage the communication with the metric service, batching the results to be

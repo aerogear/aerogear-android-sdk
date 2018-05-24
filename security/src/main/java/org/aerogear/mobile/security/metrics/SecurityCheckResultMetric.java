@@ -1,16 +1,17 @@
 package org.aerogear.mobile.security.metrics;
 
+import java.util.Arrays;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.support.annotation.NonNull;
 
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.metrics.Metrics;
 import org.aerogear.mobile.security.SecurityCheckResult;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.Arrays;
 
 /**
  * Metric representation of {@link SecurityCheckResult}. This is intended to be used with the

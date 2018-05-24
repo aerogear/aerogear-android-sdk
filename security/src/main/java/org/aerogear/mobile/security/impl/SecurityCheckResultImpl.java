@@ -1,11 +1,11 @@
 package org.aerogear.mobile.security.impl;
 
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
 import android.support.annotation.NonNull;
 
 import org.aerogear.mobile.security.SecurityCheck;
 import org.aerogear.mobile.security.SecurityCheckResult;
-
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 /**
  * Implementation of {@link SecurityCheckResult}. A basic container for information about the
