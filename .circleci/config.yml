@@ -57,7 +57,7 @@ jobs:
           name: Validate the release tags and version numbers
           command: TAG=$CIRCLE_TAG ./scripts/validateRelease.sh
       - run:
-          name: Run the release
+          name: Release to Nexus
           command: ./gradlew clean build uploadArchives -PNEXUS_USERNAME=$NEXUS_USERNAME -PNEXUS_PASSWORD=$NEXUS_PASSWORD
 
 workflows:
