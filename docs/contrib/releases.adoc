@@ -1,6 +1,6 @@
 == SDK Release Documentation
 
-The release process results in new versions of the core and associated SDKs being published to Maven. This docmument should help you understand how releases work and how to create one.
+The release process results in new versions of the core and associated SDKs being published to Maven. This document should help you understand how releases work and how to create one.
 
 === How Releases Work
 
@@ -34,7 +34,7 @@ Ensure the git repo is clean and there are no outstanding changes. Then check ou
 git checkout -b release-x.y.z
 --
 
-Update the `VERSION_NAME` property in the `gradle.properties` file at the root of the repository. The `VERSION_NAME` **must be in the format x.y.z or x.y.z-label**
+Update the `VERSION_NAME` property in the `gradle.properties` file at the root of the repository. The `VERSION_NAME` **must follow link:https://semver.org/[semantic versioning].** It can also have an optional label. Examples: `x.y.z`, `x.y.z-label`.
 
 Update the `VERSION_CODE` property. It **must be a number.**
 
