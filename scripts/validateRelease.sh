@@ -6,7 +6,7 @@ __dirname="$(cd "$(dirname "$0")" && pwd)"
 gradle_properties=$__dirname/../gradle.properties
 
 TAG=$TAG
-TAG_SYNTAX='[0-9]+\.[0-9]+\.[0-9]+(-.+)*$'
+TAG_SYNTAX='^[0-9]+\.[0-9]+\.[0-9]+(-.+)*$'
 
 # VERSION_NAME property in gradle.properties
 VERSION_NAME=$(cat $gradle_properties | grep VERSION_NAME | head -1 | awk -F '=' '{print $2}')
