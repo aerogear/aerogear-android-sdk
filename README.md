@@ -21,15 +21,15 @@
 1. [Troubleshooting](./docs/troubleshooting.adoc)
 1. [Service Contributor Guide](./docs/contrib/contributing-guide.adoc)
 
-### List of SDKs
+### List of Modules
 
-AeroGear Services consist of set of separate SDKs
+The AeroGear SDK consists of set of Modules
 
-- Core - Core library used as base for other SDKs
-- Auth - Mobile Application Auth SDK (part of the core bundle)
-- Security - Mobile Application Self Defense Checks
-- Metrics - Mobile application Metrics SDK (part of the core bundle)
-- Push - Mobile application Unified Push SDK
+- Core - Core Module used as base for other Modules
+- Auth - Mobile Application Auth Module
+- Security - Mobile Application Security Module
+- Metrics - Mobile Application Metrics Module
+- Push - Mobile Application Unified Push Module
 
 ## License 
 
