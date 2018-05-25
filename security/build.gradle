@@ -40,3 +40,5 @@ dependencies {
     testImplementation "org.mockito:mockito-core:${project.ext.mockito_version}"
     testImplementation "org.robolectric:robolectric:${project.ext.robolectric_version}"
 }
+
+apply from: "../gradle-mvn-push.gradle"
