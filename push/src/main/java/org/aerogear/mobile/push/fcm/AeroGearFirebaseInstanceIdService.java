@@ -2,7 +2,6 @@ package org.aerogear.mobile.push.fcm;
 
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
-import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.push.PushService;
 
 /**
@@ -20,7 +19,7 @@ public class AeroGearFirebaseInstanceIdService extends FirebaseInstanceIdService
     public void onTokenRefresh() {
         super.onTokenRefresh();
 
-        MobileCore.getInstance().getService(PushService.class).refreshToken();
+        PushService.refreshToken(getApplicationContext());
     }
 
 }
