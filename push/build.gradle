@@ -28,6 +28,7 @@ dependencies {
     implementation project(path: ":core")
 
     implementation "com.google.firebase:firebase-messaging:${project.ext.firebase_version}"
+    implementation "com.google.code.gson:gson:${project.ext.gson_version}"
 
     testImplementation "junit:junit:${project.ext.junit_version}"
     testImplementation "com.android.support.test:runner:${project.ext.android_support_test_runner_version}"

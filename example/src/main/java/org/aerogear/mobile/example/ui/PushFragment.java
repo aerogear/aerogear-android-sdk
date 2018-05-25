@@ -40,12 +40,14 @@ public class PushFragment extends BaseFragment implements MessageHandler {
     Button unregister;
 
     private static final String TAG = PushFragment.class.getName();
+    private PushService pushService;
     private ArrayAdapter<String> adapter;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        pushService = new PushService.Builder().openshift("push").build();
         adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1,
                         new ArrayList<>());
         messageList.setAdapter(adapter);
@@ -77,8 +79,7 @@ public class PushFragment extends BaseFragment implements MessageHandler {
 
     @OnClick(R.id.refreshToken)
     void refreshToken() {
-        PushService pushService = MobileCore.getInstance().getService(PushService.class);
-        pushService.refreshToken();
+        PushService.refreshToken(getContext());
     }
 
     @OnClick(R.id.register)
@@ -89,10 +90,8 @@ public class PushFragment extends BaseFragment implements MessageHandler {
         unifiedPushConfig.setAlias("AeroGear");
         unifiedPushConfig.setCategories(Arrays.asList("Android", "Example"));
 
-        PushService pushService = MobileCore.getInstance().getService(PushService.class);
-        pushService.registerDevice().respondOn(new AppExecutors().mainThread())
+        pushService.registerDevice(unifiedPushConfig).respondOn(new AppExecutors().mainThread())
                         .respondWith(new Responder<Boolean>() {
-
                             @Override
                             public void onResult(Boolean value) {
                                 registered(value);
@@ -108,6 +107,7 @@ public class PushFragment extends BaseFragment implements MessageHandler {
                             }
 
                         });
+
     }
 
     @OnClick(R.id.unregister)
@@ -115,7 +115,6 @@ public class PushFragment extends BaseFragment implements MessageHandler {
         refreshToken.setEnabled(false);
         unregister.setEnabled(false);
 
-        PushService pushService = MobileCore.getInstance().getService(PushService.class);
         pushService.unregisterDevice().respondOn(new AppExecutors().mainThread())
                         .respondWith(new Responder<Boolean>() {
                             @Override
