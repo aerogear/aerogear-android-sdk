@@ -13,18 +13,18 @@
 
 ## Documentation
 
-1. [End User Getting Started Guide](./docs/modules/getting-started/pages/getting-started.adoc)
-1. [Self Defence Checks](./docs/modules/getting-started/pages/auth-self-defence-checks.adoc)
-1. [Certificate Pinning](./docs/modules/getting-started/pages/certificate-pinning.adoc)
+1. [End User Getting Started Guide](./docs/modules/ROOT/pages/index.adoc)
+1. [Self Defence Checks](./docs/modules/ROOT/pages/auth-self-defence-checks.adoc)
+1. [Certificate Pinning](./docs/modules/ROOT/pages/certificate-pinning.adoc)
 1. [Troubleshooting](./docs/troubleshooting.adoc)
-1. [Service Contributor Guide](./docs/contributing-guide.adoc)
+1. [Service Contributor Guide](./docs/contrib/contributing-guide.adoc)
 
 ### List of SDKs
 
 AeroGear Services SDK consist of set of separate SDKs
 
-- [Auth](./docs/modules/getting-started/pages/auth.adoc):  Mobile authentication SDK
-- [Push](./docs/modules/getting-started/pages/push.adoc):  Push Notifications SDK
+- [Auth](./docs/modules/ROOT/pages/auth.adoc):  Mobile authentication SDK
+- [Push](./docs/modules/ROOT/pages/push.adoc):  Push Notifications SDK
 
 ## License 
 

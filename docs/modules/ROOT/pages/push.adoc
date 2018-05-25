@@ -51,17 +51,14 @@ This example demonstrates how to register a device to provide the values require
 ----
 PushService pushService = MobileCore.getInstance().getService(PushService.class);
 
-pushService.registerDevice(new Callback() {
+push.registerDevice().requestOn(new AppExecutors().mainThread()).respondWith(new Responder<Boolean>() {
     @Override
-    public void onSuccess() {
-        // Yay
-    }
+    public void onResult(Boolean value) { // Yay }
 
     @Override
-    public void onError(Throwable error) {
-        // Oops!
-    }
+    public void onException(Exception exception) { // Oops! }
 });
+
 ----
 
 You also can add some optional parameters using `UnifiedPushConfig`
