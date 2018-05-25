@@ -17,7 +17,8 @@ if ( prLabels.contains("test/integration") ) {
     }
 
     openshift.withCluster() {
-        node ('jenkins-openshift') {
+        // Node with privilege to create projects on Wendy
+        node ('apb-test') {
             stage ('Deploy app metrics service') {
 
                 sh "curl ${linkToApiMetricsTemplate} > ${apiMetricsTemplateFilename}"
