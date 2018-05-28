@@ -21,6 +21,10 @@
 1. [Troubleshooting](./docs/troubleshooting.adoc)
 1. [Service Contributor Guide](./docs/contrib/contributing-guide.adoc)
 
+## Showcase application
+
+To try out latest release of SDK go to [Android showcase application](https://github.com/aerogear/android-showcase-template)
+
 ### List of Modules
 
 The AeroGear SDK consists of set of Modules
