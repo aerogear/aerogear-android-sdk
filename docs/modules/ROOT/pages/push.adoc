@@ -47,11 +47,20 @@ For an example of push configuration see link:../../example/src/main/assets/mobi
 
 This example demonstrates how to register a device to provide the values required to register the application with FCM and Unified Push and perform the registration.
 
+=== Getting PushService
+
 [source,java]
 ----
 PushService pushService = MobileCore.getInstance().getService(PushService.class);
+----
 
-push.registerDevice().requestOn(new AppExecutors().mainThread()).respondWith(new Responder<Boolean>() {
+=== Registering the device
+
+[source,java]
+----
+pushService.registerDevice()
+  .requestOn(new AppExecutors().mainThread())
+  .respondWith(new Responder<Boolean>() {
     @Override
     public void onResult(Boolean value) { // Yay }
 
@@ -69,24 +78,31 @@ UnifiedPushConfig unifiedPushConfig = new UnifiedPushConfig();
 unifiedPushConfig.setAlias("AeroGear");
 unifiedPushConfig.setCategories(Arrays.asList("Android", "OpenShift"));
 
-pushService.registerDevice(unifiedPushConfig, yourCallback);
+pushService.registerDevice(unifiedPushConfig)
+  .requestOn(new AppExecutors().mainThread())
+  .respondWith(new Responder<Boolean>() {
+    @Override
+    public void onResult(Boolean value) { // Yay }
+
+    @Override
+    public void onException(Exception exception) { // Oops! }
+});
 ----
+
+=== Unregistering the device
 
 If you want to add option for user to stop receiving notifications.
 
 [source,java]
 ----
-PushService pushService = MobileCore.getInstance().getService(PushService.class);
-pushService.unregisterDevice(new Callback() {
+pushService.unregisterDevice()
+  .requestOn(new AppExecutors().mainThread())
+  .respondWith(new Responder<Boolean>() {
     @Override
-    public void onSuccess() {
-        // yay
-    }
+    public void onResult(Boolean value) { // Yay }
 
     @Override
-    public void onError(Throwable error) {
-        // Oops!
-    }
+    public void onException(Exception exception) { // Oops! }
 });
 ----
 
