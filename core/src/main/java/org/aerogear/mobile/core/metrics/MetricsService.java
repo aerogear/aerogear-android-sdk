@@ -1,19 +1,22 @@
 package org.aerogear.mobile.core.metrics;
 
-import android.support.annotation.NonNull;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
-import org.aerogear.mobile.core.Callback;
-import org.aerogear.mobile.core.MobileCore;
-import org.aerogear.mobile.core.configuration.ServiceConfiguration;
-import org.aerogear.mobile.core.http.HttpResponse;
-import org.aerogear.mobile.core.metrics.impl.AppMetrics;
-import org.aerogear.mobile.core.metrics.impl.DeviceMetrics;
-import org.aerogear.mobile.core.reactive.Responder;
-import org.aerogear.mobile.core.utils.ClientIdGenerator;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+import android.support.annotation.NonNull;
+
+import org.aerogear.mobile.core.MobileCore;
+import org.aerogear.mobile.core.configuration.ServiceConfiguration;
+import org.aerogear.mobile.core.exception.HttpException;
+import org.aerogear.mobile.core.executor.AppExecutors;
+import org.aerogear.mobile.core.metrics.impl.AppMetrics;
+import org.aerogear.mobile.core.metrics.impl.DeviceMetrics;
+import org.aerogear.mobile.core.reactive.Request;
+import org.aerogear.mobile.core.reactive.Requester;
+import org.aerogear.mobile.core.utils.ClientIdGenerator;
 
 public class MetricsService {
 
@@ -31,21 +34,10 @@ public class MetricsService {
     /**
      * Send default metrics
      */
-    public void sendAppAndDeviceMetrics() {
+    public Request<Boolean> sendAppAndDeviceMetrics() {
         // as app and device metrics are added by the publisher
         // to the payload, we only pass empty metrics to publisher
-        this.publish(INIT_METRICS_TYPE, EMPTY_METRICS, null);
-    }
-
-    /**
-     * Send default metrics
-     *
-     * @param callback callback of the publication
-     */
-    public void sendAppAndDeviceMetrics(final Callback callback) {
-        // as app and device metrics are added by the publisher
-        // to the payload, we only pass empty metrics to publisher
-        this.publish(INIT_METRICS_TYPE, EMPTY_METRICS, callback);
+        return this.publish(INIT_METRICS_TYPE, EMPTY_METRICS);
     }
 
     /**
@@ -54,42 +46,21 @@ public class MetricsService {
      * @param type type of the enclosing metrics event
      * @param metrics Metrics to send
      */
-    public void publish(String type, Metrics... metrics) {
-        publish(type, metrics, null);
-    }
+    public Request<Boolean> publish(@NonNull String type, @NonNull final Metrics... metrics) {
 
-    /**
-     * Send metrics
-     *
-     * @param type type of the enclosing metrics event
-     * @param metrics Metrics to send
-     * @param callback callback of the publication
-     */
-    public void publish(@NonNull String type, @NonNull final Metrics[] metrics,
-                    final Callback callback) {
-
-        final JSONObject json = createMetricsJSONObject(type, metrics);
-
-        MobileCore.getInstance().getHttpLayer().newRequest().post(url, json.toString().getBytes())
-                        .respondWith(new Responder<HttpResponse>() {
-                            @Override
-                            public void onResult(HttpResponse value) {
-                                if (callback != null) {
-                                    callback.onSuccess();
-                                }
-                            }
-
-                            @Override
-                            public void onException(Exception exception) {
-                                if (callback != null) {
-                                    callback.onError(exception);
-                                } else {
-                                    MobileCore.getLogger().error(exception.getMessage());
-                                }
-                            }
-                        });
-
-        MobileCore.getLogger().debug("Sending metrics");
+        return Requester.call(() -> MobileCore.getInstance().getHttpLayer().newRequest())
+                        .requestMap(httpRequest -> httpRequest
+                                        .post(url, createMetricsJSONObject(type, metrics).toString()
+                                                        .getBytes())
+                                        .requestMap(httpResponse -> Requester.call(() -> {
+                                            switch (httpResponse.getStatus()) {
+                                                case HTTP_OK:
+                                                    return Boolean.TRUE;
+                                                default:
+                                                    throw (new HttpException(
+                                                                    httpResponse.getStatus()));
+                                            }
+                                        })).requestOn(new AppExecutors().networkThread()));
 
     }
 
