@@ -1,51 +1,31 @@
 package org.aerogear.mobile.core.metrics;
 
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
-
 import android.support.annotation.NonNull;
 
 import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.MobileCore;
-import org.aerogear.mobile.core.ServiceModule;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
-import org.aerogear.mobile.core.metrics.publisher.NetworkMetricsPublisher;
+import org.aerogear.mobile.core.http.HttpResponse;
+import org.aerogear.mobile.core.metrics.impl.AppMetrics;
+import org.aerogear.mobile.core.metrics.impl.DeviceMetrics;
+import org.aerogear.mobile.core.reactive.Responder;
+import org.aerogear.mobile.core.utils.ClientIdGenerator;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public class MetricsService implements ServiceModule {
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
+
+public class MetricsService {
 
     private static final String INIT_METRICS_TYPE = "init";
-
     private static final Metrics[] EMPTY_METRICS = new Metrics[0];
 
-    private MetricsPublisher publisher;
+    private final String url;
 
-    public MetricsPublisher getPublisher() {
-        return publisher;
-    }
-
-    public MetricsService setPublisher(@NonNull final MetricsPublisher publisher) {
-        this.publisher = nonNull(publisher, "publisher");
-        return this;
-    }
-
-    @Override
-    public String type() {
-        return "metrics";
-    }
-
-    @Override
-    public void configure(@NonNull final MobileCore core,
-                    @NonNull final ServiceConfiguration serviceConfiguration) {
-        nonNull(core, "mobileCore");
-        nonNull(serviceConfiguration, "serviceConfiguration");
-
-        final String metricsUrl = serviceConfiguration.getUrl();
-        publisher = new NetworkMetricsPublisher(core.getContext(), core.getHttpLayer().newRequest(),
-                        metricsUrl);
-    }
-
-    @Override
-    public boolean requiresConfiguration() {
-        return true;
+    public MetricsService() {
+        ServiceConfiguration serviceConfiguration =
+                        MobileCore.getInstance().getServiceConfigurationByType("metrics");
+        this.url = serviceConfiguration.getUrl();
     }
 
     /**
@@ -87,12 +67,68 @@ public class MetricsService implements ServiceModule {
      */
     public void publish(@NonNull String type, @NonNull final Metrics[] metrics,
                     final Callback callback) {
-        if (publisher == null) {
-            throw new IllegalStateException(
-                            "Make sure you have called configure or get this instance from MobileCore.getService()");
+
+        final JSONObject json = createMetricsJSONObject(type, metrics);
+
+        MobileCore.getInstance().getHttpLayer().newRequest().post(url, json.toString().getBytes())
+                        .respondWith(new Responder<HttpResponse>() {
+                            @Override
+                            public void onResult(HttpResponse value) {
+                                if (callback != null) {
+                                    callback.onSuccess();
+                                }
+                            }
+
+                            @Override
+                            public void onException(Exception exception) {
+                                if (callback != null) {
+                                    callback.onError(exception);
+                                } else {
+                                    MobileCore.getLogger().error(exception.getMessage());
+                                }
+                            }
+                        });
+
+        MobileCore.getLogger().debug("Sending metrics");
+
+    }
+
+    private JSONObject createMetricsJSONObject(final String type, final Metrics[] metrics) {
+        nonNull(type, "type");
+        nonNull(metrics, "metrics");
+
+        final JSONObject json = new JSONObject();
+
+        try {
+
+            json.put("clientId", ClientIdGenerator
+                            .getOrCreateClientId(MobileCore.getInstance().getContext()));
+            json.put("timestamp", System.currentTimeMillis());
+            json.put("type", type);
+
+            final JSONObject data = new JSONObject();
+
+            Metrics[] defaultMetrics =
+                            new Metrics[] {new AppMetrics(MobileCore.getInstance().getContext()),
+                                            new DeviceMetrics()};
+
+            // first put the default metrics (app and device info)
+            for (final Metrics m : defaultMetrics) {
+                data.put(m.identifier(), m.data());
+            }
+
+            // then put the specific ones
+            for (final Metrics m : metrics) {
+                data.put(m.identifier(), m.data());
+            }
+
+            json.put("data", data);
+
+        } catch (JSONException e) {
+            MobileCore.getLogger().error(e.getMessage(), e);
         }
 
-        publisher.publish(nonNull(type, "type"), nonNull(metrics, "metrics"), callback);
+        return json;
     }
 
 }

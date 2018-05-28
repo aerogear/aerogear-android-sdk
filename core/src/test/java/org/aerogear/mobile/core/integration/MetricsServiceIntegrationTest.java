@@ -29,7 +29,7 @@ public class MetricsServiceIntegrationTest {
     @Before
     public void setUp() {
         MobileCore.init(RuntimeEnvironment.application);
-        metricsService = MobileCore.getInstance().getService(MetricsService.class);
+        metricsService = new MetricsService();
 
         error = null;
     }

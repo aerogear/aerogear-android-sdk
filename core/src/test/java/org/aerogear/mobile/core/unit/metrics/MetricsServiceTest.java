@@ -1,26 +1,22 @@
 package org.aerogear.mobile.core.unit.metrics;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.robolectric.RuntimeEnvironment;
-
 import android.support.test.filters.SmallTest;
 
 import org.aerogear.mobile.core.AeroGearTestRunner;
 import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.MobileCore;
-import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.metrics.Metrics;
 import org.aerogear.mobile.core.metrics.MetricsService;
-import org.aerogear.mobile.core.metrics.publisher.NetworkMetricsPublisher;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RuntimeEnvironment;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @RunWith(AeroGearTestRunner.class)
 @SmallTest
@@ -35,36 +31,7 @@ public class MetricsServiceTest {
     }
 
     @Test
-    public void type() {
-        MetricsService metricsService = new MetricsService();
-        assertEquals("metrics", metricsService.type());
-    }
-
-    @Test
-    public void defaultPublisherWithConfigUrl() {
-        ServiceConfiguration serviceConfiguration =
-                        new ServiceConfiguration.Builder().setUrl("http://dummy.url").build();
-
-        metricsService.configure(MobileCore.getInstance(), serviceConfiguration);
-
-        assertEquals(NetworkMetricsPublisher.class, metricsService.getPublisher().getClass());
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void sendingDefaultMetricsWithoutConfigureService() {
-        metricsService.sendAppAndDeviceMetrics(null);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void sendingMetricsWithoutConfigureService() {
-        metricsService.publish("init", new DummyMetrics());
-    }
-
-    @Test
     public void testCallbackSuccessMethodIsCalled() {
-        metricsService.configure(MobileCore.getInstance(),
-                        new ServiceConfiguration.Builder().setUrl("dummy").build());
-
         final Callback testCallback = new Callback() {
             @Override
             public void onSuccess() {
@@ -78,15 +45,11 @@ public class MetricsServiceTest {
         };
         metricsService.sendAppAndDeviceMetrics(testCallback);
 
-        metricsService.publish("init", new DummyMetrics[] {new DummyMetrics()}, testCallback);
+        metricsService.publish("init", new DummyMetrics[]{new DummyMetrics()}, testCallback);
     }
 
     @Test
     public void testCallbackErrorMethodIsCalled() {
-        ServiceConfiguration serviceConfiguration =
-                        new ServiceConfiguration.Builder().setUrl("http://dummy").build();
-        metricsService.configure(MobileCore.getInstance(), serviceConfiguration);
-
         final Callback testCallback = new Callback() {
             @Override
             public void onSuccess() {
@@ -100,7 +63,7 @@ public class MetricsServiceTest {
         };
 
         metricsService.sendAppAndDeviceMetrics(testCallback);
-        metricsService.publish("init", new DummyMetrics[] {new DummyMetrics()}, testCallback);
+        metricsService.publish("init", new DummyMetrics[]{new DummyMetrics()}, testCallback);
     }
 
     public static class DummyMetrics implements Metrics<Map<String, String>> {

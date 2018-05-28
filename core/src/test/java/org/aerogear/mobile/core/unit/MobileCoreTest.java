@@ -47,15 +47,6 @@ public class MobileCoreTest {
     }
 
     @Test
-    public void testGetInstance() {
-        MobileCore.init(context);
-
-        MetricsService service = MobileCore.getInstance().getService(MetricsService.class);
-
-        assertNotNull(service);
-    }
-
-    @Test
     public void testGetServiceConfiguration() {
         MobileCore.init(context);
 
