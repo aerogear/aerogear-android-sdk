@@ -79,8 +79,8 @@ public class PushService {
 
         this.unifiedPushCredentials = unifiedPushCredentials;
 
-        setDefaultHandler(context);
-        setSharedPreference(context);
+        initDefaultHandler(context);
+        initSharedPreference(context);
 
     }
 
@@ -279,7 +279,7 @@ public class PushService {
         nonNull(context, "context");
 
         if (sharedPreferences == null) {
-            setSharedPreference(context);
+            initSharedPreference(context);
         }
 
         JSONObject jsonObject = retrieveCachedConfig();
@@ -418,7 +418,7 @@ public class PushService {
         nonNull(context, "context");
 
         if (defaultHandler == null) {
-            setDefaultHandler(context);
+            initDefaultHandler(context);
         }
 
         if (BACKGROUND_THREAD_HANDLERS.isEmpty() && MAIN_THREAD_HANDLERS.isEmpty()
@@ -450,7 +450,7 @@ public class PushService {
      * </code>
      */
     @SuppressWarnings("unchecked")
-    private static void setDefaultHandler(final Context context) {
+    private static void initDefaultHandler(final Context context) {
         nonNull(context, "context");
 
         try {
@@ -487,7 +487,7 @@ public class PushService {
      *
      * @param context Application context
      */
-    private static void setSharedPreference(Context context) {
+    private static void initSharedPreference(Context context) {
         sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCE_PUSH_NAME,
                         Context.MODE_PRIVATE);
     }
