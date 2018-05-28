@@ -91,13 +91,14 @@ public class PushService {
 
         public Builder() {}
 
-        public Builder openshift(String id) {
+        public Builder openshift() {
 
             MobileCore mobileCore = MobileCore.getInstance();
 
             context = mobileCore.getContext();
 
-            ServiceConfiguration serviceConfiguration = mobileCore.getServiceConfigurationById(id);
+            ServiceConfiguration serviceConfiguration =
+                            mobileCore.getServiceConfigurationByType("push");
 
             try {
                 JSONObject android = new JSONObject(
