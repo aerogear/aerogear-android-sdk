@@ -96,42 +96,11 @@ dependencies {
 
 == Using the SDK
 
-In an example you can use the SDK as follows
-
-[source, java]
-----
-
-public class MyApplication extends Application {
-
-    private MobileCore mobileCore;
-    private MetricsService metricsService;
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-
-        mobileCore = MobileCore.init(this);
-        metricsService = mobileCore.getInstance(MetricsService.class);
-
-        metricsService.sendAppAndDeviceMetrics();
-    }
-
-    @Override
-    public void onTerminate() {
-        super.onTerminate();
-
-        mobileCore.destroy();
-    }
-
-}
-
-----
-
-== Importing individual SDK
-
 Please follow individual SDK's documentation to see how to add them to the project
 
- * link:./auth.adoc[Auth] 
+ * link:./metrics.adoc[Metrics] 
+ * link:./auth.adoc[Auth]
+ * link:./push.adoc[Push]
 
 == Certificate Pinning
 
