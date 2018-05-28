@@ -51,7 +51,7 @@ This example demonstrates how to register a device to provide the values require
 
 [source,java]
 ----
-PushService pushService = MobileCore.getInstance().getService(PushService.class);
+PushService pushService = new PushService.Builder().openshift().build();
 ----
 
 === Registering the device
