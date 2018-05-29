@@ -7,10 +7,12 @@
 | --------------- | ---------------------------------------------------------------- |
 | License:        | Apache License, Version 2.0                                      |
 | Build:          | Gradle                                                           |
-| Documentation:  | https://docs.aerogear.org - Under construction                   |
+| End User Documentation:  | https://docs.aerogear.org - Under construction - [Github Link](./docs/modules/ROOT/pages/)|
+| Community Documentation: | https://aerogear.org       |
 | Issue tracker:  | https://issues.jboss.org/browse/AEROGEAR                         |
 | Mailing lists:  | [aerogear-dev](https://groups.google.com/forum/#!forum/aerogear) |
 
+<<<<<<< b1aff43e4264d2d5285b4b239d1e0472c73e74c1
 ## Documentation
 
 1. [End User Getting Started Guide](./docs/modules/ROOT/pages/index.adoc)
@@ -19,52 +21,28 @@
 1. [Troubleshooting](./docs/troubleshooting.adoc)
 1. [Service Contributor Guide](./docs/contrib/contributing-guide.adoc)
 
-### List of SDKs
+## Showcase application
 
-AeroGear Services SDK consist of set of separate SDKs
+To try out latest release of SDK go to [Android showcase application](https://github.com/aerogear/android-showcase-template)
 
-- [Auth](./docs/modules/ROOT/pages/auth.adoc):  Mobile authentication SDK
-- [Push](./docs/modules/ROOT/pages/push.adoc):  Push Notifications SDK
+### List of Modules
+
+The AeroGear SDK consists of set of Modules
+
+- Core - Core Module used as base for other Modules
+- Auth - Mobile Application Auth Module
+- Security - Mobile Application Security Module
+- Metrics - Mobile Application Metrics Module
+- Push - Mobile Application Unified Push Module
 
 ## License 
 
  See [LICENSE file](./LICENSE)
 
-## Development
-
-If you would like to help develop AeroGear you can join our [developer's mailing list](https://groups.google.com/forum/#!forum/aerogear), join #aerogear on Freenode, or shout at us on Twitter @aerogears.
-
-Also takes some time and skim the [contributor guide](CONTRIBUTING.md)
-
-## Testing
-
-We're using [Gradle](https://gradle.org/) for running the tests from command line.
-
-### Unit tests
-
-For running the unit tests, simly run
-
-`./gradlew testDebug --tests *.UnitTestSuite`
-
-### Integration tests
-
-Integration tests are designed to be triggered when PR is created, but with easy configuration it's also possible to run them on your local machine (described below).
-
-To trigger the integration tests together with creation of PR, select the `test/integration` label in the right column.
-
-**Metrics integration test**
-
-This includes testing of communication between Android SDK Metrics module and [AeroGear App Metrics service](https://github.com/aerogear/aerogear-app-metrics) (part of [Metrics-APB](https://github.com/aerogearcatalog/metrics-apb))
-
-To run it locally:
-
-1. Edit [Metrics URL](https://github.com/aerogear/aerogear-android-sdk/blob/master/core/src/test/assets/integration-test-mobile-services.json#L11) with valid URL pointing to `/metrics` endpoint, e.g. https://app-metrics.example.com/metrics
-2. Run the test: `./gradlew :core:testDebug --tests *.IntegrationTestSuite`
-
 
 ## Contributing
 
-See [General Contributing Guide](./CONTRIBUTING.md)
+[General Contributing Guide](./CONTRIBUTING.md)
 
 ## Questions?
 
