@@ -9,7 +9,6 @@ import org.json.JSONObject;
 import android.support.annotation.NonNull;
 
 import org.aerogear.mobile.core.MobileCore;
-import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.exception.HttpException;
 import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.metrics.impl.AppMetrics;
@@ -25,10 +24,8 @@ public class MetricsService {
 
     private final String url;
 
-    public MetricsService() {
-        ServiceConfiguration serviceConfiguration =
-                        MobileCore.getInstance().getServiceConfigurationByType("metrics");
-        this.url = serviceConfiguration.getUrl();
+    public MetricsService(String url) {
+        this.url = url;
     }
 
     /**
