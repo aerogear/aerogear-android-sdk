@@ -40,6 +40,8 @@ import org.aerogear.mobile.core.reactive.Responder;
  */
 public class PushService {
 
+    public static final String TYPE = "push";
+
     private static final String TAG = PushService.class.getName();
 
     private static final String DEFAULT_MESSAGE_HANDLER_KEY = "DEFAULT_MESSAGE_HANDLER_KEY";
@@ -98,7 +100,7 @@ public class PushService {
             context = mobileCore.getContext();
 
             ServiceConfiguration serviceConfiguration =
-                            mobileCore.getServiceConfigurationByType("push");
+                            mobileCore.getServiceConfigurationByType(TYPE);
 
             try {
                 JSONObject android = new JSONObject(
