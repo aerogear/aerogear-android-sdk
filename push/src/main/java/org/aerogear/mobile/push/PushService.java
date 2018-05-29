@@ -275,6 +275,8 @@ public class PushService {
 
     /**
      * Update the device token on Unified Push Server
+     *
+     * @param context Application context
      */
     public static void refreshToken(Context context) {
         nonNull(context, "context");
