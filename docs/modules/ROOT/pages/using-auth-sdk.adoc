@@ -58,6 +58,125 @@ The Auth SDK will use this configuration to communicate with Keycloak.
 
 === Initializing the SDK
 
+Before initializing the auth service, the auth service and browser to be used during authentication need be configured.
+
+==== AuthServiceConfiguration
+
+[source, java]
+----
+// build the AuthServiceConfiguration and specify redirect URI. It is recommended to use the package name of your app.
+AuthServiceConfiguration authServiceConfig = new AuthServiceConfiguration
+    .AuthConfigurationBuilder()
+    .withRedirectUri("org.aerogear.mobile.example:/callback")
+    .build();
+----
+
+==== Browser
+
+The `Browser` builder allows for browsers to be configured and later these browsers can or cannot be used during authentication (whitelisted or blacklisted).  
+
+There are 3 browsers supported; Google Chrome, Mozilla Firefox and Samsung Browser.  Each browser can be configured to be used as a standalone browser or a custom tab browser.  It's also possible to specifiy the version(s) of the browser that should be used. There are different options available for all 3 browsers, which are defined in `BrowserType`:
+
+===== Chrome (`BrowserType.CHROME`)
+
+This represents a Google Chrome browser where the browser can be configured to be used as a standalone browser or a custom tab browser and versions can also be specified.
+
+[source, java]
+----
+// a Google Chrome browser configured to be used as a custom tab and version of the browser must be at least 45
+Browser chromeBrowser = new Browser.BrowserBuilder().browser(BrowserType.CHROME).customTab(true).versionRangeAtLeast("45").build();
+----
+
+===== Firefox (`BrowserType.FIREFOX`)
+
+This represents a Mozilla Firefox browser where the browser can be configured to be used as a standalone browser or a custom tab browser and versions can also be specified.
+
+[source, java]
+----
+// a Mozilla Firefox browser configured to be used as a standalone browser and the version of the browser to be used can be anything from 55 to 60
+Browser firefoxBrowser = new Browser.BrowserBuilder().browser(BrowserType.FIREFOX).customTab(false).versionRangeBetween("55", "60").build();
+----
+
+===== Samsung Browser (`BrowserType.SAMSUNG_BROWSER`)
+
+This represents a Samsung browser where the browser can be configured to be used as a standalone browser or a custom tab browser and versions can also be specified.
+
+[source, java]
+----
+// a Samsung browser configured to be used as a standalone browser and the version of the browser to be used must be at least 6
+Browser samsungBrowser = new Browser.BrowserBuilder().browser(BrowserType.SAMSUNG_BROWSER).customTab(false).versionRangeAtLeast("6.0").build();
+----
+
+===== Chrome Default (`BrowserType.CHROME_DEFAULT`)
+
+This represents any version of a Google Chrome browser where the browser is configured to be used as a standalone browser.
+
+[source, java]
+----
+Browser chromeDefaultBrowser = new Browser.BrowserBuilder().browser(BrowserType.CHROME_DEFAULT).build();
+----
+
+===== Chrome Default Custom Tab (`BrowserType.CHROME_DEFAULT_CUSTOM_TAB`)
+
+This represents a Google Chrome browser for use as a custom tab and the minimum version specified is 45 (its only possible to configure custom tab use in version 45 and up).
+
+[source, java]
+----
+Browser chromeDefaultCustomTabBrowser = new Browser.BrowserBuilder().browser(BrowserType.CHROME_DEFAULT_CUSTOM_TAB).build();
+----
+
+===== Firefox Default (`BrowserType.FIREFOX_DEFAULT`)
+
+This represents any version of a Mozilla Firefox browser for use as a standalone browser.
+
+[source, java]
+----
+Browser firefoxDefaultBrowser = new Browser.BrowserBuilder().browser(BrowserType.FIREFOX_DEFAULT).build();
+----
+
+===== Samsung Browser Default (`BrowserType.SAMSUNG_BROWSER_DEFAULT`)
+
+This represents any version of a Samsung browser for use as a standalone browser.
+
+[source, java]
+----
+Browser samsungBrowserDefault = new Browser.BrowserBuilder().browser(BrowserType.SAMSUNG_BROWSER_DEFAULT).build(); 
+----
+
+===== Samsung Browser Default Custom Tab (`BrowserType.SAMSUNG_BROWSER_DEFAULT_CUSTOM_TAB`)
+
+This represents any version of a Samsung browser for use as a custom tab.
+
+[source, java]
+----
+Browser samsungBrowserDefaultCustomTab = new Browser.BrowserBuilder().browser(BrowserType.SAMSUNG_BROWSER_DEFAULT_CUSTOM_TAB).build();
+----
+
+==== Browser Configuration
+Once a browser or browsers have been configured, the `BrowserConfiguration` builder can be used to either blacklist or whitelist these browsers.
+
+IMPORTANT: It's only possible to blacklist or whitelist a browser/browsers. It is not possible to both whitelist and blacklist a browser/browsers.  If both are invoked the most previous browser configuration built will be used.
+
+[source, java]
+----
+// blacklist any version of a Samsung browser for use as a custom tab.
+Browser samsungBrowser = new Browser.BrowserBuilder().browser(BrowserType.SAMSUNG_BROWSER).customTab(true).versionRangeAnyVersion().build();
+BrowserConfiguration browserConfiguration = new BrowserConfiguration.BrowserConfigurationBuilder().blackList().browser(samsungBrowserDefaultCustomTab).build();
+
+// whitelist a Google Chrome browser for use as a custom tab where the minimum version is 45
+Browser chromeDefaultCustomTabBrowser = new Browser.BrowserBuilder().browser(BrowserType.CHROME_DEFAULT_CUSTOM_TAB).build();
+BrowserConfiguration browserConfiguration = new BrowserConfiguration.BrowserConfigurationBuilder().whitelist().browser(chromeDefaultCustomTabBrowser).build();
+
+// blacklist the two browsers configured above
+BrowserConfiguration browserConfiguration = new BrowserConfiguration.BrowserConfigurationBuilder().blacklist().browser(chromeDefaultCustomTabBrowser).browser(samsungBrowserDefaultCustomTab).build();
+
+// add the two browsers configured above to a Set
+Set<Browser> browsers = new HashSet<>(Arrays.asList(samsungBrowserDefaultCustomTab, chromeDefaultCustomTabBrowser));
+// whitelist this Set of browsers
+BrowserConfiguration browserConfiguration = new BrowserConfiguration.BrowserConfigurationBuilder().whiteList().browsers(browsers).build();
+----
+
+==== Auth Service Initialisation
 `AuthService` can be retrieved using the `MobileCore#getInstance` method.
 
 [source,java]
@@ -69,17 +188,24 @@ Any subsequent `getService` call will return the same instance of `AuthService`.
 
 Before the `AuthService` can be used `AuthService#init` must be invoked once in an app.
 
+`AuthService#init` method expects `AuthServiceConfiguration` and `BrowserConfiguration` as parameters so these configurations need to be initialized first.
+
+
 [source,java]
 ----
-// Specify redirect URI. It is recommended to use the package name of your app.
+// auth service configuration
 AuthServiceConfiguration authServiceConfig = new AuthServiceConfiguration
     .AuthConfigurationBuilder()
     .withRedirectUri("org.aerogear.mobile.example:/callback")
     .build();
 
+// browser configuration
+Browser browser = new Browser.BrowserBuilder().browser(BrowserType.CHROME_DEFAULT_CUSTOM_TAB).build();
+BrowserConfiguration browserConfiguration = new BrowserConfiguration.BrowserConfigurationBuilder().blackList().browser(browser).build();
+
 // You only need to invoke this once every subsequent retrieval of the AuthService 
 // will retrieve the same instance.
-authService.init(context, authServiceConfig);
+authService.init(context, authServiceConfig, browserConfiguration);
 ----
 
 ==== Defining Custom Scopes
