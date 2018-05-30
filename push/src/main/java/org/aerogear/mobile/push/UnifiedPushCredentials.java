@@ -23,6 +23,10 @@ public final class UnifiedPushCredentials {
      */
     public void setUrl(String url) {
         this.url = url;
+
+        if (!this.url.endsWith("/")) {
+            this.url = this.url.concat("/");
+        }
     }
 
     /**
