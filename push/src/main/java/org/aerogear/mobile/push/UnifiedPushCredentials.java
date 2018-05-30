@@ -2,9 +2,32 @@ package org.aerogear.mobile.push;
 
 public final class UnifiedPushCredentials {
 
+    private String url;
     private String variant;
     private String secret;
     private String senderId;
+
+    /**
+     * The URL of the Unified Push Server
+     *
+     * @return the current Unified Push Server url
+     */
+    public String getUrl() {
+        return url;
+    }
+
+    /**
+     * The URL of the Unified Push Server
+     *
+     * @param url the current Unified Push Server url
+     */
+    public void setUrl(String url) {
+        this.url = url;
+
+        if (!this.url.endsWith("/")) {
+            this.url = this.url.concat("/");
+        }
+    }
 
     /**
      * ID of the variant from the AeroGear UnifiedPush Server.
@@ -44,7 +67,7 @@ public final class UnifiedPushCredentials {
 
     /**
      * Firebase senderId registered for this application.
-     * 
+     *
      * @return senderId
      */
     public String getSenderId() {
