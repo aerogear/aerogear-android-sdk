@@ -30,6 +30,8 @@ public class MetricsService {
 
     /**
      * Send default metrics
+     *
+     * @return A {@link Request} boolean
      */
     public Request<Boolean> sendAppAndDeviceMetrics() {
         // as app and device metrics are added by the publisher
@@ -42,6 +44,8 @@ public class MetricsService {
      *
      * @param type type of the enclosing metrics event
      * @param metrics Metrics to send
+     *
+     * @return A {@link Request} boolean
      */
     public Request<Boolean> publish(@NonNull String type, @NonNull final Metrics... metrics) {
 
