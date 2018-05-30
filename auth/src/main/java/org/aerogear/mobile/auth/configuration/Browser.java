@@ -1,8 +1,12 @@
 package org.aerogear.mobile.auth.configuration;
 
+import android.support.annotation.NonNull;
+
 import net.openid.appauth.browser.Browsers;
 import net.openid.appauth.browser.VersionRange;
 import net.openid.appauth.browser.VersionedBrowserMatcher;
+
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 public class Browser {
 
@@ -50,6 +54,12 @@ public class Browser {
         }
 
         public Browser build() {
+            nonNull(browser, "a browser must be specified", "browser");
+            if (browser.equals(BrowserType.CHROME) || browser.equals(BrowserType.FIREFOX) ||
+                browser.equals(BrowserType.SAMSUNG_BROWSER)) {
+                nonNull(customTab, "to use a custom tab or not must be specified for custom browser configs", "customTab");
+                nonNull(versionRange, "version range for custom browser configs must be specified", "versionRange");
+            }
             return new Browser(this);
         }
     }

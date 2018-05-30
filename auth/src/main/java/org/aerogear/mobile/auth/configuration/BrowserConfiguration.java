@@ -49,6 +49,9 @@ public class BrowserConfiguration {
         }
 
         public BrowserConfiguration build() {
+            if (browsers.isEmpty()) {
+                throw new IllegalStateException("at least one browser must be specified to blacklist or whitelist");
+            }
             return new BrowserConfiguration(this);
         }
     }
