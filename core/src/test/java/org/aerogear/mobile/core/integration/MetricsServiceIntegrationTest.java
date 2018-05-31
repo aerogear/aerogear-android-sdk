@@ -13,10 +13,11 @@ import org.robolectric.RuntimeEnvironment;
 import android.support.test.filters.SmallTest;
 
 import org.aerogear.mobile.core.AeroGearTestRunner;
-import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.MobileCore;
+import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.metrics.Metrics;
 import org.aerogear.mobile.core.metrics.MetricsService;
+import org.aerogear.mobile.core.reactive.Responder;
 import org.aerogear.mobile.core.unit.metrics.MetricsServiceTest;
 
 @RunWith(AeroGearTestRunner.class)
@@ -29,7 +30,7 @@ public class MetricsServiceIntegrationTest {
     @Before
     public void setUp() {
         MobileCore.init(RuntimeEnvironment.application);
-        metricsService = MobileCore.getInstance().getService(MetricsService.class);
+        metricsService = new MetricsService("https://demo1623828.mockable.io/metrics");
 
         error = null;
     }
@@ -38,20 +39,20 @@ public class MetricsServiceIntegrationTest {
     public void testSendDefaultMetricsShouldReturnNoError() throws Exception {
         CountDownLatch latch = new CountDownLatch(1);
 
-        final Callback testCallback = new Callback() {
-            @Override
-            public void onSuccess() {
-                latch.countDown();
-            }
+        metricsService.sendAppAndDeviceMetrics().requestOn(new AppExecutors().mainThread())
+                        .respondWith(new Responder<Boolean>() {
+                            @Override
+                            public void onResult(Boolean value) {
+                                latch.countDown();
+                            }
 
-            @Override
-            public void onError(Throwable err) {
-                error = err;
-                latch.countDown();
-            }
-        };
+                            @Override
+                            public void onException(Exception exception) {
+                                error = exception;
+                                latch.countDown();
+                            }
+                        });
 
-        metricsService.sendAppAndDeviceMetrics(testCallback);
         latch.await(10, TimeUnit.SECONDS);
 
         assertNull(error);
@@ -63,20 +64,20 @@ public class MetricsServiceIntegrationTest {
 
         Metrics metrics = new MetricsServiceTest.DummyMetrics();
 
-        final Callback testCallback = new Callback() {
-            @Override
-            public void onSuccess() {
-                latch.countDown();
-            }
+        metricsService.publish("init", metrics).requestOn(new AppExecutors().mainThread())
+                        .respondWith(new Responder<Boolean>() {
+                            @Override
+                            public void onResult(Boolean value) {
+                                latch.countDown();
+                            }
 
-            @Override
-            public void onError(Throwable err) {
-                error = err;
-                latch.countDown();
-            }
-        };
+                            @Override
+                            public void onException(Exception exception) {
+                                error = exception;
+                                latch.countDown();
+                            }
+                        });
 
-        metricsService.publish("init", new Metrics[] {metrics}, testCallback);
         latch.await(10, TimeUnit.SECONDS);
 
         assertNull(error);

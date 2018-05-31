@@ -26,6 +26,7 @@ import org.aerogear.mobile.core.http.OkHttpCertificatePinningParser;
 import org.aerogear.mobile.core.http.OkHttpServiceModule;
 import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.logging.LoggerAdapter;
+import org.aerogear.mobile.core.metrics.MetricsService;
 
 import okhttp3.OkHttpClient;
 
@@ -51,6 +52,7 @@ public final class MobileCore {
     private final HttpServiceModule httpLayer;
     private final Map<String, ServiceConfiguration> serviceConfigById;
     private final Map<String, List<ServiceConfiguration>> serviceConfigsByType;
+    private final MetricsService metricsService;
 
     /**
      * Get the user app version from the package manager
@@ -92,7 +94,7 @@ public final class MobileCore {
             throw new InitializationException(message, exception);
         }
 
-        // Setup HTTP layer
+        // -- HTTP layer --------------------------------------------------------------------------
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
 
         OkHttpCertificatePinningParser certificatePinning =
@@ -112,6 +114,15 @@ public final class MobileCore {
         httpServiceModule.configure(this, configuration);
 
         this.httpLayer = httpServiceModule;
+
+        // Metrics Service ------------------------------------------------------------------------
+
+        ServiceConfiguration metricsConfig = getServiceConfigurationByType("metrics");
+        if (metricsConfig != null) {
+            metricsService = new MetricsService(metricsConfig.getUrl());
+        } else {
+            metricsService = null;
+        }
 
     }
 
@@ -163,6 +174,20 @@ public final class MobileCore {
         } catch (IllegalAccessException | InstantiationException e) {
             throw new InitializationException(e.getMessage(), e);
         }
+    }
+
+    /**
+     * Retrieve Metrics Services
+     *
+     * @return Metrics Service
+     *
+     * @throws ConfigurationNotFoundException throw if metrics is not enable
+     */
+    public MetricsService getMetricsService() throws ConfigurationNotFoundException {
+        if (metricsService == null) {
+            throw new ConfigurationNotFoundException("metrics not found on " + configFileName);
+        }
+        return metricsService;
     }
 
     /**
@@ -226,7 +251,7 @@ public final class MobileCore {
 
     /**
      * Returns the configuration for this service type from the JSON config file.
-     *
+     * <p>
      * If there are multiple configs for the type, the first one will be returned.
      *
      * @param type Service type

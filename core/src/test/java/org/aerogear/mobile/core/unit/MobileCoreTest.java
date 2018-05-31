@@ -1,7 +1,6 @@
 package org.aerogear.mobile.core.unit;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +15,6 @@ import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.ServiceModule;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.logging.Logger;
-import org.aerogear.mobile.core.metrics.MetricsService;
 
 @RunWith(AeroGearTestRunner.class)
 @SmallTest
@@ -44,15 +42,6 @@ public class MobileCoreTest {
     @Test
     public void testConfigurationNotRequiredDoesNotThrowException() {
         MobileCore.getInstance().getService(DummyServiceModule.class);
-    }
-
-    @Test
-    public void testGetInstance() {
-        MobileCore.init(context);
-
-        MetricsService service = MobileCore.getInstance().getService(MetricsService.class);
-
-        assertNotNull(service);
     }
 
     @Test
