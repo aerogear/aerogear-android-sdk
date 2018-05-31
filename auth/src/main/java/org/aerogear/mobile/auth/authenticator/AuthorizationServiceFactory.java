@@ -4,6 +4,7 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
 import org.aerogear.mobile.auth.configuration.BrowserConfiguration;
@@ -74,19 +75,18 @@ public class AuthorizationServiceFactory {
     public ServiceWrapper createAuthorizationService(
                     @NonNull final KeycloakConfiguration keycloakConfiguration,
                     @NonNull final AuthServiceConfiguration authServiceConfiguration,
-                    @NonNull final BrowserConfiguration browserConfiguration) {
+                    @Nullable final BrowserConfiguration browserConfiguration) {
 
         nonNull(keycloakConfiguration, "keycloakConfiguration");
         nonNull(authServiceConfiguration, "authServiceConfiguration");
-        nonNull(browserConfiguration, "browserConfiguration");
 
         AuthorizationServiceConfiguration authServiceConfig = new AuthorizationServiceConfiguration(
                         keycloakConfiguration.getAuthenticationEndpoint(),
                         keycloakConfiguration.getTokenEndpoint());
         AuthState authState = new AuthState(authServiceConfig);
 
-        AuthorizationService authService = new AuthorizationService(this.appContext,
-                        browserConfiguration.getAppAuthConfig());
+        AuthorizationService authService = browserConfiguration == null ? new AuthorizationService(this.appContext) : new AuthorizationService(this.appContext,
+            browserConfiguration.getAppAuthConfig());
         AuthorizationRequest authRequest = new AuthorizationRequest.Builder(authServiceConfig,
                         keycloakConfiguration.getResourceId(), ResponseTypeValues.CODE,
                         authServiceConfiguration.getRedirectUri())

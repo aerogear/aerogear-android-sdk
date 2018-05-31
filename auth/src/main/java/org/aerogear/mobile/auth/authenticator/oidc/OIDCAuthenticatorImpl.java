@@ -80,7 +80,7 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
         this.keycloakConfiguration = new KeycloakConfiguration(serviceConfiguration);
         this.authServiceConfiguration =
                         nonNull(authServiceConfiguration, "authServiceConfiguration");
-        this.browserConfiguration = nonNull(browserConfiguration, "browserConfiguration");
+        this.browserConfiguration = browserConfiguration;
         this.authorizationServiceFactory =
                         nonNull(authorizationServiceFactory, "authorizationServiceFactory");
         this.authStateManager = nonNull(authStateManager, "authStateManager");

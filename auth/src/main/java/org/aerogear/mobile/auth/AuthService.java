@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.jose4j.jwk.JsonWebKeySet;
 
+import android.content.ContentProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -197,10 +198,8 @@ public class AuthService implements ServiceModule {
      *
      * @param context the current application context
      * @param authServiceConfiguration the configuration of the auth service
-     * @param browserConfiguration the configuration for the browser used during authentication/SSO
      */
-    public void init(final Context context, final AuthServiceConfiguration authServiceConfiguration,
-                    BrowserConfiguration browserConfiguration) {
+    public void init(final Context context, final AuthServiceConfiguration authServiceConfiguration) {
         if (!initialisationStatus.contains(STEP.CONFIGURED)) {
             throw new IllegalStateException(
                             "configure method must be called before the init method");
@@ -210,13 +209,40 @@ public class AuthService implements ServiceModule {
         this.authStateManager = AuthStateManager.getInstance(context);
         this.authServiceConfiguration =
                         nonNull(authServiceConfiguration, "authServiceConfiguration");
-        this.browserConfiguration = nonNull(browserConfiguration, "browserConfiguration");
         this.jwksManager = new JwksManager(this.appContext, this.mobileCore,
                         this.authServiceConfiguration);
         this.oidcAuthenticatorImpl = new OIDCAuthenticatorImpl(this.serviceConfiguration,
-                        this.authServiceConfiguration, this.browserConfiguration,
+                        this.authServiceConfiguration, null,
                         this.authStateManager, new AuthorizationServiceFactory(appContext),
                         jwksManager, mobileCore.getHttpLayer());
+        initialisationStatus.add(STEP.INITIALIZED);
+    }
+
+    /**
+     * Initialize the module. This should be called before any other method when using the module.
+     *
+     * @param context the current application context
+     * @param authServiceConfiguration the configuration of the auth service
+     * @param browserConfiguration the configuration for the browser used during authentication
+     */
+    public void init(final Context context, final AuthServiceConfiguration authServiceConfiguration,
+                     final BrowserConfiguration browserConfiguration) {
+        if (!initialisationStatus.contains(STEP.CONFIGURED)) {
+            throw new IllegalStateException(
+                "configure method must be called before the init method");
+        }
+
+        this.appContext = nonNull(context, "context");
+        this.authStateManager = AuthStateManager.getInstance(context);
+        this.authServiceConfiguration =
+            nonNull(authServiceConfiguration, "authServiceConfiguration");
+        this.browserConfiguration = nonNull(browserConfiguration, "browserConfiguration");
+        this.jwksManager = new JwksManager(this.appContext, this.mobileCore,
+            this.authServiceConfiguration);
+        this.oidcAuthenticatorImpl = new OIDCAuthenticatorImpl(this.serviceConfiguration,
+            this.authServiceConfiguration, this.browserConfiguration,
+            this.authStateManager, new AuthorizationServiceFactory(appContext),
+            jwksManager, mobileCore.getHttpLayer());
         initialisationStatus.add(STEP.INITIALIZED);
     }
 
