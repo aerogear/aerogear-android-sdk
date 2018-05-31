@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.jose4j.jwk.JsonWebKeySet;
 
-import android.content.ContentProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -200,22 +199,7 @@ public class AuthService implements ServiceModule {
      * @param authServiceConfiguration the configuration of the auth service
      */
     public void init(final Context context, final AuthServiceConfiguration authServiceConfiguration) {
-        if (!initialisationStatus.contains(STEP.CONFIGURED)) {
-            throw new IllegalStateException(
-                            "configure method must be called before the init method");
-        }
-
-        this.appContext = nonNull(context, "context");
-        this.authStateManager = AuthStateManager.getInstance(context);
-        this.authServiceConfiguration =
-                        nonNull(authServiceConfiguration, "authServiceConfiguration");
-        this.jwksManager = new JwksManager(this.appContext, this.mobileCore,
-                        this.authServiceConfiguration);
-        this.oidcAuthenticatorImpl = new OIDCAuthenticatorImpl(this.serviceConfiguration,
-                        this.authServiceConfiguration, null,
-                        this.authStateManager, new AuthorizationServiceFactory(appContext),
-                        jwksManager, mobileCore.getHttpLayer());
-        initialisationStatus.add(STEP.INITIALIZED);
+        init(context, authServiceConfiguration, null);
     }
 
     /**
@@ -236,7 +220,6 @@ public class AuthService implements ServiceModule {
         this.authStateManager = AuthStateManager.getInstance(context);
         this.authServiceConfiguration =
             nonNull(authServiceConfiguration, "authServiceConfiguration");
-        this.browserConfiguration = nonNull(browserConfiguration, "browserConfiguration");
         this.jwksManager = new JwksManager(this.appContext, this.mobileCore,
             this.authServiceConfiguration);
         this.oidcAuthenticatorImpl = new OIDCAuthenticatorImpl(this.serviceConfiguration,

@@ -7,7 +7,7 @@ public enum BrowserType {
     /**
      * This represents a Google Chrome browser where the custom tab and versions can be specified.
      */
-    CHROME,
+    CHROME(),
     /**
      * This represents any version of a Google Chrome browser for use as a standalone browser.
      */

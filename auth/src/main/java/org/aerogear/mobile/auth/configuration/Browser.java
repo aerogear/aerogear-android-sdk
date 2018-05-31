@@ -24,6 +24,8 @@ public class Browser {
      */
     public static class BrowserBuilder {
         private BrowserType browser;
+        private String packageName;
+        private String signature;
         private Boolean customTab;
         private VersionRange versionRange;
 
@@ -37,6 +39,12 @@ public class Browser {
          */
         public BrowserBuilder browser(BrowserType browser) {
             this.browser = browser;
+            return this;
+        }
+
+        public BrowserBuilder browser(String packageName, String signature) {
+            this.packageName = packageName;
+            this.signature = signature;
             return this;
         }
 
@@ -106,20 +114,32 @@ public class Browser {
          * @return {@link Browser}
          */
         public Browser build() {
-            nonNull(browser, "a browser must be specified", "browser");
-            if (browser.equals(BrowserType.CHROME) || browser.equals(BrowserType.FIREFOX)
-                            || browser.equals(BrowserType.SAMSUNG_BROWSER)) {
-                nonNull(customTab,
-                                "to use a custom tab or not must be specified for custom browser configs",
-                                "customTab");
-                nonNull(versionRange, "version range for custom browser configs must be specified",
-                                "versionRange");
+            if (browser == null && (packageName == null || signature == null)) { // check that at either a custom browser is being used or a browser from `BrowserType` is being used
+                throw new IllegalStateException("Please ensure to build either a browser provided by " +
+                    "the SDK or a custom browser by specifying the package name and signature of the browser");
+            } else if (browser != null) {
+                if (browser != null &&
+                    (browser.equals(BrowserType.CHROME) || browser.equals(BrowserType.FIREFOX)
+                    || browser.equals(BrowserType.SAMSUNG_BROWSER)) ||
+                    (packageName != null && signature != null)) {
+                    // if the browser is not null and the browser option being used is a customisable option or
+                    // if the a custom browser is being used, ensure that customTab and versionRange are not null
+                    nonNull(customTab,
+                        "to use a custom tab or not must be specified for custom browser configs",
+                        "customTab");
+                    nonNull(versionRange, "version range for custom browser configs must be specified",
+                        "versionRange");
+                }
             }
             return new Browser(this);
         }
     }
 
     private VersionedBrowserMatcher configureBrowser(BrowserBuilder builder) {
+        return builder.browser == null ? configureCustomBrowser(builder) : configureProvidedBrowser(builder);
+    }
+
+    private VersionedBrowserMatcher configureProvidedBrowser(BrowserBuilder builder) {
         VersionedBrowserMatcher vbm = null;
         switch (builder.browser) {
             case CHROME:
@@ -148,6 +168,11 @@ public class Browser {
                 break;
         }
         return vbm;
+    }
+
+    private VersionedBrowserMatcher configureCustomBrowser(BrowserBuilder builder) {
+        return new VersionedBrowserMatcher(builder.packageName, builder.signature,
+            builder.customTab, builder.versionRange);
     }
 
     private VersionedBrowserMatcher configureChromeBrowser(BrowserBuilder builder) {
