@@ -12,7 +12,6 @@
 | Issue tracker:  | https://issues.jboss.org/browse/AEROGEAR                         |
 | Mailing lists:  | [aerogear-dev](https://groups.google.com/forum/#!forum/aerogear) |
 
-<<<<<<< b1aff43e4264d2d5285b4b239d1e0472c73e74c1
 ## Documentation
 
 1. [End User Getting Started Guide](./docs/modules/ROOT/pages/index.adoc)
