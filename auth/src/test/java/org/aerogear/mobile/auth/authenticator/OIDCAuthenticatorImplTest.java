@@ -20,8 +20,6 @@ import org.aerogear.mobile.auth.AuthStateManager;
 import org.aerogear.mobile.auth.authenticator.oidc.OIDCAuthenticatorImpl;
 import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
 import org.aerogear.mobile.auth.configuration.BrowserConfiguration;
-import org.aerogear.mobile.auth.configuration.DefinedBrowser;
-import org.aerogear.mobile.auth.configuration.DefinedBrowserType;
 import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
 import org.aerogear.mobile.auth.credentials.JwksManager;
 import org.aerogear.mobile.auth.credentials.OIDCCredentials;

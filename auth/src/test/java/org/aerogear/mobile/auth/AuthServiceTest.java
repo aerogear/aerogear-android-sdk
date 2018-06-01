@@ -13,8 +13,6 @@ import android.content.Context;
 
 import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
 import org.aerogear.mobile.auth.configuration.BrowserConfiguration;
-import org.aerogear.mobile.auth.configuration.DefinedBrowser;
-import org.aerogear.mobile.auth.configuration.DefinedBrowserType;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.http.HttpRequest;

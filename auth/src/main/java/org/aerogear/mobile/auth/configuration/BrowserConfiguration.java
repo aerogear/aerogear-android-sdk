@@ -8,6 +8,9 @@ import net.openid.appauth.AppAuthConfiguration;
 import net.openid.appauth.browser.BrowserBlacklist;
 import net.openid.appauth.browser.BrowserMatcher;
 import net.openid.appauth.browser.BrowserWhitelist;
+import net.openid.appauth.browser.DelimitedVersion;
+import net.openid.appauth.browser.VersionRange;
+import net.openid.appauth.browser.VersionedBrowserMatcher;
 
 /**
  * Represents the definedBrowsers that are to be used or not used during authentication.
@@ -15,7 +18,7 @@ import net.openid.appauth.browser.BrowserWhitelist;
 public class BrowserConfiguration {
 
     private final boolean blackList;
-    private final Set<Browser> browsers;
+    private final Set<AuthBrowser> browsers;
     private final AppAuthConfiguration appAuthConfig;
 
     private BrowserConfiguration(final BrowserConfigurationBuilder builder) {
@@ -30,7 +33,7 @@ public class BrowserConfiguration {
      */
     public static class BrowserConfigurationBuilder {
         private boolean blackList;
-        private Set<Browser> browsers = new HashSet<>();
+        private Set<AuthBrowser> browsers = new HashSet<>();
 
         public BrowserConfigurationBuilder() {}
 
@@ -57,10 +60,10 @@ public class BrowserConfiguration {
         /**
          * Specifies the definedBrowser to be either blacklisted or whitelisted.
          *
-         * @param browser {@link DefinedBrowser} object
+         * @param browser {@link AuthBrowser} object
          * @return the builder instance
          */
-        public BrowserConfigurationBuilder browser(Browser browser) {
+        public BrowserConfigurationBuilder browser(AuthBrowser browser) {
             this.browsers.add(browser);
             return this;
         }
@@ -68,10 +71,10 @@ public class BrowserConfiguration {
         /**
          * Specifies a set of definedBrowsers to be either blacklisted or whitelisted.
          *
-         * @param browsers a set of {@link DefinedBrowser} objects
+         * @param browsers a set of {@link AuthBrowser} objects
          * @return the builder instance
          */
-        public BrowserConfigurationBuilder browsers(Set<Browser> browsers) {
+        public BrowserConfigurationBuilder browsers(Set<AuthBrowser> browsers) {
             this.browsers.addAll(browsers);
             return this;
         }
@@ -90,7 +93,7 @@ public class BrowserConfiguration {
         }
     }
 
-    private AppAuthConfiguration blackOrWhiteListBrowsers(Set<Browser> browsers,
+    private AppAuthConfiguration blackOrWhiteListBrowsers(Set<AuthBrowser> browsers,
                     Boolean blackList) {
         AppAuthConfiguration appAuthConfig;
         if (blackList) {
@@ -106,11 +109,14 @@ public class BrowserConfiguration {
         return appAuthConfig;
     }
 
-    private BrowserMatcher[] parseBrowserMatchers(Set<Browser> browsers) {
+    private BrowserMatcher[] parseBrowserMatchers(Set<AuthBrowser> browsers) {
         Set<BrowserMatcher> parsedBrowserConfigs = new HashSet<>();
         Iterator iterator = browsers.iterator();
         while (iterator.hasNext()) {
-            parsedBrowserConfigs.add(((Browser) iterator.next()).getVersionedBrowserMatcher());
+            AuthBrowser browser = (AuthBrowser) iterator.next();
+            VersionRange versionRange = new VersionRange(DelimitedVersion.parse(browser.getVersionRange().getLowerBoundry()), DelimitedVersion.parse(browser.getVersionRange().getUpperBoundry()));
+            VersionedBrowserMatcher matcher = new VersionedBrowserMatcher(browser.getPackageName(), browser.getSignatures(), browser.isUseCustomTab(), versionRange);
+            parsedBrowserConfigs.add(matcher);
         }
         return parsedBrowserConfigs.toArray(new BrowserMatcher[parsedBrowserConfigs.size()]);
     }
