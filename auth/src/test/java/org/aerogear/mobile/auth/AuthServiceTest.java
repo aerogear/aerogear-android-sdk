@@ -12,7 +12,6 @@ import org.mockito.MockitoAnnotations;
 import android.content.Context;
 
 import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
-import org.aerogear.mobile.auth.configuration.BrowserConfiguration;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.http.HttpRequest;
@@ -42,8 +41,6 @@ public class AuthServiceTest {
     @Mock
     HttpResponse httpResponse;
 
-    BrowserConfiguration browserConfiguration;
-
     @Before
     public void setup() throws NoSuchFieldException, IllegalAccessException {
         MockitoAnnotations.initMocks(this);
@@ -51,17 +48,13 @@ public class AuthServiceTest {
         when(serviceConfiguration.getUrl()).thenReturn("dummyvalue");
         when(mobileCore.getHttpLayer()).thenReturn(httpServiceModule);
         when(httpServiceModule.newRequest()).thenReturn(httpRequest);
-        DefinedBrowser definedBrowser = new DefinedBrowser.BrowserBuilder()
-                        .browser(DefinedBrowserType.CHROME_DEFAULT_CUSTOM_TAB).build();
-        browserConfiguration = new BrowserConfiguration.BrowserConfigurationBuilder().blackList()
-                        .browser(definedBrowser).build();
     }
 
     @Test
     public void testNotConfigured() {
         try {
             AuthService authService = new AuthService();
-            authService.init(ctx, authServiceConfiguration, browserConfiguration);
+            authService.init(ctx, authServiceConfiguration);
             Assert.fail("Configure method has not been called, but no error has been thrown");
         } catch (IllegalStateException ise) {
             Assert.assertEquals("configure method must be called before the init method",
@@ -100,7 +93,7 @@ public class AuthServiceTest {
     public void testReady() {
         AuthService authService = new AuthService();
         authService.configure(mobileCore, serviceConfiguration);
-        authService.init(ctx, authServiceConfiguration, browserConfiguration);
+        authService.init(ctx, authServiceConfiguration);
         try {
             authService.login(null, null);
         } catch (IllegalArgumentException iae) {

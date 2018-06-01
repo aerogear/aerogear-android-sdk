@@ -1,55 +1,63 @@
 package org.aerogear.mobile.auth.configuration;
 
-import net.openid.appauth.browser.VersionedBrowserMatcher;
-
 import java.util.Set;
 
+/**
+ * Represents a browser to be used or not used during authentication. This implementation is a light
+ * weight wrapper around {@link net.openid.appauth.browser.VersionedBrowserMatcher}.
+ */
 public class AuthBrowser {
 
-    private String packageName;
+    private final String packageName;
 
-    private Set<String> signatures;
+    private final Set<String> signatures;
 
-    private boolean useCustomTab;
+    private final boolean useCustomTab;
 
-    private AuthBrowserVersionRange versionRange;
+    private final AuthBrowserVersionRange versionRange;
 
-    public AuthBrowser(String packageName, Set<String> signatures, boolean useCustomTab, AuthBrowserVersionRange versionRange) {
+    /**
+     * Defines a custom browser that can be whitelisted/blacklisted for authentication.
+     *
+     * @param packageName the package name of the custom browser
+     * @param signatures the set of signature hashes of the custom browser
+     * @param useCustomTab the custom tab usage mode for the custom browser
+     * @param versionRange the version range of the custom browser
+     */
+    public AuthBrowser(final String packageName, final Set<String> signatures,
+                    final boolean useCustomTab, final AuthBrowserVersionRange versionRange) {
         this.packageName = packageName;
         this.signatures = signatures;
         this.useCustomTab = useCustomTab;
         this.versionRange = versionRange;
     }
 
+    /**
+     *
+     * @return the package name of the browser
+     */
     public String getPackageName() {
         return packageName;
     }
 
-    public void setPackageName(String packageName) {
-        this.packageName = packageName;
-    }
-
+    /**
+     * @return the set of signatures for the browser
+     */
     public Set<String> getSignatures() {
         return signatures;
     }
 
-    public void setSignatures(Set<String> signatures) {
-        this.signatures = signatures;
-    }
-
+    /**
+     * @return the custom tab mode usage for the browser
+     */
     public boolean isUseCustomTab() {
         return useCustomTab;
     }
 
-    public void setUseCustomTab(boolean useCustomTab) {
-        this.useCustomTab = useCustomTab;
-    }
-
+    /**
+     * @return the version range for the browser
+     */
     public AuthBrowserVersionRange getVersionRange() {
         return versionRange;
-    }
-
-    public void AuthBrowserVersionRange(AuthBrowserVersionRange versionRange) {
-        this.versionRange = versionRange;
     }
 }

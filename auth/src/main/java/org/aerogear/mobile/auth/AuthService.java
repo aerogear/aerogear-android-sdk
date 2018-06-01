@@ -223,9 +223,9 @@ public class AuthService implements ServiceModule {
         this.jwksManager = new JwksManager(this.appContext, this.mobileCore,
                         this.authServiceConfiguration);
         this.oidcAuthenticatorImpl = new OIDCAuthenticatorImpl(this.serviceConfiguration,
-                        this.authServiceConfiguration, browserConfiguration,
-                        this.authStateManager, new AuthorizationServiceFactory(appContext),
-                        jwksManager, mobileCore.getHttpLayer());
+                        this.authServiceConfiguration, browserConfiguration, this.authStateManager,
+                        new AuthorizationServiceFactory(appContext), jwksManager,
+                        mobileCore.getHttpLayer());
         initialisationStatus.add(STEP.INITIALIZED);
     }
 

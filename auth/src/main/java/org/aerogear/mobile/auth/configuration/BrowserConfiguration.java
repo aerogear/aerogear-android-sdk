@@ -114,8 +114,11 @@ public class BrowserConfiguration {
         Iterator iterator = browsers.iterator();
         while (iterator.hasNext()) {
             AuthBrowser browser = (AuthBrowser) iterator.next();
-            VersionRange versionRange = new VersionRange(DelimitedVersion.parse(browser.getVersionRange().getLowerBoundry()), DelimitedVersion.parse(browser.getVersionRange().getUpperBoundry()));
-            VersionedBrowserMatcher matcher = new VersionedBrowserMatcher(browser.getPackageName(), browser.getSignatures(), browser.isUseCustomTab(), versionRange);
+            VersionRange versionRange = new VersionRange(
+                            DelimitedVersion.parse(browser.getVersionRange().getLowerBoundary()),
+                            DelimitedVersion.parse(browser.getVersionRange().getUpperBoundary()));
+            VersionedBrowserMatcher matcher = new VersionedBrowserMatcher(browser.getPackageName(),
+                            browser.getSignatures(), browser.isUseCustomTab(), versionRange);
             parsedBrowserConfigs.add(matcher);
         }
         return parsedBrowserConfigs.toArray(new BrowserMatcher[parsedBrowserConfigs.size()]);
