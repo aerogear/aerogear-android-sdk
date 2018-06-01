@@ -38,7 +38,6 @@ public class AuthService implements ServiceModule {
     private ServiceConfiguration serviceConfiguration;
     private KeycloakConfiguration keycloakConfiguration;
     private AuthServiceConfiguration authServiceConfiguration;
-    private BrowserConfiguration browserConfiguration;
 
     private AuthStateManager authStateManager;
 
@@ -219,13 +218,12 @@ public class AuthService implements ServiceModule {
 
         this.appContext = nonNull(context, "context");
         this.authStateManager = AuthStateManager.getInstance(context);
-        this.browserConfiguration = browserConfiguration;
         this.authServiceConfiguration =
                         nonNull(authServiceConfiguration, "authServiceConfiguration");
         this.jwksManager = new JwksManager(this.appContext, this.mobileCore,
                         this.authServiceConfiguration);
         this.oidcAuthenticatorImpl = new OIDCAuthenticatorImpl(this.serviceConfiguration,
-                        this.authServiceConfiguration, this.browserConfiguration,
+                        this.authServiceConfiguration, browserConfiguration,
                         this.authStateManager, new AuthorizationServiceFactory(appContext),
                         jwksManager, mobileCore.getHttpLayer());
         initialisationStatus.add(STEP.INITIALIZED);
