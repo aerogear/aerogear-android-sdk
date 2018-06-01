@@ -19,9 +19,9 @@ import android.content.Intent;
 import org.aerogear.mobile.auth.AuthStateManager;
 import org.aerogear.mobile.auth.authenticator.oidc.OIDCAuthenticatorImpl;
 import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
-import org.aerogear.mobile.auth.configuration.Browser;
 import org.aerogear.mobile.auth.configuration.BrowserConfiguration;
-import org.aerogear.mobile.auth.configuration.BrowserType;
+import org.aerogear.mobile.auth.configuration.DefinedBrowser;
+import org.aerogear.mobile.auth.configuration.DefinedBrowserType;
 import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
 import org.aerogear.mobile.auth.credentials.JwksManager;
 import org.aerogear.mobile.auth.credentials.OIDCCredentials;
@@ -226,11 +226,11 @@ public class OIDCAuthenticatorImplTest {
                 return accessToken;
             }
         };
-        Browser browser = new Browser.BrowserBuilder()
-                        .browser(BrowserType.CHROME_DEFAULT_CUSTOM_TAB).build();
+        DefinedBrowser definedBrowser = new DefinedBrowser.BrowserBuilder()
+                        .browser(DefinedBrowserType.CHROME_DEFAULT_CUSTOM_TAB).build();
         BrowserConfiguration browserConfiguration =
                         new BrowserConfiguration.BrowserConfigurationBuilder().blackList()
-                                        .browser(browser).build();
+                                        .browser(definedBrowser).build();
         authServiceConfiguration = new AuthServiceConfiguration.AuthConfigurationBuilder()
                         .withRedirectUri("some.redirect.uri:/callback").build();
         authenticator = new OIDCAuthenticatorImpl(serviceConfig, authServiceConfiguration,

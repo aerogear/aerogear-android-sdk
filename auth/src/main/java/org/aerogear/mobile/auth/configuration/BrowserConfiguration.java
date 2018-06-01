@@ -10,7 +10,7 @@ import net.openid.appauth.browser.BrowserMatcher;
 import net.openid.appauth.browser.BrowserWhitelist;
 
 /**
- * Represents the browsers that are to be used or not used during authentication.
+ * Represents the definedBrowsers that are to be used or not used during authentication.
  */
 public class BrowserConfiguration {
 
@@ -35,7 +35,7 @@ public class BrowserConfiguration {
         public BrowserConfigurationBuilder() {}
 
         /**
-         * Specifies the browsers should be blacklisted.
+         * Specifies the definedBrowsers should be blacklisted.
          *
          * @return the builder instance
          */
@@ -45,7 +45,7 @@ public class BrowserConfiguration {
         }
 
         /**
-         * Specifies the browsers should be whitelisted.
+         * Specifies the definedBrowsers should be whitelisted.
          *
          * @return the builder instance
          */
@@ -55,9 +55,9 @@ public class BrowserConfiguration {
         }
 
         /**
-         * Specifies the browser to be either blacklisted or whitelisted.
+         * Specifies the definedBrowser to be either blacklisted or whitelisted.
          *
-         * @param browser {@link Browser} object
+         * @param browser {@link DefinedBrowser} object
          * @return the builder instance
          */
         public BrowserConfigurationBuilder browser(Browser browser) {
@@ -66,9 +66,9 @@ public class BrowserConfiguration {
         }
 
         /**
-         * Specifies a set of browsers to be either blacklisted or whitelisted.
+         * Specifies a set of definedBrowsers to be either blacklisted or whitelisted.
          *
-         * @param browsers a set of {@link Browser} objects
+         * @param browsers a set of {@link DefinedBrowser} objects
          * @return the builder instance
          */
         public BrowserConfigurationBuilder browsers(Set<Browser> browsers) {

@@ -85,8 +85,10 @@ public class AuthorizationServiceFactory {
                         keycloakConfiguration.getTokenEndpoint());
         AuthState authState = new AuthState(authServiceConfig);
 
-        AuthorizationService authService = browserConfiguration == null ? new AuthorizationService(this.appContext) : new AuthorizationService(this.appContext,
-            browserConfiguration.getAppAuthConfig());
+        AuthorizationService authService =
+                        browserConfiguration == null ? new AuthorizationService(this.appContext)
+                                        : new AuthorizationService(this.appContext,
+                                                        browserConfiguration.getAppAuthConfig());
         AuthorizationRequest authRequest = new AuthorizationRequest.Builder(authServiceConfig,
                         keycloakConfiguration.getResourceId(), ResponseTypeValues.CODE,
                         authServiceConfiguration.getRedirectUri())

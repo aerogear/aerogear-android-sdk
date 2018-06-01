@@ -12,9 +12,9 @@ import org.mockito.MockitoAnnotations;
 import android.content.Context;
 
 import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
-import org.aerogear.mobile.auth.configuration.Browser;
 import org.aerogear.mobile.auth.configuration.BrowserConfiguration;
-import org.aerogear.mobile.auth.configuration.BrowserType;
+import org.aerogear.mobile.auth.configuration.DefinedBrowser;
+import org.aerogear.mobile.auth.configuration.DefinedBrowserType;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.http.HttpRequest;
@@ -53,10 +53,10 @@ public class AuthServiceTest {
         when(serviceConfiguration.getUrl()).thenReturn("dummyvalue");
         when(mobileCore.getHttpLayer()).thenReturn(httpServiceModule);
         when(httpServiceModule.newRequest()).thenReturn(httpRequest);
-        Browser browser = new Browser.BrowserBuilder()
-                        .browser(BrowserType.CHROME_DEFAULT_CUSTOM_TAB).build();
+        DefinedBrowser definedBrowser = new DefinedBrowser.BrowserBuilder()
+                        .browser(DefinedBrowserType.CHROME_DEFAULT_CUSTOM_TAB).build();
         browserConfiguration = new BrowserConfiguration.BrowserConfigurationBuilder().blackList()
-                        .browser(browser).build();
+                        .browser(definedBrowser).build();
     }
 
     @Test

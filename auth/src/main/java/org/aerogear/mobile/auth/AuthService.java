@@ -198,7 +198,8 @@ public class AuthService implements ServiceModule {
      * @param context the current application context
      * @param authServiceConfiguration the configuration of the auth service
      */
-    public void init(final Context context, final AuthServiceConfiguration authServiceConfiguration) {
+    public void init(final Context context,
+                    final AuthServiceConfiguration authServiceConfiguration) {
         init(context, authServiceConfiguration, null);
     }
 
@@ -210,22 +211,23 @@ public class AuthService implements ServiceModule {
      * @param browserConfiguration the configuration for the browser used during authentication
      */
     public void init(final Context context, final AuthServiceConfiguration authServiceConfiguration,
-                     final BrowserConfiguration browserConfiguration) {
+                    final BrowserConfiguration browserConfiguration) {
         if (!initialisationStatus.contains(STEP.CONFIGURED)) {
             throw new IllegalStateException(
-                "configure method must be called before the init method");
+                            "configure method must be called before the init method");
         }
 
         this.appContext = nonNull(context, "context");
         this.authStateManager = AuthStateManager.getInstance(context);
+        this.browserConfiguration = browserConfiguration;
         this.authServiceConfiguration =
-            nonNull(authServiceConfiguration, "authServiceConfiguration");
+                        nonNull(authServiceConfiguration, "authServiceConfiguration");
         this.jwksManager = new JwksManager(this.appContext, this.mobileCore,
-            this.authServiceConfiguration);
+                        this.authServiceConfiguration);
         this.oidcAuthenticatorImpl = new OIDCAuthenticatorImpl(this.serviceConfiguration,
-            this.authServiceConfiguration, this.browserConfiguration,
-            this.authStateManager, new AuthorizationServiceFactory(appContext),
-            jwksManager, mobileCore.getHttpLayer());
+                        this.authServiceConfiguration, this.browserConfiguration,
+                        this.authStateManager, new AuthorizationServiceFactory(appContext),
+                        jwksManager, mobileCore.getHttpLayer());
         initialisationStatus.add(STEP.INITIALIZED);
     }
 
