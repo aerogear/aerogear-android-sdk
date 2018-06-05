@@ -246,7 +246,7 @@ public final class MobileCore {
      * @return the configurations for this service type from the JSON config file
      */
     public List<ServiceConfiguration> getServiceConfigurationsByType(final String type) {
-        return serviceConfigsByType.get(type);
+        return serviceConfigsByType.get(type.toLowerCase());
     }
 
     /**
@@ -258,7 +258,7 @@ public final class MobileCore {
      * @return the first configuration for this service type from the JSON config file
      */
     public ServiceConfiguration getServiceConfigurationByType(final String type) {
-        final List<ServiceConfiguration> configs = serviceConfigsByType.get(type);
+        final List<ServiceConfiguration> configs = serviceConfigsByType.get(type.toLowerCase());
         if (configs == null || configs.isEmpty()) {
             return null;
         }
