@@ -84,7 +84,10 @@ authService.init(context, authServiceConfig);
 
 ==== Authentication Browser
 
-The `AuthService` can also be configured to whitelist or blacklist browsers that should or shouldn't be used during authentication.
+The `AuthService` can also be configured to whitelist or blacklist browsers that should or shouldn't be used during authentication.  During authentication the `Auth SDK` redirects the user to an internet browser.  A Keycloak login web page is loaded in this internet browser to allow users to authenticate.
+`Authentication Browser` is referring to that internet browser used during authentication.  The `Auth SDK` provides some <<Pre-defined Browsers>> that can be used to be whitelisted or blacklisted and there is also the option to use <<Custom Browsers>>.
+The `Auth SDK` can be configured to to use specific browsers and versions, this is know as `whitelist`, or the `Auth SDK` can be configured to permit specific browsers and versions, this is known as `blacklist`.  Once one or more internet browsers have been configured they can be configured to be blacklisted or whitelisted using <<Browser Configuration>>.
+
 
 ===== Pre-defined Browsers
 
