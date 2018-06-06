@@ -29,7 +29,7 @@ public class MobileCoreConfiguration {
         serviceConfigsByType = new HashMap<>();
 
         for (ServiceConfiguration serviceConfiguration : serviceConfigsPerId.values()) {
-            final String serviceType = serviceConfiguration.getType();
+            final String serviceType = serviceConfiguration.getType().toLowerCase();
             List<ServiceConfiguration> configsForType = serviceConfigsByType.get(serviceType);
             if (configsForType == null) {
                 configsForType = new ArrayList<>();
