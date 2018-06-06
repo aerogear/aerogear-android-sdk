@@ -12,13 +12,6 @@
 | Issue tracker:  | https://issues.jboss.org/browse/AEROGEAR                         |
 | Mailing lists:  | [aerogear-dev](https://groups.google.com/forum/#!forum/aerogear) |
 
-## Documentation
-
-1. [End User Getting Started Guide](./docs/modules/ROOT/pages/index.adoc)
-1. [Self Defence Checks](./docs/modules/ROOT/pages/auth-self-defence-checks.adoc)
-1. [Certificate Pinning](./docs/modules/ROOT/pages/certificate-pinning.adoc)
-1. [Troubleshooting](./docs/troubleshooting.adoc)
-1. [Service Contributor Guide](./docs/contrib/contributing-guide.adoc)
 
 ## Showcase application
 
