@@ -17,6 +17,7 @@ import org.aerogear.mobile.auth.authenticator.AuthorizationServiceFactory;
 import org.aerogear.mobile.auth.authenticator.DefaultAuthenticateOptions;
 import org.aerogear.mobile.auth.authenticator.oidc.OIDCAuthenticatorImpl;
 import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
+import org.aerogear.mobile.auth.configuration.BrowserConfiguration;
 import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
 import org.aerogear.mobile.auth.credentials.JwksManager;
 import org.aerogear.mobile.auth.credentials.OIDCCredentials;
@@ -198,6 +199,18 @@ public class AuthService implements ServiceModule {
      */
     public void init(final Context context,
                     final AuthServiceConfiguration authServiceConfiguration) {
+        init(context, authServiceConfiguration, null);
+    }
+
+    /**
+     * Initialize the module. This should be called before any other method when using the module.
+     *
+     * @param context the current application context
+     * @param authServiceConfiguration the configuration of the auth service
+     * @param browserConfiguration the configuration for the browser used during authentication
+     */
+    public void init(final Context context, final AuthServiceConfiguration authServiceConfiguration,
+                    final BrowserConfiguration browserConfiguration) {
         if (!initialisationStatus.contains(STEP.CONFIGURED)) {
             throw new IllegalStateException(
                             "configure method must be called before the init method");
@@ -210,7 +223,7 @@ public class AuthService implements ServiceModule {
         this.jwksManager = new JwksManager(this.appContext, this.mobileCore,
                         this.authServiceConfiguration);
         this.oidcAuthenticatorImpl = new OIDCAuthenticatorImpl(this.serviceConfiguration,
-                        this.authServiceConfiguration, this.authStateManager,
+                        this.authServiceConfiguration, browserConfiguration, this.authStateManager,
                         new AuthorizationServiceFactory(appContext), jwksManager,
                         mobileCore.getHttpLayer());
         initialisationStatus.add(STEP.INITIALIZED);

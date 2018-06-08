@@ -199,7 +199,7 @@ public class OIDCAuthenticatorImplTest {
         when(serviceWrapper.getAuthorizationService()).thenReturn(authorizationService);
         when(serviceWrapper.getAuthState()).thenReturn(authState);
 
-        when(authorizationServiceFactory.createAuthorizationService(any(), any()))
+        when(authorizationServiceFactory.createAuthorizationService(any(), any(), any()))
                         .thenReturn(serviceWrapper);
 
         when(intent.getStringExtra(EXTRA_RESPONSE)).thenReturn(OIDC_RESPONSE);
@@ -225,7 +225,7 @@ public class OIDCAuthenticatorImplTest {
         };
         authServiceConfiguration = new AuthServiceConfiguration.AuthConfigurationBuilder()
                         .withRedirectUri("some.redirect.uri:/callback").build();
-        authenticator = new OIDCAuthenticatorImpl(serviceConfig, authServiceConfiguration,
+        authenticator = new OIDCAuthenticatorImpl(serviceConfig, authServiceConfiguration, null,
                         authStateManager, authorizationServiceFactory, jwksManager,
                         httpsServiceModule);
 

@@ -77,9 +77,87 @@ AuthServiceConfiguration authServiceConfig = new AuthServiceConfiguration
     .withRedirectUri("org.aerogear.mobile.example:/callback")
     .build();
 
-// You only need to invoke this once every subsequent retrieval of the AuthService 
+// You only need to invoke this once every subsequent retrieval of the AuthService
 // will retrieve the same instance.
 authService.init(context, authServiceConfig);
+----
+
+==== Authentication Browser
+
+The `AuthService` can also be configured to whitelist or blacklist browsers that should or shouldn't be used during authentication.  During authentication the `Auth SDK` redirects the user to an internet browser.  A Keycloak login web page is loaded in this internet browser to allow users to authenticate.
+`Authentication Browser` is referring to that internet browser used during authentication.  The `Auth SDK` provides some <<Pre-defined Browsers>> that can be used to be whitelisted or blacklisted and there is also the option to use <<Custom Browsers>>.
+The `Auth SDK` can be configured to to use specific browsers and versions, this is know as `whitelist`, or the `Auth SDK` can be configured to permit specific browsers and versions, this is known as `blacklist`.  Once one or more internet browsers have been configured they can be configured to be blacklisted or whitelisted using <<Browser Configuration>>.
+
+
+===== Pre-defined Browsers
+
+There are some pre-defined browsers that can be be customised to be used as standalone or custom tab browsers and can target a specific version or version range.
+There are also default options available where no extra configuration is needed.
+
+A pre-defined browser can be retrieved from `AuthBrowsers`:
+
+[source, java]
+----
+// a default Google Chrome browser. No extra configuration is neccessary.
+AuthBrowser chromeBrowser = AuthBrowsers.CHROME_DEFAULT;
+
+// a customisable Samsung browser where the custom tab mode has been set to `false` i.e.
+// it should be used as a standalone browser and the version should be at least 6.
+AuthBrowser samsungBrowser = AuthBrowsers.samsung(false, AuthBrowserVersionRange.atMost("6"));
+----
+
+For the full list of predefined browsers available see link:https://github.com/aerogear/aerogear-android-sdk/blob/master/auth/src/main/java/org/aerogear/mobile/auth/configuration/AuthBrowsers.java[AuthBrowsers.java].
+
+===== Custom Browsers
+
+To use a custom browser an link:https://github.com/aerogear/aerogear-android-sdk/blob/master/auth/src/main/java/org/aerogear/mobile/auth/configuration/AuthBrowser.java[AuthBrowser] object can be created:
+
+[source, java]
+----
+AuthBrowser customBrowser = new AuthBrowser("custom.package.name", signatureSet, true, AuthBrowserVersionRange.ANY);
+----
+
+==== Browser Configuration
+
+Once a browser or browsers have been configured, `BrowserConfiguration` can be used to either blacklist or whitelist these browsers.
+
+IMPORTANT: It's only possible to blacklist or whitelist a browser/browsers. It is not possible to both whitelist and blacklist a browser/browsers.  If both are invoked the most previous browser configuration built will be used.
+
+[source, java]
+----
+// blacklist the default Mozilla Firefox browser i.e. any version of Mozilla firefox for use as a standalone browser will be permitted for authentication
+BrowserConfiguration browserConfiguration = new BrowserConfiguration.BrowserConfigurationBuilder().blackList().browser(AuthBrowsers.FIREFOX_DEFAULT).build();
+
+// whitelist a custom Google Chrome browser i.e. a Google Chrome browser for use as a standalone browser where the version range is between 45 and 55.
+AuthBrowser customChrome = AuthBrowsers.chrome(false, AuthBrowserVersionRange.between("45", "55"));
+BrowserConfiguration browserConfiguration = new BrowserConfiguration.BrowserConfigurationBuilder().whitelist().browser(customChrome).build();
+
+// blacklist the two browsers
+BrowserConfiguration browserConfiguration = new BrowserConfiguration.BrowserConfigurationBuilder().blacklist().browser(AuthBrowsers.FIREFOX_DEFAULT).browser(customChrome).build();
+
+// add the two browsers to a Set and whitelist the set of browsers
+AuthBrowser samsungCustomTab = AuthBrowsers.SAMSUNG_CUSTOM_TAB;
+Set<Browser> browsers = new HashSet<>(Arrays.asList(samsungCustomTab, customChrome));
+BrowserConfiguration browserConfiguration = new BrowserConfiguration.BrowserConfigurationBuilder().whiteList().browsers(browsers).build();
+----
+
+The `AuthService` can be configured to use the browser configuration once its been instantiated:
+
+[source,java]
+----
+// auth service configuration
+AuthServiceConfiguration authServiceConfig = new AuthServiceConfiguration
+    .AuthConfigurationBuilder()
+    .withRedirectUri("org.aerogear.mobile.example:/callback")
+    .build();
+
+// browser configuration
+BrowserConfiguration browserConfiguration = new BrowserConfiguration.BrowserConfigurationBuilder()
+    .blackList()
+    .browser(AuthBrowsers.CHROME_CUSTOM_TAB)
+    .build();
+
+authService.init(context, authServiceConfig, browserConfiguration);
 ----
 
 ==== Defining Custom Scopes

@@ -18,6 +18,7 @@ import org.aerogear.mobile.auth.authenticator.AuthenticateOptions;
 import org.aerogear.mobile.auth.authenticator.AuthorizationServiceFactory;
 import org.aerogear.mobile.auth.authenticator.DefaultAuthenticateOptions;
 import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
+import org.aerogear.mobile.auth.configuration.BrowserConfiguration;
 import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
 import org.aerogear.mobile.auth.credentials.JwksManager;
 import org.aerogear.mobile.auth.credentials.OIDCCredentials;
@@ -49,6 +50,7 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
     private AuthorizationService authService;
     private final KeycloakConfiguration keycloakConfiguration;
     private final AuthServiceConfiguration authServiceConfiguration;
+    private final BrowserConfiguration browserConfiguration;
     private Callback authCallback;
     private Callback logoutCallback;
     private final AuthStateManager authStateManager;
@@ -61,6 +63,7 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
      *
      * @param serviceConfiguration {@link ServiceConfiguration}
      * @param authServiceConfiguration {@link AuthServiceConfiguration}
+     * @param browserConfiguration {@link BrowserConfiguration}
      * @param authStateManager {@link AuthStateManager}
      * @param authorizationServiceFactory {@link AuthorizationServiceFactory}
      * @param jwksManager {@link JwksManager}
@@ -69,6 +72,7 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
      */
     public OIDCAuthenticatorImpl(final ServiceConfiguration serviceConfiguration,
                     final AuthServiceConfiguration authServiceConfiguration,
+                    final BrowserConfiguration browserConfiguration,
                     final AuthStateManager authStateManager,
                     final AuthorizationServiceFactory authorizationServiceFactory,
                     final JwksManager jwksManager, final HttpServiceModule httpModule) {
@@ -76,6 +80,7 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
         this.keycloakConfiguration = new KeycloakConfiguration(serviceConfiguration);
         this.authServiceConfiguration =
                         nonNull(authServiceConfiguration, "authServiceConfiguration");
+        this.browserConfiguration = browserConfiguration;
         this.authorizationServiceFactory =
                         nonNull(authorizationServiceFactory, "authorizationServiceFactory");
         this.authStateManager = nonNull(authStateManager, "authStateManager");
@@ -110,9 +115,9 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
     // Authentication code
     private void performAuthRequest(final Activity fromActivity, final int resultCode) {
         nonNull(fromActivity, "fromActivity");
-        AuthorizationServiceFactory.ServiceWrapper wrapper =
-                        authorizationServiceFactory.createAuthorizationService(
-                                        keycloakConfiguration, authServiceConfiguration);
+        AuthorizationServiceFactory.ServiceWrapper wrapper = authorizationServiceFactory
+                        .createAuthorizationService(keycloakConfiguration, authServiceConfiguration,
+                                        browserConfiguration);
         authState = wrapper.getAuthState();
         authService = wrapper.getAuthorizationService();
 
