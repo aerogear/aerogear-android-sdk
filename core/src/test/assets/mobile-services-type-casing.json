@@ -1,0 +1,36 @@
+{
+    "version": "1.0",
+    "clusterName": "192.168.64.74:8443",
+    "namespace": "myproject",
+    "clientId": "example_client_id",
+    "services": [
+        {
+            "id": "fh-sync-server",
+            "name": "fh-sync-server",
+            "type": "fh-sync-server",
+            "url": "https://www.mocky.io/v2/5a6b59fb31000088191b8ac6",
+            "config": {
+            }
+        },
+        {
+            "id": "keycloak-myapp-android",
+            "name": "keycloak",
+            "type": "KeYcLoAk",
+            "url": "https://www.mocky.io/v2/5a6b59fb31000088191b8ac6",
+            "config": {
+                "auth-server-url": "https://keycloak-myproject.192.168.64.74.nip.io/auth",
+                "realm": "myproject",
+                "resource": "juYAlRlhTyYYmOyszFa",
+                "ssl-required": "external",
+                "url": "https://keycloak-myproject.192.168.64.74.nip.io/auth"
+            }
+        },
+        {
+            "id": "metrics-myapp-android",
+            "name": "metrics",
+            "type": "metrics",
+            "url": "https://demo1623828.mockable.io/metrics",
+            "config": {}
+        }
+    ]
+}
