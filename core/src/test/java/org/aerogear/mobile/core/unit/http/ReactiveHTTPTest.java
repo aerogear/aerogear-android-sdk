@@ -94,6 +94,73 @@ public class ReactiveHTTPTest {
 
     }
 
+    @Test
+    public void httpGetStringValueTest2() throws IOException, InterruptedException {
+        // Setup Test References
+        final String expectedResponse1 = "Hello World!";
+        final String expectedResponse2 = "Ola World!";
+
+        StringBuilder responseString = new StringBuilder();
+        CountDownLatch latch = new CountDownLatch(2);
+
+        // Setup mocks
+        MockWebServer webServer = new MockWebServer();
+        webServer.start();
+
+        MockResponse response1 = new MockResponse();
+        response1.setBody(expectedResponse1);
+        response1.setStatus("HTTP/1.1 200");
+        webServer.enqueue(response1);
+
+        MockResponse response2 = new MockResponse();
+        response2.setBody(expectedResponse2);
+        response2.setStatus("HTTP/1.1 200");
+        webServer.enqueue(response2);
+
+        // Actual test
+        MobileCore.getInstance().getHttpLayer().newRequest().get(webServer.url("/test").toString())
+            .respondOn(executor.singleThreadService())
+            .respondWith(new Responder<HttpResponse>() {
+                @Override
+                public void onResult(HttpResponse value) {
+                    System.out.println("OnResult 1 On" + Thread.currentThread());
+                    responseString.append(value.stringBody());
+                    latch.countDown();
+                }
+
+                @Override
+                public void onException(Exception exception) {
+                    latch.countDown();
+                }
+            });
+
+        // Actual test
+        MobileCore.getInstance().getHttpLayer().newRequest().get(webServer.url("/test").toString())
+            .respondOn(executor.singleThreadService())
+            .respondWith(new Responder<HttpResponse>() {
+                @Override
+                public void onResult(HttpResponse value) {
+                    System.out.println("OnResult 2 On" + Thread.currentThread());
+                    responseString.append(value.stringBody());
+                    latch.countDown();
+                }
+
+                @Override
+                public void onException(Exception exception) {
+                    latch.countDown();
+                }
+            });
+
+        System.out.println("test wait on " + Thread.currentThread());
+        latch.await(10, TimeUnit.SECONDS);
+
+        // cleanupMocks
+        webServer.shutdown();
+
+        assertEquals(expectedResponse1 + expectedResponse2, responseString.toString());
+
+    }
+
     /**
      * A HTTP String response should close itself.
      * <p>
