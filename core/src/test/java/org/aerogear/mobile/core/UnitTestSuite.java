@@ -3,6 +3,7 @@ package org.aerogear.mobile.core;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import org.aerogear.mobile.core.configuration.CertificatePinningEntryTest;
 import org.aerogear.mobile.core.unit.MobileCoreTest;
 import org.aerogear.mobile.core.unit.ReactiveCaseTest;
 import org.aerogear.mobile.core.unit.configuration.MobileCoreParserTest;
@@ -21,7 +22,8 @@ import org.aerogear.mobile.core.unit.utils.SanityCheckTest;
 @Suite.SuiteClasses({MobileCoreTest.class, MobileCoreParserTest.class,
                 ServiceConfigurationTest.class, OkHttpServiceModuleTest.class,
                 ReactiveHTTPTest.class, ReactiveCaseTest.class, MetricsServiceTest.class,
-                AppMetricsTest.class, DeviceMetricsTest.class, SanityCheckTest.class})
+                AppMetricsTest.class, DeviceMetricsTest.class, SanityCheckTest.class,
+                CertificatePinningEntryTest.class, ReactiveHTTPTest.class})
 public class UnitTestSuite {
 
 }
