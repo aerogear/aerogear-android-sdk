@@ -1,6 +1,6 @@
 package org.aerogear.mobile.core.metrics;
 
-import static java.net.HttpURLConnection.HTTP_OK;
+import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
 import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 import org.json.JSONException;
@@ -55,7 +55,7 @@ public class MetricsService {
                                                         .getBytes())
                                         .requestMap(httpResponse -> Requester.call(() -> {
                                             switch (httpResponse.getStatus()) {
-                                                case HTTP_OK:
+                                                case HTTP_NO_CONTENT:
                                                     return Boolean.TRUE;
                                                 default:
                                                     throw (new HttpException(
