@@ -26,6 +26,7 @@ import android.content.Context;
 
 import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.metrics.MetricsService;
+import org.aerogear.mobile.core.reactive.Requester;
 import org.aerogear.mobile.security.impl.SecurityCheckResultImpl;
 
 @RunWith(RobolectricTestRunner.class)
@@ -47,7 +48,7 @@ public class SecurityCheckExecutorTest {
         MockitoAnnotations.initMocks(this);
 
         SecurityCheckResultImpl result = new SecurityCheckResultImpl(mockSecurityCheck, true);
-
+        when(metricsService.publish(any(), any())).thenReturn(Requester.emit(true));
         when(context.getApplicationContext()).thenReturn(context);
         when(mockSecurityCheck.test(context)).thenReturn(result);
         when(securityCheckType.getSecurityCheck()).thenReturn(mockSecurityCheck);
