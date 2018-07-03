@@ -7,7 +7,7 @@
 | --------------- | ---------------------------------------------------------------- |
 | License:        | Apache License, Version 2.0                                      |
 | Build:          | Gradle                                                           |
-| End User Documentation:  | https://docs.aerogear.org - Under construction - [Github Link](./docs/modules/ROOT/pages/)|
+| End User Documentation:  | https://docs.aerogear.org - [Github Link](https://github.com/aerogear/mobile-docs/tree/master/modules/ROOT/pages)|
 | Community Documentation: | https://aerogear.org       |
 | Issue tracker:  | https://issues.jboss.org/browse/AEROGEAR                         |
 | Mailing lists:  | [aerogear-dev](https://groups.google.com/forum/#!forum/aerogear) |
