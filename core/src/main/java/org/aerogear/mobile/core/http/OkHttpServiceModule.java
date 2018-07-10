@@ -49,7 +49,18 @@ public class OkHttpServiceModule implements HttpServiceModule {
     }
 
     @Override
-    public HttpRequest newRequest() {
+    public OkHttpRequest newRequest() {
         return new OkHttpRequest(client, new AppExecutors());
+    }
+
+    /**
+     * The client is a shared instance with all references from {@link MobileCore#getHttpLayer()}.
+     * This client is configured with the AeroGear defaults, pinning, etc. during the MobileCore
+     * initialization.
+     *
+     * @return the mobilecore okhttp instance.
+     */
+    public OkHttpClient getClient() {
+        return client;
     }
 }

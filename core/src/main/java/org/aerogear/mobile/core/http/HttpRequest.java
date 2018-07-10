@@ -5,7 +5,6 @@ import org.aerogear.mobile.core.reactive.Request;
 /**
  * Generic interface for requests to HTTP Services.
  */
-
 public interface HttpRequest {
 
     String CONTENT_TYPE_HEADER = "Content-Type";

@@ -28,9 +28,10 @@ import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
 import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
 import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.MobileCore;
-import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpResponse;
-import org.aerogear.mobile.core.http.HttpServiceModule;
+import org.aerogear.mobile.core.http.OkHttpRequest;
+import org.aerogear.mobile.core.http.OkHttpResponse;
+import org.aerogear.mobile.core.http.OkHttpServiceModule;
 import org.aerogear.mobile.core.reactive.Request;
 import org.aerogear.mobile.core.reactive.Responder;
 
@@ -52,16 +53,16 @@ public class JwksManagerTest {
     private KeycloakConfiguration keycloakConfiguration;
 
     @Mock
-    private HttpServiceModule httpServiceModule;
+    private OkHttpServiceModule httpServiceModule;
 
     @Mock
-    private HttpRequest httpRequest;
+    private OkHttpRequest httpRequest;
 
     @Mock
     private Request<HttpResponse> rxHttpRequest;
 
     @Mock
-    private HttpResponse httpResponse;
+    private OkHttpResponse httpResponse;
 
     @Mock
     private SharedPreferences sharedPrefs;

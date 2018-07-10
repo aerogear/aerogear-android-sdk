@@ -21,7 +21,6 @@ import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.configuration.https.HttpsConfiguration;
 import org.aerogear.mobile.core.exception.ConfigurationNotFoundException;
 import org.aerogear.mobile.core.exception.InitializationException;
-import org.aerogear.mobile.core.http.HttpServiceModule;
 import org.aerogear.mobile.core.http.OkHttpCertificatePinningParser;
 import org.aerogear.mobile.core.http.OkHttpServiceModule;
 import org.aerogear.mobile.core.logging.Logger;
@@ -49,7 +48,7 @@ public final class MobileCore {
     private final Context context;
     private final String appVersion;
     private final String configFileName = "mobile-services.json";
-    private final HttpServiceModule httpLayer;
+    private final OkHttpServiceModule httpLayer;
     private final Map<String, ServiceConfiguration> serviceConfigById;
     private final Map<String, List<ServiceConfiguration>> serviceConfigsByType;
     private final MetricsService metricsService;
@@ -235,7 +234,7 @@ public final class MobileCore {
      *
      * @return HTTP service module
      */
-    public HttpServiceModule getHttpLayer() {
+    public OkHttpServiceModule getHttpLayer() {
         return httpLayer;
     }
 
