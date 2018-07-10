@@ -7,7 +7,6 @@ import java.io.InputStream;
  * Generic interface for responses from HTTP Services. Concrete classes will have the handle
  * Android's threading mechanisms.
  */
-
 public interface HttpResponse {
     /**
      * Returns the HTTP status code of the response.
