@@ -14,9 +14,8 @@ import android.content.Context;
 import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
-import org.aerogear.mobile.core.http.HttpRequest;
-import org.aerogear.mobile.core.http.HttpResponse;
-import org.aerogear.mobile.core.http.HttpServiceModule;
+import org.aerogear.mobile.core.http.OkHttpRequest;
+import org.aerogear.mobile.core.http.OkHttpServiceModule;
 
 public class AuthServiceTest {
     @Mock
@@ -33,13 +32,10 @@ public class AuthServiceTest {
 
 
     @Mock
-    HttpServiceModule httpServiceModule;
+    OkHttpServiceModule httpServiceModule;
 
     @Mock
-    HttpRequest httpRequest;
-
-    @Mock
-    HttpResponse httpResponse;
+    OkHttpRequest httpRequest;
 
     @Before
     public void setup() throws NoSuchFieldException, IllegalAccessException {
