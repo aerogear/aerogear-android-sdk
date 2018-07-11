@@ -4,12 +4,16 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 import javax.annotation.Nonnull;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
+import com.apollographql.apollo.ApolloSubscriptionCall;
 import com.apollographql.apollo.api.Mutation;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.api.Subscription;
 import com.apollographql.apollo.exception.ApolloException;
 
 import org.aerogear.mobile.core.MobileCore;
@@ -55,6 +59,10 @@ public final class SyncService {
 
     public SyncMutation mutation(Mutation mutation) {
         return new SyncMutation(this.apolloClient, mutation);
+    }
+
+    public SyncSubscription subscribe(Subscription subscription) {
+        return new SyncSubscription(this.apolloClient, subscription);
     }
 
     public static class SyncQuery {
@@ -110,6 +118,37 @@ public final class SyncService {
                                     requestCallback.onException(e);
                                 }
                             })).respondOn(new AppExecutors().networkThread());
+
+        }
+    }
+
+    public static class SyncSubscription {
+
+        private final ApolloClient apolloClient;
+        private final Subscription subscription;
+
+        SyncSubscription(ApolloClient apolloClient, Subscription subscription) {
+            this.apolloClient = apolloClient;
+            this.subscription = subscription;
+        }
+
+        public <T extends Operation.Data> Request<Response<T>> execute(Class<T> responseDataClass) {
+
+            return Requester.call((Responder<Response<T>> requestCallback) -> apolloClient
+                            .subscribe(subscription).execute(new ApolloSubscriptionCall.Callback() {
+                                @Override
+                                public void onResponse(@NotNull Response response) {
+                                    requestCallback.onResult(response);
+                                }
+
+                                @Override
+                                public void onFailure(@NotNull ApolloException e) {
+                                    requestCallback.onException(e);
+                                }
+
+                                @Override
+                                public void onCompleted() {}
+                            })).requestOn(new AppExecutors().networkThread());
 
         }
     }
