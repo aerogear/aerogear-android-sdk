@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
+import com.apollographql.apollo.api.Mutation;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.Response;
@@ -52,6 +53,10 @@ public final class SyncService {
         return new SyncQuery(this.apolloClient, query);
     }
 
+    public SyncMutation mutation(Mutation mutation) {
+        return new SyncMutation(this.apolloClient, mutation);
+    }
+
     public static class SyncQuery {
 
         private final ApolloClient apolloClient;
@@ -79,6 +84,34 @@ public final class SyncService {
 
         }
 
+    }
+
+    public static class SyncMutation {
+
+        private final ApolloClient apolloClient;
+        private final Mutation mutation;
+
+        SyncMutation(ApolloClient apolloClient, Mutation mutation) {
+            this.apolloClient = apolloClient;
+            this.mutation = mutation;
+        }
+
+        public <T extends Operation.Data> Request<Response<T>> execute(Class<T> responseDataClass) {
+
+            return Requester.call((Responder<Response<T>> requestCallback) -> apolloClient
+                            .mutate(mutation).enqueue(new ApolloCall.Callback<T>() {
+                                @Override
+                                public void onResponse(@Nonnull Response<T> response) {
+                                    requestCallback.onResult(response);
+                                }
+
+                                @Override
+                                public void onFailure(@Nonnull ApolloException e) {
+                                    requestCallback.onException(e);
+                                }
+                            })).respondOn(new AppExecutors().networkThread());
+
+        }
     }
 
 }
