@@ -27,6 +27,9 @@ android {
 dependencies {
     implementation project(path: ":core")
 
+    implementation "com.apollographql.apollo:apollo-runtime:${project.ext.apollo_version}"
+    implementation "com.apollographql.apollo:apollo-android-support:${project.ext.apollo_version}"
+
     testImplementation "junit:junit:${project.ext.junit_version}"
     testImplementation "com.android.support.test:runner:${project.ext.android_support_test_runner_version}"
     testImplementation "com.android.support.test:rules:${project.ext.android_support_test_rules_version}"
