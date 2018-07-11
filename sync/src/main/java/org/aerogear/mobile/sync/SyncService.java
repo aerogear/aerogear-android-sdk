@@ -4,10 +4,19 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 import javax.annotation.Nonnull;
 
+import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
+import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.Query;
+import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.exception.ApolloException;
 
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
+import org.aerogear.mobile.core.executor.AppExecutors;
+import org.aerogear.mobile.core.reactive.Request;
+import org.aerogear.mobile.core.reactive.Requester;
+import org.aerogear.mobile.core.reactive.Responder;
 
 import okhttp3.OkHttpClient;
 
@@ -37,6 +46,39 @@ public final class SyncService {
 
     public ApolloClient getApolloClient() {
         return apolloClient;
+    }
+
+    public SyncQuery query(Query query) {
+        return new SyncQuery(this.apolloClient, query);
+    }
+
+    public static class SyncQuery {
+
+        private final ApolloClient apolloClient;
+        private final Query query;
+
+        SyncQuery(ApolloClient apolloClient, Query query) {
+            this.apolloClient = apolloClient;
+            this.query = query;
+        }
+
+        public <T extends Operation.Data> Request<Response<T>> execute(Class<T> responseDataClass) {
+
+            return Requester.call((Responder<Response<T>> requestCallback) -> apolloClient
+                            .query(query).enqueue(new ApolloCall.Callback<T>() {
+                                @Override
+                                public void onResponse(@Nonnull Response<T> response) {
+                                    requestCallback.onResult(response);
+                                }
+
+                                @Override
+                                public void onFailure(@Nonnull ApolloException e) {
+                                    requestCallback.onException(e);
+                                }
+                            })).respondOn(new AppExecutors().networkThread());
+
+        }
+
     }
 
 }
