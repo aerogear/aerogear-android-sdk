@@ -1,7 +1,10 @@
 package org.aerogear.mobile.core.helper;
 
+import android.telecom.Call;
+
 import org.aerogear.mobile.core.Callback;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 
 /**
@@ -10,19 +13,31 @@ import java.util.concurrent.Executors;
  */
 public class AsyncWithCallback<T> {
 
-    private final T emittedValue;
+    private T emittedValue;
+    private Callable<T> emittedCallable;
 
     public AsyncWithCallback(T emittedValue) {
         this.emittedValue = emittedValue;
     }
 
+    public AsyncWithCallback(Callable<T> emittedCallable) {
+        this.emittedCallable = emittedCallable;
+    }
 
     public void execute(Callback<T> callback) {
         Executors.newFixedThreadPool(1).submit(() -> {
-            if (emittedValue instanceof Throwable) {
-                throw new RuntimeException((Throwable) emittedValue);
+
+            try {
+                if (emittedCallable != null) {
+                    emittedValue = emittedCallable.call();
+                }
+                if (emittedValue instanceof Throwable) {
+                    throw new RuntimeException(((Throwable) emittedValue).getMessage());
+                }
+                callback.onSuccess(emittedValue);
+            } catch (Exception ex) {
+                callback.onError(ex);
             }
-            callback.onSuccess(emittedValue);
         });
     }
 

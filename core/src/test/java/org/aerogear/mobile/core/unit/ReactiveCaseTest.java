@@ -11,8 +11,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.aerogear.mobile.core.Callback;
-import org.aerogear.mobile.core.helper.AsyncWithCallback;
+import org.aerogear.mobile.core.helper.HangsAfterCleanup;
+import org.aerogear.mobile.core.helper.TestResponder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -532,69 +532,6 @@ public class ReactiveCaseTest {
         assertEquals(expectedValue2, responder2.resultValue);
     }
 
-    private static class TestResponder<T> implements Responder<T> {
-        private final CountDownLatch latch;
-
-        boolean passed = false;
-        T resultValue = null;
-        boolean failed;
-        String errorMessage = "";
-        String name = "";
-
-        public TestResponder() {
-            this.latch = null;
-        }
-
-        public TestResponder(CountDownLatch latch) {
-            this.latch = latch;
-        }
-
-        @Override
-        public void onResult(T value) {
-            passed = true;
-            resultValue = value;
-            if (latch != null) {
-                latch.countDown();
-            }
-        }
-
-        @Override
-        public void onException(Exception e) {
-            failed = true;
-            errorMessage = e.getMessage();
-            if (latch != null) {
-                latch.countDown();
-            }
-        }
-
-        @Override
-        public String toString() {
-            return "TestResponder{" + "name='" + name + '\'' + '}';
-        }
-    }
-
-    /**
-     * When testing OKHTTP it was discovered that the response from OkHttp can threadlock if it is
-     * accessed after it is closed. This simulates that behavior without a network request.
-     */
-    private static class HangsAfterCleanup {
-        boolean closed = false;
-        static final String EXPECTED_VALUE = "Hello World";
-
-        public String get() {
-            if (closed) {
-                try {
-                    Thread.sleep(Long.MAX_VALUE);
-                } catch (InterruptedException ignore) {
-                }
-            }
-            return EXPECTED_VALUE;
-        }
-
-        public void close() {
-            closed = true;
-        }
-    }
 
     /**
      * After a request map both the inner and outer methods should cleanup

@@ -8,6 +8,8 @@ import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.helper.AsyncWithCallback;
+import org.aerogear.mobile.core.helper.HangsAfterCleanup;
+import org.aerogear.mobile.core.helper.TestResponder;
 import org.aerogear.mobile.core.reactive.Request;
 import org.aerogear.mobile.core.reactive.Requester;
 import org.aerogear.mobile.core.reactive.Responder;
@@ -19,7 +21,6 @@ import org.robolectric.RuntimeEnvironment;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -45,667 +46,329 @@ public class AsyncReactiveCaseTest {
 
     @Test
     public void asynchronousCallableCallsOnErrorWhenExceptionTest() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
+        TestResponder<Object> responder = new TestResponder<>(latch);
 
-        TestResponder<Object> responder = new TestResponder<>();
-        new AppExecutors().singleThreadService().execute(() -> {
-                Requester.call((Responder<Object> requestCallback) -> {
+        Requester.call((Responder<Object> requestCallback) -> {
 
-                    new AsyncWithCallback(new RuntimeException("Catch this!")).execute(new Callback<Object>() {
+            new AsyncWithCallback(new RuntimeException("Catch this!")).execute(new Callback<Object>() {
 
-                        @Override
-                        public void onSuccess(Object models) {
-                            requestCallback.onResult(models);
-                        }
+                @Override
+                public void onSuccess(Object models) {
 
-                        @Override
-                        public void onError(Throwable error) {
-                            requestCallback.onException(new Exception(error));
-                        }
+                    requestCallback.onResult(models);
+                }
 
-                    });
-                }).respondWith(responder);
+                @Override
+                public void onError(Throwable error) {
+                                        requestCallback.onException(new Exception(error));
+                }
+
+            });
+        }).respondWith(responder);
+
+        latch.await(1, TimeUnit.SECONDS);
+        assertTrue(responder.failed);
+
+    }
+
+    /**
+     * Our operating principle is that responders will reinvoke any underlying calculations when
+     * they are attached unless cache() is called on the request
+     */
+    @Test
+    public void multipleRespondersRerunCallTest() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(2);
+        AtomicInteger counter = new AtomicInteger(0);
+        TestResponder<Integer> responder = new TestResponder<>(latch);
+        TestResponder<Integer> responder2 = new TestResponder<>(latch);
+
+        Requester.call((Responder<Integer> requestCallback) -> {
+
+            new AsyncWithCallback(() -> counter.getAndIncrement())
+                .execute(new Callback<Integer>() {
+
+                @Override
+                public void onSuccess(Integer models) {
+
+                    requestCallback.onResult(models);
+                }
+
+                @Override
+                public void onError(Throwable error) {
+                                        requestCallback.onException(new Exception(error));
+                }
+
+            });
+        }).respondWith(responder)
+            .respondWith(responder2);
+
+        latch.await(1, TimeUnit.SECONDS);
+        assertTrue(responder2.passed);
+        assertEquals(0, (int) responder.resultValue);
+        assertEquals(1, (int) responder2.resultValue);
+
+    }
+
+    /**
+     * Our operating principle is that responders will reinvoke any underlying calculations when
+     * they are attached unless cache() is called on the request.
+     */
+    @Test
+    public void multipleRespondersGetCachedValueTest() throws InterruptedException {
+        AtomicInteger counter = new AtomicInteger(0);
+        CountDownLatch latch = new CountDownLatch(3);
+        TestResponder<Integer> responder = new TestResponder<>(latch);
+        TestResponder<Integer> responder2 = new TestResponder<>(latch);
+
+
+        Requester.call((Responder<Integer> requestCallback) -> {
+
+            new AsyncWithCallback(() -> {latch.countDown(); return counter.getAndIncrement();})
+                .execute(new Callback<Integer>() {
+
+                    @Override
+                    public void onSuccess(Integer models) {
+
+                        requestCallback.onResult(models);
+                    }
+
+                    @Override
+                    public void onError(Throwable error) {
+                                                requestCallback.onException(new Exception(error));
+                    }
+
+                });
+        }).requestOn(Executors.newSingleThreadExecutor())
+            .respondOn(Executors.newSingleThreadExecutor()).cache()
+            .respondWith(responder).respondWith(responder2);
+
+        assertTrue(latch.await(4, TimeUnit.SECONDS));
+        assertTrue(responder2.passed);
+        assertEquals(0, (int) responder.resultValue);
+        assertEquals(0, (int) responder2.resultValue);
+        assertEquals(1, (int) counter.get());
+
+    }
+
+    @Test
+    public void deepCacheOnlyCallsRequestOnceTest() throws InterruptedException {
+        AtomicInteger counter = new AtomicInteger(0);
+        CountDownLatch latch = new CountDownLatch(2);
+        TestResponder<Integer> first = new TestResponder<>(latch);
+        TestResponder<Integer> second = new TestResponder<>(latch);
+
+        Requester.call((Responder<Integer> requestCallback) -> {
+
+            new AsyncWithCallback(() -> counter.getAndIncrement())
+                .execute(new Callback<Integer>() {
+
+                    @Override
+                    public void onSuccess(Integer models) {
+
+                        requestCallback.onResult(models);
+                    }
+
+                    @Override
+                    public void onError(Throwable error) {
+                                                requestCallback.onException(new Exception(error));
+                    }
+
+                });
+        }).cache().cache().cache().cache()
+            .requestOn(executor.singleThreadService()).cache().cache().cache().cache()
+            .respondWith(first).respondWith(second);
+
+        latch.await(2000, TimeUnit.MILLISECONDS);
+        assertTrue(second.passed);
+        assertEquals(0, (int) first.resultValue);
+        assertEquals(0, (int) second.resultValue);
+        assertEquals(1, counter.get());
+    }
+
+
+    @Test
+    public void disconnectResponderTest() throws InterruptedException {
+        AtomicInteger counter = new AtomicInteger(0);
+        CountDownLatch latch = new CountDownLatch(2);
+        TestResponder<Integer> stayConnectedResponder = new TestResponder<>(latch);
+        stayConnectedResponder.name = "stay";
+        TestResponder<Integer> disconnectResponder = new TestResponder<>(latch);
+        disconnectResponder.name = "go";
+
+        Request<Integer> request = Requester.call((Responder<Integer> requestCallback) -> {
+
+            new AsyncWithCallback(() -> {
+                Thread.sleep(1000);
+                return counter.getAndIncrement();
+            })
+                .execute(new Callback<Integer>() {
+
+                    @Override
+                    public void onSuccess(Integer models) {
+
+                        requestCallback.onResult(models);
+                    }
+
+                    @Override
+                    public void onError(Throwable error) {
+                        requestCallback.onException(new Exception(error));
+                    }
+
+                });
+        }).requestOn(executor.singleThreadService()).respondWith(stayConnectedResponder)
+            .respondWith(disconnectResponder);
+
+        request.disconnect(disconnectResponder);
+
+        /*
+         * We have two responders and a request which has a 1 second delay. While the first
+         * responder is loading we are going to disconnect the second responder. This means that the
+         * latch will not be called and we expect the await to timeout. When await times out without
+         * completing it returns false. This is the result we expect
+         */
+        latch.await(3, TimeUnit.SECONDS);
+
+
+        assertTrue(stayConnectedResponder.passed);
+        assertFalse(disconnectResponder.passed);
+        assertFalse(disconnectResponder.failed);
+    }
+
+//
+    /**
+     * Test that a basic map of turning a integer into a string works.
+     */
+    @Test
+    public void basicMapTest() throws InterruptedException {
+        final Integer originalValue = 8675309;
+        final String expectedValue = "8675309";
+        CountDownLatch latch = new CountDownLatch(1);
+        TestResponder<String> responder = new TestResponder<>(latch);
+        Requester.call((Responder<Integer> requestCallback) -> {
+
+            new AsyncWithCallback(() ->originalValue)
+                .execute(new Callback<Integer>() {
+
+                    @Override
+                    public void onSuccess(Integer models) {
+                        requestCallback.onResult(models);
+                    }
+
+                    @Override
+                    public void onError(Throwable error) {
+                        requestCallback.onException(new Exception(error));
+                    }
+
+                });
+        }).map((val) -> val.toString()).respondWith(responder);
+
+        latch.await(1, TimeUnit.SECONDS);
+        assertEquals(expectedValue, responder.resultValue);
+    }
+
+    /**
+     * Test that a cleanup function is called when the request and response are on different
+     * threads.
+     */
+    @Test
+    public void cleanupThreadingTest() throws InterruptedException {
+        HangsAfterCleanup closeThis = new HangsAfterCleanup();
+        CountDownLatch latch = new CountDownLatch(2);
+        Requester.call((Responder<HangsAfterCleanup> requestCallback) -> {
+
+            new AsyncWithCallback(() -> {
+                return closeThis;
+            })
+                .execute(new Callback<HangsAfterCleanup>() {
+
+                    @Override
+                    public void onSuccess(HangsAfterCleanup models) {
+
+                        requestCallback.onResult(models);
+                    }
+
+                    @Override
+                    public void onError(Throwable error) {
+                                                requestCallback.onException(new Exception(error));
+                    }
+
+                });
+        },() -> {
+            closeThis.close();
+            latch.countDown();
+        }).requestOn(Executors.newSingleThreadExecutor())
+            .respondWith(new Responder<HangsAfterCleanup>() {
+                @Override
+                public void onResult(HangsAfterCleanup value) {
+                    value.get();
+                    latch.countDown();
+                }
+
+                @Override
+                public void onException(Exception exception) {
+                    latch.countDown();
+                }
             });
 
-        Thread.sleep(100000);
-        assertTrue(responder.failed);
-        assertEquals("Catch this!", responder.errorMessage);
+        assertTrue(latch.await(2, TimeUnit.SECONDS));
+        assertTrue(closeThis.closed);
+    }
+
+    /**
+     * This method will test the ability of the Rx APis to transform a callback style API into a
+     * RX style api.
+     * <p>
+     * In Apollo for instance queries are returned via a callback :
+     * <p>
+     * apolloClient.query(query).execute(mycallback);
+     * <p>
+     * However we would like to wrap the code something like this
+     * <p>
+     * Request.fromCallback((requestCallback)->{
+     * apolloClient.query(query).execute(requestCallback);
+     * })...
+     * <p>
+     * This way request callback is hooked into the callback infrastructure.
+     */
+    @Test
+    public void testFromCallback() throws InterruptedException {
+
+        AtomicReference<String> resultRef = new AtomicReference<>();
+
+        new AppExecutors().singleThreadService().execute(() -> {
+            Requester.call((Responder<String> requestCallback) -> {
+                new AsyncWithCallback("Hello World!").execute(new Callback<String>() {
+
+                    @Override
+                    public void onSuccess(String models) {
+                        requestCallback.onResult(models);
+                    }
+
+                    @Override
+                    public void onError(Throwable error) {
+                        //ignore
+                    }
+
+                });
+            })
+                .respondWith(new Responder<String>() {
+                                 @Override
+                                 public void onResult(String value) {
+                                     resultRef.set(value);
+                                 }
+
+                                 @Override
+                                 public void onException(Exception exception) {
+                                     //ignore
+                                 }
+                             }
+
+                );
+
+        });
+        Thread.sleep(2000);
 
     }
-//
-//    @Test
-//    public void asynchronousCallableRunsOnDifferentThreadTest() throws InterruptedException {
-//        Thread testThread = Thread.currentThread();
-//        CountDownLatch latch = new CountDownLatch(1);
-//        TestResponder<Boolean> responder = new TestResponder<>(latch);
-//
-//        Requester.call(() -> Thread.currentThread() != testThread)
-//            .requestOn(executor.singleThreadService()).respondWith(responder);
-//
-//        latch.await(1, TimeUnit.SECONDS);
-//
-//        assertTrue(responder.passed);
-//        assertEquals(true, responder.resultValue);
-//
-//    }
-//
-//    @Test
-//    public void cancelAsynchronousRequest() throws InterruptedException {
-//        Thread testThread = Thread.currentThread();
-//        CountDownLatch latch = new CountDownLatch(1);
-//        TestResponder<Boolean> responder = new TestResponder<>(latch);
-//
-//        Request request = Requester.call(() -> {
-//            Thread.sleep(Long.MAX_VALUE);// Sleep forever
-//            return Thread.currentThread() != testThread;
-//        }).requestOn(executor.singleThreadService()).respondWith(responder);
-//
-//        latch.await(1, TimeUnit.SECONDS);
-//
-//        request.cancel();
-//
-//        latch.await(10, TimeUnit.SECONDS);
-//
-//        assertTrue(responder.failed);
-//
-//    }
-//
-//    /**
-//     * Our operating principle is that responders will reinvoke any underlying calculations when
-//     * they are attached unless cache() is called on the request
-//     */
-//    @Test
-//    public void multipleRespondersRerunCallTest() {
-//        AtomicInteger counter = new AtomicInteger(0);
-//        TestResponder<Integer> responder = new TestResponder<>();
-//        TestResponder<Integer> responder2 = new TestResponder<>();
-//
-//        Requester.call(() -> counter.getAndIncrement()).respondWith(responder)
-//            .respondWith(responder2);
-//
-//        assertTrue(responder2.passed);
-//        assertEquals(0, (int) responder.resultValue);
-//        assertEquals(1, (int) responder2.resultValue);
-//
-//    }
-//
-//    /**
-//     * Our operating principle is that responders will reinvoke any underlying calculations when
-//     * they are attached unless cache() is called on the request.
-//     */
-//    @Test
-//    public void multipleRespondersGetCachedValueTest() throws InterruptedException {
-//        AtomicInteger counter = new AtomicInteger(0);
-//        CountDownLatch latch = new CountDownLatch(3);
-//        TestResponder<Integer> responder = new TestResponder<>(latch);
-//        TestResponder<Integer> responder2 = new TestResponder<>(latch);
-//
-//
-//        Requester.call(() -> {
-//            latch.countDown();
-//            return counter.getAndIncrement();
-//        }).requestOn(Executors.newSingleThreadExecutor())
-//            .respondOn(Executors.newSingleThreadExecutor()).cache()
-//            .respondWith(responder).respondWith(responder2);
-//
-//        assertTrue(latch.await(4, TimeUnit.SECONDS));
-//        assertTrue(responder2.passed);
-//        assertEquals(0, (int) responder.resultValue);
-//        assertEquals(0, (int) responder2.resultValue);
-//        assertEquals(1, (int) counter.get());
-//
-//    }
-//
-//    @Test
-//    public void deepCacheOnlyCallsRequestOnceTest() throws InterruptedException {
-//        AtomicInteger counter = new AtomicInteger(0);
-//        CountDownLatch latch = new CountDownLatch(2);
-//        TestResponder<Integer> first = new TestResponder<>(latch);
-//        TestResponder<Integer> second = new TestResponder<>(latch);
-//
-//        Requester.call(() -> counter.getAndIncrement()).cache().cache().cache().cache()
-//            .requestOn(executor.singleThreadService()).cache().cache().cache().cache()
-//            .respondWith(first).respondWith(second);
-//
-//        latch.await(2000, TimeUnit.MILLISECONDS);
-//        assertTrue(second.passed);
-//        assertEquals(0, (int) first.resultValue);
-//        assertEquals(0, (int) second.resultValue);
-//        assertEquals(1, counter.get());
-//    }
-//
-//
-//    @Test
-//    public void crashingRespondersDoNotCrashRequestTest() {
-//        TestResponder<String> testResponder = new TestResponder<>();
-//
-//        Requester.emit("Test").respondWith(new TestResponder<String>() {
-//            @Override
-//            public void onResult(String value) {
-//                throw new RuntimeException("Contrived exception");
-//            }
-//        }).respondWith(testResponder);
-//
-//        assertTrue(testResponder.passed);
-//        assertEquals("Test", testResponder.resultValue);
-//
-//
-//    }
-//
-//    @Test
-//    public void disconnectResponderTest() throws InterruptedException {
-//        AtomicInteger counter = new AtomicInteger(0);
-//        CountDownLatch latch = new CountDownLatch(2);
-//        TestResponder<Integer> stayConnectedResponder = new TestResponder<>(latch);
-//        stayConnectedResponder.name = "stay";
-//        TestResponder<Integer> disconnectResponder = new TestResponder<>(latch);
-//        disconnectResponder.name = "go";
-//
-//        Request<Integer> request = Requester.call(() -> {
-//            Thread.sleep(1000);
-//            return counter.getAndIncrement();
-//        }).requestOn(executor.singleThreadService()).respondWith(stayConnectedResponder)
-//            .respondWith(disconnectResponder);
-//
-//        request.disconnect(disconnectResponder);
-//
-//        /*
-//         * We have two responders and a request which has a 1 second delay. While the first
-//         * responder is loading we are going to disconnect the second responder. This means that the
-//         * latch will not be called and we expect the await to timeout. When await times out without
-//         * completing it returns false. This is the result we expect
-//         */
-//        latch.await(3, TimeUnit.SECONDS);
-//
-//
-//        assertTrue(stayConnectedResponder.passed);
-//        assertFalse(disconnectResponder.passed);
-//        assertFalse(disconnectResponder.failed);
-//    }
-//
-//    @Test
-//    public void respondOnThreadTest() throws InterruptedException {
-//        final CountDownLatch latch = new CountDownLatch(1);
-//        final AtomicBoolean differentThreads = new AtomicBoolean(false);
-//
-//        Responder<Thread> responder = new Responder<Thread>() {
-//            @Override
-//            public void onResult(Thread requestThread) {
-//                Thread responseThread = Thread.currentThread();
-//                differentThreads.set(requestThread != (responseThread));
-//                latch.countDown();
-//            }
-//
-//            @Override
-//            public void onException(Exception exception) {
-//                latch.countDown();
-//            }
-//        };
-//
-//        Requester.call(() -> Thread.currentThread()).respondOn(executor.singleThreadService())
-//            .respondWith(responder);
-//
-//        latch.await(1, TimeUnit.SECONDS);
-//
-//        assertTrue(differentThreads.get());
-//
-//    }
-//
-//    /**
-//     * Can this library cancel a cached response that has a requester running on one thread, a
-//     * responder running on a second, and the test running on a third?
-//     * <p>
-//     * The green bar this test makes says it can.
-//     */
-//    @Test
-//    public void useAllTheFeaturesTest() throws Exception {
-//        AtomicInteger counter = new AtomicInteger(0);
-//        CountDownLatch latch = new CountDownLatch(4);
-//        TestResponder<Integer> getsValue0OnThisThread = new TestResponder<>(latch);
-//        TestResponder<Integer> getsValue1OnThisThread = new TestResponder<>(latch);
-//        TestResponder<Integer> getsValue2OnThisThreadAfterCache = new TestResponder<>(latch);
-//        TestResponder<Integer> getsValue2OnAnotherThreadAfterCache = new TestResponder<>(latch);
-//        TestResponder<Integer> getsDisconnected = new TestResponder<>(latch);
-//
-//
-//        Request<Integer> request = Requester.call(() -> {
-//            Thread.sleep(1000); // $DELAY
-//            return counter.getAndIncrement();
-//        }).respondWith(getsValue0OnThisThread).respondWith(getsValue1OnThisThread).cache()
-//            .respondWith(getsValue2OnThisThreadAfterCache)
-//            .requestOn(executor.singleThreadService())
-//            .respondOn(Executors.newSingleThreadExecutor())
-//            .respondWith(getsValue2OnAnotherThreadAfterCache)
-//
-//            .respondWith(getsDisconnected);
-//
-//        request.disconnect(getsDisconnected);
-//
-//        boolean timeout = latch.await(3100, TimeUnit.MILLISECONDS);// $DELAY should only be called
-//        // three times
-//        // Therefore if it is called more the lock
-//        // will timeout
-//
-//        assertTrue(getsValue1OnThisThread.passed);
-//        assertTrue(timeout);
-//        assertEquals(0, (int) getsValue0OnThisThread.resultValue);
-//        assertEquals(1, (int) getsValue1OnThisThread.resultValue);
-//        assertEquals(2, (int) getsValue2OnThisThreadAfterCache.resultValue);
-//        assertEquals(2, (int) getsValue2OnAnotherThreadAfterCache.resultValue);
-//        assertFalse(getsDisconnected.passed);
-//        assertFalse(getsDisconnected.failed);
-//    }
-//
-//    /**
-//     * Test that a basic map of turning a integer into a string works.
-//     */
-//    @Test
-//    public void basicMapTest() {
-//        final Integer originalValue = 8675309;
-//        final String expectedValue = "8675309";
-//        TestResponder<String> responder = new TestResponder<>();
-//        Requester.emit(originalValue).map((val) -> val.toString()).respondWith(responder);
-//
-//        assertEquals(expectedValue, responder.resultValue);
-//    }
-//
-//
-//    /**
-//     * A single map with multiple responders should still call the underlying request unless there
-//     * is a cache.
-//     */
-//    @Test
-//    public void multipleResponderNoCacheMapTest() {
-//        final AtomicInteger counter = new AtomicInteger(0);
-//        final String expectedValue1 = "1";
-//        final String expectedValue2 = "2";
-//        TestResponder<String> responder1 = new TestResponder<>();
-//        TestResponder<String> responder2 = new TestResponder<>();
-//        Requester.call(() -> counter.incrementAndGet()).map((val) -> val.toString())
-//            .respondWith(responder1).respondWith(responder2);
-//
-//        assertEquals(expectedValue1, responder1.resultValue);
-//        assertEquals(expectedValue2, responder2.resultValue);
-//    }
-//
-//    /**
-//     * Mapping Operations should run on the request thread.
-//     */
-//    @Test
-//    public void mapOperationRunsOnRequestThreadTest() throws InterruptedException {
-//
-//        final String expectedValue1 = "1";
-//        final String expectedValue2 = "2";
-//
-//        CountDownLatch latch = new CountDownLatch(2);
-//        AtomicInteger counter = new AtomicInteger(0);
-//        AtomicReference<Thread> mappingRunOnThreadReference = new AtomicReference<>();
-//        AtomicReference<Thread> requestRunOnThreadReference = new AtomicReference<>();
-//
-//        TestResponder<String> responder1 = new TestResponder<>(latch);
-//        TestResponder<String> responder2 = new TestResponder<>(latch);
-//        Requester.call(() -> {
-//            requestRunOnThreadReference.set(Thread.currentThread());
-//            return counter.incrementAndGet();
-//        }).map((val) -> {
-//            mappingRunOnThreadReference.set(Thread.currentThread());
-//            return val.toString();
-//        }).requestOn(executor.networkThread()).respondOn(executor.singleThreadService())
-//            .respondWith(responder1).respondWith(responder2);
-//
-//        latch.await();
-//
-//        assertEquals(expectedValue1, responder1.resultValue);
-//        assertEquals(expectedValue2, responder2.resultValue);
-//        assertEquals(requestRunOnThreadReference.get(), mappingRunOnThreadReference.get());
-//    }
-//
-//    /**
-//     * Test that a cleanup function is called when the request and response are on different
-//     * threads.
-//     */
-//    @Test
-//    public void cleanupThreadingTest() throws InterruptedException {
-//        HangsAfterCleanup closeThis = new HangsAfterCleanup();
-//        CountDownLatch latch = new CountDownLatch(2);
-//        Requester.call(() -> {
-//            return closeThis;
-//        }, () -> {
-//            closeThis.close();
-//            latch.countDown();
-//        }).requestOn(Executors.newSingleThreadExecutor())
-//            .respondWith(new Responder<HangsAfterCleanup>() {
-//                @Override
-//                public void onResult(HangsAfterCleanup value) {
-//                    value.get();
-//                    latch.countDown();
-//                }
-//
-//                @Override
-//                public void onException(Exception exception) {
-//                    latch.countDown();
-//                }
-//            });
-//
-//        assertTrue(latch.await(2, TimeUnit.SECONDS));
-//        assertTrue(closeThis.closed);
-//    }
-//
-//    /**
-//     * Test that a cleanup function is called when the request and response are on different
-//     * threads.
-//     */
-//    @Test
-//    public void cleanupResponderThreadingTest() throws InterruptedException {
-//        HangsAfterCleanup closeThis = new HangsAfterCleanup();
-//        CountDownLatch latch = new CountDownLatch(2);
-//        Requester.call(() -> {
-//            return closeThis;
-//        }, () -> {
-//            closeThis.close();
-//            latch.countDown();
-//        }).respondOn(Executors.newSingleThreadExecutor())
-//            .requestOn(Executors.newSingleThreadExecutor())
-//            .respondWith(new Responder<HangsAfterCleanup>() {
-//                @Override
-//                public void onResult(HangsAfterCleanup value) {
-//                    value.get();
-//                    latch.countDown();
-//                }
-//
-//                @Override
-//                public void onException(Exception exception) {
-//                    latch.countDown();
-//                }
-//            });
-//
-//        assertTrue(latch.await(2, TimeUnit.SECONDS));
-//        assertTrue(closeThis.closed);
-//    }
-//
-//
-//    /**
-//     * Test that a cleanup function is only called once if map and cache are called
-//     */
-//    @Test
-//    public void cleanupOnlyRunOnceAfterCacheTest() throws InterruptedException {
-//
-//        CountDownLatch latch = new CountDownLatch(3);
-//        AtomicInteger counter = new AtomicInteger(0);
-//        Requester.call(() -> "Hello World!", () -> {
-//            counter.incrementAndGet();
-//            latch.countDown();
-//        }).requestOn(Executors.newSingleThreadExecutor()).cache()
-//            .respondOn(Executors.newSingleThreadExecutor())
-//            .respondWith(new TestResponder<>(latch))
-//            .respondWith(new TestResponder<>(latch));
-//
-//        assertTrue(latch.await(5, TimeUnit.SECONDS));
-//        assertEquals(1, counter.get());
-//    }
-//
-//    /**
-//     * Test that a cleanup function is only called once if map and cache are called
-//     */
-//    @Test
-//    public void cleanupOnlyRunOnceAfterCacheAndMapTest() throws InterruptedException {
-//        HangsAfterCleanup closeThis = new HangsAfterCleanup();
-//        CountDownLatch latch = new CountDownLatch(3);
-//
-//        Requester.call(() -> {
-//            return closeThis;
-//        }, () -> {
-//            closeThis.close();
-//            latch.countDown();
-//        }).requestOn(Executors.newSingleThreadExecutor()).map((value) -> value.get()).cache()
-//            .respondOn(Executors.newSingleThreadExecutor())
-//            .respondWith(new Responder<String>() {
-//                @Override
-//                public void onResult(String value) {
-//                    latch.countDown();
-//                }
-//
-//                @Override
-//                public void onException(Exception exception) {
-//                    latch.countDown();
-//                }
-//            }).respondWith(new Responder<String>() {
-//            @Override
-//            public void onResult(String value) {
-//                latch.countDown();
-//            }
-//
-//            @Override
-//            public void onException(Exception exception) {
-//                latch.countDown();
-//            }
-//        });
-//
-//        assertTrue(latch.await(50, TimeUnit.SECONDS));
-//        assertTrue(closeThis.closed);
-//    }
-//
-//
-//    /**
-//     * A single map with multiple responders should still call the underlying request unless there
-//     * is a cache.
-//     */
-//    @Test
-//    public void multipleResponderWithCacheMapTest() {
-//        final AtomicInteger counter = new AtomicInteger(0);
-//        final String expectedValue1 = "1";
-//        final String expectedValue2 = "1";
-//        TestResponder<String> responder1 = new TestResponder<>();
-//        TestResponder<String> responder2 = new TestResponder<>();
-//        Requester.call(() -> counter.incrementAndGet()).map((val) -> val.toString()).cache()
-//            .respondWith(responder1).respondWith(responder2);
-//
-//        assertEquals(expectedValue1, responder1.resultValue);
-//        assertEquals(expectedValue2, responder2.resultValue);
-//    }
-//
-    private static class TestResponder<T> implements Responder<T> {
-        private final CountDownLatch latch;
-
-        boolean passed = false;
-        T resultValue = null;
-        boolean failed;
-        String errorMessage = "";
-        String name = "";
-
-        public TestResponder() {
-            this.latch = null;
-        }
-
-        public TestResponder(CountDownLatch latch) {
-            this.latch = latch;
-        }
-
-        @Override
-        public void onResult(T value) {
-            passed = true;
-            resultValue = value;
-            if (latch != null) {
-                latch.countDown();
-            }
-        }
-
-        @Override
-        public void onException(Exception e) {
-            failed = true;
-            errorMessage = e.getMessage();
-            if (latch != null) {
-                latch.countDown();
-            }
-        }
-
-        @Override
-        public String toString() {
-            return "TestResponder{" + "name='" + name + '\'' + '}';
-        }
-    }
-//
-//    /**
-//     * When testing OKHTTP it was discovered that the response from OkHttp can threadlock if it is
-//     * accessed after it is closed. This simulates that behavior without a network request.
-//     */
-//    private static class HangsAfterCleanup {
-//        boolean closed = false;
-//        static final String EXPECTED_VALUE = "Hello World";
-//
-//        public String get() {
-//            if (closed) {
-//                try {
-//                    Thread.sleep(Long.MAX_VALUE);
-//                } catch (InterruptedException ignore) {
-//                }
-//            }
-//            return EXPECTED_VALUE;
-//        }
-//
-//        public void close() {
-//            closed = true;
-//        }
-//    }
-//
-//    /**
-//     * After a request map both the inner and outer methods should cleanup
-//     */
-//    @Test
-//    public void testRequestMapCleanup() throws InterruptedException {
-//
-//        final String firstResponse = "Hello";
-//        final String secondResponse = " World!";
-//        final StringBuilder responseString = new StringBuilder();
-//        AtomicInteger cleanupCount = new AtomicInteger(0);
-//        CountDownLatch latch = new CountDownLatch(1);
-//
-//        Request<String> request = Requester
-//            .call(() -> firstResponse, () -> cleanupCount.getAndIncrement())
-//            .requestOn(Executors.newSingleThreadExecutor())
-//            .requestMap(string -> Requester.call(() -> string + secondResponse, () -> {
-//                cleanupCount.getAndIncrement();
-//            })).respondOn(Executors.newSingleThreadExecutor())
-//            .respondWith(new Responder<String>() {
-//                @Override
-//                public void onResult(String value) {
-//                    responseString.append(value);
-//                    latch.countDown();
-//                }
-//
-//                @Override
-//                public void onException(Exception exception) {
-//                    latch.countDown();
-//                }
-//            });
-//
-//        assertTrue(latch.await(2, TimeUnit.SECONDS));
-//        assertEquals("Hello World!", responseString.toString());
-//        assertEquals(2, cleanupCount.get());
-//    }
-//
-//    /**
-//     * Cancelling a request that has a flat map should cancel the original request if it hasn't
-//     * finished
-//     */
-//    @Test
-//    public void testRequestMapCancel() throws InterruptedException {
-//
-//        final String firstResponse = "Hello";
-//        final String secondResponse = " World!";
-//        final StringBuilder responseString = new StringBuilder();
-//        CountDownLatch latch = new CountDownLatch(1);
-//        AtomicBoolean running = new AtomicBoolean(true);
-//        AtomicBoolean failed = new AtomicBoolean(false);
-//
-//        Request<String> request = Requester.call(() -> {
-//            while (running.get()) {
-//            }
-//            return firstResponse;
-//        }).cancelWith(() -> running.set(false)).requestOn(Executors.newSingleThreadExecutor())
-//            .requestMap(string -> Requester.call(() -> string + secondResponse))
-//            .respondOn(Executors.newSingleThreadExecutor())
-//            .respondWith(new Responder<String>() {
-//                @Override
-//                public void onResult(String value) {
-//                    responseString.append(value);
-//                    latch.countDown();
-//                }
-//
-//                @Override
-//                public void onException(Exception exception) {
-//                    failed.set(true);
-//                    latch.countDown();
-//                }
-//            });
-//
-//        assertFalse(latch.await(2, TimeUnit.SECONDS));
-//        request.cancel();
-//        assertFalse(latch.await(2, TimeUnit.SECONDS));// Responder fail will not be called
-//        assertFalse(running.get());
-//        assertEquals("", responseString.toString());// This should not be called, the request should
-//        // be cancelled.
-//    }
-//
-//    /**
-//     * This method will test the ability of the Rx APis to transform a callback style API into a
-//     * RX style api.
-//     * <p>
-//     * In Apollo for instance queries are returned via a callback :
-//     * <p>
-//     * apolloClient.query(query).execute(mycallback);
-//     * <p>
-//     * However we would like to wrap the code something like this
-//     * <p>
-//     * Request.fromCallback((requestCallback)->{
-//     * apolloClient.query(query).execute(requestCallback);
-//     * })...
-//     * <p>
-//     * This way request callback is hooked into the callback infrastructure.
-//     */
-//    @Test
-//    public void testFromCallback() throws InterruptedException {
-//
-//        AtomicReference<String> resultRef = new AtomicReference<>();
-//        System.out.println("unit test before" + Thread.currentThread().getName());
-//        new AppExecutors().singleThreadService().execute(() -> {
-//            System.out.println("before call requester" + Thread.currentThread().getName());
-//            Requester.call((Responder<String> requestCallback) -> {
-//                System.out.println("Request.call" + Thread.currentThread().getName());
-//                new AsyncWithCallback("Hello World!").execute(new Callback<String>() {
-//
-//                    @Override
-//                    public void onSuccess(String models) {
-//                        System.out.println("Async callback in test" + Thread.currentThread().getName());
-//                        requestCallback.onResult(models);
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable error) {
-//                        //ignore
-//                    }
-//
-//                });
-//            })
-//                .respondWith(new Responder<String>() {
-//                                 @Override
-//                                 public void onResult(String value) {
-//                                     System.out.println("Final Responder" + Thread.currentThread().getName());
-//                                     resultRef.set(value);
-//                                 }
-//
-//                                 @Override
-//                                 public void onException(Exception exception) {
-//                                     //ignore
-//                                 }
-//                             }
-//
-//                );
-//
-//        });
-//        System.out.println("unit test after" + Thread.currentThread().getName());
-//        Thread.sleep(2000);
-//        assertEquals("Hello World!", resultRef.get());
-//
-//    }
 
 }

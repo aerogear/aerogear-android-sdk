@@ -28,7 +28,6 @@ class AsyncRequest<T> extends AbstractRequest<T> {
 
     private final AtomicReference<Cleaner> cleanerAtomicReference;
     private final AtomicReference<Canceller> cancellerRef;
-    private Thread callableThread = null;
 
     public AsyncRequest(VoidReturnWithParam<Responder<T>> source) {
         this.source = nonNull(source, "callable");
@@ -36,11 +35,7 @@ class AsyncRequest<T> extends AbstractRequest<T> {
         this.cleanerAtomicReference = new AtomicReference<>(() -> {
         });
         cancellerRef = new AtomicReference<>(() -> {
-            synchronized (source) {
-                if (callableThread != null) {
-                    callableThread.interrupt();
-                }
-            }
+            Log.i("ASYNC_REQUEST", "AsyncRequest does not provide a default cancel method.");
         });
 
     }
@@ -49,11 +44,7 @@ class AsyncRequest<T> extends AbstractRequest<T> {
         this.source = source;
         this.cleanerAtomicReference = new AtomicReference<>(cleanupAction);
         cancellerRef = new AtomicReference<>(() -> {
-            synchronized (source) {
-                if (callableThread != null) {
-                    callableThread.interrupt();
-                }
-            }
+            Log.i("ASYNC_REQUEST", "AsyncRequest does not provide a default cancel method.");
         });
     }
 
@@ -66,9 +57,7 @@ class AsyncRequest<T> extends AbstractRequest<T> {
 
         CaptureResponder<T> captureResponder = new CaptureResponder<>(responderRef);
 
-
         try {
-            callableThread = Thread.currentThread();
             source.execute(captureResponder);
 
         } catch (Exception e) {
@@ -79,6 +68,11 @@ class AsyncRequest<T> extends AbstractRequest<T> {
 
     }
 
+    /**
+     * Async Request does not provide a default cancel method.  One should be set using {@link Request#cancelWith(Canceller)}.  The reason
+     * no method is provided is because async calls are more likely to spin off their calling thread, and the default method of interrupting the
+     * thread they were called on is likely to do nothing.
+     */
     @Override
     public void cancel() {
         cancellerRef.get().doCancel();
@@ -156,10 +150,6 @@ class AsyncRequest<T> extends AbstractRequest<T> {
                     Log.e(ERROR_TAG, responderThrowable.getMessage(), responderThrowable);
                 }
             } finally {
-                synchronized (source) { // We are synchronizing on the callable because we don't want
-                    // the thread reference to go null in the cancel method.
-                    callableThread = null;
-                }
                 cleanerAtomicReference.get().cleanup();
             }
         }

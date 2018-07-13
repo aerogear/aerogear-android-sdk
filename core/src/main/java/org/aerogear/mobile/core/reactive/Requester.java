@@ -44,7 +44,17 @@ public final class Requester {
     public static <T> Request<T> call(VoidReturnWithParam<Responder<T>> callable) {
         return new AsyncRequest<>(callable);
     }
-
+    /**
+     * Create a Request and supply a method to cleanup any resources.
+     *
+     * @param callable a callable that will generate a value
+     * @param cleanupFunction a method that will be called after callable
+     * @param <T> the value of the return type of callable
+     * @return a chainable request object
+     */
+    public static <T> Request<T> call(VoidReturnWithParam<Responder<T>> callable, Cleaner cleanupFunction) {
+        return new AsyncRequest<T>(callable, cleanupFunction);
+    }
 
     /**
      * Create a Request and supply a method to cleanup any resources.
