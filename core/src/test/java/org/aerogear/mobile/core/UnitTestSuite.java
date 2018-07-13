@@ -1,10 +1,10 @@
 package org.aerogear.mobile.core;
 
-import org.aerogear.mobile.core.unit.AsyncReactiveCaseTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 import org.aerogear.mobile.core.configuration.CertificatePinningEntryTest;
+import org.aerogear.mobile.core.unit.AsyncReactiveCaseTest;
 import org.aerogear.mobile.core.unit.MobileCoreTest;
 import org.aerogear.mobile.core.unit.ReactiveCaseTest;
 import org.aerogear.mobile.core.unit.configuration.MobileCoreParserTest;

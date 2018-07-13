@@ -1,8 +1,8 @@
 package org.aerogear.mobile.core.helper;
 
-import org.aerogear.mobile.core.reactive.Responder;
-
 import java.util.concurrent.CountDownLatch;
+
+import org.aerogear.mobile.core.reactive.Responder;
 
 public class TestResponder<T> implements Responder<T> {
     private final CountDownLatch latch;

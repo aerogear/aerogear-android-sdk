@@ -8,10 +8,10 @@ package org.aerogear.mobile.core.reactive;
 @FunctionalInterface
 public interface VoidReturnWithParam<T> {
 
-        /**
-         * Performs this operation on the given argument.
-         *
-         * @param t the input argument
-         */
-        void execute(T t);
+    /**
+     * Performs this operation on the given argument.
+     *
+     * @param t the input argument
+     */
+    void execute(T t);
 }

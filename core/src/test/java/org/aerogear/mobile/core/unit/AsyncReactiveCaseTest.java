@@ -1,5 +1,20 @@
 package org.aerogear.mobile.core.unit;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RuntimeEnvironment;
+
 import android.app.Application;
 import android.support.test.filters.SmallTest;
 
@@ -13,20 +28,6 @@ import org.aerogear.mobile.core.helper.TestResponder;
 import org.aerogear.mobile.core.reactive.Request;
 import org.aerogear.mobile.core.reactive.Requester;
 import org.aerogear.mobile.core.reactive.Responder;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.robolectric.RuntimeEnvironment;
-
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 /**
  * This package exists to test reactive patterns as we accomplish AG-2333.
@@ -51,20 +52,21 @@ public class AsyncReactiveCaseTest {
 
         Requester.call((Responder<Object> requestCallback) -> {
 
-            new AsyncWithCallback(new RuntimeException("Catch this!")).execute(new Callback<Object>() {
+            new AsyncWithCallback(new RuntimeException("Catch this!"))
+                            .execute(new Callback<Object>() {
 
-                @Override
-                public void onSuccess(Object models) {
+                                @Override
+                                public void onSuccess(Object models) {
 
-                    requestCallback.onResult(models);
-                }
+                                    requestCallback.onResult(models);
+                                }
 
-                @Override
-                public void onError(Throwable error) {
-                                        requestCallback.onException(new Exception(error));
-                }
+                                @Override
+                                public void onError(Throwable error) {
+                                    requestCallback.onException(new Exception(error));
+                                }
 
-            });
+                            });
         }).respondWith(responder);
 
         latch.await(1, TimeUnit.SECONDS);
@@ -85,8 +87,7 @@ public class AsyncReactiveCaseTest {
 
         Requester.call((Responder<Integer> requestCallback) -> {
 
-            new AsyncWithCallback(() -> counter.getAndIncrement())
-                .execute(new Callback<Integer>() {
+            new AsyncWithCallback(() -> counter.getAndIncrement()).execute(new Callback<Integer>() {
 
                 @Override
                 public void onSuccess(Integer models) {
@@ -96,12 +97,11 @@ public class AsyncReactiveCaseTest {
 
                 @Override
                 public void onError(Throwable error) {
-                                        requestCallback.onException(new Exception(error));
+                    requestCallback.onException(new Exception(error));
                 }
 
             });
-        }).respondWith(responder)
-            .respondWith(responder2);
+        }).respondWith(responder).respondWith(responder2);
 
         latch.await(1, TimeUnit.SECONDS);
         assertTrue(responder2.passed);
@@ -124,24 +124,26 @@ public class AsyncReactiveCaseTest {
 
         Requester.call((Responder<Integer> requestCallback) -> {
 
-            new AsyncWithCallback(() -> {latch.countDown(); return counter.getAndIncrement();})
-                .execute(new Callback<Integer>() {
+            new AsyncWithCallback(() -> {
+                latch.countDown();
+                return counter.getAndIncrement();
+            }).execute(new Callback<Integer>() {
 
-                    @Override
-                    public void onSuccess(Integer models) {
+                @Override
+                public void onSuccess(Integer models) {
 
-                        requestCallback.onResult(models);
-                    }
+                    requestCallback.onResult(models);
+                }
 
-                    @Override
-                    public void onError(Throwable error) {
-                                                requestCallback.onException(new Exception(error));
-                    }
+                @Override
+                public void onError(Throwable error) {
+                    requestCallback.onException(new Exception(error));
+                }
 
-                });
+            });
         }).requestOn(Executors.newSingleThreadExecutor())
-            .respondOn(Executors.newSingleThreadExecutor()).cache()
-            .respondWith(responder).respondWith(responder2);
+                        .respondOn(Executors.newSingleThreadExecutor()).cache()
+                        .respondWith(responder).respondWith(responder2);
 
         assertTrue(latch.await(4, TimeUnit.SECONDS));
         assertTrue(responder2.passed);
@@ -160,24 +162,22 @@ public class AsyncReactiveCaseTest {
 
         Requester.call((Responder<Integer> requestCallback) -> {
 
-            new AsyncWithCallback(() -> counter.getAndIncrement())
-                .execute(new Callback<Integer>() {
+            new AsyncWithCallback(() -> counter.getAndIncrement()).execute(new Callback<Integer>() {
 
-                    @Override
-                    public void onSuccess(Integer models) {
+                @Override
+                public void onSuccess(Integer models) {
 
-                        requestCallback.onResult(models);
-                    }
+                    requestCallback.onResult(models);
+                }
 
-                    @Override
-                    public void onError(Throwable error) {
-                                                requestCallback.onException(new Exception(error));
-                    }
+                @Override
+                public void onError(Throwable error) {
+                    requestCallback.onException(new Exception(error));
+                }
 
-                });
-        }).cache().cache().cache().cache()
-            .requestOn(executor.singleThreadService()).cache().cache().cache().cache()
-            .respondWith(first).respondWith(second);
+            });
+        }).cache().cache().cache().cache().requestOn(executor.singleThreadService()).cache().cache()
+                        .cache().cache().respondWith(first).respondWith(second);
 
         latch.await(2000, TimeUnit.MILLISECONDS);
         assertTrue(second.passed);
@@ -201,23 +201,22 @@ public class AsyncReactiveCaseTest {
             new AsyncWithCallback(() -> {
                 Thread.sleep(1000);
                 return counter.getAndIncrement();
-            })
-                .execute(new Callback<Integer>() {
+            }).execute(new Callback<Integer>() {
 
-                    @Override
-                    public void onSuccess(Integer models) {
+                @Override
+                public void onSuccess(Integer models) {
 
-                        requestCallback.onResult(models);
-                    }
+                    requestCallback.onResult(models);
+                }
 
-                    @Override
-                    public void onError(Throwable error) {
-                        requestCallback.onException(new Exception(error));
-                    }
+                @Override
+                public void onError(Throwable error) {
+                    requestCallback.onException(new Exception(error));
+                }
 
-                });
+            });
         }).requestOn(executor.singleThreadService()).respondWith(stayConnectedResponder)
-            .respondWith(disconnectResponder);
+                        .respondWith(disconnectResponder);
 
         request.disconnect(disconnectResponder);
 
@@ -235,7 +234,7 @@ public class AsyncReactiveCaseTest {
         assertFalse(disconnectResponder.failed);
     }
 
-//
+    //
     /**
      * Test that a basic map of turning a integer into a string works.
      */
@@ -247,20 +246,19 @@ public class AsyncReactiveCaseTest {
         TestResponder<String> responder = new TestResponder<>(latch);
         Requester.call((Responder<Integer> requestCallback) -> {
 
-            new AsyncWithCallback(() ->originalValue)
-                .execute(new Callback<Integer>() {
+            new AsyncWithCallback(() -> originalValue).execute(new Callback<Integer>() {
 
-                    @Override
-                    public void onSuccess(Integer models) {
-                        requestCallback.onResult(models);
-                    }
+                @Override
+                public void onSuccess(Integer models) {
+                    requestCallback.onResult(models);
+                }
 
-                    @Override
-                    public void onError(Throwable error) {
-                        requestCallback.onException(new Exception(error));
-                    }
+                @Override
+                public void onError(Throwable error) {
+                    requestCallback.onException(new Exception(error));
+                }
 
-                });
+            });
         }).map((val) -> val.toString()).respondWith(responder);
 
         latch.await(1, TimeUnit.SECONDS);
@@ -279,45 +277,44 @@ public class AsyncReactiveCaseTest {
 
             new AsyncWithCallback(() -> {
                 return closeThis;
-            })
-                .execute(new Callback<HangsAfterCleanup>() {
+            }).execute(new Callback<HangsAfterCleanup>() {
 
-                    @Override
-                    public void onSuccess(HangsAfterCleanup models) {
+                @Override
+                public void onSuccess(HangsAfterCleanup models) {
 
-                        requestCallback.onResult(models);
-                    }
+                    requestCallback.onResult(models);
+                }
 
-                    @Override
-                    public void onError(Throwable error) {
-                                                requestCallback.onException(new Exception(error));
-                    }
+                @Override
+                public void onError(Throwable error) {
+                    requestCallback.onException(new Exception(error));
+                }
 
-                });
-        },() -> {
+            });
+        }, () -> {
             closeThis.close();
             latch.countDown();
         }).requestOn(Executors.newSingleThreadExecutor())
-            .respondWith(new Responder<HangsAfterCleanup>() {
-                @Override
-                public void onResult(HangsAfterCleanup value) {
-                    value.get();
-                    latch.countDown();
-                }
+                        .respondWith(new Responder<HangsAfterCleanup>() {
+                            @Override
+                            public void onResult(HangsAfterCleanup value) {
+                                value.get();
+                                latch.countDown();
+                            }
 
-                @Override
-                public void onException(Exception exception) {
-                    latch.countDown();
-                }
-            });
+                            @Override
+                            public void onException(Exception exception) {
+                                latch.countDown();
+                            }
+                        });
 
         assertTrue(latch.await(2, TimeUnit.SECONDS));
         assertTrue(closeThis.closed);
     }
 
     /**
-     * This method will test the ability of the Rx APis to transform a callback style API into a
-     * RX style api.
+     * This method will test the ability of the Rx APis to transform a callback style API into a RX
+     * style api.
      * <p>
      * In Apollo for instance queries are returned via a callback :
      * <p>
@@ -325,8 +322,7 @@ public class AsyncReactiveCaseTest {
      * <p>
      * However we would like to wrap the code something like this
      * <p>
-     * Request.fromCallback((requestCallback)->{
-     * apolloClient.query(query).execute(requestCallback);
+     * Request.fromCallback((requestCallback)->{ apolloClient.query(query).execute(requestCallback);
      * })...
      * <p>
      * This way request callback is hooked into the callback infrastructure.
@@ -347,24 +343,23 @@ public class AsyncReactiveCaseTest {
 
                     @Override
                     public void onError(Throwable error) {
-                        //ignore
+                        // ignore
                     }
 
                 });
-            })
-                .respondWith(new Responder<String>() {
-                                 @Override
-                                 public void onResult(String value) {
-                                     resultRef.set(value);
-                                 }
+            }).respondWith(new Responder<String>() {
+                @Override
+                public void onResult(String value) {
+                    resultRef.set(value);
+                }
 
-                                 @Override
-                                 public void onException(Exception exception) {
-                                     //ignore
-                                 }
-                             }
+                @Override
+                public void onException(Exception exception) {
+                    // ignore
+                }
+            }
 
-                );
+            );
 
         });
         Thread.sleep(2000);

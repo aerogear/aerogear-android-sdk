@@ -1,14 +1,13 @@
 package org.aerogear.mobile.core.helper;
 
-import android.telecom.Call;
-
-import org.aerogear.mobile.core.Callback;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 
+import org.aerogear.mobile.core.Callback;
+
 /**
- * This class will take a callback and return a value on that callback.  It is used for testing
+ * This class will take a callback and return a value on that callback. It is used for testing
  * reactive classes.
  */
 public class AsyncWithCallback<T> {

@@ -1,7 +1,6 @@
 package org.aerogear.mobile.core.reactive;
 
 import java.util.concurrent.Callable;
-import java.util.function.Consumer;
 
 /**
  * Factory class for creating {@link Request} objects.
@@ -44,6 +43,7 @@ public final class Requester {
     public static <T> Request<T> call(VoidReturnWithParam<Responder<T>> callable) {
         return new AsyncRequest<>(callable);
     }
+
     /**
      * Create a Request and supply a method to cleanup any resources.
      *
@@ -52,7 +52,8 @@ public final class Requester {
      * @param <T> the value of the return type of callable
      * @return a chainable request object
      */
-    public static <T> Request<T> call(VoidReturnWithParam<Responder<T>> callable, Cleaner cleanupFunction) {
+    public static <T> Request<T> call(VoidReturnWithParam<Responder<T>> callable,
+                    Cleaner cleanupFunction) {
         return new AsyncRequest<T>(callable, cleanupFunction);
     }
 
