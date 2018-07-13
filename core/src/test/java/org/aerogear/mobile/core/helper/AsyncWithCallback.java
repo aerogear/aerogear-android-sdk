@@ -12,12 +12,18 @@ public class AsyncWithCallback<T> {
 
     private final T emittedValue;
 
-    public AsyncWithCallback(T emittedValue){
+    public AsyncWithCallback(T emittedValue) {
         this.emittedValue = emittedValue;
     }
 
+
     public void execute(Callback<T> callback) {
-        Executors.newFixedThreadPool(1).submit(()->callback.onSuccess(emittedValue));
+        Executors.newFixedThreadPool(1).submit(() -> {
+            if (emittedValue instanceof Throwable) {
+                throw new RuntimeException((Throwable) emittedValue);
+            }
+            callback.onSuccess(emittedValue);
+        });
     }
 
 }

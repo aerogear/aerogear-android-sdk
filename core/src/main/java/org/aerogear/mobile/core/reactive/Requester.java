@@ -41,7 +41,7 @@ public final class Requester {
      * @param <T> the value of the return type of callable
      * @return a chainable request object
      */
-    public static <T> Request<T> call(Consumer<Responder<T>> callable) {
+    public static <T> Request<T> call(VoidReturnWithParam<Responder<T>> callable) {
         return new AsyncRequest<>(callable);
     }
 
