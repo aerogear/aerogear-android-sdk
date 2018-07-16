@@ -1,6 +1,0 @@
-name: android-sdk
-title: AeroGear Android SDK
-version: 'latest'
-start_ROOT: ROOT:index.adoc
-nav:
-- modules/ROOT/nav.adoc
