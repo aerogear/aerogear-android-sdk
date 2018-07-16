@@ -1,1 +1,0 @@
-** xref:auth-user-attributes.adoc[User Attributes]
