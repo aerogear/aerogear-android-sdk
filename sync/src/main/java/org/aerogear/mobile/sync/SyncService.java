@@ -1,6 +1,5 @@
 package org.aerogear.mobile.sync;
 
-import static org.aerogear.mobile.core.utils.SanityCheck.*;
 import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 import javax.annotation.Nonnull;
@@ -16,6 +15,7 @@ import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.Subscription;
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.subscription.WebSocketSubscriptionTransport.Factory;
 
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
@@ -34,9 +34,12 @@ public final class SyncService {
 
     private final ApolloClient apolloClient;
 
-    public SyncService(@Nonnull OkHttpClient okHttpClient, @Nonnull String serverUrl) {
+    public SyncService(@Nonnull OkHttpClient okHttpClient, @Nonnull String serverUrl,
+                    @Nonnull String webSocketUrl) {
         apolloClient = ApolloClient.builder().serverUrl(nonNull(serverUrl, "serverUrl"))
-                        .okHttpClient(nonNull(okHttpClient, "okHttpClient")).build();
+                        .okHttpClient(nonNull(okHttpClient, "okHttpClient"))
+                        .subscriptionTransportFactory(new Factory(webSocketUrl, okHttpClient))
+                        .build();
     }
 
     public static SyncService getInstance() {
@@ -44,8 +47,9 @@ public final class SyncService {
             MobileCore mobileCore = MobileCore.getInstance();
             ServiceConfiguration configuration = mobileCore.getServiceConfigurationByType(TYPE);
             String serverUrl = configuration.getUrl();
+            String webSocketUrl = configuration.getProperty("subscription");
             OkHttpClient okHttpClient = mobileCore.getHttpLayer().getClient();
-            SyncService.instance = new SyncService(okHttpClient, serverUrl);
+            SyncService.instance = new SyncService(okHttpClient, serverUrl, webSocketUrl);
         }
         return instance;
     }
