@@ -1,5 +1,6 @@
 package org.aerogear.mobile.sync;
 
+import static org.aerogear.mobile.core.utils.SanityCheck.*;
 import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 import javax.annotation.Nonnull;
@@ -53,16 +54,16 @@ public final class SyncService {
         return apolloClient;
     }
 
-    public SyncQuery query(Query query) {
-        return new SyncQuery(this.apolloClient, query);
+    public SyncQuery query(@Nonnull Query query) {
+        return new SyncQuery(this.apolloClient, nonNull(query, "query"));
     }
 
-    public SyncMutation mutation(Mutation mutation) {
-        return new SyncMutation(this.apolloClient, mutation);
+    public SyncMutation mutation(@Nonnull Mutation mutation) {
+        return new SyncMutation(this.apolloClient, nonNull(mutation, "mutation"));
     }
 
-    public SyncSubscription subscribe(Subscription subscription) {
-        return new SyncSubscription(this.apolloClient, subscription);
+    public SyncSubscription subscribe(@Nonnull Subscription subscription) {
+        return new SyncSubscription(this.apolloClient, nonNull(subscription, "subscription"));
     }
 
     public static class SyncQuery {
@@ -75,7 +76,10 @@ public final class SyncService {
             this.query = query;
         }
 
-        public <T extends Operation.Data> Request<Response<T>> execute(Class<T> responseDataClass) {
+        public <T extends Operation.Data> Request<Response<T>> execute(
+                        @Nonnull Class<T> responseDataClass) {
+
+            nonNull(responseDataClass, "responseDataClass");
 
             return Requester.call((Responder<Response<T>> requestCallback) -> apolloClient
                             .query(query).enqueue(new ApolloCall.Callback<T>() {
@@ -104,7 +108,10 @@ public final class SyncService {
             this.mutation = mutation;
         }
 
-        public <T extends Operation.Data> Request<Response<T>> execute(Class<T> responseDataClass) {
+        public <T extends Operation.Data> Request<Response<T>> execute(
+                        @Nonnull Class<T> responseDataClass) {
+
+            nonNull(responseDataClass, "responseDataClass");
 
             return Requester.call((Responder<Response<T>> requestCallback) -> apolloClient
                             .mutate(mutation).enqueue(new ApolloCall.Callback<T>() {
@@ -132,7 +139,10 @@ public final class SyncService {
             this.subscription = subscription;
         }
 
-        public <T extends Operation.Data> Request<Response<T>> execute(Class<T> responseDataClass) {
+        public <T extends Operation.Data> Request<Response<T>> execute(
+                        @Nonnull Class<T> responseDataClass) {
+
+            nonNull(responseDataClass, "responseDataClass");
 
             return Requester.call((Responder<Response<T>> requestCallback) -> apolloClient
                             .subscribe(subscription).execute(new ApolloSubscriptionCall.Callback() {
