@@ -29,7 +29,7 @@
             "id": "metrics-myapp-android",
             "name": "metrics",
             "type": "metrics",
-            "url": "https://demo1623828.mockable.io/metrics",
+            "url": "http://localhost:3000/metrics",
             "config": {}
         }
     ]
