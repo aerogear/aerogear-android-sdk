@@ -68,15 +68,10 @@ For running the unit tests, simly run
 
 ### Integration tests
 
-Integration tests are designed to be triggered when PR is created, but with easy configuration it's also possible to run them on your local machine (described below).
-
-To trigger the integration tests together with creation of PR, select the `test/integration` label in the right column.
-
 **Metrics integration test**
 
 This includes testing of communication between Android SDK Metrics module and [AeroGear App Metrics service](https://github.com/aerogear/aerogear-app-metrics) (part of [Metrics-APB](https://github.com/aerogearcatalog/metrics-apb))
 
-To run it locally:
+In order to run the test successfully you have to have an AeroGear App Metrics service running. Follow [the guide](https://github.com/aerogear/aerogear-app-metrics#run-entire-application-with-docker-compose) to run the Metrics service locally. You can trigger the test execution by running `./gradlew :core:testDebug --tests *.IntegrationTestSuite` afterwards.
 
-1. Edit [Metrics URL](https://github.com/aerogear/aerogear-android-sdk/blob/master/core/src/test/assets/integration-test-mobile-services.json#L11) with valid URL pointing to `/metrics` endpoint, e.g. https://app-metrics.example.com/metrics
-2. Run the test: `./gradlew :core:testDebug --tests *.IntegrationTestSuite`
+If you have Metrics service running already, just edit the [Metrics URL](https://github.com/aerogear/aerogear-android-sdk/blob/master/core/src/test/assets/mobile-services.json#L32) with a valid URL pointing to `/metrics` endpoint, e.g. https://app-metrics.example.com/metrics

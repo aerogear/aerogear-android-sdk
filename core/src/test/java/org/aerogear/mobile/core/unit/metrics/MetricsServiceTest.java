@@ -29,7 +29,7 @@ public class MetricsServiceTest {
     @Before
     public void setUp() {
         MobileCore.init(RuntimeEnvironment.application);
-        metricsService = new MetricsService("https://demo1623828.mockable.io/metrics");
+        metricsService = new MetricsService("http://dummy.io/metrics");
     }
 
     @Test
