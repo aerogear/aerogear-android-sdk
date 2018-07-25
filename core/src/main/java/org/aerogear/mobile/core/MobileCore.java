@@ -103,16 +103,7 @@ public final class MobileCore {
         builder.connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
                         .writeTimeout(DEFAULT_WRITE_TIMEOUT, TimeUnit.SECONDS)
                         .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS);
-        final OkHttpServiceModule httpServiceModule = new OkHttpServiceModule(builder.build());
-        ServiceConfiguration configuration =
-                        this.getServiceConfigurationByType(httpServiceModule.type());
-        if (configuration == null) {
-            configuration = new ServiceConfiguration.Builder().build();
-        }
-
-        httpServiceModule.configure(this, configuration);
-
-        this.httpLayer = httpServiceModule;
+        this.httpLayer = new OkHttpServiceModule(builder.build());
 
         // Metrics Service ------------------------------------------------------------------------
 
@@ -141,45 +132,10 @@ public final class MobileCore {
         return instance;
     }
 
-    @SuppressWarnings("unchecked")
-    public <T extends ServiceModule> T getService(final Class<T> serviceClass) {
-        return getService(serviceClass, null);
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T extends ServiceModule> T getService(final Class<T> serviceClass,
-                    final ServiceConfiguration serviceConfiguration)
-                    throws InitializationException {
-        nonNull(serviceClass, "serviceClass");
-
-        try {
-            final ServiceModule serviceModule = serviceClass.newInstance();
-
-            ServiceConfiguration serviceCfg = serviceConfiguration;
-
-            if (serviceCfg == null) {
-                serviceCfg = this.getServiceConfigurationByType(serviceModule.type());
-            }
-
-            if (serviceCfg == null && serviceModule.requiresConfiguration()) {
-                throw new ConfigurationNotFoundException(
-                                serviceModule.type() + " not found on " + configFileName);
-            }
-
-            serviceModule.configure(this, serviceCfg);
-
-            return (T) serviceModule;
-
-        } catch (IllegalAccessException | InstantiationException e) {
-            throw new InitializationException(e.getMessage(), e);
-        }
-    }
-
     /**
      * Retrieve Metrics Services
      *
      * @return Metrics Service
-     *
      * @throws ConfigurationNotFoundException throw if metrics is not enable
      */
     public MetricsService getMetricsService() throws ConfigurationNotFoundException {

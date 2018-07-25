@@ -37,12 +37,6 @@ import okhttp3.mockwebserver.MockWebServer;
 public class OkHttpServiceModuleTest {
 
     @Test
-    public void testType() {
-        OkHttpServiceModule module = new OkHttpServiceModule();
-        assertEquals("http", module.type());
-    }
-
-    @Test
     public void testGetRequestSuccessful() throws InterruptedException {
 
         final String expected = "{\n" + " \"story\": {\n" + "     \"title\": \"Test Title\"\n"

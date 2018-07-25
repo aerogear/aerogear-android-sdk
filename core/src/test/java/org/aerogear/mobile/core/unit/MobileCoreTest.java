@@ -19,7 +19,6 @@ import android.support.test.filters.SmallTest;
 
 import org.aerogear.mobile.core.AeroGearTestRunner;
 import org.aerogear.mobile.core.MobileCore;
-import org.aerogear.mobile.core.ServiceModule;
 import org.aerogear.mobile.core.categories.UnitTest;
 import org.aerogear.mobile.core.configuration.MobileCoreConfiguration;
 import org.aerogear.mobile.core.configuration.MobileCoreJsonParser;
@@ -49,11 +48,6 @@ public class MobileCoreTest {
         MobileCore.setLogger(new DummyLogger());
 
         assertEquals(DummyLogger.class, MobileCore.getLogger().getClass());
-    }
-
-    @Test
-    public void testConfigurationNotRequiredDoesNotThrowException() {
-        MobileCore.getInstance().getService(DummyServiceModule.class);
     }
 
     @Test
@@ -110,22 +104,6 @@ public class MobileCoreTest {
             return configs.get(0);
         }
 
-    }
-
-    public static final class DummyServiceModule implements ServiceModule {
-
-        @Override
-        public String type() {
-            return "null";
-        }
-
-        @Override
-        public void configure(MobileCore core, ServiceConfiguration serviceConfiguration) {}
-
-        @Override
-        public boolean requiresConfiguration() {
-            return false;
-        }
     }
 
     public static final class DummyLogger implements Logger {
