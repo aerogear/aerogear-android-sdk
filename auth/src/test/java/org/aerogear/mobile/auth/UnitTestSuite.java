@@ -20,8 +20,8 @@ import org.aerogear.mobile.auth.utils.UserIdentityParserTest;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({OIDCAuthenticateOptionsTest.class, OIDCAuthenticatorImplTest.class,
                 JwksManagerTest.class, OIDCCredentialsTest.class, UserPrincipalImplTest.class,
-                UserIdentityParserTest.class, AuthServiceTest.class, AuthStateManagerTest.class,
-                AuthBrowsersTest.class, AuthBrowserVersionRangeTest.class, AuthBrowserTest.class,
+                UserIdentityParserTest.class, AuthStateManagerTest.class, AuthBrowsersTest.class,
+                AuthBrowserVersionRangeTest.class, AuthBrowserTest.class,
                 BrowserConfigurationTest.class})
 public class UnitTestSuite {
 
