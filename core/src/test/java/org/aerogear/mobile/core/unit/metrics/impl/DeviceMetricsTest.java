@@ -6,15 +6,18 @@ import static org.junit.Assert.assertNotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
 import android.support.test.filters.SmallTest;
 
+import org.aerogear.mobile.core.categories.UnitTest;
 import org.aerogear.mobile.core.metrics.impl.DeviceMetrics;
 
 @RunWith(RobolectricTestRunner.class)
 @SmallTest
+@Category(UnitTest.class)
 public class DeviceMetricsTest {
 
     @Test

@@ -22,7 +22,7 @@ jobs:
           key: jars-{{ checksum "build.gradle" }}
       - run:
           name: Run Tests
-          command: ./gradlew lint testDebug --tests *.UnitTestSuite spotlessCheck
+          command: ./gradlew lint testDebug spotlessCheck
       - run:
           name: Generate Maven Artifacts
           command: ./gradlew install

@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.robolectric.RuntimeEnvironment;
 
@@ -14,6 +15,7 @@ import android.support.test.filters.SmallTest;
 
 import org.aerogear.mobile.core.AeroGearTestRunner;
 import org.aerogear.mobile.core.MobileCore;
+import org.aerogear.mobile.core.categories.IntegrationTest;
 import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.metrics.Metrics;
 import org.aerogear.mobile.core.metrics.MetricsService;
@@ -22,6 +24,7 @@ import org.aerogear.mobile.core.unit.metrics.MetricsServiceTest;
 
 @RunWith(AeroGearTestRunner.class)
 @SmallTest
+@Category(IntegrationTest.class)
 public class MetricsServiceIntegrationTest {
 
     private MetricsService metricsService;

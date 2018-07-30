@@ -64,7 +64,7 @@ We're using [Gradle](https://gradle.org/) for running the tests from command lin
 
 For running the unit tests, simly run
 
-`./gradlew testDebug --tests *.UnitTestSuite`
+`./gradlew testDebug
 
 ### Integration tests
 
@@ -72,6 +72,6 @@ For running the unit tests, simly run
 
 This includes testing of communication between Android SDK Metrics module and [AeroGear App Metrics service](https://github.com/aerogear/aerogear-app-metrics) (part of [Metrics-APB](https://github.com/aerogearcatalog/metrics-apb))
 
-In order to run the test successfully you have to have an AeroGear App Metrics service running. Follow [the guide](https://github.com/aerogear/aerogear-app-metrics#run-entire-application-with-docker-compose) to run the Metrics service locally. You can trigger the test execution by running `./gradlew :core:testDebug --tests *.IntegrationTestSuite` afterwards.
+In order to run the test successfully you have to have an AeroGear App Metrics service running. Follow [the guide](https://github.com/aerogear/aerogear-app-metrics#run-entire-application-with-docker-compose) to run the Metrics service locally. You can trigger the test execution by running `./gradlew :core:clean :core:testDebug -PintegrationTests=true` afterwards.
 
-If you have Metrics service running already, just edit the [Metrics URL](https://github.com/aerogear/aerogear-android-sdk/blob/master/core/src/test/assets/mobile-services.json#L32) with a valid URL pointing to `/metrics` endpoint, e.g. https://app-metrics.example.com/metrics
+If you have Metrics service running already, just update the [Metrics URL](https://github.com/aerogear/aerogear-android-sdk/blob/master/core/src/test/assets/mobile-services.json#L32) with a valid URL pointing to `/metrics` endpoint, e.g. https://app-metrics.example.com/metrics

@@ -1,5 +1,8 @@
 apply plugin: "com.android.library"
 
+// do not run integration tests by default
+ext.integrationTests = project.hasProperty('integrationTests') ? project.getProperty('integrationTests') : false
+
 android {
     compileSdkVersion project.ext.targetSdkVersion
 
@@ -26,6 +29,18 @@ android {
     testOptions {
         unitTests {
             includeAndroidResources = true
+            all {
+              useJUnit()
+              if (integrationTests.toBoolean()) {
+                  options {
+                      excludeCategories 'org.aerogear.mobile.core.categories.UnitTest'
+                  }
+              } else {
+                  options {
+                      excludeCategories 'org.aerogear.mobile.core.categories.IntegrationTest'
+                  }
+              }
+            }
         }
     }
 }

@@ -13,11 +13,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
 import android.support.test.filters.SmallTest;
 
+import org.aerogear.mobile.core.categories.UnitTest;
 import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.http.HttpRequest;
 import org.aerogear.mobile.core.http.HttpResponse;
@@ -31,6 +33,7 @@ import okhttp3.mockwebserver.MockWebServer;
 
 @RunWith(RobolectricTestRunner.class)
 @SmallTest
+@Category(UnitTest.class)
 public class OkHttpServiceModuleTest {
 
     @Test

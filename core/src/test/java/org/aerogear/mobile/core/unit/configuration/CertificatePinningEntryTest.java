@@ -1,14 +1,17 @@
-package org.aerogear.mobile.core.configuration;
+package org.aerogear.mobile.core.unit.configuration;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
+import org.aerogear.mobile.core.categories.UnitTest;
 import org.aerogear.mobile.core.configuration.https.CertificatePinningEntry;
 
 
 @RunWith(RobolectricTestRunner.class)
+@Category(UnitTest.class)
 public class CertificatePinningEntryTest {
 
     private final static String TEST_HOST = "aerogear.org";
