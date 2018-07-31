@@ -12,6 +12,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.robolectric.RuntimeEnvironment;
 
@@ -21,6 +22,7 @@ import android.support.test.filters.SmallTest;
 import org.aerogear.mobile.core.AeroGearTestRunner;
 import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.MobileCore;
+import org.aerogear.mobile.core.categories.UnitTest;
 import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.helper.AsyncWithCallback;
 import org.aerogear.mobile.core.helper.HangsAfterCleanup;
@@ -34,6 +36,7 @@ import org.aerogear.mobile.core.reactive.Responder;
  */
 @RunWith(AeroGearTestRunner.class)
 @SmallTest
+@Category(UnitTest.class)
 public class AsyncReactiveCaseTest {
 
     private AppExecutors executor = new AppExecutors();

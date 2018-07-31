@@ -12,6 +12,7 @@ import java.util.Map;
 
 import org.json.JSONException;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.robolectric.RuntimeEnvironment;
 
@@ -19,12 +20,14 @@ import android.app.Application;
 import android.support.test.filters.SmallTest;
 
 import org.aerogear.mobile.core.AeroGearTestRunner;
+import org.aerogear.mobile.core.categories.UnitTest;
 import org.aerogear.mobile.core.configuration.MobileCoreConfiguration;
 import org.aerogear.mobile.core.configuration.MobileCoreJsonParser;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 
 @RunWith(AeroGearTestRunner.class)
 @SmallTest
+@Category(UnitTest.class)
 public class MobileCoreParserTest {
 
     @Test

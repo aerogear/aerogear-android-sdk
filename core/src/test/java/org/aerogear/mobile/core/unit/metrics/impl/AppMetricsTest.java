@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.robolectric.RuntimeEnvironment;
 
@@ -15,10 +16,12 @@ import android.support.test.filters.SmallTest;
 
 import org.aerogear.mobile.core.AeroGearTestRunner;
 import org.aerogear.mobile.core.MobileCore;
+import org.aerogear.mobile.core.categories.UnitTest;
 import org.aerogear.mobile.core.metrics.impl.AppMetrics;
 
 @RunWith(AeroGearTestRunner.class)
 @SmallTest
+@Category(UnitTest.class)
 public class AppMetricsTest {
 
     @Before

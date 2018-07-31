@@ -2,15 +2,18 @@ package org.aerogear.mobile.core.unit.utils;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
 import android.support.test.filters.SmallTest;
 
+import org.aerogear.mobile.core.categories.UnitTest;
 import org.aerogear.mobile.core.utils.SanityCheck;
 
 @RunWith(RobolectricTestRunner.class)
 @SmallTest
+@Category(UnitTest.class)
 public class SanityCheckTest {
 
     @Test

@@ -11,6 +11,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.robolectric.RuntimeEnvironment;
 
@@ -21,6 +22,7 @@ import android.support.test.filters.SmallTest;
 
 import org.aerogear.mobile.core.AeroGearTestRunner;
 import org.aerogear.mobile.core.MobileCore;
+import org.aerogear.mobile.core.categories.UnitTest;
 import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.http.HttpResponse;
 import org.aerogear.mobile.core.http.HttpServiceModule;
@@ -39,6 +41,7 @@ import okhttp3.mockwebserver.RecordedRequest;
 
 @RunWith(AeroGearTestRunner.class)
 @SmallTest
+@Category(UnitTest.class)
 public class ReactiveHTTPTest {
 
     private AppExecutors executor = new AppExecutors();

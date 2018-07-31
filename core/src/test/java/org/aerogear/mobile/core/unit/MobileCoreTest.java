@@ -10,6 +10,7 @@ import java.util.Map;
 import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.robolectric.RuntimeEnvironment;
 
@@ -19,6 +20,7 @@ import android.support.test.filters.SmallTest;
 import org.aerogear.mobile.core.AeroGearTestRunner;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.ServiceModule;
+import org.aerogear.mobile.core.categories.UnitTest;
 import org.aerogear.mobile.core.configuration.MobileCoreConfiguration;
 import org.aerogear.mobile.core.configuration.MobileCoreJsonParser;
 import org.aerogear.mobile.core.configuration.ServiceConfiguration;
@@ -27,6 +29,7 @@ import org.aerogear.mobile.core.logging.Logger;
 
 @RunWith(AeroGearTestRunner.class)
 @SmallTest
+@Category(UnitTest.class)
 public class MobileCoreTest {
 
     private Context context = RuntimeEnvironment.application;
