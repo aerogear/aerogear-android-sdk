@@ -1,4 +1,19 @@
 buildscript {
+
+    ext.jacocoVersion = '0.8.1'
+
+    // JaCoCo
+    ext.execFile = 'jacoco/jacocoTest.exec'
+    ext.classFilesPath = 'intermediates/javac'
+    ext.fileFilter = [
+        '**/R.class',
+        '**/R$*.class',
+        '**/BuildConfig.*',
+        '**/Manifest*.*',
+        '**/*Test*.*',
+        'android/**/*.*'
+    ]
+
     repositories {
         google()
         jcenter()
@@ -7,6 +22,7 @@ buildscript {
         classpath 'com.android.tools.build:gradle:3.2.0-alpha13'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
         classpath 'com.google.gms:google-services:3.2.1'
+        classpath "org.jacoco:org.jacoco.core:$jacocoVersion"
     }
 }
 
@@ -45,6 +61,36 @@ subprojects {
                 type.buildConfigField 'String', 'PROJECT_ROOT', "\"" + project.projectDir.absolutePath.replace("\\", "\\\\") + "/\""
             }
     }
+}
+
+task jacocoRootReport(type: JacocoReport, group: 'Coverage reports') {
+
+  apply plugin: 'jacoco'
+
+  description = 'Generates an aggregate report from all modules - auth, core, push, and security'
+
+  subprojects.each { dependsOn("${it.name}:jacocoTestReport") }
+
+  jacocoClasspath = configurations.jacocoAnt
+
+  reports {
+    xml.enabled = true
+    html.enabled = true
+  }
+
+  def srcDirs = []
+  subprojects.each {srcDirs << "it.projectDir/src/main/java"}
+  sourceDirectories = files(srcDirs)
+
+  def classDirTrees = []
+  subprojects.each {classDirTrees << fileTree(dir: "$it.buildDir/$classFilesPath/debug", excludes: fileFilter)}
+  subprojects.each {classDirTrees << fileTree(dir: "$it.buildDir/$classFilesPath/debugUnitTest", excludes: fileFilter)}
+  subprojects.each {classDirTrees << fileTree(dir: "$it.buildDir/$classFilesPath/debugAndroidTest", excludes: fileFilter)}
+  classDirectories = files(classDirTrees)
+
+  def execData = []
+  subprojects.each {execData << "$it.buildDir/$execFile"}
+  executionData = files(execData)
 }
 
 // We want to expose the SDK version and name to the metrics subproject

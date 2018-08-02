@@ -44,4 +44,5 @@ dependencies {
     testImplementation "org.robolectric:robolectric:${project.ext.robolectric_version}"
 }
 
+apply from: "../jacoco.gradle"
 apply from: "../gradle-mvn-push.gradle"

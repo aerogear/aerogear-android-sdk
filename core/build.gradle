@@ -61,5 +61,6 @@ dependencies {
     testImplementation "com.squareup.okhttp3:mockwebserver:${project.ext.okhttp_version}"
 }
 
+apply from: "../jacoco.gradle"
 apply from: "../gradle-mvn-push.gradle"
 

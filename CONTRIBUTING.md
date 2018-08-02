@@ -75,3 +75,15 @@ This includes testing of communication between Android SDK Metrics module and [A
 In order to run the test successfully you have to have an AeroGear App Metrics service running. Follow [the guide](https://github.com/aerogear/aerogear-app-metrics#run-entire-application-with-docker-compose) to run the Metrics service locally. You can trigger the test execution by running `./gradlew :core:clean :core:testDebug -PintegrationTests=true` afterwards.
 
 If you have Metrics service running already, just update the [Metrics URL](https://github.com/aerogear/aerogear-android-sdk/blob/master/core/src/test/assets/mobile-services.json#L32) with a valid URL pointing to `/metrics` endpoint, e.g. https://app-metrics.example.com/metrics
+
+### Code Coverage
+
+You can create a code coverage report for each module individually. The example below generates the code coverage report for the 'auth' module:
+`./gradlew :auth:jacocoTestReport`
+To see the report open the following file in a browser:
+`<module>/build/reports/jacoco/jacocoTestReport/html/index.html`
+
+You can also create a code coverage report for all the modules combined:
+`./gradlew jacocoRootReport`
+HTML report location:
+`build/reports/jacoco/jacocoRootReport/html/index.html`

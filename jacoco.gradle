@@ -1,0 +1,36 @@
+apply plugin: 'jacoco'
+
+jacoco {
+    toolVersion = "$jacocoVersion"
+}
+
+tasks.withType(Test) {
+    jacoco.includeNoLocationClasses = true
+    jacoco.destinationFile = file("$buildDir/$execFile")
+}
+
+android {
+    buildTypes {
+        debug {
+            testCoverageEnabled = true
+        }
+    }
+}
+
+task jacocoTestReport(type: JacocoReport, group: 'Coverage reports') {
+
+  description = 'Generates a JaCoCo report for a single module (core/auth/push/security)'
+  dependsOn = ['testDebugUnitTest', 'createDebugCoverageReport']
+
+  reports {
+    xml.enabled = true
+    html.enabled = true
+  }
+  def debugTree = fileTree(dir: "$buildDir/$classFilesPath/debug", excludes: fileFilter);
+  def debugUnitTree = fileTree(dir: "$buildDir/$classFilesPath/debugUnitTest", excludes: fileFilter);
+  def debugAndroidTree = fileTree(dir: "$buildDir/$classFilesPath/debugAndroidTest", excludes: fileFilter);
+
+  sourceDirectories = files(['src/main/java'])
+  classDirectories = files([debugTree, debugUnitTree, debugAndroidTree])
+  executionData = files(["$buildDir/$execFile"])
+}
