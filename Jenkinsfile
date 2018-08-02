@@ -58,7 +58,7 @@ if ( prLabels.contains("test/integration") ) {
                 }
 
                 stage ('Run integration test') {
-                    sh "./gradlew :core:testDebug --tests *.IntegrationTestSuite"
+                    sh "./gradlew :core:testDebug -PintegrationTests=true"
                 }
             }
 
