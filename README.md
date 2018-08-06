@@ -24,7 +24,6 @@ The AeroGear SDK consists of set of Modules
 - Core - Core Module used as base for other Modules
 - Auth - Mobile Application Auth Module
 - Security - Mobile Application Security Module
-- Metrics - Mobile Application Metrics Module
 - Push - Mobile Application Unified Push Module
 
 ## License 
