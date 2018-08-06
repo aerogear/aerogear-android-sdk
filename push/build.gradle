@@ -34,5 +34,7 @@ dependencies {
     testImplementation "com.android.support.test:runner:${project.ext.android_support_test_runner_version}"
     testImplementation "com.android.support.test:rules:${project.ext.android_support_test_rules_version}"
 }
+
+apply from: "../jacoco.gradle"
 apply from: "../gradle-mvn-push.gradle"
 
