@@ -1,8 +1,6 @@
 package org.aerogear.mobile.core.http;
 
-import org.aerogear.mobile.core.ServiceModule;
-
-public interface HttpServiceModule extends ServiceModule {
+public interface HttpServiceModule {
 
     /**
      * Creates a new HttpRequest and prepends common configuration such as certificate pinning, user

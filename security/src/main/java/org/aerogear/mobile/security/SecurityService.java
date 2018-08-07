@@ -3,64 +3,23 @@ package org.aerogear.mobile.security;
 import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import org.aerogear.mobile.core.MobileCore;
-import org.aerogear.mobile.core.ServiceModule;
-import org.aerogear.mobile.core.configuration.ServiceConfiguration;
 import org.aerogear.mobile.core.metrics.MetricsService;
 import org.aerogear.mobile.security.metrics.SecurityCheckResultMetric;
 
 /**
  * Service for running security checks in an application.
- *
+ * <p>
  * Security checks can be run individually using {@link #check(SecurityCheckType)}. Security checks
  * can also be chained together to execute security checks synchronously or asynchronously. Invoking
  * {@link #getCheckExecutor()} will return a {@link SyncSecurityCheckExecutor} where security checks
  * can be executed synchronously. Invoking {@link #getAsyncCheckExecutor()} will return
  * {@link AsyncSecurityCheckExecutor} where security checks can be executed asynchronously.
  */
-public class SecurityService implements ServiceModule {
+public class SecurityService {
 
     static final String SECURITY_METRICS_EVENT_TYPE = "security";
-
-    private static final String TYPE = "security";
-
-    private MobileCore core;
-
-    /**
-     * Gets the service type.
-     *
-     * @return {@link String}
-     */
-    @Override
-    public String type() {
-        return TYPE;
-    }
-
-    /**
-     * Configures the security service.
-     *
-     * @param core {@link MobileCore} instance
-     * @param serviceConfiguration {@link ServiceConfiguration} for the security service. Can be
-     *        null
-     */
-    @Override
-    public void configure(@NonNull final MobileCore core,
-                    @Nullable final ServiceConfiguration serviceConfiguration) {
-        this.core = nonNull(core, "core");
-    }
-
-    /**
-     * Checks if the service requires a service configuration. This service does not require a
-     * service configuration.
-     *
-     * @return <code>false</code>
-     */
-    @Override
-    public boolean requiresConfiguration() {
-        return false;
-    }
 
     /**
      * Retrieve a check executor that can synchronously run multiple security checks.
@@ -68,7 +27,8 @@ public class SecurityService implements ServiceModule {
      * @return {@link SyncSecurityCheckExecutor}
      */
     public SyncSecurityCheckExecutor getCheckExecutor() {
-        return SecurityCheckExecutor.Builder.newSyncExecutor(core.getContext()).build();
+        return SecurityCheckExecutor.Builder.newSyncExecutor(MobileCore.getInstance().getContext())
+                        .build();
     }
 
     /**
@@ -77,7 +37,8 @@ public class SecurityService implements ServiceModule {
      * @return {@link AsyncSecurityCheckExecutor}
      */
     public AsyncSecurityCheckExecutor getAsyncCheckExecutor() {
-        return SecurityCheckExecutor.Builder.newAsyncExecutor(core.getContext()).build();
+        return SecurityCheckExecutor.Builder.newAsyncExecutor(MobileCore.getInstance().getContext())
+                        .build();
     }
 
     /**
@@ -101,7 +62,7 @@ public class SecurityService implements ServiceModule {
      * @throws IllegalArgumentException if securityCheck is null
      */
     public SecurityCheckResult check(@NonNull final SecurityCheck securityCheck) {
-        return nonNull(securityCheck, "securityCheck").test(core.getContext());
+        return nonNull(securityCheck, "securityCheck").test(MobileCore.getInstance().getContext());
     }
 
     /**
