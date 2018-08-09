@@ -1,3 +1,5 @@
-= Documentation for AeroGear Android SDK
+= Contributing to Documentation
 
-NOTE: This documentation will be published at http://docs.aerogear.com/.
+This documentation set is written in link:http://asciidoc.org/[AsciiDoc^] and rendered by link:https://antora.org/[Antora^].
+
+IMPORTANT: Read the link:https://github.com/aerogear/mobile-docs/blob/master/README.adoc[Contribution Guide].
