@@ -1,9 +1,9 @@
 package org.aerogear.mobile.security;
 
 /**
- * Interface for the results of a {@link SecurityCheck}.
+ * Interface for the results of a {@link DeviceCheck}.
  */
-public interface SecurityCheckResult {
+public interface DeviceCheckResult {
     /**
      * Gets the unique identifier of the security check that this is the result of. This can be used
      * for reporting purposes.

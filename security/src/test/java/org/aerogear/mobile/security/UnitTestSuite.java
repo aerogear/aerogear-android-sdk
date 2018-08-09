@@ -1,5 +1,6 @@
 package org.aerogear.mobile.security;
 
+import org.aerogear.mobile.security.impl.DeviceCheckResultTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -10,8 +11,7 @@ import org.aerogear.mobile.security.checks.NoDebuggerCheckTest;
 import org.aerogear.mobile.security.checks.NonRootedCheckTest;
 import org.aerogear.mobile.security.checks.NotInEmulatorCheckTest;
 import org.aerogear.mobile.security.checks.ScreenLockCheckTest;
-import org.aerogear.mobile.security.impl.SecurityCheckResultTest;
-import org.aerogear.mobile.security.metrics.SecurityCheckResultMetricTest;
+import org.aerogear.mobile.security.metrics.DeviceCheckResultMetricTest;
 
 /**
  * Suite containing all unit tests in security
@@ -20,8 +20,8 @@ import org.aerogear.mobile.security.metrics.SecurityCheckResultMetricTest;
 @Suite.SuiteClasses({BackupDisallowedCheckTest.class, NoDebuggerCheckTest.class,
                 DeveloperModeDisabledCheckTest.class, NotInEmulatorCheckTest.class,
                 EncryptionCheckTest.class, NonRootedCheckTest.class, ScreenLockCheckTest.class,
-                SecurityCheckResultTest.class, SecurityCheckResultMetricTest.class,
-                SecurityCheckExecutorTest.class})
+                DeviceCheckResultTest.class, DeviceCheckResultMetricTest.class,
+                DeviceCheckExecutorTest.class})
 public class UnitTestSuite {
 
 }

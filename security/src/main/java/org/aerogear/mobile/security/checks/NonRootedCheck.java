@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 /**
  * A check for whether the device the application is running on is rooted.
  */
-public class NonRootedCheck extends AbstractSecurityCheck {
+public class NonRootedCheck extends AbstractDeviceCheck {
 
     /**
      * Check whether the device is rooted or not. An attacker running the application on a rooted

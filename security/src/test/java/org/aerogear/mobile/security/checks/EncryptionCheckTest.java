@@ -14,7 +14,7 @@ import org.robolectric.RobolectricTestRunner;
 import android.app.admin.DevicePolicyManager;
 import android.content.Context;
 
-import org.aerogear.mobile.security.SecurityCheckResult;
+import org.aerogear.mobile.security.DeviceCheckResult;
 
 @RunWith(RobolectricTestRunner.class)
 public class EncryptionCheckTest {
@@ -39,7 +39,7 @@ public class EncryptionCheckTest {
     public void hasEncryptionEnabled() {
         when(devicePolicyManager.getStorageEncryptionStatus())
                         .thenReturn(DevicePolicyManager.ENCRYPTION_STATUS_ACTIVE);
-        SecurityCheckResult result = check.test(context);
+        DeviceCheckResult result = check.test(context);
         assertTrue(result.passed());
     }
 
@@ -47,7 +47,7 @@ public class EncryptionCheckTest {
     public void hasEncryptionDisabled() {
         when(devicePolicyManager.getStorageEncryptionStatus())
                         .thenReturn(DevicePolicyManager.ENCRYPTION_STATUS_INACTIVE);
-        SecurityCheckResult result = check.test(context);
+        DeviceCheckResult result = check.test(context);
         assertFalse(result.passed());
     }
 

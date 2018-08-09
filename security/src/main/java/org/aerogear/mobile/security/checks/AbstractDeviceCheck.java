@@ -5,25 +5,25 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import org.aerogear.mobile.security.SecurityCheck;
-import org.aerogear.mobile.security.SecurityCheckResult;
-import org.aerogear.mobile.security.impl.SecurityCheckResultImpl;
+import org.aerogear.mobile.security.DeviceCheck;
+import org.aerogear.mobile.security.DeviceCheckResult;
+import org.aerogear.mobile.security.impl.DeviceCheckResultImpl;
 
 /**
  * Base class for security checks.
  */
-public abstract class AbstractSecurityCheck implements SecurityCheck {
+public abstract class AbstractDeviceCheck implements DeviceCheck {
     /**
      * Checks that the context is not null and delegates the check execution to the
      * {@link #execute(Context)} method.
      *
      * @param context Context to be used by the check
-     * @return {@link SecurityCheckResult} embedding the result of {@link #execute(Context)}
+     * @return {@link DeviceCheckResult} embedding the result of {@link #execute(Context)}
      * @throws IllegalArgumentException if context is null
      */
     @Override
-    public final SecurityCheckResult test(@NonNull final Context context) {
-        return new SecurityCheckResultImpl(this, execute(nonNull(context, "context")));
+    public final DeviceCheckResult test(@NonNull final Context context) {
+        return new DeviceCheckResultImpl(this, execute(nonNull(context, "context")));
     }
 
     /**

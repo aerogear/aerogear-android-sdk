@@ -13,7 +13,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
-import org.aerogear.mobile.security.SecurityCheckResult;
+import org.aerogear.mobile.security.DeviceCheckResult;
 
 @RunWith(RobolectricTestRunner.class)
 public class BackupDisallowedCheckTest {
@@ -34,7 +34,7 @@ public class BackupDisallowedCheckTest {
         packageInfo.applicationInfo.flags =
                         packageInfo.applicationInfo.flags | ApplicationInfo.FLAG_ALLOW_BACKUP;
 
-        SecurityCheckResult result = check.test(application);
+        DeviceCheckResult result = check.test(application);
         assertFalse(result.passed());
     }
 
@@ -44,7 +44,7 @@ public class BackupDisallowedCheckTest {
         packageInfo.applicationInfo.flags =
                         packageInfo.applicationInfo.flags & ~ApplicationInfo.FLAG_ALLOW_BACKUP;
 
-        SecurityCheckResult result = check.test(application);
+        DeviceCheckResult result = check.test(application);
         assertTrue(result.passed());
     }
 

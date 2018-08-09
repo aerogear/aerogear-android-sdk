@@ -27,36 +27,36 @@ import android.content.Context;
 import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.metrics.MetricsService;
 import org.aerogear.mobile.core.reactive.Requester;
-import org.aerogear.mobile.security.impl.SecurityCheckResultImpl;
+import org.aerogear.mobile.security.impl.DeviceCheckResultImpl;
 
 @RunWith(RobolectricTestRunner.class)
-public class SecurityCheckExecutorTest {
+public class DeviceCheckExecutorTest {
     @Mock
     Context context;
 
     @Mock
-    SecurityCheckType securityCheckType;
+    DeviceCheckType deviceCheckType;
 
     @Mock
     MetricsService metricsService;
 
     @Mock
-    SecurityCheck mockSecurityCheck;
+    DeviceCheck mockDeviceCheck;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
 
-        SecurityCheckResultImpl result = new SecurityCheckResultImpl(mockSecurityCheck, true);
+        DeviceCheckResultImpl result = new DeviceCheckResultImpl(mockDeviceCheck, true);
         when(metricsService.publish(any(), any())).thenReturn(Requester.emit(true));
         when(context.getApplicationContext()).thenReturn(context);
-        when(mockSecurityCheck.test(context)).thenReturn(result);
-        when(securityCheckType.getSecurityCheck()).thenReturn(mockSecurityCheck);
+        when(mockDeviceCheck.test(context)).thenReturn(result);
+        when(deviceCheckType.getSecurityCheck()).thenReturn(mockDeviceCheck);
     }
 
     @Test
     public void testSendMetricsSync() {
-        SecurityCheckExecutor.Builder.newSyncExecutor(context).withSecurityCheck(securityCheckType)
+        DeviceCheckExecutor.Builder.newSyncExecutor(context).withSecurityCheck(deviceCheckType)
                         .withMetricsService(metricsService).build().execute();
 
         verify(metricsService, times(1)).publish(eq("security"), any());
@@ -65,25 +65,25 @@ public class SecurityCheckExecutorTest {
     @Test
     public void testExecuteSync() {
 
-        Map<String, SecurityCheckResult> results =
-                        SecurityCheckExecutor.Builder.newSyncExecutor(context)
-                                        .withSecurityCheck(securityCheckType).build().execute();
+        Map<String, DeviceCheckResult> results =
+                        DeviceCheckExecutor.Builder.newSyncExecutor(context)
+                                        .withSecurityCheck(deviceCheckType).build().execute();
 
         assertEquals(1, results.size());
-        assertTrue(results.containsKey(mockSecurityCheck.getId()));
-        assertEquals(true, results.get(mockSecurityCheck.getId()).passed());
+        assertTrue(results.containsKey(mockDeviceCheck.getId()));
+        assertEquals(true, results.get(mockDeviceCheck.getId()).passed());
     }
 
     @Test
     public void testExecuteAsync() throws Exception {
 
-        final Map<String, Future<SecurityCheckResult>> results = SecurityCheckExecutor.Builder
-                        .newAsyncExecutor(context).withSecurityCheck(securityCheckType)
+        final Map<String, Future<DeviceCheckResult>> results = DeviceCheckExecutor.Builder
+                        .newAsyncExecutor(context).withSecurityCheck(deviceCheckType)
                         .withExecutorService(Executors.newFixedThreadPool(1)).build().execute();
 
         assertEquals(1, results.size());
-        assertTrue(results.containsKey(mockSecurityCheck.getId()));
-        assertEquals(true, results.get(mockSecurityCheck.getId()).get().passed());
+        assertTrue(results.containsKey(mockDeviceCheck.getId()));
+        assertEquals(true, results.get(mockDeviceCheck.getId()).get().passed());
     }
 
     @Test
@@ -91,14 +91,14 @@ public class SecurityCheckExecutorTest {
 
         CountDownLatch latch = new CountDownLatch(1);
 
-        final Map<String, Future<SecurityCheckResult>> results = SecurityCheckExecutor.Builder
-                        .newAsyncExecutor(context).withSecurityCheck(securityCheckType)
+        final Map<String, Future<DeviceCheckResult>> results = DeviceCheckExecutor.Builder
+                        .newAsyncExecutor(context).withSecurityCheck(deviceCheckType)
                         .withMetricsService(metricsService)
                         .withExecutorService(Executors.newFixedThreadPool(1)).build().execute();
 
         assertEquals(1, results.size());
-        assertTrue(results.containsKey(mockSecurityCheck.getId()));
-        results.get(mockSecurityCheck.getId()).get();
+        assertTrue(results.containsKey(mockDeviceCheck.getId()));
+        results.get(mockDeviceCheck.getId()).get();
 
         ExecutorService executorService = (new AppExecutors()).networkThread();
         executorService.submit(() -> {

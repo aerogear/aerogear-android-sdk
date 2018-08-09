@@ -9,7 +9,7 @@ import org.robolectric.RobolectricTestRunner;
 
 import android.test.mock.MockContext;
 
-import org.aerogear.mobile.security.SecurityCheckResult;
+import org.aerogear.mobile.security.DeviceCheckResult;
 
 @RunWith(RobolectricTestRunner.class)
 public class NotInEmulatorCheckTest {
@@ -23,7 +23,7 @@ public class NotInEmulatorCheckTest {
 
     @Test
     public void testCheck() {
-        SecurityCheckResult result = check.test(new MockContext());
+        DeviceCheckResult result = check.test(new MockContext());
         assertTrue(result.passed());
     }
 

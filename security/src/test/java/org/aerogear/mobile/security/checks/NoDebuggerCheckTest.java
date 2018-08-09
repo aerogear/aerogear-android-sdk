@@ -8,7 +8,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
-import org.aerogear.mobile.security.SecurityCheckResult;
+import org.aerogear.mobile.security.DeviceCheckResult;
 
 @RunWith(RobolectricTestRunner.class)
 public class NoDebuggerCheckTest {
@@ -21,7 +21,7 @@ public class NoDebuggerCheckTest {
 
     @Test
     public void testDebugIsEnabled() {
-        SecurityCheckResult result = check.test(RuntimeEnvironment.application);
+        DeviceCheckResult result = check.test(RuntimeEnvironment.application);
         assertTrue(result.passed());
     }
 }

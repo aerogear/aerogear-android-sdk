@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 /**
  * A check for whether the device the application is running on has a screen lock.
  */
-public class ScreenLockCheck extends AbstractSecurityCheck {
+public class ScreenLockCheck extends AbstractDeviceCheck {
 
     /**
      * Check whether the device has a screen lock enabled (PIN, Password, etc).

@@ -12,7 +12,7 @@ import org.aerogear.mobile.security.checks.ScreenLockCheck;
 /**
  * Checks that can be performed.
  */
-public enum SecurityCheckType {
+public enum DeviceCheckType {
 
     /**
      * Detect whether the device is rooted. See {@link NonRootedCheck}
@@ -49,30 +49,30 @@ public enum SecurityCheckType {
     HAS_ENCRYPTION_ENABLED(new EncryptionCheck());
 
 
-    private SecurityCheck check;
+    private DeviceCheck check;
 
     /**
-     * Creates SecurityCheckType object.
+     * Creates DeviceCheckType object.
      *
-     * @param check {@link SecurityCheck}
+     * @param check {@link DeviceCheck}
      */
-    SecurityCheckType(SecurityCheck check) {
+    DeviceCheckType(DeviceCheck check) {
         this.check = check;
     }
 
     /**
      * Gets the security check.
      *
-     * @return {@link SecurityCheck} instance
+     * @return {@link DeviceCheck} instance
      */
-    public SecurityCheck getSecurityCheck() {
+    public DeviceCheck getSecurityCheck() {
         return check;
     }
 
     /**
      * Gets the type of the security check.
      *
-     * @return {@link String} {@link SecurityCheck#getId()}
+     * @return {@link String} {@link DeviceCheck#getId()}
      */
     public String getType() {
         return getSecurityCheck().getId();

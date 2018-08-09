@@ -4,14 +4,14 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 import android.support.annotation.NonNull;
 
-import org.aerogear.mobile.security.SecurityCheck;
-import org.aerogear.mobile.security.SecurityCheckResult;
+import org.aerogear.mobile.security.DeviceCheck;
+import org.aerogear.mobile.security.DeviceCheckResult;
 
 /**
- * Implementation of {@link SecurityCheckResult}. A basic container for information about the
+ * Implementation of {@link DeviceCheckResult}. A basic container for information about the
  * outcome of the check.
  */
-public class SecurityCheckResultImpl implements SecurityCheckResult {
+public class DeviceCheckResultImpl implements DeviceCheckResult {
 
     private final String id;
     private final boolean passed;
@@ -24,8 +24,8 @@ public class SecurityCheckResultImpl implements SecurityCheckResult {
      * @param passed whether the check has been passed or not
      * @throws IllegalArgumentException if check is null
      */
-    public SecurityCheckResultImpl(@NonNull SecurityCheck check, final boolean passed) {
-        SecurityCheck nonNullCheck = nonNull(check, "check");
+    public DeviceCheckResultImpl(@NonNull DeviceCheck check, final boolean passed) {
+        DeviceCheck nonNullCheck = nonNull(check, "check");
         this.id = nonNullCheck.getId();
         this.name = nonNullCheck.getName();
         this.passed = passed;

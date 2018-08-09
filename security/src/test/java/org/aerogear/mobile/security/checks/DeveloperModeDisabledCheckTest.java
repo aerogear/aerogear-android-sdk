@@ -14,8 +14,8 @@ import android.content.Context;
 import android.provider.Settings;
 import android.test.mock.MockContentResolver;
 
-import org.aerogear.mobile.security.SecurityCheckResult;
-import org.aerogear.mobile.security.impl.SecurityCheckResultImpl;
+import org.aerogear.mobile.security.DeviceCheckResult;
+import org.aerogear.mobile.security.impl.DeviceCheckResultImpl;
 
 @RunWith(RobolectricTestRunner.class)
 public class DeveloperModeDisabledCheckTest {
@@ -37,9 +37,9 @@ public class DeveloperModeDisabledCheckTest {
 
         DeveloperModeDisabledCheck developerModeDisabledCheck = new DeveloperModeDisabledCheck();
 
-        SecurityCheckResult expected =
-                        new SecurityCheckResultImpl(developerModeDisabledCheck, false);
-        SecurityCheckResult actual = developerModeDisabledCheck.test(context);
+        DeviceCheckResult expected =
+                        new DeviceCheckResultImpl(developerModeDisabledCheck, false);
+        DeviceCheckResult actual = developerModeDisabledCheck.test(context);
 
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.passed(), actual.passed());
@@ -53,9 +53,9 @@ public class DeveloperModeDisabledCheckTest {
 
         DeveloperModeDisabledCheck developerModeDisabledCheck = new DeveloperModeDisabledCheck();
 
-        SecurityCheckResult expected =
-                        new SecurityCheckResultImpl(developerModeDisabledCheck, true);
-        SecurityCheckResult actual = developerModeDisabledCheck.test(context);
+        DeviceCheckResult expected =
+                        new DeviceCheckResultImpl(developerModeDisabledCheck, true);
+        DeviceCheckResult actual = developerModeDisabledCheck.test(context);
 
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.passed(), actual.passed());

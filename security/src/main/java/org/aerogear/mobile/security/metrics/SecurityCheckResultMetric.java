@@ -11,10 +11,10 @@ import android.support.annotation.NonNull;
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.metrics.Metrics;
-import org.aerogear.mobile.security.SecurityCheckResult;
+import org.aerogear.mobile.security.DeviceCheckResult;
 
 /**
- * Metric representation of {@link SecurityCheckResult}. This is intended to be used with the
+ * Metric representation of {@link DeviceCheckResult}. This is intended to be used with the
  * {@link org.aerogear.mobile.core.metrics.MetricsService}.
  */
 public class SecurityCheckResultMetric implements Metrics<JSONArray> {
@@ -31,22 +31,22 @@ public class SecurityCheckResultMetric implements Metrics<JSONArray> {
     /**
      * Creates a SecurityCheckResultMetric object.
      *
-     * @param results the list of {@link SecurityCheckResult} of the tests executed
+     * @param results the list of {@link DeviceCheckResult} of the tests executed
      * @throws IllegalArgumentException if result is null
      *
      */
-    public SecurityCheckResultMetric(@NonNull final Iterable<SecurityCheckResult> results) {
+    public SecurityCheckResultMetric(@NonNull final Iterable<DeviceCheckResult> results) {
         this.data = getDataFromResult(results);
     }
 
     /**
      * Creates a SecurityCheckResultMetric object.
      *
-     * @param results the list of {@link SecurityCheckResult} of the tests executed
+     * @param results the list of {@link DeviceCheckResult} of the tests executed
      * @throws IllegalArgumentException if result is null
      *
      */
-    public SecurityCheckResultMetric(@NonNull final SecurityCheckResult... results) {
+    public SecurityCheckResultMetric(@NonNull final DeviceCheckResult... results) {
         this.data = getDataFromResult(Arrays.asList(results));
     }
 
@@ -74,14 +74,14 @@ public class SecurityCheckResultMetric implements Metrics<JSONArray> {
     /**
      * Creates the data structure that stores whether or not the result passed or not.
      *
-     * @param results the {@link SecurityCheckResult} iterable of the test executed
+     * @param results the {@link DeviceCheckResult} iterable of the test executed
      * @return {@link JSONArray} data
      */
-    private JSONArray getDataFromResult(final Iterable<SecurityCheckResult> results) {
+    private JSONArray getDataFromResult(final Iterable<DeviceCheckResult> results) {
         final JSONArray data = new JSONArray();
 
         try {
-            for (SecurityCheckResult result : results) {
+            for (DeviceCheckResult result : results) {
                 final JSONObject resultJson = new JSONObject();
                 resultJson.put(KEY_ID, result.getId());
                 resultJson.put(KEY_NAME, result.getName());

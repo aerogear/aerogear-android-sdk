@@ -13,26 +13,26 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
 
-import org.aerogear.mobile.security.SecurityCheck;
-import org.aerogear.mobile.security.SecurityCheckResult;
-import org.aerogear.mobile.security.impl.SecurityCheckResultImpl;
+import org.aerogear.mobile.security.DeviceCheck;
+import org.aerogear.mobile.security.DeviceCheckResult;
+import org.aerogear.mobile.security.impl.DeviceCheckResultImpl;
 
 @RunWith(RobolectricTestRunner.class)
-public class SecurityCheckResultMetricTest {
+public class DeviceCheckResultMetricTest {
 
-    SecurityCheckResult okResult;
-    SecurityCheckResult failedResult;
+    DeviceCheckResult okResult;
+    DeviceCheckResult failedResult;
 
     @Mock
-    private SecurityCheck securityCheck;
+    private DeviceCheck deviceCheck;
     private final String CHECK_ID = "TestCheck";
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        when(securityCheck.getId()).thenReturn(CHECK_ID);
-        okResult = new SecurityCheckResultImpl(securityCheck, true);
-        failedResult = new SecurityCheckResultImpl(securityCheck, false);
+        when(deviceCheck.getId()).thenReturn(CHECK_ID);
+        okResult = new DeviceCheckResultImpl(deviceCheck, true);
+        failedResult = new DeviceCheckResultImpl(deviceCheck, false);
     }
 
     @Test

@@ -14,7 +14,7 @@ import org.robolectric.RuntimeEnvironment;
 
 import android.os.Build;
 
-import org.aerogear.mobile.security.SecurityCheckResult;
+import org.aerogear.mobile.security.DeviceCheckResult;
 
 @RunWith(RobolectricTestRunner.class)
 public class ScreenLockCheckTest {
@@ -30,14 +30,14 @@ public class ScreenLockCheckTest {
     @Test
     public void testAndroidM() throws NoSuchFieldException, Exception {
         setFinalStatic(Build.VERSION.class.getField("SDK_INT"), Build.VERSION_CODES.M);
-        SecurityCheckResult result = check.test(RuntimeEnvironment.application);
+        DeviceCheckResult result = check.test(RuntimeEnvironment.application);
         assertFalse(result.passed());
     }
 
     @Test
     public void testPreAndroidM() throws NoSuchFieldException, Exception {
         setFinalStatic(Build.VERSION.class.getField("SDK_INT"), Build.VERSION_CODES.LOLLIPOP);
-        SecurityCheckResult result = check.test(RuntimeEnvironment.application);
+        DeviceCheckResult result = check.test(RuntimeEnvironment.application);
         assertFalse(result.passed());
     }
 

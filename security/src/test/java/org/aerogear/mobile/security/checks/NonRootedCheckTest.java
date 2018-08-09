@@ -18,7 +18,7 @@ import com.scottyab.rootbeer.RootBeer;
 
 import android.content.Context;
 
-import org.aerogear.mobile.security.SecurityCheckResult;
+import org.aerogear.mobile.security.DeviceCheckResult;
 
 @RunWith(RobolectricTestRunner.class)
 public class NonRootedCheckTest {
@@ -42,14 +42,14 @@ public class NonRootedCheckTest {
     @Test
     public void testIsRooted() {
         when(rootBeer.isRooted()).thenReturn(true);
-        SecurityCheckResult result = check.test(RuntimeEnvironment.application);
+        DeviceCheckResult result = check.test(RuntimeEnvironment.application);
         assertFalse(result.passed());
     }
 
     @Test
     public void testNotRooted() {
         when(rootBeer.isRooted()).thenReturn(false);
-        SecurityCheckResult result = check.test(RuntimeEnvironment.application);
+        DeviceCheckResult result = check.test(RuntimeEnvironment.application);
         assertTrue(result.passed());
     }
 
