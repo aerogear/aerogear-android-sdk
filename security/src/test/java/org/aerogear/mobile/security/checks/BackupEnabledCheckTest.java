@@ -13,17 +13,17 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
-import org.aerogear.mobile.security.SecurityCheckResult;
+import org.aerogear.mobile.security.DeviceCheckResult;
 
 @RunWith(RobolectricTestRunner.class)
-public class BackupDisallowedCheckTest {
+public class BackupEnabledCheckTest {
 
-    BackupDisallowedCheck check;
+    BackupEnabledCheck check;
     PackageInfo packageInfo;
 
     @Before
     public void setup() throws PackageManager.NameNotFoundException {
-        check = new BackupDisallowedCheck();
+        check = new BackupEnabledCheck();
         packageInfo = application.getPackageManager().getPackageInfo(application.getPackageName(),
                         0);
     }
@@ -34,8 +34,8 @@ public class BackupDisallowedCheckTest {
         packageInfo.applicationInfo.flags =
                         packageInfo.applicationInfo.flags | ApplicationInfo.FLAG_ALLOW_BACKUP;
 
-        SecurityCheckResult result = check.test(application);
-        assertFalse(result.passed());
+        DeviceCheckResult result = check.test(application);
+        assertTrue(result.passed());
     }
 
     @Test
@@ -44,8 +44,8 @@ public class BackupDisallowedCheckTest {
         packageInfo.applicationInfo.flags =
                         packageInfo.applicationInfo.flags & ~ApplicationInfo.FLAG_ALLOW_BACKUP;
 
-        SecurityCheckResult result = check.test(application);
-        assertTrue(result.passed());
+        DeviceCheckResult result = check.test(application);
+        assertFalse(result.passed());
     }
 
     @Test(expected = IllegalArgumentException.class)

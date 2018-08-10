@@ -14,30 +14,30 @@ import org.robolectric.RuntimeEnvironment;
 
 import android.os.Build;
 
-import org.aerogear.mobile.security.SecurityCheckResult;
+import org.aerogear.mobile.security.DeviceCheckResult;
 
 @RunWith(RobolectricTestRunner.class)
-public class ScreenLockCheckTest {
+public class ScreenLockEnabledCheckTest {
 
-    ScreenLockCheck check;
+    ScreenLockEnabledCheck check;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        check = new ScreenLockCheck();
+        check = new ScreenLockEnabledCheck();
     }
 
     @Test
     public void testAndroidM() throws NoSuchFieldException, Exception {
         setFinalStatic(Build.VERSION.class.getField("SDK_INT"), Build.VERSION_CODES.M);
-        SecurityCheckResult result = check.test(RuntimeEnvironment.application);
+        DeviceCheckResult result = check.test(RuntimeEnvironment.application);
         assertFalse(result.passed());
     }
 
     @Test
     public void testPreAndroidM() throws NoSuchFieldException, Exception {
         setFinalStatic(Build.VERSION.class.getField("SDK_INT"), Build.VERSION_CODES.LOLLIPOP);
-        SecurityCheckResult result = check.test(RuntimeEnvironment.application);
+        DeviceCheckResult result = check.test(RuntimeEnvironment.application);
         assertFalse(result.passed());
     }
 
@@ -53,7 +53,7 @@ public class ScreenLockCheckTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void nullContextTest() {
-        ScreenLockCheck screenLockCheck = new ScreenLockCheck();
-        screenLockCheck.test(null);
+        ScreenLockEnabledCheck screenLockEnabledCheck = new ScreenLockEnabledCheck();
+        screenLockEnabledCheck.test(null);
     }
 }

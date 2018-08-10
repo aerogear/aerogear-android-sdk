@@ -1,6 +1,6 @@
 package org.aerogear.mobile.security.checks;
 
-import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.assertFalse;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -9,22 +9,22 @@ import org.robolectric.RobolectricTestRunner;
 
 import android.test.mock.MockContext;
 
-import org.aerogear.mobile.security.SecurityCheckResult;
+import org.aerogear.mobile.security.DeviceCheckResult;
 
 @RunWith(RobolectricTestRunner.class)
-public class NotInEmulatorCheckTest {
+public class IsEmulatorCheckTest {
 
-    NotInEmulatorCheck check;
+    IsEmulatorCheck check;
 
     @Before
     public void setup() {
-        check = new NotInEmulatorCheck();
+        check = new IsEmulatorCheck();
     }
 
     @Test
     public void testCheck() {
-        SecurityCheckResult result = check.test(new MockContext());
-        assertTrue(result.passed());
+        DeviceCheckResult result = check.test(new MockContext());
+        assertFalse(result.passed());
     }
 
 }

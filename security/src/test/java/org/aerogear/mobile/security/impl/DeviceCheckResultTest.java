@@ -8,33 +8,33 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import org.aerogear.mobile.security.SecurityCheck;
-import org.aerogear.mobile.security.SecurityCheckResult;
+import org.aerogear.mobile.security.DeviceCheck;
+import org.aerogear.mobile.security.DeviceCheckResult;
 
 
-public class SecurityCheckResultTest {
+public class DeviceCheckResultTest {
 
-    SecurityCheckResult result;
+    DeviceCheckResult result;
     static final boolean RESULT_PASSED = true;
 
     @Mock
-    private SecurityCheck securityCheck;
+    private DeviceCheck deviceCheck;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
 
-        result = new SecurityCheckResultImpl(securityCheck, RESULT_PASSED);
+        result = new DeviceCheckResultImpl(deviceCheck, RESULT_PASSED);
     }
 
     @Test
     public void testGetId() {
-        assertEquals(securityCheck.getId(), result.getId());
+        assertEquals(deviceCheck.getId(), result.getId());
     }
 
     @Test
     public void testGetName() {
-        assertEquals(securityCheck.getName(), result.getName());
+        assertEquals(deviceCheck.getName(), result.getName());
     }
 
     @Test

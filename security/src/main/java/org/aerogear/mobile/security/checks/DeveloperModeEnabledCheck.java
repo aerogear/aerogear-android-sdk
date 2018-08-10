@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 /**
  * Security check that detects if developer mode is enabled in the device.
  */
-public class DeveloperModeDisabledCheck extends AbstractSecurityCheck {
+public class DeveloperModeEnabledCheck extends AbstractDeviceCheck {
 
     /**
      * Check if developer mode has been enabled in the device. Developer mode can allow an attacker
@@ -21,7 +21,7 @@ public class DeveloperModeDisabledCheck extends AbstractSecurityCheck {
     protected boolean execute(@NonNull Context context) {
         int devOptions = Settings.Secure.getInt(context.getContentResolver(),
                         Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0);
-        return devOptions == 0;
+        return devOptions != 0;
     }
 
     @Override

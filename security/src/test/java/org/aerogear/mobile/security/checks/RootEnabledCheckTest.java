@@ -18,12 +18,12 @@ import com.scottyab.rootbeer.RootBeer;
 
 import android.content.Context;
 
-import org.aerogear.mobile.security.SecurityCheckResult;
+import org.aerogear.mobile.security.DeviceCheckResult;
 
 @RunWith(RobolectricTestRunner.class)
-public class NonRootedCheckTest {
+public class RootEnabledCheckTest {
 
-    NonRootedCheck check;
+    RootEnabledCheck check;
 
     @Mock
     RootBeer rootBeer;
@@ -31,7 +31,7 @@ public class NonRootedCheckTest {
     @Before
     public void setup() throws IOException {
         MockitoAnnotations.initMocks(this);
-        check = new NonRootedCheck() {
+        check = new RootEnabledCheck() {
             @Override
             protected RootBeer getRootBeer(Context ctx) {
                 return rootBeer;
@@ -42,20 +42,20 @@ public class NonRootedCheckTest {
     @Test
     public void testIsRooted() {
         when(rootBeer.isRooted()).thenReturn(true);
-        SecurityCheckResult result = check.test(RuntimeEnvironment.application);
-        assertFalse(result.passed());
+        DeviceCheckResult result = check.test(RuntimeEnvironment.application);
+        assertTrue(result.passed());
     }
 
     @Test
     public void testNotRooted() {
         when(rootBeer.isRooted()).thenReturn(false);
-        SecurityCheckResult result = check.test(RuntimeEnvironment.application);
-        assertTrue(result.passed());
+        DeviceCheckResult result = check.test(RuntimeEnvironment.application);
+        assertFalse(result.passed());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void nullContextTest() {
-        NonRootedCheck nonRootedCheck = new NonRootedCheck();
-        nonRootedCheck.test(null);
+        RootEnabledCheck rootEnabledCheck = new RootEnabledCheck();
+        rootEnabledCheck.test(null);
     }
 }

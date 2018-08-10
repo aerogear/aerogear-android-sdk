@@ -14,10 +14,10 @@ import org.aerogear.mobile.security.metrics.SecurityCheckResultMetric;
  * This object will manage the communication with the metric service, batching the results to be
  * published.
  */
-class SecurityCheckMetricPublisher implements SecurityCheckExecutorListener {
+class DeviceCheckMetricPublisher implements DeviceCheckExecutorListener {
 
     private final MetricsService metricsService;
-    private final List<SecurityCheckResult> metricResults =
+    private final List<DeviceCheckResult> metricResults =
                     Collections.synchronizedList(new ArrayList<>());
 
     /**
@@ -25,12 +25,12 @@ class SecurityCheckMetricPublisher implements SecurityCheckExecutorListener {
      *
      * @param metricsService metric service to be used to publish the metrics
      */
-    SecurityCheckMetricPublisher(final MetricsService metricsService) {
+    DeviceCheckMetricPublisher(final MetricsService metricsService) {
         this.metricsService = metricsService;
     }
 
     @Override
-    public void onExecuted(SecurityCheckResult result) {
+    public void onExecuted(DeviceCheckResult result) {
         metricResults.add(result);
     }
 

@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 /**
  * A check for whether a debugger is attached to the current application.
  */
-public class NoDebuggerCheck extends AbstractSecurityCheck {
+public class DebuggerEnabledCheck extends AbstractDeviceCheck {
 
     /**
      * Check whether a debugger is attached to the current application. An application running with
@@ -18,7 +18,7 @@ public class NoDebuggerCheck extends AbstractSecurityCheck {
      */
     @Override
     protected boolean execute(@NonNull Context context) {
-        return !Debug.isDebuggerConnected();
+        return Debug.isDebuggerConnected();
     }
 
     @Override

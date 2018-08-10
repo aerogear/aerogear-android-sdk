@@ -14,18 +14,18 @@ import org.aerogear.mobile.core.executor.AppExecutors;
 import org.aerogear.mobile.core.metrics.MetricsService;
 
 /**
- * Entry point for the SecurityCheckExecutor. This class provides the builders.
+ * Entry point for the DeviceCheckExecutor. This class provides the builders.
  */
-public class SecurityCheckExecutor {
-    private SecurityCheckExecutor() {}
+public class DeviceCheckExecutor {
+    private DeviceCheckExecutor() {}
 
     /**
-     * Entry point for SecurityCheckExecutor builders.
+     * Entry point for DeviceCheckExecutor builders.
      */
     public static class Builder {
 
         /**
-         * Base class for SecurityCheckExecutor builders.
+         * Base class for DeviceCheckExecutor builders.
          *
          * @param <T> The type of this builder
          * @param <K> The type of the built object
@@ -33,7 +33,7 @@ public class SecurityCheckExecutor {
         static abstract class AbstractBuilder<T, K> {
 
             private final Context ctx;
-            private final Collection<SecurityCheck> checks = new HashSet<>();
+            private final Collection<DeviceCheck> checks = new HashSet<>();
             private MetricsService metricsService;
 
             /**
@@ -49,24 +49,24 @@ public class SecurityCheckExecutor {
             /**
              * Adds a new security check by providing a security check instance.
              *
-             * @param check the {@link SecurityCheck} to be added
+             * @param check the {@link DeviceCheck} to be added
              * @return this
              * @throws IllegalArgumentException if check is null
              */
-            public T withSecurityCheck(@NonNull final SecurityCheck check) {
+            public T withSecurityCheck(@NonNull final DeviceCheck check) {
                 checks.add(nonNull(check, "check"));
                 return (T) this;
             }
 
             /**
-             * Adds a new security check by providing a {@link SecurityCheckType}
+             * Adds a new security check by providing a {@link DeviceCheckType}
              *
-             * @param checkType {@link SecurityCheckType} to be added
+             * @param checkType {@link DeviceCheckType} to be added
              * @return this
              * @throws IllegalArgumentException if checkType is null
              */
-            public T withSecurityCheck(@NonNull final SecurityCheckType checkType) {
-                checks.add(nonNull(checkType, "checkType").getSecurityCheck());
+            public T withSecurityCheck(@NonNull final DeviceCheckType checkType) {
+                checks.add(nonNull(checkType, "checkType").getDeviceCheck());
                 return (T) this;
             }
 
@@ -106,7 +106,7 @@ public class SecurityCheckExecutor {
              *
              * @return {@link Collection}
              */
-            protected Collection<SecurityCheck> getChecks() {
+            protected Collection<DeviceCheck> getChecks() {
                 return checks;
             }
 
@@ -119,44 +119,43 @@ public class SecurityCheckExecutor {
         }
 
         /**
-         * Creates a Builder for AsyncSecurityCheckExecutor.
+         * Creates a Builder for AsyncDeviceCheckExecutor.
          *
          * @param ctx {@link Context} to be used by the security checks
-         * @return {@link AsyncSecurityCheckExecutor.Builder}
+         * @return {@link AsyncDeviceCheckExecutor.Builder}
          */
-        private AsyncSecurityCheckExecutor.Builder newAsyncBuilder(@NonNull final Context ctx) {
-            return new AsyncSecurityCheckExecutor.Builder(ctx);
+        private AsyncDeviceCheckExecutor.Builder newAsyncBuilder(@NonNull final Context ctx) {
+            return new AsyncDeviceCheckExecutor.Builder(ctx);
         }
 
         /**
-         * Creates a Builder for SyncSecurityCheckExecutor.
+         * Creates a Builder for SyncDeviceCheckExecutor.
          *
          * @param ctx {@link Context} to be used by the security checks
-         * @return {@link SyncSecurityCheckExecutor.Builder}
+         * @return {@link SyncDeviceCheckExecutor.Builder}
          */
-        private SyncSecurityCheckExecutor.Builder newSyncBuilder(@NonNull final Context ctx) {
-            return new SyncSecurityCheckExecutor.Builder(ctx);
+        private SyncDeviceCheckExecutor.Builder newSyncBuilder(@NonNull final Context ctx) {
+            return new SyncDeviceCheckExecutor.Builder(ctx);
         }
 
         /**
-         * Creates a new AsyncSecurityCheckExecutor Builder.
+         * Creates a new AsyncDeviceCheckExecutor Builder.
          *
          * @param ctx {@link Context} to be used by the security checks
-         * @return {@link AsyncSecurityCheckExecutor.Builder}
+         * @return {@link AsyncDeviceCheckExecutor.Builder}
          */
-        public static AsyncSecurityCheckExecutor.Builder newAsyncExecutor(
+        public static AsyncDeviceCheckExecutor.Builder newAsyncExecutor(
                         @NonNull final Context ctx) {
             return new Builder().newAsyncBuilder(ctx);
         }
 
         /**
-         * Creates a new SyncSecurityCheckExecutor Builder.
+         * Creates a new SyncDeviceCheckExecutor Builder.
          *
          * @param ctx {@link Context} to be used by the security checks
-         * @return {@link SyncSecurityCheckExecutor.Builder}
+         * @return {@link SyncDeviceCheckExecutor.Builder}
          */
-        public static SyncSecurityCheckExecutor.Builder newSyncExecutor(
-                        @NonNull final Context ctx) {
+        public static SyncDeviceCheckExecutor.Builder newSyncExecutor(@NonNull final Context ctx) {
             return new Builder().newSyncBuilder(ctx);
         }
     }
