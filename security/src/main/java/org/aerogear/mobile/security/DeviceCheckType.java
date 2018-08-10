@@ -65,7 +65,7 @@ public enum DeviceCheckType {
      *
      * @return {@link DeviceCheck} instance
      */
-    public DeviceCheck getSecurityCheck() {
+    public DeviceCheck getDeviceCheck() {
         return check;
     }
 
@@ -75,6 +75,6 @@ public enum DeviceCheckType {
      * @return {@link String} {@link DeviceCheck#getId()}
      */
     public String getType() {
-        return getSecurityCheck().getId();
+        return getDeviceCheck().getId();
     }
 }

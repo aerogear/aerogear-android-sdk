@@ -50,7 +50,7 @@ public class SecurityService {
      * @throws IllegalArgumentException if deviceCheckType is null
      */
     public DeviceCheckResult check(@NonNull final DeviceCheckType deviceCheckType) {
-        return check(nonNull(deviceCheckType, "deviceCheckType").getSecurityCheck());
+        return check(nonNull(deviceCheckType, "deviceCheckType").getDeviceCheck());
     }
 
     /**
@@ -75,7 +75,7 @@ public class SecurityService {
      */
     public DeviceCheckResult checkAndSendMetric(final DeviceCheckType deviceCheckType,
                                                 final MetricsService metricsService) {
-        return checkAndSendMetric(deviceCheckType.getSecurityCheck(), metricsService);
+        return checkAndSendMetric(deviceCheckType.getDeviceCheck(), metricsService);
     }
 
     /**

@@ -66,7 +66,7 @@ public class DeviceCheckExecutor {
              * @throws IllegalArgumentException if checkType is null
              */
             public T withSecurityCheck(@NonNull final DeviceCheckType checkType) {
-                checks.add(nonNull(checkType, "checkType").getSecurityCheck());
+                checks.add(nonNull(checkType, "checkType").getDeviceCheck());
                 return (T) this;
             }
 

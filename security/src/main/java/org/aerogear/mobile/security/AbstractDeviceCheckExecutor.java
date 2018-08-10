@@ -98,7 +98,7 @@ abstract class AbstractDeviceCheckExecutor<T extends AbstractDeviceCheckExecutor
      * @return this, so that adding checks can be chained
      */
     public T addCheck(DeviceCheckType checkType) {
-        this.getChecks().add(checkType.getSecurityCheck());
+        this.getChecks().add(checkType.getDeviceCheck());
         return (T) this;
     }
 }
