@@ -21,9 +21,9 @@ import android.content.Context;
 import org.aerogear.mobile.security.DeviceCheckResult;
 
 @RunWith(RobolectricTestRunner.class)
-public class NonRootedCheckTest {
+public class RootEnabledCheckTest {
 
-    NonRootedCheck check;
+    RootEnabledCheck check;
 
     @Mock
     RootBeer rootBeer;
@@ -31,7 +31,7 @@ public class NonRootedCheckTest {
     @Before
     public void setup() throws IOException {
         MockitoAnnotations.initMocks(this);
-        check = new NonRootedCheck() {
+        check = new RootEnabledCheck() {
             @Override
             protected RootBeer getRootBeer(Context ctx) {
                 return rootBeer;
@@ -55,7 +55,7 @@ public class NonRootedCheckTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void nullContextTest() {
-        NonRootedCheck nonRootedCheck = new NonRootedCheck();
-        nonRootedCheck.test(null);
+        RootEnabledCheck rootEnabledCheck = new RootEnabledCheck();
+        rootEnabledCheck.test(null);
     }
 }

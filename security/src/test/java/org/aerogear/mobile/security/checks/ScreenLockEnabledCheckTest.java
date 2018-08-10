@@ -17,14 +17,14 @@ import android.os.Build;
 import org.aerogear.mobile.security.DeviceCheckResult;
 
 @RunWith(RobolectricTestRunner.class)
-public class ScreenLockCheckTest {
+public class ScreenLockEnabledCheckTest {
 
-    ScreenLockCheck check;
+    ScreenLockEnabledCheck check;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        check = new ScreenLockCheck();
+        check = new ScreenLockEnabledCheck();
     }
 
     @Test
@@ -53,7 +53,7 @@ public class ScreenLockCheckTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void nullContextTest() {
-        ScreenLockCheck screenLockCheck = new ScreenLockCheck();
-        screenLockCheck.test(null);
+        ScreenLockEnabledCheck screenLockEnabledCheck = new ScreenLockEnabledCheck();
+        screenLockEnabledCheck.test(null);
     }
 }

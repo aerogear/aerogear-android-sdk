@@ -11,7 +11,7 @@ import android.support.annotation.NonNull;
  * flag determines whether to allow the application to participate in the backup and restore
  * infrastructure.
  */
-public class BackupDisallowedCheck extends AbstractDeviceCheck {
+public class BackupEnabledCheck extends AbstractDeviceCheck {
     /**
      * Check whether the allowBackup flag is enabled.
      *
@@ -28,7 +28,7 @@ public class BackupDisallowedCheck extends AbstractDeviceCheck {
             throw new IllegalStateException(
                             "Could not retrieve package information from provided context", e);
         }
-        return (packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_ALLOW_BACKUP) == 0;
+        return (packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_ALLOW_BACKUP) != 0;
     }
 
     @Override

@@ -16,14 +16,14 @@ import android.content.pm.PackageManager;
 import org.aerogear.mobile.security.DeviceCheckResult;
 
 @RunWith(RobolectricTestRunner.class)
-public class BackupDisallowedCheckTest {
+public class BackupEnabledCheckTest {
 
-    BackupDisallowedCheck check;
+    BackupEnabledCheck check;
     PackageInfo packageInfo;
 
     @Before
     public void setup() throws PackageManager.NameNotFoundException {
-        check = new BackupDisallowedCheck();
+        check = new BackupEnabledCheck();
         packageInfo = application.getPackageManager().getPackageInfo(application.getPackageName(),
                         0);
     }

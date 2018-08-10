@@ -17,7 +17,7 @@ import android.content.Context;
 import org.aerogear.mobile.security.DeviceCheckResult;
 
 @RunWith(RobolectricTestRunner.class)
-public class EncryptionCheckTest {
+public class EncryptionEnabledCheckTest {
 
     @Mock
     Context context;
@@ -25,12 +25,12 @@ public class EncryptionCheckTest {
     @Mock
     DevicePolicyManager devicePolicyManager;
 
-    EncryptionCheck check;
+    EncryptionEnabledCheck check;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        check = new EncryptionCheck();
+        check = new EncryptionEnabledCheck();
         when(context.getSystemService(context.DEVICE_POLICY_SERVICE))
                         .thenReturn(devicePolicyManager);
     }

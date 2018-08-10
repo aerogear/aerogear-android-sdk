@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 /**
  * A check for whether the device the application is running on an emulator
  */
-public class NotInEmulatorCheck extends AbstractDeviceCheck {
+public class IsEmulatorCheck extends AbstractDeviceCheck {
 
     /**
      * Checks if device is an emulator by looking at the following: Fingerprint starts with
@@ -27,7 +27,7 @@ public class NotInEmulatorCheck extends AbstractDeviceCheck {
                         || Build.MANUFACTURER.contains("Genymotion")
                         || (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic"))
                         || "google_sdk".equals(Build.PRODUCT);
-        return !isRunningOnEmulator;
+        return isRunningOnEmulator;
     }
 
     @Override

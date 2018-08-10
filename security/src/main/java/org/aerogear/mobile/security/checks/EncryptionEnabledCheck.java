@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 /**
  * Detects whether a devices filesystem is encrypted
  */
-public class EncryptionCheck extends AbstractDeviceCheck {
+public class EncryptionEnabledCheck extends AbstractDeviceCheck {
     /**
      * Check if a devices filesystem is encrypted. Filesystem-level encryption makes harder for 3rd
      * parties to access users' data.

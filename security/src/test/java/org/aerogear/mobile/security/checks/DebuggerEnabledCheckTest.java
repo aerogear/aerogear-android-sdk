@@ -6,25 +6,22 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
-
-import android.test.mock.MockContext;
+import org.robolectric.RuntimeEnvironment;
 
 import org.aerogear.mobile.security.DeviceCheckResult;
 
 @RunWith(RobolectricTestRunner.class)
-public class NotInEmulatorCheckTest {
-
-    NotInEmulatorCheck check;
+public class DebuggerEnabledCheckTest {
+    DebuggerEnabledCheck check;
 
     @Before
     public void setup() {
-        check = new NotInEmulatorCheck();
+        check = new DebuggerEnabledCheck();
     }
 
     @Test
-    public void testCheck() {
-        DeviceCheckResult result = check.test(new MockContext());
+    public void testDebugIsEnabled() {
+        DeviceCheckResult result = check.test(RuntimeEnvironment.application);
         assertTrue(result.passed());
     }
-
 }

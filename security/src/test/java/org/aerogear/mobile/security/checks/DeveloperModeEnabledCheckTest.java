@@ -18,7 +18,7 @@ import org.aerogear.mobile.security.DeviceCheckResult;
 import org.aerogear.mobile.security.impl.DeviceCheckResultImpl;
 
 @RunWith(RobolectricTestRunner.class)
-public class DeveloperModeDisabledCheckTest {
+public class DeveloperModeEnabledCheckTest {
     @Mock
     Context context;
 
@@ -35,11 +35,11 @@ public class DeveloperModeDisabledCheckTest {
                         1);
         when(context.getContentResolver()).thenReturn(mockContentResolver);
 
-        DeveloperModeDisabledCheck developerModeDisabledCheck = new DeveloperModeDisabledCheck();
+        DeveloperModeEnabledCheck developerModeEnabledCheck = new DeveloperModeEnabledCheck();
 
         DeviceCheckResult expected =
-                        new DeviceCheckResultImpl(developerModeDisabledCheck, false);
-        DeviceCheckResult actual = developerModeDisabledCheck.test(context);
+                        new DeviceCheckResultImpl(developerModeEnabledCheck, false);
+        DeviceCheckResult actual = developerModeEnabledCheck.test(context);
 
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.passed(), actual.passed());
@@ -51,11 +51,11 @@ public class DeveloperModeDisabledCheckTest {
                         0);
         when(context.getContentResolver()).thenReturn(mockContentResolver);
 
-        DeveloperModeDisabledCheck developerModeDisabledCheck = new DeveloperModeDisabledCheck();
+        DeveloperModeEnabledCheck developerModeEnabledCheck = new DeveloperModeEnabledCheck();
 
         DeviceCheckResult expected =
-                        new DeviceCheckResultImpl(developerModeDisabledCheck, true);
-        DeviceCheckResult actual = developerModeDisabledCheck.test(context);
+                        new DeviceCheckResultImpl(developerModeEnabledCheck, true);
+        DeviceCheckResult actual = developerModeEnabledCheck.test(context);
 
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.passed(), actual.passed());
@@ -63,7 +63,7 @@ public class DeveloperModeDisabledCheckTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void nullContextTest() {
-        DeveloperModeDisabledCheck developerModeDisabledCheck = new DeveloperModeDisabledCheck();
-        developerModeDisabledCheck.test(null);
+        DeveloperModeEnabledCheck developerModeEnabledCheck = new DeveloperModeEnabledCheck();
+        developerModeEnabledCheck.test(null);
     }
 }
