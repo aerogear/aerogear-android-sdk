@@ -37,8 +37,7 @@ public class DeveloperModeEnabledCheckTest {
 
         DeveloperModeEnabledCheck developerModeEnabledCheck = new DeveloperModeEnabledCheck();
 
-        DeviceCheckResult expected =
-                        new DeviceCheckResultImpl(developerModeEnabledCheck, true);
+        DeviceCheckResult expected = new DeviceCheckResultImpl(developerModeEnabledCheck, true);
         DeviceCheckResult actual = developerModeEnabledCheck.test(context);
 
         assertEquals(expected.getId(), actual.getId());
@@ -53,8 +52,7 @@ public class DeveloperModeEnabledCheckTest {
 
         DeveloperModeEnabledCheck developerModeEnabledCheck = new DeveloperModeEnabledCheck();
 
-        DeviceCheckResult expected =
-                        new DeviceCheckResultImpl(developerModeEnabledCheck, false);
+        DeviceCheckResult expected = new DeviceCheckResultImpl(developerModeEnabledCheck, false);
         DeviceCheckResult actual = developerModeEnabledCheck.test(context);
 
         assertEquals(expected.getId(), actual.getId());

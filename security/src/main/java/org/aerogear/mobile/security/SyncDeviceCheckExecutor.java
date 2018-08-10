@@ -13,8 +13,7 @@ import org.aerogear.mobile.core.metrics.MetricsService;
 /**
  * Synchronously executes provided {@link DeviceCheck}s.
  */
-public class SyncDeviceCheckExecutor
-                extends AbstractDeviceCheckExecutor<SyncDeviceCheckExecutor> {
+public class SyncDeviceCheckExecutor extends AbstractDeviceCheckExecutor<SyncDeviceCheckExecutor> {
 
     /**
      * Builder class for constructing a SyncDeviceCheckExecutor object.
@@ -51,8 +50,8 @@ public class SyncDeviceCheckExecutor
      * @param metricsService {@link MetricsService}. Can be null
      */
     SyncDeviceCheckExecutor(@NonNull final Context context,
-                            @NonNull final Collection<DeviceCheck> checks,
-                            @Nullable final MetricsService metricsService) {
+                    @NonNull final Collection<DeviceCheck> checks,
+                    @Nullable final MetricsService metricsService) {
         super(context, checks, metricsService);
     }
 

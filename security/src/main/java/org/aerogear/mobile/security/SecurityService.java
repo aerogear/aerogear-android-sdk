@@ -74,7 +74,7 @@ public class SecurityService {
      * @return {@link DeviceCheckResult}
      */
     public DeviceCheckResult checkAndSendMetric(final DeviceCheckType deviceCheckType,
-                                                final MetricsService metricsService) {
+                    final MetricsService metricsService) {
         return checkAndSendMetric(deviceCheckType.getDeviceCheck(), metricsService);
     }
 
@@ -87,7 +87,7 @@ public class SecurityService {
      * @throws IllegalArgumentException if metricsService is null
      */
     public DeviceCheckResult checkAndSendMetric(final DeviceCheck deviceCheck,
-                                                @NonNull final MetricsService metricsService) {
+                    @NonNull final MetricsService metricsService) {
         final DeviceCheckResult result = check(deviceCheck);
         nonNull(metricsService, "metricsService").publish(SECURITY_METRICS_EVENT_TYPE,
                         new SecurityCheckResultMetric(result));

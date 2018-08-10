@@ -155,8 +155,7 @@ public class DeviceCheckExecutor {
          * @param ctx {@link Context} to be used by the security checks
          * @return {@link SyncDeviceCheckExecutor.Builder}
          */
-        public static SyncDeviceCheckExecutor.Builder newSyncExecutor(
-                        @NonNull final Context ctx) {
+        public static SyncDeviceCheckExecutor.Builder newSyncExecutor(@NonNull final Context ctx) {
             return new Builder().newSyncBuilder(ctx);
         }
     }

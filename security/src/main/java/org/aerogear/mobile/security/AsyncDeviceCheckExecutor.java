@@ -83,9 +83,9 @@ public class AsyncDeviceCheckExecutor
      * @param metricsService {@link MetricsService}. Can be null
      */
     AsyncDeviceCheckExecutor(@NonNull final Context context,
-                             @NonNull final ExecutorService executorService,
-                             @NonNull final Collection<DeviceCheck> checks,
-                             @Nullable final MetricsService metricsService) {
+                    @NonNull final ExecutorService executorService,
+                    @NonNull final Collection<DeviceCheck> checks,
+                    @Nullable final MetricsService metricsService) {
         super(context, checks, metricsService);
         this.executorService = executorService;
     }

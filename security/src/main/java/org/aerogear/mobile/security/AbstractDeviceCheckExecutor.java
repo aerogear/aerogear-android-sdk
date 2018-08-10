@@ -35,8 +35,8 @@ abstract class AbstractDeviceCheckExecutor<T extends AbstractDeviceCheckExecutor
      * @throws IllegalArgumentException if context is null
      */
     public AbstractDeviceCheckExecutor(@NonNull final Context context,
-                                       @NonNull final Collection<DeviceCheck> checks,
-                                       @Nullable final MetricsService metricService) {
+                    @NonNull final Collection<DeviceCheck> checks,
+                    @Nullable final MetricsService metricService) {
         this.context = nonNull(context, "context");
         this.checks.addAll(checks);
         this.metricsService = metricService;

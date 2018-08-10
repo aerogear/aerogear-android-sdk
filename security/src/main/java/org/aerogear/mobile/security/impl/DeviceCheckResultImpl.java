@@ -8,8 +8,8 @@ import org.aerogear.mobile.security.DeviceCheck;
 import org.aerogear.mobile.security.DeviceCheckResult;
 
 /**
- * Implementation of {@link DeviceCheckResult}. A basic container for information about the
- * outcome of the check.
+ * Implementation of {@link DeviceCheckResult}. A basic container for information about the outcome
+ * of the check.
  */
 public class DeviceCheckResultImpl implements DeviceCheckResult {
 

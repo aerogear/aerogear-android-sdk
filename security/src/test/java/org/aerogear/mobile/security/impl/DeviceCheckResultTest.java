@@ -3,12 +3,12 @@ package org.aerogear.mobile.security.impl;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
-import org.aerogear.mobile.security.DeviceCheck;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import org.aerogear.mobile.security.DeviceCheck;
 import org.aerogear.mobile.security.DeviceCheckResult;
 
 

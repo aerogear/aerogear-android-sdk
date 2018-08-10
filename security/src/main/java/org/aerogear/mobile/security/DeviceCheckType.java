@@ -2,11 +2,11 @@ package org.aerogear.mobile.security;
 
 
 import org.aerogear.mobile.security.checks.BackupEnabledCheck;
+import org.aerogear.mobile.security.checks.DebuggerEnabledCheck;
 import org.aerogear.mobile.security.checks.DeveloperModeEnabledCheck;
 import org.aerogear.mobile.security.checks.EncryptionEnabledCheck;
-import org.aerogear.mobile.security.checks.DebuggerEnabledCheck;
-import org.aerogear.mobile.security.checks.RootEnabledCheck;
 import org.aerogear.mobile.security.checks.IsEmulatorCheck;
+import org.aerogear.mobile.security.checks.RootEnabledCheck;
 import org.aerogear.mobile.security.checks.ScreenLockEnabledCheck;
 
 /**
@@ -35,7 +35,8 @@ public enum DeviceCheckType {
     IS_EMULATOR(new IsEmulatorCheck()),
 
     /**
-     * Detect whether a screen lock is enabled (PIN, Password etc). See {@link ScreenLockEnabledCheck}
+     * Detect whether a screen lock is enabled (PIN, Password etc). See
+     * {@link ScreenLockEnabledCheck}
      */
     SCREEN_LOCK_ENABLED(new ScreenLockEnabledCheck()),
     /**
