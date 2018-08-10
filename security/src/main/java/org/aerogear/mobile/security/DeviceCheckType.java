@@ -62,7 +62,7 @@ public enum DeviceCheckType {
     }
 
     /**
-     * Gets the security check.
+     * Gets the device check.
      *
      * @return {@link DeviceCheck} instance
      */
@@ -71,7 +71,7 @@ public enum DeviceCheckType {
     }
 
     /**
-     * Gets the type of the security check.
+     * Gets the type of the device check.
      *
      * @return {@link String} {@link DeviceCheck#getId()}
      */
