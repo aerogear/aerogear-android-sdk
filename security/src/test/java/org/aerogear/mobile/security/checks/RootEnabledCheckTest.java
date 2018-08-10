@@ -43,14 +43,14 @@ public class RootEnabledCheckTest {
     public void testIsRooted() {
         when(rootBeer.isRooted()).thenReturn(true);
         DeviceCheckResult result = check.test(RuntimeEnvironment.application);
-        assertFalse(result.passed());
+        assertTrue(result.passed());
     }
 
     @Test
     public void testNotRooted() {
         when(rootBeer.isRooted()).thenReturn(false);
         DeviceCheckResult result = check.test(RuntimeEnvironment.application);
-        assertTrue(result.passed());
+        assertFalse(result.passed());
     }
 
     @Test(expected = IllegalArgumentException.class)

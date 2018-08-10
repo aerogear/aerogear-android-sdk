@@ -51,7 +51,7 @@ public class DeviceCheckExecutorTest {
         when(metricsService.publish(any(), any())).thenReturn(Requester.emit(true));
         when(context.getApplicationContext()).thenReturn(context);
         when(mockDeviceCheck.test(context)).thenReturn(result);
-        when(deviceCheckType.getSecurityCheck()).thenReturn(mockDeviceCheck);
+        when(deviceCheckType.getDeviceCheck()).thenReturn(mockDeviceCheck);
     }
 
     @Test

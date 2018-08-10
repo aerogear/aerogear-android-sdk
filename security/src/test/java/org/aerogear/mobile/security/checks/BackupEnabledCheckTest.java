@@ -35,7 +35,7 @@ public class BackupEnabledCheckTest {
                         packageInfo.applicationInfo.flags | ApplicationInfo.FLAG_ALLOW_BACKUP;
 
         DeviceCheckResult result = check.test(application);
-        assertFalse(result.passed());
+        assertTrue(result.passed());
     }
 
     @Test
@@ -45,7 +45,7 @@ public class BackupEnabledCheckTest {
                         packageInfo.applicationInfo.flags & ~ApplicationInfo.FLAG_ALLOW_BACKUP;
 
         DeviceCheckResult result = check.test(application);
-        assertTrue(result.passed());
+        assertFalse(result.passed());
     }
 
     @Test(expected = IllegalArgumentException.class)
