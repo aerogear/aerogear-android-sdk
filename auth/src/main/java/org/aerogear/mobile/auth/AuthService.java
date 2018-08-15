@@ -44,16 +44,16 @@ public class AuthService {
 
     public AuthService(final AuthServiceConfiguration authServiceConfiguration,
                     final BrowserConfiguration browserConfiguration) {
+        nonNull(authServiceConfiguration, "authServiceConfiguration");
+
         ServiceConfiguration serviceConfiguration =
                         MobileCore.getInstance().getServiceConfigurationByType(type);
         this.keycloakConfiguration = new KeycloakConfiguration(serviceConfiguration);
         this.authStateManager = AuthStateManager.getInstance(MobileCore.getInstance().getContext());
-        AuthServiceConfiguration authServiceConfiguration1 =
-                        nonNull(authServiceConfiguration, "authServiceConfiguration");
         this.jwksManager = new JwksManager(MobileCore.getInstance().getContext(),
-                        MobileCore.getInstance(), authServiceConfiguration1);
+                        MobileCore.getInstance(), authServiceConfiguration);
         this.oidcAuthenticatorImpl = new OIDCAuthenticatorImpl(serviceConfiguration,
-                        authServiceConfiguration1, browserConfiguration, this.authStateManager,
+                        authServiceConfiguration, browserConfiguration, this.authStateManager,
                         new AuthorizationServiceFactory(MobileCore.getInstance().getContext()),
                         jwksManager, MobileCore.getInstance().getHttpLayer());
     }
