@@ -1,15 +1,5 @@
 package org.aerogear.mobile.core;
 
-import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import org.json.JSONException;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -23,11 +13,21 @@ import org.aerogear.mobile.core.exception.ConfigurationNotFoundException;
 import org.aerogear.mobile.core.exception.InitializationException;
 import org.aerogear.mobile.core.http.OkHttpCertificatePinningParser;
 import org.aerogear.mobile.core.http.OkHttpServiceModule;
+import org.aerogear.mobile.core.http.interceptors.DynamicInterceptor;
 import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.logging.LoggerAdapter;
 import org.aerogear.mobile.core.metrics.MetricsService;
+import org.json.JSONException;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
+
+import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
 /**
  * MobileCore is the entry point into AeroGear mobile services
@@ -52,6 +52,7 @@ public final class MobileCore {
     private final Map<String, ServiceConfiguration> serviceConfigById;
     private final Map<String, List<ServiceConfiguration>> serviceConfigsByType;
     private final MetricsService metricsService;
+    private final DynamicInterceptor dynamicInterceptor;
 
     /**
      * Get the user app version from the package manager
@@ -63,7 +64,7 @@ public final class MobileCore {
         nonNull(context, "context");
         try {
             return context.getPackageManager().getPackageInfo(context.getPackageName(),
-                            0).versionName;
+                    0).versionName;
         } catch (PackageManager.NameNotFoundException e) {
             // Wrap in Initialization exception
             throw new InitializationException("Failed to read app version", e);
@@ -76,7 +77,7 @@ public final class MobileCore {
      * @param context Application context
      */
     private MobileCore(final Context context)
-                    throws InitializationException, IllegalStateException {
+            throws InitializationException, IllegalStateException {
         this.context = nonNull(context, "context").getApplicationContext();
         this.appVersion = readAppVersion(context);
 
@@ -95,14 +96,16 @@ public final class MobileCore {
 
         // -- HTTP layer --------------------------------------------------------------------------
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        dynamicInterceptor = new DynamicInterceptor();
+        builder.addNetworkInterceptor(dynamicInterceptor);
 
         OkHttpCertificatePinningParser certificatePinning =
-                        new OkHttpCertificatePinningParser(httpsConfig.getCertPinningConfig());
+                new OkHttpCertificatePinningParser(httpsConfig.getCertPinningConfig());
         builder.certificatePinner(certificatePinning.parse());
 
         builder.connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
-                        .writeTimeout(DEFAULT_WRITE_TIMEOUT, TimeUnit.SECONDS)
-                        .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS);
+                .writeTimeout(DEFAULT_WRITE_TIMEOUT, TimeUnit.SECONDS)
+                .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS);
         this.httpLayer = new OkHttpServiceModule(builder.build());
 
         // Metrics Service ------------------------------------------------------------------------
@@ -221,7 +224,7 @@ public final class MobileCore {
         }
         if (configs.size() > 1) {
             logger.warning(TAG, "There are multiple configs for the service type " + type
-                            + ". Using the first one found.");
+                    + ". Using the first one found.");
         }
         return configs.get(0);
     }
@@ -234,6 +237,15 @@ public final class MobileCore {
      */
     public ServiceConfiguration getServiceConfigurationById(final String id) {
         return serviceConfigById.get(id);
+    }
+
+    /**
+     * Adds new interceptor to the chain of core http interceptors that could be used for authentication purposes
+     *
+     * @return DynamicInterceptor
+     */
+    public DynamicInterceptor getHttpInterceptorLayer() {
+        return dynamicInterceptor;
     }
 
 }
