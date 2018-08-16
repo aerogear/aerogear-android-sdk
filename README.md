@@ -41,4 +41,4 @@ Join our [user mailing list](https://groups.google.com/forum/#!forum/aerogear) f
 
 ## Found a bug?
 
-If you found a bug please create a ticket for us on [Jira](https://issues.jboss.org/browse/AEROGEAR) with some steps to reproduce it.
+If you found a bug please create a ticket for us on [Jira](https://issues.jboss.org/browse/AEROGEAR) with some steps to reproduce it. Thank you!
