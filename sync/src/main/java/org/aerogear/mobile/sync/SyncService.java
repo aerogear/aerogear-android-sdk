@@ -34,26 +34,40 @@ public final class SyncService {
 
     private final ApolloClient apolloClient;
 
-    public SyncService(@Nonnull OkHttpClient okHttpClient, @Nonnull String serverUrl,
-                    @Nonnull String webSocketUrl) {
-        apolloClient = ApolloClient.builder().serverUrl(nonNull(serverUrl, "serverUrl"))
+    /**
+     * Create service basing on existing builder
+     *
+     * @param builder
+     */
+    public SyncService(ApolloClient.Builder builder) {
+        MobileCore mobileCore = MobileCore.getInstance();
+        ServiceConfiguration configuration = mobileCore.getServiceConfigurationByType(TYPE);
+        String serverUrl = configuration.getUrl();
+        String webSocketUrl = configuration.getProperty("subscription");
+        OkHttpClient okHttpClient = mobileCore.getHttpLayer().getClient();
+        builder.serverUrl(nonNull(serverUrl, "serverUrl"))
                         .okHttpClient(nonNull(okHttpClient, "okHttpClient"))
-                        .subscriptionTransportFactory(new Factory(webSocketUrl, okHttpClient))
-                        .build();
+                        .subscriptionTransportFactory(new Factory(webSocketUrl, okHttpClient));
+        apolloClient = builder.build();
+    }
+
+    /**
+     * Default service with minimal required configuration
+     */
+    public SyncService() {
+        this(ApolloClient.builder());
     }
 
     public static SyncService getInstance() {
         if (instance == null) {
-            MobileCore mobileCore = MobileCore.getInstance();
-            ServiceConfiguration configuration = mobileCore.getServiceConfigurationByType(TYPE);
-            String serverUrl = configuration.getUrl();
-            String webSocketUrl = configuration.getProperty("subscription");
-            OkHttpClient okHttpClient = mobileCore.getHttpLayer().getClient();
-            SyncService.instance = new SyncService(okHttpClient, serverUrl, webSocketUrl);
+            SyncService.instance = new SyncService();
         }
         return instance;
     }
 
+    /**
+     * Get underlying apollo client
+     */
     public ApolloClient getApolloClient() {
         return apolloClient;
     }
