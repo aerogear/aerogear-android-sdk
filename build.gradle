@@ -78,6 +78,16 @@ task jacocoRootReport(type: JacocoReport, group: 'Coverage reports') {
     html.enabled = true
   }
 
+  // these 'onlyIf' and 'doFirst' blocks are required since the sync module does not contain any unit tests
+  onlyIf = {
+      true
+  }
+  doFirst {
+      executionData = files(executionData.findAll {
+          it.exists()
+      })
+  }
+
   def srcDirs = []
   subprojects.each {srcDirs << "it.projectDir/src/main/java"}
   sourceDirectories = files(srcDirs)

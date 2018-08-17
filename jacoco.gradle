@@ -20,7 +20,7 @@ android {
 task jacocoTestReport(type: JacocoReport, group: 'Coverage reports') {
 
   description = 'Generates a JaCoCo report for a single module (core/auth/push/security)'
-  dependsOn = ['testDebugUnitTest', 'createDebugCoverageReport']
+  dependsOn = ['testDebugUnitTest']
 
   reports {
     xml.enabled = true
