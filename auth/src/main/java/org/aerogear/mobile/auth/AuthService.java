@@ -129,8 +129,8 @@ public class AuthService {
     }
 
     /**
-     * Get interface that is used to provide authentication headers.
-     * Clients can use this interface to add headers into their own network layer.
+     * Get interface that is used to provide authentication headers. Clients can use this interface
+     * to add headers into their own network layer.
      *
      * @return provider
      */

@@ -1,10 +1,10 @@
 package org.aerogear.mobile.auth;
 
-import org.aerogear.mobile.auth.user.UserPrincipal;
-import org.aerogear.mobile.core.http.interceptors.HeaderProvider;
-
 import java.util.Collections;
 import java.util.Map;
+
+import org.aerogear.mobile.auth.user.UserPrincipal;
+import org.aerogear.mobile.core.http.interceptors.HeaderProvider;
 
 /**
  * Default provider class that will build headers based on currently logged in user access token
@@ -22,6 +22,7 @@ public class AuthHeaderProvider implements HeaderProvider {
 
     /***
      * Build auth header if user is logged in and has valid token.
+     * 
      * @return Auth header in map
      */
     @Override

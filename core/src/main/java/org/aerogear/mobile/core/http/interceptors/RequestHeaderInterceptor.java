@@ -10,8 +10,8 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 /**
- * Dynamic request header interceptor that wraps OK HTTP and allows to reload chain of request providers
- * Class can be used to dynamically getHeaders requests
+ * Dynamic request header interceptor that wraps OK HTTP and allows to reload chain of request
+ * providers Class can be used to dynamically getHeaders requests
  *
  * @see HeaderProvider - interface used by clients to add headers
  */
@@ -44,7 +44,3 @@ public class RequestHeaderInterceptor implements Interceptor {
         providers = new LinkedList<>();
     }
 }
-
-
-
-
