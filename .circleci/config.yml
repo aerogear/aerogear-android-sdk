@@ -22,7 +22,10 @@ jobs:
           key: jars-{{ checksum "build.gradle" }}
       - run:
           name: Run Tests
-          command: ./gradlew lint testDebug spotlessCheck
+          command: ./gradlew lint jacocoRootReport spotlessCheck
+      - run:
+          name: Integrate with Codecov
+          command: bash <(curl -s https://codecov.io/bash)
       - run:
           name: Generate Maven Artifacts
           command: ./gradlew install
