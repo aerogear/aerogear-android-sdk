@@ -13,7 +13,7 @@ import org.aerogear.mobile.core.exception.ConfigurationNotFoundException;
 import org.aerogear.mobile.core.exception.InitializationException;
 import org.aerogear.mobile.core.http.OkHttpCertificatePinningParser;
 import org.aerogear.mobile.core.http.OkHttpServiceModule;
-import org.aerogear.mobile.core.http.interceptors.DynamicInterceptor;
+import org.aerogear.mobile.core.http.interceptors.RequestHeaderInterceptor;
 import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.logging.LoggerAdapter;
 import org.aerogear.mobile.core.metrics.MetricsService;
@@ -52,7 +52,7 @@ public final class MobileCore {
     private final Map<String, ServiceConfiguration> serviceConfigById;
     private final Map<String, List<ServiceConfiguration>> serviceConfigsByType;
     private final MetricsService metricsService;
-    private final DynamicInterceptor dynamicInterceptor;
+    private final RequestHeaderInterceptor dynamicInterceptor;
 
     /**
      * Get the user app version from the package manager
@@ -96,7 +96,7 @@ public final class MobileCore {
 
         // -- HTTP layer --------------------------------------------------------------------------
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        dynamicInterceptor = new DynamicInterceptor();
+        dynamicInterceptor = new RequestHeaderInterceptor();
         builder.addNetworkInterceptor(dynamicInterceptor);
 
         OkHttpCertificatePinningParser certificatePinning =
@@ -240,11 +240,12 @@ public final class MobileCore {
     }
 
     /**
-     * Adds new interceptor to the chain of core http interceptors that could be used for authentication purposes
+     * Returns manager that adds new interceptor to the chain of core http interceptors that could
+     * be used to add headers to network requests
      *
-     * @return DynamicInterceptor
+     * @return RequestHeaderInterceptor
      */
-    public DynamicInterceptor getHttpInterceptorLayer() {
+    public RequestHeaderInterceptor requestHeaderInterceptor() {
         return dynamicInterceptor;
     }
 
