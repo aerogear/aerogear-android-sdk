@@ -37,7 +37,7 @@ public final class SyncService {
     /**
      * Create service basing on existing builder
      *
-     * @param builder
+     * @param builder ApolloClient.Builder
      */
     public SyncService(ApolloClient.Builder builder) {
         MobileCore mobileCore = MobileCore.getInstance();
@@ -58,6 +58,11 @@ public final class SyncService {
         this(ApolloClient.builder());
     }
 
+    /**
+     * Get the SyncService singleton instance
+     *
+     * @return SyncService
+     */
     public static SyncService getInstance() {
         if (instance == null) {
             SyncService.instance = new SyncService();
@@ -67,19 +72,45 @@ public final class SyncService {
 
     /**
      * Get underlying apollo client
+     *
+     * @return apolloClient
      */
     public ApolloClient getApolloClient() {
         return apolloClient;
     }
 
+    /**
+     * Apollo query wrapper using AeroGear Rx
+     *
+     * @param query Apollo Query instance
+     *
+     * @return SyncQuery
+     *
+     */
     public SyncQuery query(@Nonnull Query query) {
         return new SyncQuery(this.apolloClient, nonNull(query, "query"));
     }
 
+    /**
+     * Apollo mutation wrapper using AeroGear Rx
+     *
+     * @param mutation Apollo Mutation instance
+     *
+     * @return SyncMutation
+     *
+     */
     public SyncMutation mutation(@Nonnull Mutation mutation) {
         return new SyncMutation(this.apolloClient, nonNull(mutation, "mutation"));
     }
 
+    /**
+     * Apollo subscription wrapper using AeroGear Rx
+     *
+     * @param subscription Apollo Subscription instance
+     *
+     * @return SyncSubscription
+     *
+     */
     public SyncSubscription subscribe(@Nonnull Subscription subscription) {
         return new SyncSubscription(this.apolloClient, nonNull(subscription, "subscription"));
     }
