@@ -36,6 +36,7 @@ public class AuthService {
     private OIDCAuthenticatorImpl oidcAuthenticatorImpl;
 
     private JwksManager jwksManager;
+    private final AuthHeaderProvider authHeaderProvider;
 
     public AuthService(final AuthServiceConfiguration authServiceConfiguration) {
         this(authServiceConfiguration, null);
@@ -56,6 +57,9 @@ public class AuthService {
                         authServiceConfiguration, browserConfiguration, this.authStateManager,
                         new AuthorizationServiceFactory(MobileCore.getInstance().getContext()),
                         jwksManager, MobileCore.getInstance().getHttpLayer());
+
+
+        authHeaderProvider = new AuthHeaderProvider(this);
     }
 
     /**
@@ -124,4 +128,13 @@ public class AuthService {
         this.oidcAuthenticatorImpl.logout(principal, callback);
     }
 
+    /**
+     * Get interface that is used to provide authentication headers. Clients can use this interface
+     * to add headers into their own network layer.
+     *
+     * @return provider
+     */
+    public AuthHeaderProvider getAuthHeaderProvider() {
+        return authHeaderProvider;
+    }
 }

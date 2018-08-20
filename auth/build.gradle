@@ -8,6 +8,7 @@ android {
         targetSdkVersion project.ext.targetSdkVersion
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        android.defaultConfig.manifestPlaceholders = ['appAuthRedirectScheme': 'Invalid']
     }
 
     buildTypes {
@@ -31,13 +32,11 @@ android {
 }
 
 dependencies {
-    implementation project(path: ":core")
-
+    implementation project(path: ':core')
     implementation "net.openid:appauth:${project.ext.appauth_version}"
     implementation "com.android.support:customtabs:${project.ext.android_support_version}"
     implementation "org.bitbucket.b_c:jose4j:${project.ext.jose4j_version}"
     implementation "com.scottyab:rootbeer-lib:${project.ext.rootbeer_version}"
-
     testImplementation "junit:junit:${project.ext.junit_version}"
     testImplementation "org.mockito:mockito-core:${project.ext.mockito_version}"
     testImplementation "org.robolectric:robolectric:${project.ext.robolectric_version}"

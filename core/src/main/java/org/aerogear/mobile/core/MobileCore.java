@@ -23,6 +23,7 @@ import org.aerogear.mobile.core.exception.ConfigurationNotFoundException;
 import org.aerogear.mobile.core.exception.InitializationException;
 import org.aerogear.mobile.core.http.OkHttpCertificatePinningParser;
 import org.aerogear.mobile.core.http.OkHttpServiceModule;
+import org.aerogear.mobile.core.http.interceptors.RequestHeaderInterceptor;
 import org.aerogear.mobile.core.logging.Logger;
 import org.aerogear.mobile.core.logging.LoggerAdapter;
 import org.aerogear.mobile.core.metrics.MetricsService;
@@ -95,6 +96,8 @@ public final class MobileCore {
 
         // -- HTTP layer --------------------------------------------------------------------------
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        RequestHeaderInterceptor dynamicInterceptor = new RequestHeaderInterceptor();
+        builder.addNetworkInterceptor(dynamicInterceptor);
 
         OkHttpCertificatePinningParser certificatePinning =
                         new OkHttpCertificatePinningParser(httpsConfig.getCertPinningConfig());
@@ -103,7 +106,7 @@ public final class MobileCore {
         builder.connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
                         .writeTimeout(DEFAULT_WRITE_TIMEOUT, TimeUnit.SECONDS)
                         .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS);
-        this.httpLayer = new OkHttpServiceModule(builder.build());
+        this.httpLayer = new OkHttpServiceModule(builder.build(), dynamicInterceptor);
 
         // Metrics Service ------------------------------------------------------------------------
 
