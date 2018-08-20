@@ -53,7 +53,6 @@ public final class MobileCore {
     private final Map<String, ServiceConfiguration> serviceConfigById;
     private final Map<String, List<ServiceConfiguration>> serviceConfigsByType;
     private final MetricsService metricsService;
-    private final RequestHeaderInterceptor dynamicInterceptor;
 
     /**
      * Get the user app version from the package manager
@@ -97,7 +96,7 @@ public final class MobileCore {
 
         // -- HTTP layer --------------------------------------------------------------------------
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        dynamicInterceptor = new RequestHeaderInterceptor();
+        RequestHeaderInterceptor dynamicInterceptor = new RequestHeaderInterceptor();
         builder.addNetworkInterceptor(dynamicInterceptor);
 
         OkHttpCertificatePinningParser certificatePinning =
@@ -107,7 +106,7 @@ public final class MobileCore {
         builder.connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
                         .writeTimeout(DEFAULT_WRITE_TIMEOUT, TimeUnit.SECONDS)
                         .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS);
-        this.httpLayer = new OkHttpServiceModule(builder.build());
+        this.httpLayer = new OkHttpServiceModule(builder.build(), dynamicInterceptor);
 
         // Metrics Service ------------------------------------------------------------------------
 
@@ -238,16 +237,6 @@ public final class MobileCore {
      */
     public ServiceConfiguration getServiceConfigurationById(final String id) {
         return serviceConfigById.get(id);
-    }
-
-    /**
-     * Returns manager that adds new interceptor to the chain of core http interceptors that could
-     * be used to add headers to network requests
-     *
-     * @return RequestHeaderInterceptor
-     */
-    public RequestHeaderInterceptor requestHeaderInterceptor() {
-        return dynamicInterceptor;
     }
 
 }

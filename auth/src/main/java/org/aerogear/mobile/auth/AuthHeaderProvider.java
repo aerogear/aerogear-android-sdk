@@ -11,7 +11,7 @@ import org.aerogear.mobile.core.http.interceptors.HeaderProvider;
  */
 public class AuthHeaderProvider implements HeaderProvider {
 
-    public static final String TYPE = "Bearer ";
+    public static final String HEADER_TYPE = "Bearer ";
     public static final String HEADER_KEY = "Authorization";
 
     private AuthService authService;
@@ -30,7 +30,7 @@ public class AuthHeaderProvider implements HeaderProvider {
         UserPrincipal user = authService.currentUser();
         if (user != null && user.getAccessToken() != null) {
             String accessToken = user.getAccessToken();
-            return Collections.singletonMap(HEADER_KEY, TYPE + accessToken);
+            return Collections.singletonMap(HEADER_KEY, HEADER_TYPE + accessToken);
         }
         return Collections.emptyMap();
     }

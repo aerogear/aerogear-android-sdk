@@ -2,12 +2,14 @@ package org.aerogear.mobile.core.http;
 
 import org.aerogear.mobile.core.MobileCore;
 import org.aerogear.mobile.core.executor.AppExecutors;
+import org.aerogear.mobile.core.http.interceptors.RequestHeaderInterceptor;
 
 import okhttp3.OkHttpClient;
 
 public class OkHttpServiceModule implements HttpServiceModule {
 
     private final OkHttpClient client;
+    private RequestHeaderInterceptor interceptor;
 
     /**
      * This is the default no argument constructor for all ServiceModules.
@@ -17,12 +19,15 @@ public class OkHttpServiceModule implements HttpServiceModule {
     }
 
     /**
-     * This constructer uses a specific client for manual configurations and testing.
-     *
      * @param client a default OkHttpClient instance to use.
      */
     public OkHttpServiceModule(final OkHttpClient client) {
         this.client = client;
+    }
+
+    public OkHttpServiceModule(OkHttpClient client, RequestHeaderInterceptor dynamicInterceptor) {
+        this.client = client;
+        this.interceptor = dynamicInterceptor;
     }
 
     @Override
@@ -39,5 +44,15 @@ public class OkHttpServiceModule implements HttpServiceModule {
      */
     public OkHttpClient getClient() {
         return client;
+    }
+
+    /**
+     * Returns manager that adds new interceptor to the chain of core http interceptors that could
+     * be used to add headers to network requests
+     *
+     * @return RequestHeaderInterceptor
+     */
+    public RequestHeaderInterceptor requestHeaderInterceptor() {
+        return interceptor;
     }
 }
