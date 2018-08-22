@@ -12,3 +12,4 @@
 /docs/build/
 /docs/node_modules/
 /docs/.cache/
+**/jacoco.exec
