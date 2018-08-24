@@ -27,11 +27,11 @@ import org.aerogear.mobile.core.reactive.Responder;
 
 import okhttp3.OkHttpClient;
 
-public final class SyncService {
+public final class SyncClient {
 
     public static final String TYPE = "sync";
 
-    private static SyncService instance;
+    private static SyncClient instance;
 
     private final ApolloClient apolloClient;
 
@@ -40,7 +40,7 @@ public final class SyncService {
      *
      * @param builder ApolloClient.Builder
      */
-    public SyncService(ApolloClient.Builder builder) {
+    public SyncClient(ApolloClient.Builder builder) {
         MobileCore mobileCore = MobileCore.getInstance();
         ServiceConfiguration configuration = mobileCore.getServiceConfigurationByType(TYPE);
         String serverUrl = configuration.getUrl();
@@ -54,18 +54,18 @@ public final class SyncService {
     /**
      * Default service with minimal required configuration
      */
-    public SyncService() {
+    public SyncClient() {
         this(ApolloClient.builder());
     }
 
     /**
-     * Get the SyncService singleton instance
+     * Get the SyncClient singleton instance
      *
-     * @return SyncService
+     * @return SyncClient
      */
-    public static SyncService getInstance() {
+    public static SyncClient getInstance() {
         if (instance == null) {
-            SyncService.instance = new SyncService();
+            SyncClient.instance = new SyncClient();
         }
         return instance;
     }
