@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.ApolloSubscriptionCall;
+import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Mutation;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Query;
@@ -83,9 +84,7 @@ public final class SyncService {
      * Apollo query wrapper using AeroGear Rx
      *
      * @param query Apollo Query instance
-     *
      * @return SyncQuery
-     *
      */
     public SyncQuery query(@Nonnull Query query) {
         return new SyncQuery(this.apolloClient, nonNull(query, "query"));
@@ -95,9 +94,7 @@ public final class SyncService {
      * Apollo mutation wrapper using AeroGear Rx
      *
      * @param mutation Apollo Mutation instance
-     *
      * @return SyncMutation
-     *
      */
     public SyncMutation mutation(@Nonnull Mutation mutation) {
         return new SyncMutation(this.apolloClient, nonNull(mutation, "mutation"));
@@ -107,9 +104,7 @@ public final class SyncService {
      * Apollo subscription wrapper using AeroGear Rx
      *
      * @param subscription Apollo Subscription instance
-     *
      * @return SyncSubscription
-     *
      */
     public SyncSubscription subscribe(@Nonnull Subscription subscription) {
         return new SyncSubscription(this.apolloClient, nonNull(subscription, "subscription"));
@@ -134,7 +129,15 @@ public final class SyncService {
                             .query(query).enqueue(new ApolloCall.Callback<T>() {
                                 @Override
                                 public void onResponse(@Nonnull Response<T> response) {
-                                    requestCallback.onResult(response);
+                                    if (response.hasErrors()) {
+                                        for (Error error : response.errors()) {
+                                            MobileCore.getLogger().error(error.message());
+                                        }
+                                        String message = "An error ocurrred while trying to query";
+                                        requestCallback.onException(new Exception(message));
+                                    } else {
+                                        requestCallback.onResult(response);
+                                    }
                                 }
 
                                 @Override
@@ -166,7 +169,15 @@ public final class SyncService {
                             .mutate(mutation).enqueue(new ApolloCall.Callback<T>() {
                                 @Override
                                 public void onResponse(@Nonnull Response<T> response) {
-                                    requestCallback.onResult(response);
+                                    if (response.hasErrors()) {
+                                        for (Error error : response.errors()) {
+                                            MobileCore.getLogger().error(error.message());
+                                        }
+                                        String message = "An error ocurrred while trying to mutate";
+                                        requestCallback.onException(new Exception(message));
+                                    } else {
+                                        requestCallback.onResult(response);
+                                    }
                                 }
 
                                 @Override
@@ -197,7 +208,14 @@ public final class SyncService {
                             .subscribe(subscription).execute(new ApolloSubscriptionCall.Callback() {
                                 @Override
                                 public void onResponse(@NotNull Response response) {
-                                    requestCallback.onResult(response);
+                                    // FIXEME [logger] response.errors() on subscription is not a
+                                    // list of errors
+                                    if (response.hasErrors()) {
+                                        String message = "An error ocurrred while trying to subscribe";
+                                        requestCallback.onException(new Exception(message));
+                                    } else {
+                                        requestCallback.onResult(response);
+                                    }
                                 }
 
                                 @Override
