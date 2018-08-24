@@ -44,11 +44,10 @@ public final class SyncService {
         MobileCore mobileCore = MobileCore.getInstance();
         ServiceConfiguration configuration = mobileCore.getServiceConfigurationByType(TYPE);
         String serverUrl = configuration.getUrl();
-        String webSocketUrl = configuration.getProperty("subscription");
         OkHttpClient okHttpClient = mobileCore.getHttpLayer().getClient();
         builder.serverUrl(nonNull(serverUrl, "serverUrl"))
                         .okHttpClient(nonNull(okHttpClient, "okHttpClient"))
-                        .subscriptionTransportFactory(new Factory(webSocketUrl, okHttpClient));
+                        .subscriptionTransportFactory(new Factory(serverUrl, okHttpClient));
         apolloClient = builder.build();
     }
 
