@@ -9,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.ApolloSubscriptionCall;
-import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Mutation;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Query;
@@ -128,15 +127,7 @@ public final class SyncClient {
                             .query(query).enqueue(new ApolloCall.Callback<T>() {
                                 @Override
                                 public void onResponse(@Nonnull Response<T> response) {
-                                    if (response.hasErrors()) {
-                                        for (Error error : response.errors()) {
-                                            MobileCore.getLogger().error(error.message());
-                                        }
-                                        String message = "An error ocurrred while trying to query";
-                                        requestCallback.onException(new Exception(message));
-                                    } else {
-                                        requestCallback.onResult(response);
-                                    }
+                                    requestCallback.onResult(response);
                                 }
 
                                 @Override
@@ -168,15 +159,7 @@ public final class SyncClient {
                             .mutate(mutation).enqueue(new ApolloCall.Callback<T>() {
                                 @Override
                                 public void onResponse(@Nonnull Response<T> response) {
-                                    if (response.hasErrors()) {
-                                        for (Error error : response.errors()) {
-                                            MobileCore.getLogger().error(error.message());
-                                        }
-                                        String message = "An error ocurrred while trying to mutate";
-                                        requestCallback.onException(new Exception(message));
-                                    } else {
-                                        requestCallback.onResult(response);
-                                    }
+                                    requestCallback.onResult(response);
                                 }
 
                                 @Override
@@ -207,14 +190,7 @@ public final class SyncClient {
                             .subscribe(subscription).execute(new ApolloSubscriptionCall.Callback() {
                                 @Override
                                 public void onResponse(@NotNull Response response) {
-                                    // FIXEME [logger] response.errors() on subscription is not a
-                                    // list of errors
-                                    if (response.hasErrors()) {
-                                        String message = "An error ocurrred while trying to subscribe";
-                                        requestCallback.onException(new Exception(message));
-                                    } else {
-                                        requestCallback.onResult(response);
-                                    }
+                                    requestCallback.onResult(response);
                                 }
 
                                 @Override
