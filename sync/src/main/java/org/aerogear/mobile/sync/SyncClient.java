@@ -134,7 +134,8 @@ public final class SyncClient {
                                 public void onFailure(@Nonnull ApolloException e) {
                                     requestCallback.onException(e);
                                 }
-                            })).respondOn(new AppExecutors().networkThread());
+                            })).requestOn(new AppExecutors().networkThread())
+                            .respondOn(new AppExecutors().mainThread());
 
         }
 
@@ -166,7 +167,8 @@ public final class SyncClient {
                                 public void onFailure(@Nonnull ApolloException e) {
                                     requestCallback.onException(e);
                                 }
-                            })).respondOn(new AppExecutors().networkThread());
+                            })).requestOn(new AppExecutors().networkThread())
+                            .respondOn(new AppExecutors().mainThread());
 
         }
     }
@@ -200,7 +202,8 @@ public final class SyncClient {
 
                                 @Override
                                 public void onCompleted() {}
-                            })).requestOn(new AppExecutors().networkThread());
+                            })).requestOn(new AppExecutors().networkThread())
+                            .respondOn(new AppExecutors().mainThread());
 
         }
     }
