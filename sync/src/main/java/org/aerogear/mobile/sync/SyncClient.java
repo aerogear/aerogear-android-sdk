@@ -81,6 +81,8 @@ public final class SyncClient {
     /**
      * Apollo query wrapper using AeroGear Rx
      *
+     * By default the respondOn of this will be on mainThread
+     *
      * @param query Apollo Query instance
      * @return SyncQuery
      */
@@ -91,6 +93,8 @@ public final class SyncClient {
     /**
      * Apollo mutation wrapper using AeroGear Rx
      *
+     * By default the respondOn of this will be on mainThread
+     *
      * @param mutation Apollo Mutation instance
      * @return SyncMutation
      */
@@ -100,6 +104,8 @@ public final class SyncClient {
 
     /**
      * Apollo subscription wrapper using AeroGear Rx
+     *
+     * By default the respondOn of this will be on mainThread
      *
      * @param subscription Apollo Subscription instance
      * @return SyncSubscription
@@ -134,7 +140,8 @@ public final class SyncClient {
                                 public void onFailure(@Nonnull ApolloException e) {
                                     requestCallback.onException(e);
                                 }
-                            })).respondOn(new AppExecutors().networkThread());
+                            })).requestOn(new AppExecutors().networkThread())
+                            .respondOn(new AppExecutors().mainThread());
 
         }
 
@@ -166,7 +173,8 @@ public final class SyncClient {
                                 public void onFailure(@Nonnull ApolloException e) {
                                     requestCallback.onException(e);
                                 }
-                            })).respondOn(new AppExecutors().networkThread());
+                            })).requestOn(new AppExecutors().networkThread())
+                            .respondOn(new AppExecutors().mainThread());
 
         }
     }
@@ -200,7 +208,8 @@ public final class SyncClient {
 
                                 @Override
                                 public void onCompleted() {}
-                            })).requestOn(new AppExecutors().networkThread());
+                            })).requestOn(new AppExecutors().networkThread())
+                            .respondOn(new AppExecutors().mainThread());
 
         }
     }
