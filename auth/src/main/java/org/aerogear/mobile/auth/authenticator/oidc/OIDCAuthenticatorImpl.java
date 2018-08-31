@@ -7,6 +7,10 @@ import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.aerogear.mobile.auth.utils.SynchronousTokenRequest;
+import org.aerogear.mobile.core.executor.AppExecutors;
+import org.aerogear.mobile.core.reactive.Request;
+import org.aerogear.mobile.core.reactive.Requester;
 import org.jose4j.jwk.JsonWebKeySet;
 
 import android.app.Activity;
@@ -40,6 +44,8 @@ import net.openid.appauth.AuthState;
 import net.openid.appauth.AuthorizationException;
 import net.openid.appauth.AuthorizationResponse;
 import net.openid.appauth.AuthorizationService;
+import net.openid.appauth.NoClientAuthentication;
+import net.openid.appauth.TokenResponse;
 
 /**
  * Authenticates the user by using OpenID Connect.
@@ -61,28 +67,28 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
     /**
      * Creates a new OIDCAuthenticatorImpl object
      *
-     * @param serviceConfiguration {@link ServiceConfiguration}
-     * @param authServiceConfiguration {@link AuthServiceConfiguration}
-     * @param browserConfiguration {@link BrowserConfiguration}
-     * @param authStateManager {@link AuthStateManager}
+     * @param serviceConfiguration        {@link ServiceConfiguration}
+     * @param authServiceConfiguration    {@link AuthServiceConfiguration}
+     * @param browserConfiguration        {@link BrowserConfiguration}
+     * @param authStateManager            {@link AuthStateManager}
      * @param authorizationServiceFactory {@link AuthorizationServiceFactory}
-     * @param jwksManager {@link JwksManager}
-     * @param httpModule {@link HttpServiceModule} Module used to make HTTP requests for
-     *        authenticator.
+     * @param jwksManager                 {@link JwksManager}
+     * @param httpModule                  {@link HttpServiceModule} Module used to make HTTP requests for
+     *                                    authenticator.
      */
     public OIDCAuthenticatorImpl(final ServiceConfiguration serviceConfiguration,
-                    final AuthServiceConfiguration authServiceConfiguration,
-                    final BrowserConfiguration browserConfiguration,
-                    final AuthStateManager authStateManager,
-                    final AuthorizationServiceFactory authorizationServiceFactory,
-                    final JwksManager jwksManager, final HttpServiceModule httpModule) {
+                                 final AuthServiceConfiguration authServiceConfiguration,
+                                 final BrowserConfiguration browserConfiguration,
+                                 final AuthStateManager authStateManager,
+                                 final AuthorizationServiceFactory authorizationServiceFactory,
+                                 final JwksManager jwksManager, final HttpServiceModule httpModule) {
         super(serviceConfiguration);
         this.keycloakConfiguration = new KeycloakConfiguration(serviceConfiguration);
         this.authServiceConfiguration =
-                        nonNull(authServiceConfiguration, "authServiceConfiguration");
+            nonNull(authServiceConfiguration, "authServiceConfiguration");
         this.browserConfiguration = browserConfiguration;
         this.authorizationServiceFactory =
-                        nonNull(authorizationServiceFactory, "authorizationServiceFactory");
+            nonNull(authorizationServiceFactory, "authorizationServiceFactory");
         this.authStateManager = nonNull(authStateManager, "authStateManager");
         this.jwksManager = nonNull(jwksManager, "jwksManager");
         this.httpModule = nonNull(httpModule, "httpModule");
@@ -93,15 +99,15 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
      * Builds a new OIDCUserPrincipalImpl object after the user's credential has been authenticated
      *
      * @param authOptions the OIDC authentication options
-     * @param callback the callback will be invoked with a new OIDCUserPrincipalImpl object with the
-     *        user's identity that was decoded from the user's credential
+     * @param callback    the callback will be invoked with a new OIDCUserPrincipalImpl object with the
+     *                    user's identity that was decoded from the user's credential
      */
     @Override
     public void authenticate(final AuthenticateOptions authOptions,
-                    final Callback<UserPrincipal> callback) {
+                             final Callback<UserPrincipal> callback) {
         this.authCallback = nonNull(callback, "callback");
         DefaultAuthenticateOptions defaultAuthenticateOptions =
-                        (DefaultAuthenticateOptions) (nonNull(authOptions, "authOptions"));
+            (DefaultAuthenticateOptions) (nonNull(authOptions, "authOptions"));
         Activity fromActivity = defaultAuthenticateOptions.getFromActivity();
         int resultCode = defaultAuthenticateOptions.getResultCode();
 
@@ -116,18 +122,18 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
     private void performAuthRequest(final Activity fromActivity, final int resultCode) {
         nonNull(fromActivity, "fromActivity");
         AuthorizationServiceFactory.ServiceWrapper wrapper = authorizationServiceFactory
-                        .createAuthorizationService(keycloakConfiguration, authServiceConfiguration,
-                                        browserConfiguration);
+            .createAuthorizationService(keycloakConfiguration, authServiceConfiguration,
+                browserConfiguration);
         authState = wrapper.getAuthState();
         authService = wrapper.getAuthorizationService();
 
         Intent authIntent = authService
-                        .getAuthorizationRequestIntent(wrapper.getAuthorizationRequest());
+            .getAuthorizationRequestIntent(wrapper.getAuthorizationRequest());
         fromActivity.startActivityForResult(authIntent, resultCode);
     }
 
     private void performAuthRequestWithPreflightCheck(final Activity fromActivity,
-                    final int resultCode) {
+                                                      final int resultCode) {
         CertificatePinningCheck pinningCheck = new CertificatePinningCheck(httpModule);
         pinningCheck.execute(keycloakConfiguration.getHostUrl());
         pinningCheck.attachListener(new CertificatePinningCheckListener() {
@@ -159,36 +165,36 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
 
     private void exchangeTokens(final AuthorizationResponse response) {
         authService.performTokenRequest(response.createTokenExchangeRequest(),
-                        (tokenResponse, exception) -> {
-                            if (tokenResponse != null) {
-                                authState.update(tokenResponse, exception);
-                                OIDCCredentials oidcTokens = new OIDCCredentials(
-                                                authState.jsonSerializeString());
-                                authStateManager.save(oidcTokens);
-                                try {
-                                    UserIdentityParser parser = new UserIdentityParser(oidcTokens,
-                                                    keycloakConfiguration);
-                                    UserPrincipalImpl user = parser.parseUser();
-                                    jwksManager.fetchJwks(keycloakConfiguration,
-                                                    new Callback<JsonWebKeySet>() {
-                                                        @Override
-                                                        public void onSuccess(
-                                                                        JsonWebKeySet models) {
-                                                            authCallback.onSuccess(user);
-                                                        }
-
-                                                        @Override
-                                                        public void onError(Throwable error) {
-                                                            authCallback.onError(error);
-                                                        }
-                                                    });
-                                } catch (Exception e) {
-                                    authCallback.onError(e);
+            (tokenResponse, exception) -> {
+                if (tokenResponse != null) {
+                    authState.update(tokenResponse, exception);
+                    OIDCCredentials oidcTokens = new OIDCCredentials(
+                        authState.jsonSerializeString());
+                    authStateManager.save(oidcTokens);
+                    try {
+                        UserIdentityParser parser = new UserIdentityParser(oidcTokens,
+                            keycloakConfiguration);
+                        UserPrincipalImpl user = parser.parseUser();
+                        jwksManager.fetchJwks(keycloakConfiguration,
+                            new Callback<JsonWebKeySet>() {
+                                @Override
+                                public void onSuccess(
+                                    JsonWebKeySet models) {
+                                    authCallback.onSuccess(user);
                                 }
-                            } else {
-                                authCallback.onError(exception);
-                            }
-                        });
+
+                                @Override
+                                public void onError(Throwable error) {
+                                    authCallback.onError(error);
+                                }
+                            });
+                    } catch (Exception e) {
+                        authCallback.onError(e);
+                    }
+                } else {
+                    authCallback.onError(exception);
+                }
+            });
     }
 
     @Override
@@ -220,16 +226,16 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
             @Override
             public void onResult(HttpResponse httpResponse) {
                 if (httpResponse.getStatus() == HTTP_OK
-                                || httpResponse.getStatus() == HTTP_MOVED_TEMP) {
+                    || httpResponse.getStatus() == HTTP_MOVED_TEMP) {
                     // delete the local tokens when the session with the OIDC has been terminated
                     authStateManager.save(null);
                     logoutCallback.onSuccess();
                 } else {
                     // Non HTTP 200 or 302 Status Code Returned
                     Exception error = httpResponse.getError() != null ? httpResponse.getError()
-                                    : new Exception("Non HTTP 200 or 302 Status Code.");
+                        : new Exception("Non HTTP 200 or 302 Status Code.");
                     MobileCore.getLogger().error(
-                                    "Error Performing a Logout on the Remote OIDC Server: ", error);
+                        "Error Performing a Logout on the Remote OIDC Server: ", error);
                     logoutCallback.onError(error);
                 }
             }
@@ -237,7 +243,7 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
             @Override
             public void onException(Exception exception) {
                 MobileCore.getLogger().error(
-                                "Error Performing a Logout on the Remote OIDC Server: ", exception);
+                    "Error Performing a Logout on the Remote OIDC Server: ", exception);
                 logoutCallback.onError(exception);
             }
         });
@@ -252,7 +258,7 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
      */
     private URL parseLogoutURL(final String identityToken) {
         String logoutRequestUri = this.keycloakConfiguration.getLogoutUrl(identityToken,
-                        this.authServiceConfiguration.getRedirectUri().toString());
+            this.authServiceConfiguration.getRedirectUri().toString());
         try {
             return new URL(logoutRequestUri);
         } catch (MalformedURLException e) {
@@ -260,10 +266,58 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
         }
     }
 
+
     /**
      * Delete the the current tokens/authentication state.
      */
     public void deleteTokens() {
         authStateManager.clear();
     }
+
+    /**
+     * Exchanges the refresh token for a new access token.  This method will use the network and is blocking.
+     *
+     * @param currentCredentials the current credentials including a refresh token.
+     * @return user principal with new access token
+     */
+    public UserPrincipal renew(OIDCCredentials currentCredentials) {
+        authState = currentCredentials.getAuthState();
+        if (authState.getRefreshToken() == null) {
+            throw new IllegalArgumentException("currentCredentials did not have a refresh token");
+        }
+
+
+        SynchronousTokenRequest request = new SynchronousTokenRequest(authState.createTokenRefreshRequest(),
+            NoClientAuthentication.INSTANCE
+        );
+
+        TokenResponse tokenResponse = null;
+        AuthorizationException exception = null;
+        try {
+            tokenResponse = request.request();
+
+        } catch (AuthorizationException e) {
+            exception = e;
+        }
+
+        authState.update(tokenResponse, exception);
+
+        OIDCCredentials oidcTokens = new OIDCCredentials(
+            authState.jsonSerializeString());
+
+        authStateManager.save(oidcTokens);
+        UserPrincipalImpl user = null;
+        try {
+            UserIdentityParser parser = new UserIdentityParser(oidcTokens,
+                keycloakConfiguration);
+            user = parser.parseUser();
+            jwksManager.fetchJwks(keycloakConfiguration, null);
+        } catch (Exception e) {
+            //TODO: do something
+        }
+        return user;
+    }
+
+
 }
+

@@ -99,10 +99,12 @@ public class BrowserConfiguration {
         if (blackList) {
             appAuthConfig = new AppAuthConfiguration.Builder()
                             .setBrowserMatcher(new BrowserBlacklist(parseBrowserMatchers(browsers)))
+                            .setConnectionBuilder(new FireMeIfMergedConnectionBuilder())
                             .build();
         } else {
             appAuthConfig = new AppAuthConfiguration.Builder()
                             .setBrowserMatcher(new BrowserWhitelist(parseBrowserMatchers(browsers)))
+                            .setConnectionBuilder(new FireMeIfMergedConnectionBuilder())
                             .build();
         }
 

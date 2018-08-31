@@ -8,13 +8,16 @@ import android.support.annotation.Nullable;
 
 import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
 import org.aerogear.mobile.auth.configuration.BrowserConfiguration;
+import org.aerogear.mobile.auth.configuration.FireMeIfMergedConnectionBuilder;
 import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
 
+import net.openid.appauth.AppAuthConfiguration;
 import net.openid.appauth.AuthState;
 import net.openid.appauth.AuthorizationRequest;
 import net.openid.appauth.AuthorizationService;
 import net.openid.appauth.AuthorizationServiceConfiguration;
 import net.openid.appauth.ResponseTypeValues;
+import net.openid.appauth.browser.BrowserWhitelist;
 
 /**
  * Factory class used to create the 'openid' classes.
@@ -86,7 +89,9 @@ public class AuthorizationServiceFactory {
         AuthState authState = new AuthState(authServiceConfig);
 
         AuthorizationService authService =
-                        browserConfiguration == null ? new AuthorizationService(this.appContext)
+                        browserConfiguration == null ? new AuthorizationService(this.appContext,new AppAuthConfiguration.Builder()
+                            .setConnectionBuilder(new FireMeIfMergedConnectionBuilder())
+                            .build())
                                         : new AuthorizationService(this.appContext,
                                                         browserConfiguration.getAppAuthConfig());
         AuthorizationRequest authRequest = new AuthorizationRequest.Builder(authServiceConfig,

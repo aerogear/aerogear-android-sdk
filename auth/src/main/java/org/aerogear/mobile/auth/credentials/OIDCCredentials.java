@@ -61,6 +61,10 @@ public class OIDCCredentials {
         return authState.getRefreshToken();
     }
 
+    public AuthState getAuthState() {
+        return authState;
+    }
+
     /**
      * Verify the token and its claims against the given Keycloak configuration
      *
