@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 
 import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
 import org.aerogear.mobile.auth.configuration.BrowserConfiguration;
-import org.aerogear.mobile.auth.configuration.FireMeIfMergedConnectionBuilder;
 import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
 
 import net.openid.appauth.AppAuthConfiguration;
@@ -90,7 +89,6 @@ public class AuthorizationServiceFactory {
 
         AuthorizationService authService =
                         browserConfiguration == null ? new AuthorizationService(this.appContext,new AppAuthConfiguration.Builder()
-                            .setConnectionBuilder(new FireMeIfMergedConnectionBuilder())
                             .build())
                                         : new AuthorizationService(this.appContext,
                                                         browserConfiguration.getAppAuthConfig());

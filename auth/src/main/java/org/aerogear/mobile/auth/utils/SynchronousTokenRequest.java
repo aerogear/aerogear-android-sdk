@@ -12,7 +12,6 @@ import net.openid.appauth.TokenResponse;
 import net.openid.appauth.internal.Logger;
 import net.openid.appauth.internal.UriUtil;
 
-import org.aerogear.mobile.auth.configuration.FireMeIfMergedConnectionBuilder;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,7 +32,6 @@ public class SynchronousTokenRequest {
     private ClientAuthentication mClientAuthentication;
 
     private final AppAuthConfiguration mClientConfiguration = new AppAuthConfiguration.Builder()
-                                                                    .setConnectionBuilder(new FireMeIfMergedConnectionBuilder())
                                                                     .build();
 
     public SynchronousTokenRequest(TokenRequest request,
