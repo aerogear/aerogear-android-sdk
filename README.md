@@ -1,8 +1,11 @@
 # AeroGear Services Android SDK
 
 [![circle-ci](https://img.shields.io/circleci/project/github/aerogear/aerogear-android-sdk/master.svg)](https://circleci.com/gh/aerogear/aerogear-android-sdk)
-[![License](https://img.shields.io/badge/-Apache%202.0-blue.svg)](https://opensource.org/s/Apache-2.0)
 [![codecov](https://img.shields.io/codecov/c/github/aerogear/aerogear-android-sdk/master.svg)](https://codecov.io/gh/aerogear/aerogear-android-sdk)
+[![Maven Central](https://img.shields.io/maven-central/v/org.aerogear/android-core.svg)](https://search.maven.org/artifact/org.aerogear/android-core/)
+[![Javadocs](http://www.javadoc.io/badge/org.aerogear/android-core.svg?color=blue)](http://www.javadoc.io/doc/org.aerogear/android-core)
+[![License](https://img.shields.io/badge/-Apache%202.0-blue.svg)](https://opensource.org/s/Apache-2.0)
+
 
 |                 | Project Info                                                     |
 | --------------- | ---------------------------------------------------------------- |
