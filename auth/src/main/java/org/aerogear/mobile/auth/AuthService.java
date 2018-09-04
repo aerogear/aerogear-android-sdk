@@ -88,6 +88,46 @@ public class AuthService {
         return currentUser;
     }
 
+
+    /**
+     * This will return the current user with refreshed credentials (if necessary and available).
+     *
+     * @return a request which will contain the current user and the most up to date credentials.
+     *         This may emit a null value.
+     */
+    public UserPrincipal getFreshCurrentUser() {
+
+        UserPrincipal currentUser = null;
+        JsonWebKeySet jwks = jwksManager.load(keycloakConfiguration);
+        if (jwks != null) {
+            OIDCCredentials currentCredentials = this.authStateManager.load();
+
+            if (currentCredentials.getNeedsRenewal()) {
+                try {
+                    return oidcAuthenticatorImpl.renew(currentCredentials);
+                } catch (Exception exception) {
+                    LOG.error(TAG, "Failed to refresh token from credential", exception);
+                    currentUser = null;
+                }
+            }
+
+            if ((currentCredentials.getAccessToken() != null) && !currentCredentials.isExpired()
+                            && currentCredentials.verifyClaims(jwks, keycloakConfiguration)
+                            && currentCredentials.isAuthorized()) {
+                try {
+                    UserIdentityParser parser = new UserIdentityParser(currentCredentials,
+                                    keycloakConfiguration);
+                    currentUser = parser.parseUser();
+                } catch (Exception ae) {
+                    LOG.error(TAG, "Failed to parse user identity from credential", ae);
+                    currentUser = null;
+                }
+            }
+        }
+        return currentUser;
+
+    }
+
     /**
      * Log in the user with the given authentication options. At the moment, only OIDC protocol is
      * supported. The login will be asynchronous.

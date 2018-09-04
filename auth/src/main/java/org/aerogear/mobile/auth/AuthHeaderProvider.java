@@ -22,12 +22,12 @@ public class AuthHeaderProvider implements HeaderProvider {
 
     /***
      * Build auth header if user is logged in and has valid token.
-     * 
+     *
      * @return Auth header in map
      */
     @Override
     public Map<String, String> getHeaders() {
-        UserPrincipal user = authService.currentUser();
+        UserPrincipal user = authService.getFreshCurrentUser();
         if (user != null && user.getAccessToken() != null) {
             String accessToken = user.getAccessToken();
             return Collections.singletonMap(HEADER_KEY, HEADER_TYPE + accessToken);

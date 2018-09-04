@@ -10,6 +10,7 @@ import org.aerogear.mobile.auth.configuration.AuthServiceConfiguration;
 import org.aerogear.mobile.auth.configuration.BrowserConfiguration;
 import org.aerogear.mobile.auth.configuration.KeycloakConfiguration;
 
+import net.openid.appauth.AppAuthConfiguration;
 import net.openid.appauth.AuthState;
 import net.openid.appauth.AuthorizationRequest;
 import net.openid.appauth.AuthorizationService;
@@ -85,10 +86,11 @@ public class AuthorizationServiceFactory {
                         keycloakConfiguration.getTokenEndpoint());
         AuthState authState = new AuthState(authServiceConfig);
 
-        AuthorizationService authService =
-                        browserConfiguration == null ? new AuthorizationService(this.appContext)
-                                        : new AuthorizationService(this.appContext,
-                                                        browserConfiguration.getAppAuthConfig());
+        AuthorizationService authService = browserConfiguration == null
+                        ? new AuthorizationService(this.appContext,
+                                        new AppAuthConfiguration.Builder().build())
+                        : new AuthorizationService(this.appContext,
+                                        browserConfiguration.getAppAuthConfig());
         AuthorizationRequest authRequest = new AuthorizationRequest.Builder(authServiceConfig,
                         keycloakConfiguration.getResourceId(), ResponseTypeValues.CODE,
                         authServiceConfiguration.getRedirectUri())

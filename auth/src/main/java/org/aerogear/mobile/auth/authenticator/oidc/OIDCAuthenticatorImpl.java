@@ -24,6 +24,7 @@ import org.aerogear.mobile.auth.credentials.JwksManager;
 import org.aerogear.mobile.auth.credentials.OIDCCredentials;
 import org.aerogear.mobile.auth.user.UserPrincipal;
 import org.aerogear.mobile.auth.user.UserPrincipalImpl;
+import org.aerogear.mobile.auth.utils.SynchronousTokenRequest;
 import org.aerogear.mobile.auth.utils.UserIdentityParser;
 import org.aerogear.mobile.core.Callback;
 import org.aerogear.mobile.core.MobileCore;
@@ -40,6 +41,8 @@ import net.openid.appauth.AuthState;
 import net.openid.appauth.AuthorizationException;
 import net.openid.appauth.AuthorizationResponse;
 import net.openid.appauth.AuthorizationService;
+import net.openid.appauth.NoClientAuthentication;
+import net.openid.appauth.TokenResponse;
 
 /**
  * Authenticates the user by using OpenID Connect.
@@ -260,10 +263,55 @@ public class OIDCAuthenticatorImpl extends AbstractAuthenticator {
         }
     }
 
+
     /**
      * Delete the the current tokens/authentication state.
      */
     public void deleteTokens() {
         authStateManager.clear();
     }
+
+    /**
+     * Exchanges the refresh token for a new access token. This method will use the network and is
+     * blocking.
+     *
+     * @param currentCredentials the current credentials including a refresh token.
+     * @return user principal with new access token
+     */
+    public UserPrincipal renew(OIDCCredentials currentCredentials) {
+        authState = currentCredentials.getAuthState();
+        if (authState.getRefreshToken() == null) {
+            throw new IllegalArgumentException("currentCredentials did not have a refresh token");
+        }
+
+
+        SynchronousTokenRequest request = new SynchronousTokenRequest(
+                        authState.createTokenRefreshRequest(), NoClientAuthentication.INSTANCE);
+
+        TokenResponse tokenResponse = null;
+        AuthorizationException exception = null;
+        try {
+            tokenResponse = request.request();
+
+        } catch (AuthorizationException e) {
+            exception = e;
+        }
+
+        authState.update(tokenResponse, exception);
+
+        OIDCCredentials oidcTokens = new OIDCCredentials(authState.jsonSerializeString());
+
+        authStateManager.save(oidcTokens);
+        UserPrincipalImpl user = null;
+        try {
+            UserIdentityParser parser = new UserIdentityParser(oidcTokens, keycloakConfiguration);
+            user = parser.parseUser();
+            jwksManager.fetchJwks(keycloakConfiguration, null);
+        } catch (Exception e) {
+            // TODO: do something
+        }
+        return user;
+    }
+
+
 }
