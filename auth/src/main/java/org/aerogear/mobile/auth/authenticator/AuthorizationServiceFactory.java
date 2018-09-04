@@ -16,7 +16,6 @@ import net.openid.appauth.AuthorizationRequest;
 import net.openid.appauth.AuthorizationService;
 import net.openid.appauth.AuthorizationServiceConfiguration;
 import net.openid.appauth.ResponseTypeValues;
-import net.openid.appauth.browser.BrowserWhitelist;
 
 /**
  * Factory class used to create the 'openid' classes.
@@ -87,11 +86,11 @@ public class AuthorizationServiceFactory {
                         keycloakConfiguration.getTokenEndpoint());
         AuthState authState = new AuthState(authServiceConfig);
 
-        AuthorizationService authService =
-                        browserConfiguration == null ? new AuthorizationService(this.appContext,new AppAuthConfiguration.Builder()
-                            .build())
-                                        : new AuthorizationService(this.appContext,
-                                                        browserConfiguration.getAppAuthConfig());
+        AuthorizationService authService = browserConfiguration == null
+                        ? new AuthorizationService(this.appContext,
+                                        new AppAuthConfiguration.Builder().build())
+                        : new AuthorizationService(this.appContext,
+                                        browserConfiguration.getAppAuthConfig());
         AuthorizationRequest authRequest = new AuthorizationRequest.Builder(authServiceConfig,
                         keycloakConfiguration.getResourceId(), ResponseTypeValues.CODE,
                         authServiceConfiguration.getRedirectUri())

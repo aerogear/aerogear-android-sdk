@@ -2,8 +2,6 @@ package org.aerogear.mobile.auth;
 
 import static org.aerogear.mobile.core.utils.SanityCheck.nonNull;
 
-import org.aerogear.mobile.core.reactive.Request;
-import org.aerogear.mobile.core.reactive.Requester;
 import org.jose4j.jwk.JsonWebKeySet;
 
 import android.content.Intent;
@@ -46,19 +44,19 @@ public class AuthService {
     }
 
     public AuthService(final AuthServiceConfiguration authServiceConfiguration,
-                       final BrowserConfiguration browserConfiguration) {
+                    final BrowserConfiguration browserConfiguration) {
         nonNull(authServiceConfiguration, "authServiceConfiguration");
 
         ServiceConfiguration serviceConfiguration =
-            MobileCore.getInstance().getServiceConfigurationByType(type);
+                        MobileCore.getInstance().getServiceConfigurationByType(type);
         this.keycloakConfiguration = new KeycloakConfiguration(serviceConfiguration);
         this.authStateManager = AuthStateManager.getInstance(MobileCore.getInstance().getContext());
         this.jwksManager = new JwksManager(MobileCore.getInstance().getContext(),
-            MobileCore.getInstance(), authServiceConfiguration);
+                        MobileCore.getInstance(), authServiceConfiguration);
         this.oidcAuthenticatorImpl = new OIDCAuthenticatorImpl(serviceConfiguration,
-            authServiceConfiguration, browserConfiguration, this.authStateManager,
-            new AuthorizationServiceFactory(MobileCore.getInstance().getContext()),
-            jwksManager, MobileCore.getInstance().getHttpLayer());
+                        authServiceConfiguration, browserConfiguration, this.authStateManager,
+                        new AuthorizationServiceFactory(MobileCore.getInstance().getContext()),
+                        jwksManager, MobileCore.getInstance().getHttpLayer());
 
 
         authHeaderProvider = new AuthHeaderProvider(this);
@@ -75,11 +73,11 @@ public class AuthService {
         if (jwks != null) {
             OIDCCredentials currentCredentials = this.authStateManager.load();
             if ((currentCredentials.getAccessToken() != null) && !currentCredentials.isExpired()
-                && currentCredentials.verifyClaims(jwks, keycloakConfiguration)
-                && currentCredentials.isAuthorized()) {
+                            && currentCredentials.verifyClaims(jwks, keycloakConfiguration)
+                            && currentCredentials.isAuthorized()) {
                 try {
                     UserIdentityParser parser = new UserIdentityParser(currentCredentials,
-                        keycloakConfiguration);
+                                    keycloakConfiguration);
                     currentUser = parser.parseUser();
                 } catch (AuthenticationException ae) {
                     LOG.error(TAG, "Failed to parse user identity from credential", ae);
@@ -94,38 +92,39 @@ public class AuthService {
     /**
      * This will return the current user with refreshed credentials (if necessary and available).
      *
-     * @return a request which will contain the current user and the most up to date credentials.  This may emit a null value.
+     * @return a request which will contain the current user and the most up to date credentials.
+     *         This may emit a null value.
      */
     public UserPrincipal getFreshCurrentUser() {
 
-            UserPrincipal currentUser = null;
-            JsonWebKeySet jwks = jwksManager.load(keycloakConfiguration);
-            if (jwks != null) {
-                OIDCCredentials currentCredentials = this.authStateManager.load();
+        UserPrincipal currentUser = null;
+        JsonWebKeySet jwks = jwksManager.load(keycloakConfiguration);
+        if (jwks != null) {
+            OIDCCredentials currentCredentials = this.authStateManager.load();
 
-                if (currentCredentials.getNeedsRenewal()) {
-                    try {
-                        return oidcAuthenticatorImpl.renew(currentCredentials);
-                    } catch (Exception exception) {
-                        LOG.error(TAG, "Failed to refresh token from credential", exception);
-                        currentUser = null;
-                    }
-                }
-
-                if ((currentCredentials.getAccessToken() != null) && !currentCredentials.isExpired()
-                    && currentCredentials.verifyClaims(jwks, keycloakConfiguration)
-                    && currentCredentials.isAuthorized()) {
-                    try {
-                        UserIdentityParser parser = new UserIdentityParser(currentCredentials,
-                            keycloakConfiguration);
-                        currentUser = parser.parseUser();
-                    } catch (Exception ae) {
-                        LOG.error(TAG, "Failed to parse user identity from credential", ae);
-                        currentUser = null;
-                    }
+            if (currentCredentials.getNeedsRenewal()) {
+                try {
+                    return oidcAuthenticatorImpl.renew(currentCredentials);
+                } catch (Exception exception) {
+                    LOG.error(TAG, "Failed to refresh token from credential", exception);
+                    currentUser = null;
                 }
             }
-            return currentUser;
+
+            if ((currentCredentials.getAccessToken() != null) && !currentCredentials.isExpired()
+                            && currentCredentials.verifyClaims(jwks, keycloakConfiguration)
+                            && currentCredentials.isAuthorized()) {
+                try {
+                    UserIdentityParser parser = new UserIdentityParser(currentCredentials,
+                                    keycloakConfiguration);
+                    currentUser = parser.parseUser();
+                } catch (Exception ae) {
+                    LOG.error(TAG, "Failed to parse user identity from credential", ae);
+                    currentUser = null;
+                }
+            }
+        }
+        return currentUser;
 
     }
 
@@ -134,10 +133,10 @@ public class AuthService {
      * supported. The login will be asynchronous.
      *
      * @param authOptions the authentication options
-     * @param callback    the callback function that will be invoked with the user info
+     * @param callback the callback function that will be invoked with the user info
      */
     public void login(@NonNull final DefaultAuthenticateOptions authOptions,
-                      @NonNull final Callback<UserPrincipal> callback) {
+                    @NonNull final Callback<UserPrincipal> callback) {
         oidcAuthenticatorImpl.authenticate(authOptions, callback);
     }
 
@@ -162,10 +161,10 @@ public class AuthService {
      * Log out the given principal. The logout will be asynchronous.
      *
      * @param principal principal to be logged out
-     * @param callback  the callback function to be invoked
+     * @param callback the callback function to be invoked
      */
     public void logout(@NonNull final UserPrincipal principal,
-                       @NonNull final Callback<UserPrincipal> callback) {
+                    @NonNull final Callback<UserPrincipal> callback) {
         this.oidcAuthenticatorImpl.logout(principal, callback);
     }
 

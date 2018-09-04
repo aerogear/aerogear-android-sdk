@@ -1,6 +1,17 @@
 package org.aerogear.mobile.auth.utils;
 
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URLConnection;
+import java.util.Map;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
@@ -12,30 +23,19 @@ import net.openid.appauth.TokenResponse;
 import net.openid.appauth.internal.Logger;
 import net.openid.appauth.internal.UriUtil;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URLConnection;
-import java.util.Map;
-
 /**
- * This is a fork of net.openid.appauth.AuthorizationService.TokenRequestTask which is
- * a synchronous task on the calling thread.
+ * This is a fork of net.openid.appauth.AuthorizationService.TokenRequestTask which is a synchronous
+ * task on the calling thread.
  */
 public class SynchronousTokenRequest {
     private TokenRequest mRequest;
     private ClientAuthentication mClientAuthentication;
 
-    private final AppAuthConfiguration mClientConfiguration = new AppAuthConfiguration.Builder()
-                                                                    .build();
+    private final AppAuthConfiguration mClientConfiguration =
+                    new AppAuthConfiguration.Builder().build();
 
     public SynchronousTokenRequest(TokenRequest request,
-                            @NonNull ClientAuthentication clientAuthentication) {
+                    @NonNull ClientAuthentication clientAuthentication) {
         mRequest = request;
         mClientAuthentication = clientAuthentication;
     }
@@ -45,16 +45,15 @@ public class SynchronousTokenRequest {
         InputStream is = null;
         JSONObject json;
         try {
-            HttpURLConnection conn =
-                mClientConfiguration.getConnectionBuilder()
-                    .openConnection(mRequest.configuration.tokenEndpoint);
+            HttpURLConnection conn = mClientConfiguration.getConnectionBuilder()
+                            .openConnection(mRequest.configuration.tokenEndpoint);
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             addJsonToAcceptHeader(conn);
             conn.setDoOutput(true);
 
-            Map<String, String> headers = mClientAuthentication
-                .getRequestHeaders(mRequest.clientId);
+            Map<String, String> headers =
+                            mClientAuthentication.getRequestHeaders(mRequest.clientId);
             if (headers != null) {
                 for (Map.Entry<String, String> header : headers.entrySet()) {
                     conn.setRequestProperty(header.getKey(), header.getValue());
@@ -62,8 +61,8 @@ public class SynchronousTokenRequest {
             }
 
             Map<String, String> parameters = mRequest.getRequestParameters();
-            Map<String, String> clientAuthParams = mClientAuthentication
-                .getRequestParameters(mRequest.clientId);
+            Map<String, String> clientAuthParams =
+                            mClientAuthentication.getRequestParameters(mRequest.clientId);
             if (clientAuthParams != null) {
                 parameters.putAll(clientAuthParams);
             }
@@ -76,7 +75,7 @@ public class SynchronousTokenRequest {
             wr.flush();
 
             if (conn.getResponseCode() >= HttpURLConnection.HTTP_OK
-                && conn.getResponseCode() < HttpURLConnection.HTTP_MULT_CHOICE) {
+                            && conn.getResponseCode() < HttpURLConnection.HTTP_MULT_CHOICE) {
                 is = conn.getInputStream();
             } else {
                 is = conn.getErrorStream();
@@ -85,17 +84,18 @@ public class SynchronousTokenRequest {
             json = new JSONObject(response);
         } catch (IOException ex) {
             Logger.debugWithStack(ex, "Failed to complete exchange request");
-            throw AuthorizationException.fromTemplate(
-                AuthorizationException.GeneralErrors.NETWORK_ERROR, ex);
+            throw AuthorizationException
+                            .fromTemplate(AuthorizationException.GeneralErrors.NETWORK_ERROR, ex);
         } catch (JSONException ex) {
             Logger.debugWithStack(ex, "Failed to complete exchange request");
             throw AuthorizationException.fromTemplate(
-                AuthorizationException.GeneralErrors.JSON_DESERIALIZATION_ERROR, ex);
+                            AuthorizationException.GeneralErrors.JSON_DESERIALIZATION_ERROR, ex);
         } finally {
             if (is != null) {
                 try {
                     is.close();
-                } catch (Exception ignore) {/*ignore*/}
+                } catch (Exception ignore) {
+                    /* ignore */}
             }
         }
         if (json.has(AuthorizationException.PARAM_ERROR)) {
@@ -103,15 +103,15 @@ public class SynchronousTokenRequest {
             try {
                 String error = json.getString(AuthorizationException.PARAM_ERROR);
                 ex = AuthorizationException.fromOAuthTemplate(
-                    AuthorizationException.TokenRequestErrors.byString(error),
-                    error,
-                    json.optString(AuthorizationException.PARAM_ERROR_DESCRIPTION, null),
-                    UriUtil.parseUriIfAvailable(
-                        json.optString(AuthorizationException.PARAM_ERROR_URI)));
+                                AuthorizationException.TokenRequestErrors.byString(error), error,
+                                json.optString(AuthorizationException.PARAM_ERROR_DESCRIPTION,
+                                                null),
+                                UriUtil.parseUriIfAvailable(json.optString(
+                                                AuthorizationException.PARAM_ERROR_URI)));
             } catch (JSONException jsonEx) {
                 ex = AuthorizationException.fromTemplate(
-                    AuthorizationException.GeneralErrors.JSON_DESERIALIZATION_ERROR,
-                    jsonEx);
+                                AuthorizationException.GeneralErrors.JSON_DESERIALIZATION_ERROR,
+                                jsonEx);
             }
             throw ex;
         }
@@ -120,15 +120,13 @@ public class SynchronousTokenRequest {
         try {
             response = new TokenResponse.Builder(mRequest).fromResponseJson(json).build();
         } catch (JSONException jsonEx) {
-            throw
-                AuthorizationException.fromTemplate(
-                    AuthorizationException.GeneralErrors.JSON_DESERIALIZATION_ERROR,
-                    jsonEx);
+            throw AuthorizationException.fromTemplate(
+                            AuthorizationException.GeneralErrors.JSON_DESERIALIZATION_ERROR,
+                            jsonEx);
 
         }
 
-        Logger.debug("Token exchange with %s completed",
-            mRequest.configuration.tokenEndpoint);
+        Logger.debug("Token exchange with %s completed", mRequest.configuration.tokenEndpoint);
         return response;
     }
 
@@ -146,10 +144,9 @@ public class SynchronousTokenRequest {
 
 
     /**
-     * GitHub will only return a spec-compliant response if JSON is explicitly defined
-     * as an acceptable response type. As this is essentially harmless for all other
-     * spec-compliant IDPs, we add this header if no existing Accept header has been set
-     * by the connection builder.
+     * GitHub will only return a spec-compliant response if JSON is explicitly defined as an
+     * acceptable response type. As this is essentially harmless for all other spec-compliant IDPs,
+     * we add this header if no existing Accept header has been set by the connection builder.
      */
     private void addJsonToAcceptHeader(URLConnection conn) {
         if (TextUtils.isEmpty(conn.getRequestProperty("Accept"))) {
