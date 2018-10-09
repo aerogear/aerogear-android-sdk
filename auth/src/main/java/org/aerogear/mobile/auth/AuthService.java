@@ -67,42 +67,28 @@ public class AuthService {
      *
      * @return the current logged in. Could be null.
      */
-    public UserPrincipal currentUser() {
-        UserPrincipal currentUser = null;
-        JsonWebKeySet jwks = jwksManager.load(keycloakConfiguration);
-        if (jwks != null) {
-            OIDCCredentials currentCredentials = this.authStateManager.load();
-            if ((currentCredentials.getAccessToken() != null) && !currentCredentials.isExpired()
-                            && currentCredentials.verifyClaims(jwks, keycloakConfiguration)
-                            && currentCredentials.isAuthorized()) {
-                try {
-                    UserIdentityParser parser = new UserIdentityParser(currentCredentials,
-                                    keycloakConfiguration);
-                    currentUser = parser.parseUser();
-                } catch (AuthenticationException ae) {
-                    LOG.error(TAG, "Failed to parse user identity from credential", ae);
-                    currentUser = null;
-                }
-            }
-        }
-        return currentUser;
+    public UserPrincipal getCurrentUser() {
+        return getCurrentUser(false);
     }
 
 
     /**
-     * This will return the current user with refreshed credentials (if necessary and available).
+     * Return the user that is currently logged and is still valid. Otherwise returns null.
      *
-     * @return a request which will contain the current user and the most up to date credentials.
-     *         This may emit a null value.
+     * If the access token is expired and the autoRefresh is <code>true</code> an attempt is made to
+     * refresh the token before returning.
+     *
+     * @return the current logged in user. If no user is logged in or if <code>autoRefresh</code> is
+     *         <code>true</code> but no refresh is possible, null is returned.
      */
-    public UserPrincipal getFreshCurrentUser() {
+    public UserPrincipal getCurrentUser(boolean autoRefresh) {
 
         UserPrincipal currentUser = null;
         JsonWebKeySet jwks = jwksManager.load(keycloakConfiguration);
         if (jwks != null) {
             OIDCCredentials currentCredentials = this.authStateManager.load();
 
-            if (currentCredentials.getNeedsRenewal()) {
+            if (autoRefresh && currentCredentials.getNeedsRenewal()) {
                 try {
                     return oidcAuthenticatorImpl.renew(currentCredentials);
                 } catch (Exception exception) {

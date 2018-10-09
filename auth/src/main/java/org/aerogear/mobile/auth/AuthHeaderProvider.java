@@ -27,7 +27,7 @@ public class AuthHeaderProvider implements HeaderProvider {
      */
     @Override
     public Map<String, String> getHeaders() {
-        UserPrincipal user = authService.getFreshCurrentUser();
+        UserPrincipal user = authService.getCurrentUser(true);
         if (user != null && user.getAccessToken() != null) {
             String accessToken = user.getAccessToken();
             return Collections.singletonMap(HEADER_KEY, HEADER_TYPE + accessToken);
