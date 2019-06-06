@@ -78,6 +78,8 @@ public class AuthService {
      * If the access token is expired and the autoRefresh is <code>true</code> an attempt is made to
      * refresh the token before returning.
      *
+     * @param autoRefresh If it should attempt to refresh the token.
+     *
      * @return the current logged in user. If no user is logged in or if <code>autoRefresh</code> is
      *         <code>true</code> but no refresh is possible, null is returned.
      */
