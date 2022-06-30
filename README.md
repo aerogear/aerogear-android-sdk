@@ -6,6 +6,7 @@
 [![Javadocs](http://www.javadoc.io/badge/org.aerogear/android-core.svg?color=blue)](http://www.javadoc.io/doc/org.aerogear/android-core)
 [![License](https://img.shields.io/badge/-Apache%202.0-blue.svg)](https://opensource.org/s/Apache-2.0)
 
+> Maintenance only
 
 |                 | Project Info                                                     |
 | --------------- | ---------------------------------------------------------------- |
